@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<html>
+<jsp:include page="../head.jsp">
+	<jsp:param value="购物车" name="title"/>
+</jsp:include>
+<style type="text/css">
+body.cart .sup-list .sup .p .p-cell .info-wrap .name{
+	line-height: 16px;
+}
+body.cart .sup-list .sup .p .p-cell .info-wrap .count input{
+	padding: 5px 0;
+}
+body.cart .sup-list .sup .p .p-cell .info-wrap .count .op{
+	height: 26px;
+}
+</style>
+<body class="cart include-footer">
+
+<div id="app">
+		<div class="header">
+            <i class="iconfont back">&#xe615;</i>
+            <span>购物车</span>
+        </div>
+			<c:set value="0" var="sup"></c:set>
+			<c:set value="0" var="lastSup"></c:set>
+   			<div class="sup-list">
+			<c:forEach var="item" items="${list}" varStatus="sta">
+				<c:if test="${sup != item.supId}">
+                	<c:set value="${sup}" var="lastSup"/>
+					<c:set value="${item.supId}" var="sup"></c:set>
+            		<div class="sup">
+                		<p class="n"><i class="s sup" data-id="${sup}"></i>供应商：${dataCache.getSupplierName(sup)}</p>
+					</c:if>
+					<!-- ============================================================================= -->
+							<div class="p">
+			                    <i class="s prod" data-sup-id="${sup}"></i>
+			                    <div class="p-cell">
+			                        <div class="img-wrap">
+			                            <c:if test="${item.supType == 1}">
+											<img src="${pageContext.request.contextPath}${item.imagePath == null ? '/static/img/img-profession.jpg' : item.imagePath}"/>
+										</c:if>
+										<c:if test="${item.supType == 0}">
+											<img src="${item.imagePath}"/>
+										</c:if>
+			                        </div>
+			                        <div class="info-wrap">
+			                            <a class="name" style="text-decoration: none; color: #000;" href="${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}">${fn:escapeXml(item.goodsName)}<c:if test="${item.supType == '1'}">(${fn:escapeXml(item.goodsModel)})</c:if></a>
+			                            <span class="price">￥<fmt:formatNumber value="${item.agreePrice}" pattern="#0.00#"></fmt:formatNumber></span>
+			                            <div class="count">
+			                                <span class="op add iconfont" data-sid="${item.supId}" data-gid="${item.supGoodsId}" onclick="updateCount('${item.supId}', '${item.supGoodsId}', 1);">&#xe622;</span>
+			                                <input type="tel" autocomplete="off" class="goods-count" id="count_${item.supId}_${item.supGoodsId}" data-price="<fmt:formatNumber value="${item.agreePrice}" pattern="#0.00#"></fmt:formatNumber>" value="${item.buyNum}"/>
+			                                <span class="op sub iconfont" data-sid="${item.supId}" data-gid="${item.supGoodsId}" onclick="updateCount('${item.supId}', '${item.supGoodsId}', -1);">&#xe620;</span>
+			                            </div>
+			                        </div>
+			                    </div>
+			                </div>
+					<!-- ============================================================================= -->
+		       		 <c:if test="${sta.last || lastSup != sup && not sta.first}">
+		       		 </div>
+		       		 </c:if>
+            </c:forEach>
+            <%--<div class="sup" v-for="i in 3"> 
+                <p class="n"><i class="s active"></i>供应商：JD</p>
+                <div class="p" v-for="j in i+1">
+                    <i class="s active"></i>
+                    <div class="p-cell">
+                        <div class="img-wrap">
+                            <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                        </div>
+                        <div class="info-wrap">
+                            <a class="name">DNSJAKDNAJWDNAWNDJKANFCKJAWNDKJAWDNJKAWDNJKAWNKJDANKWJDNKAJ</a>
+                            <span class="price">￥6789.00</span>
+                            <div class="count">
+                                <span class="op add iconfont" @click="val++">&#xe622;</span>
+                                <input type="tel" autocomplete="off" v-model="val">
+                                <span class="op sub iconfont" @click="val == 1 ? 1 : val--">&#xe620;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --%>
+        <div class="stat" style="z-index:5;">
+	        <a><i class="s" id="select-all"></i>全选</a>
+	        <a class="a">
+	            合计:<span id="allPrice">￥0.00</span>
+	        </a>
+	        <a class="gen-order">生成订单</a>
+	    </div>
+	
+<jsp:include page="../foot.jsp">
+	<jsp:param value="购物车" name="tab"/>
+</jsp:include>
+</div>
+
+<script type="text/javascript">
+var app = new Vue({
+	el	: '.footer',
+	data: {
+		cartCount	: 0,
+		cs			: {},
+		allPrice	: 0
+	},
+	methods	: {
+	}
+});
+function updateCount (sid, gid, c, f) {
+	var el = $('#count_' + sid + '_' + gid);
+	var count = parseInt(el.val());
+	count = count + c;
+	count = count < 1 ? 1 : count;
+	el.val(count);
+	var es = $('.goods-count'), all = 0;
+	for (var i = 0; i < es.length; i++) {
+		all += parseInt(es.eq(i).val());
+	}
+	if (!f) {
+		$.post('${pageContext.request.contextPath}/market/cart/num?t=' + new Date().getTime(), {sid:sid, gid:gid, num:count, all : all}, function(res){});
+		app.cartCount = all;
+	}
+	updateStat();
+}
+$(function () {
+	$('i.s.sup').click(function () {
+		var that = $(this);
+		if (that.hasClass('active')) {
+			that.removeClass('active');
+			$('i.s.prod[data-sup-id="' + that.attr('data-id') + '"]').removeClass('active');
+		} else {
+			that.addClass('active');
+			$('i.s.prod[data-sup-id="' + that.attr('data-id') + '"]').removeClass('active').addClass('active');
+		}
+		updateStat();
+	});
+	$('i.s.prod').click(function () {
+		var that = $(this);
+		if (that.hasClass('active')) {
+			that.removeClass('active');
+		} else {
+			that.addClass('active');
+		}
+		updateStat();
+	});
+	$('#select-all').click(function () {
+		var that = $(this);
+		if (that.hasClass('active')) {
+			that.removeClass('active');
+			$('i.s').removeClass('active');
+		} else {
+			that.addClass('active');
+			$('i.s').addClass('active');
+		}
+		updateStat();
+	});
+});
+function updateStat() {
+	var gs = $('i.s.prod.active').next().find('.goods-count');
+	var p = 0;
+	for (var i = 0; i < gs.length; i++) {
+		p += parseFloat(gs.eq(i).val()) * parseFloat(gs.eq(i).attr('data-price'));
+	}
+	$('#allPrice').text('￥' + p.toFixed(2));
+}
+</script>
+</body>
+</html>

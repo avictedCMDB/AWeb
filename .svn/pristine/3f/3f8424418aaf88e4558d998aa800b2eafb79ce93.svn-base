@@ -1,0 +1,39 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Goods;
+import com.avic.market.models.GoodsImage;
+import com.avic.market.models.Price;
+import com.avic.market.models.TradeRecord;
+
+@Repository
+public interface GoodsMapper {
+    public void deleteSupCatGoods(@Param("supId") int supId, @Param("poolId") int poolId);
+    public void batchInsertSupGoods(@Param("list") List<Goods> list);
+    public void insertSupGoods(Goods goods);
+    public List<Goods> queryGoodsList(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("brand") String brand, @Param("sup") int sup, @Param("keyword") String keyword, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd, @Param("order") int order, @Param("start") int start, @Param("end") int end);
+    public int queryGoodsCount(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("brand") String brand, @Param("sup") int sup, @Param("keyword") String keyword, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd);
+    public List<String> queryGoodsBrand(@Param("supId") int supId, @Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("keyword") String keyword);
+    public Goods queryGoodsById(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId);
+    public void deleteSupGoodsImage(@Param("supId") int supId);
+    public void batchInsertGoodsImage(@Param("list") List<GoodsImage> list);
+    public List<String> queryGoodsImage(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId);
+    public void updateGoodsPrice(Price price);
+    public void updateGoodsStatus(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId, @Param("status") int status);
+    public List<Goods> queryGoodsByIds(@Param("supId") int supId, @Param("list")List<String> ids);
+    public void updateGoodsSaleNum(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId, @Param("num") int num);
+    public void insertGoodsSaleNum(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId, @Param("num") int num);
+    public int querySaleNumCount(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId);
+    public List<TradeRecord> queryTradeRecordList(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId, @Param("start") int start, @Param("end") int end);
+    public int queryTradeRecordCount(@Param("supId") int supId, @Param("supGoodsId") String supGoodsId);
+    public List<Goods> queryHotGoods(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("size") int size);
+    public List<Goods> queryProfGoodsList(@Param("sup") int sup, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd, @Param("brand") String brand, @Param("order") int order, @Param("start") int start, @Param("end") int end);
+    public int queryProfGoodsCount(@Param("sup") int sup, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd, @Param("brand") String brand);
+    public List<Goods> queryProfHotGoods(@Param("size") int size);
+    public List<String> queryProfGoodsBrand(@Param("supId") int supId);
+        
+}

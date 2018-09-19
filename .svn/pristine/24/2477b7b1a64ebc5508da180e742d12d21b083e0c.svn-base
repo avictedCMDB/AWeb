@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjTenderMapper">
+	<resultMap id="bidProjTenderMap" type="com.avic.management.models.BidProjTender">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="tender_id" property="tenderId" jdbcType="INTEGER" />
+		<result column="tender_type" property="tenderType" jdbcType="INTEGER" />
+		<result column="tender_title" property="tenderTitle" jdbcType="VARCHAR" /> 
+		<result column="tender_content" property="tenderContent" jdbcType="VARCHAR" /> 
+		<result column="attach_name" property="attachName" jdbcType="VARCHAR" /> 
+		<result column="attach_path" property="attachPath" jdbcType="VARCHAR" /> 
+		<result column="invoice_type" property="invoiceType" jdbcType="INTEGER" />
+		<result column="delivery_time" property="deliveryTime" jdbcType="INTEGER" />
+		<result column="addr_prov" property="addrProv" jdbcType="VARCHAR" /> 
+		<result column="addr_city" property="addrCity" jdbcType="VARCHAR" /> 
+		<result column="addr_dist" property="addrDist" jdbcType="VARCHAR" /> 
+		<result column="addr_detail" property="addrDetail" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<insert id="insertProjTender">
+		insert into bid_proj_tender (
+			proj_id, tender_id, tender_type, tender_title, tender_content, 
+			attach_name, attach_path, invoice_type, delivery_time, addr_prov, 
+			addr_city, addr_dist, addr_detail
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{tenderId,jdbcType=INTEGER}, #{tenderType,jdbcType=INTEGER}, #{tenderTitle,jdbcType=VARCHAR}, #{tenderContent,jdbcType=VARCHAR},
+			#{attachName,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{invoiceType,jdbcType=INTEGER}, #{deliveryTime,jdbcType=INTEGER}, #{addrProv,jdbcType=VARCHAR},
+			#{addrCity,jdbcType=VARCHAR}, #{addrDist,jdbcType=VARCHAR}, #{addrDetail,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<delete id="deleteByProjId">
+		delete from bid_proj_tender where proj_id = #{projId}
+	</delete>
+	
+	
+	<select id="queryListByProj" resultMap="bidProjTenderMap">
+		select * from bid_proj_tender where proj_id = #{projId}
+	</select>
+</mapper>

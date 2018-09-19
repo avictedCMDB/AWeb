@@ -1,0 +1,179 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li class="first"><a href="#"><span class="fa fa-user"></span>晨光科力普</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/supplier/index">管理中心 </a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/passport/login/logout">退出</a><span>|</span></li>
+        <li><a href="#">帮助</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="${pageContext.request.contextPath}/static/img/supplier/logo_supplier.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <img src="${pageContext.request.contextPath}/static/img/supplier/bnr-supplier.jpg" />
+      </div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner">
+    	
+    	<div id="side_navi">
+    		<dl>
+    			<dt class="tlt_merchandise">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>超市订单管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>发货管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>退货管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>换货管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_transaction">信息维护<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>联系人信息</a></li>
+    					<li><a href="${pageContext.request.contextPath}/supplier/address"><span class="fa fa-caret-right"></span>地址库管理</a></li>
+                        <li><a href="${pageContext.request.contextPath}/supplier/express"><span class="fa fa-caret-right"></span>快递公司管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_reeturns ">结算管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>结算单管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_receipt">我的超市<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<li><a href="${pageContext.request.contextPath}/supplier/goodsInfo"><span class="fa fa-caret-right"></span>商品信息管理</a></li>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>自动上下架</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>商品标签管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>商品回收站</a></li>
+    				</ul>
+    			</dd>
+    		</dl>
+    		<!--#side_navi-->
+    	</div>
+      <div id="matter_section">
+      	<div class="company_info clearfix">
+          <dl class="dl-horizontal clearfix">
+            <dt><img src="${pageContext.request.contextPath}/static/img/supplier/logo-shop.jpg" alt="" /></dt>
+            <dd>
+              <p>店铺名称：<span>晨光科力普</span></p>
+              <p>诚信指数：<span class="red">(0)</span></p>
+            </dd>
+          </dl>
+          <div class="remind_area">
+            <ul class="clearfix">
+              <li>
+                <dl>
+                  <dt>订单提醒</dt>
+                  <dd>待确认<span>（0）</span></dd>
+                  <dd>待发货<span>（0）</span></dd>
+                  <dd>待评价<span>（0）</span></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>缺货提醒</dt>
+                  <dd>待确认缺货<span>（0）</span></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>退货提醒</dt>
+                  <dd>待确认<span>（0）</span></dd>
+                  <dd>待收货<span>（0）</span></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>换货提醒</dt>
+                  <dd>待确认<span>（0）</span></dd>
+                  <dd>待收货<span>（0）</span></dd>
+                </dl>
+              </li>
+            </ul>
+          </div>
+        </div>
+      	<div class="manage_photo"><img src="${pageContext.request.contextPath}/static/img/supplier/img-manage_photo.jpg" alt="欢迎使用 welcome to 中航招采网采购人平台" /></div>
+      	
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="${pageContext.request.contextPath}/static/img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

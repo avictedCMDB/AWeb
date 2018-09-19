@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.BidMessageMapper">
+	<resultMap id="bidMessageMap" type="BidMessage">
+		<result column="msg_id" property="msgId" jdbcType="INTEGER" /> 
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" />
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="send_type" property="sendType" jdbcType="INTEGER" />
+		<result column="msg_type" property="msgType" jdbcType="INTEGER" />
+		<result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+		<result column="msg_content" property="msgContent" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<insert id="insertMessage" >
+	  <selectKey resultType="java.lang.Integer"  keyProperty="msgId" order="BEFORE">
+	  select BID_MESSAGE_SEQ.Nextval as msgId FROM dual
+	  </selectKey>
+		insert into bid_message (msg_id, proj_id, sup_code, send_type, msg_content, send_time, msg_type)
+		values (#{msgId}, #{projId}, #{supCode}, #{sendType}, #{msgContent}, sysdate, #{msgType})
+	</insert>
+	
+	<select id="queryMessageList" resultMap="bidMessageMap">
+	select x.* from (
+		select rownum rn, a.* from bid_message a
+		where a.sup_code = #{supCode}
+		and a.proj_id = #{projId}
+		and a.msg_id &gt; #{msgId}
+		and a.msg_type = #{msgType}
+	) x where x.rn &lt; 100
+	</select>
+	
+</mapper>

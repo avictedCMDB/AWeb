@@ -1,0 +1,37 @@
+package com.avic.management.models;
+
+import java.io.Serializable;
+
+public class OrderCpi implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private String operate_time;			//快递时间
+	private String content;				//快递内容
+	private String operator;			//客户
+	private String msgTime;
+	
+	public String getMsgTime() {
+		return msgTime;
+	}
+	public void setMsgTime(String msgTime) {
+		this.msgTime = msgTime;
+	}
+	public String getOperate_time() {
+		return operate_time;
+	}
+	public void setOperate_time(String operate_time) {
+		this.operate_time = operate_time;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getOperator() {
+		return operator;
+	}
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+	
+}

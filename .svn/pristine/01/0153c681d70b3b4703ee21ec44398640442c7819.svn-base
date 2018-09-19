@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>首页|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/supervise_company.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/companyForm.js"></script>
+</head>
+
+<body>
+<input type="hidden" id="path" value="${pageContext.request.contextPath}"/>
+<div id="vat_info">
+  <div class="inner">
+    <div class="add_title clearfix">采购单位</div>
+    <div class="main_inner">
+      <div class="up_area clearfix">
+        <dl class="clearfix first">
+          <dt>合作采购单位：</dt>
+          <dd>
+            <ul class="clearfix">
+	            <c:forEach  var="cooperateCompany" items="${cooperateCompanys}" varStatus="status">
+	            	<li><a href="${pageContext.request.contextPath}/supervise/company/delCompany?companyMappingID=${cooperateCompany.companyMappingID}&supID=${company.supID}">${cooperateCompany.companyName}</a></li>
+	            </c:forEach>
+            </ul>
+          </dd>
+        </dl>
+        <dl class="clearfix date_list">
+          <dt>采购单位名称：</dt>
+          <dd>
+            <ul class="clearfix company">
+              <li><input class="form-control" type="text" id="companyName" name="companyName" value="${company.companyName}"/></li>
+              <li class="btn_search"><button class="btn btn-default blue" onclick="searchCompany(${company.supID});">查询</button></li>
+            </ul>
+          </dd>
+        </dl>
+        <table class="company_list">
+            <tr>
+                <th>采购单位</th>
+                <th width="200">联系电话</th>
+                <th width="130" class="last">操作</th>
+            </tr>
+             <c:forEach  var="noCooperateCompany" items="${noCooperateCompanys}" varStatus="status">
+	            <tr>
+	                <td>${noCooperateCompany.companyName}</td>
+	                <td>${noCooperateCompany.contactNum}</td>
+	                <td class="last"><a href="${pageContext.request.contextPath}/supervise/company/addCompany?companyID=${noCooperateCompany.companyID}&supID=${company.supID}">添加</a></td>
+	            </tr>
+            </c:forEach>
+        </table>    
+         <jsp:include page="../page.jsp" />
+      </div>
+      
+    </div>
+  </div>
+ 
+</div>
+
+
+</body>
+</html>

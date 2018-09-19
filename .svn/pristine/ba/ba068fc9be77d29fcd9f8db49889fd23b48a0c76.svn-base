@@ -1,0 +1,20 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.Order;
+
+@Repository
+public interface OrderMapper {
+	/**
+	 * 查询订单信息
+	 */
+	public List<Order> queryOrders(Order order);
+	
+	/**
+	 * 获取订单状态列表
+	 */
+	public List<Order> getOrderStatusList();
+}

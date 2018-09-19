@@ -1,0 +1,417 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<jsp:include page="meta.jsp">
+	<jsp:param value="首页" name="title" />
+</jsp:include>
+<script src="${pageContext.request.contextPath}/static/js/jquery-1.8.3.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery.luara.0.0.1.min.js"></script>
+
+<link href="${pageContext.request.contextPath}/static/css/index.css" rel="stylesheet">
+
+	<script type="text/javascript">
+		$(function() {
+
+		});
+	</script>
+</head>
+
+<body>
+	<div class="page-wrapper">
+		<jsp:include page="header.jsp" />
+
+		<div id="nav_area">
+			<div class="inner clearfix">
+				<jsp:include page="categorys.jsp">
+					<jsp:param value="true" name="show" />
+				</jsp:include>
+				<div id="top_area">
+					<div class="inner clearfix">
+						<div class="banner_list">
+							<ul>
+								<li><img src="${pageContext.request.contextPath}/static/banner/1.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/2.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/3.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/4.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/5.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/6.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/7.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/8.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/9.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/10.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/11.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/12.jpg" alt=""/></li>
+								<li><img src="${pageContext.request.contextPath}/static/banner/13.jpg" alt=""/></li>
+							</ul>
+							<a href="javascript:void(0);" style="position:absolute; bottom:5px; left:19px;"></a>
+							<div style="position:absolute; bottom:5px; left:34px; width:685px; height:55px; overflow:hidden;">
+								<ol style="left:0; top:0; bottom:0;">
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+								</ol>
+							</div>
+							<a href="javascript:void(0);" style="position:absolute; bottom:5px; left:724px;"></a>
+							<!--.banner_list-->
+						</div>
+						<div class="focus-extra">
+							<div class="news">
+								<div class="title">
+									<h2>站内公告</h2>
+								</div>
+								<div class="focus_inner">
+									<ul>
+										<li><span class="news">新闻</span><a href="#">央企电商采购新形势...</a></li>
+										<li><span class="people">新闻</span><a href="#">倪光南：中国为什么没有...</a></li>
+										<li><span class="news">新闻</span><a href="#">我国公共服务领域将广泛...</a></li>
+										<li><span class="people">新闻</span><a href="#">习近平：让人民对改革有更...</a></li>
+										<li><span class="quick">新闻</span><a href="#">2015-2017年度央企采购新风...</a></li>
+										<li><span class="quick">新闻</span><a href="#">2015-2017年度央企采购新风...</a></li>
+									</ul>
+								</div>
+								<!--.news-->
+							</div>
+							<div class="service">
+								<div class="title">
+									<h2>便捷服务</h2>
+								</div>
+								<div class="focus_inner">
+									<ul>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-logoin_off.png" alt="" /></i><span>登录</span></a></li>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-supplier_off.png" alt="" /></i><span>供应商注册</span></a></li>
+										<li class="last"><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-developer_off.png" alt="" /></i><span>开发者注册</span></a></li>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-logoin_off.png" alt="" /></i><span>登录</span></a></li>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-supplier_off.png" alt="" /></i><span>供应商注册</span></a></li>
+										<li class="last"><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-developer_off.png" alt="" /></i><span>开发者注册</span></a></li>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-logoin_off.png" alt="" /></i><span>登录</span></a></li>
+										<li><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-supplier_off.png" alt="" /></i><span>供应商注册</span></a></li>
+										<li class="last"><a href="#"><i><img src="${pageContext.request.contextPath}/static/img/img-developer_off.png" alt="" /></i><span>开发者注册</span></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--#top_area-->
+				</div>
+			</div>
+		</div>
+		<div id="contents">
+			<div class="inner">
+				<div class="cate_list clearfix section">
+					<ul>
+						<li class="first"><a href="#"><img src="${pageContext.request.contextPath}/static/banner/img-cate01.jpg" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/banner/img-cate02.jpg" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/banner/img-cate03.jpg" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/banner/img-cate04.jpg" alt="" /></a></li>
+					</ul>
+				</div>
+<div class="section clearfix">
+        <div class="item_area item_left">
+          <div class="main_list clearfix">
+            <div class="sidebar">
+              <h2><img src="${pageContext.request.contextPath}/static/img/title-floor01.png" /></h2>
+              <div class="hot_list">
+                <h3>热门TOP</h3>
+                <ul>
+                  <a href="#">桌面文具</a>
+                  <a href="#">本册/便签</a>
+                  <a href="#">软木板/白板</a>
+                  <a href="#">照片纸</a>
+                  <a href="#">多用途纸</a>
+                  <a href="#">复印纸</a>
+                  <a href="#">色带</a>
+                  <a href="#">硒鼓</a>
+                  <a href="#">墨粉</a>
+                  <a href="#">学生套装</a>
+                </ul>
+              </div>
+            <!--sidebar--></div>
+            <div class="goods_list">
+              <div class="top_list clearfix">
+                <div class="photo_list item_left">
+                  <img src="${pageContext.request.contextPath}/static/img/img-computer_product01.jpg" />
+                </div>
+                <div class="product_list item_left">
+                  <ul>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="middle_list">
+                <ul>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                </ul>
+              </div>
+            <!--.goods_list--></div>
+          </div>
+          <div class="logo_list">
+            <ul class="clearfix">
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+            </ul>
+          </div>
+        <!--.iteam_area--></div>
+        <div class="item_area item_right">
+          <div class="main_list clearfix">
+            <div class="sidebar">
+              <h2><img src="${pageContext.request.contextPath}/static/img/title-floor02.png" /></h2>
+              <div class="hot_list">
+                <h3>热门TOP</h3>
+                <ul>
+                  <a href="#">桌面文具</a>
+                  <a href="#">本册/便签</a>
+                  <a href="#">软木板/白板</a>
+                  <a href="#">照片纸</a>
+                  <a href="#">多用途纸</a>
+                  <a href="#">复印纸</a>
+                  <a href="#">色带</a>
+                  <a href="#">硒鼓</a>
+                  <a href="#">墨粉</a>
+                  <a href="#">学生套装</a>
+                </ul>
+              </div>
+            <!--sidebar--></div>
+            <div class="goods_list">
+              <div class="top_list clearfix">
+                <div class="photo_list item_left">
+                  <img src="${pageContext.request.contextPath}/static/img/img-computer_product01.jpg" />
+                </div>
+                <div class="product_list item_left">
+                  <ul>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="middle_list">
+                <ul>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                </ul>
+              </div>
+            <!--.goods_list--></div>
+          </div>
+          <div class="logo_list">
+            <ul class="clearfix">
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+            </ul>
+          </div>
+        <!--.iteam_area--></div>
+      <!--.section--></div>
+      <div class="section clearfix">
+        <div class="item_area item_left">
+          <div class="main_list clearfix">
+            <div class="sidebar">
+              <h2><img src="${pageContext.request.contextPath}/static/img/title-floor03.png" /></h2>
+              <div class="hot_list">
+                <h3>热门TOP</h3>
+                <ul>
+                  <a href="#">桌面文具</a>
+                  <a href="#">本册/便签</a>
+                  <a href="#">软木板/白板</a>
+                  <a href="#">照片纸</a>
+                  <a href="#">多用途纸</a>
+                  <a href="#">复印纸</a>
+                  <a href="#">色带</a>
+                  <a href="#">硒鼓</a>
+                  <a href="#">墨粉</a>
+                  <a href="#">学生套装</a>
+                </ul>
+              </div>
+            <!--sidebar--></div>
+            <div class="goods_list">
+              <div class="top_list clearfix">
+                <div class="photo_list item_left">
+                  <img src="${pageContext.request.contextPath}/static/img/img-computer_product01.jpg" />
+                </div>
+                <div class="product_list item_left">
+                  <ul>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="middle_list">
+                <ul>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                </ul>
+              </div>
+            <!--.goods_list--></div>
+          </div>
+          <div class="logo_list">
+            <ul class="clearfix">
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+            </ul>
+          </div>
+        <!--.iteam_area--></div>
+        <div class="item_area item_right">
+          <div class="main_list clearfix">
+            <div class="sidebar">
+              <h2><img src="${pageContext.request.contextPath}/static/img/title-floor04.png" /></h2>
+              <div class="hot_list">
+                <h3>热门TOP</h3>
+                <ul>
+                  <a href="#">桌面文具</a>
+                  <a href="#">本册/便签</a>
+                  <a href="#">软木板/白板</a>
+                  <a href="#">照片纸</a>
+                  <a href="#">多用途纸</a>
+                  <a href="#">复印纸</a>
+                  <a href="#">色带</a>
+                  <a href="#">硒鼓</a>
+                  <a href="#">墨粉</a>
+                  <a href="#">学生套装</a>
+                </ul>
+              </div>
+            <!--sidebar--></div>
+            <div class="goods_list">
+              <div class="top_list clearfix">
+                <div class="photo_list item_left">
+                  <img src="${pageContext.request.contextPath}/static/img/img-computer_product01.jpg" />
+                </div>
+                <div class="product_list item_left">
+                  <ul>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                    <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="middle_list">
+                <ul>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                  <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product03.jpg" /></a></li>
+                </ul>
+              </div>
+            <!--.goods_list--></div>
+          </div>
+          <div class="logo_list">
+            <ul class="clearfix">
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+              <li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo03.jpg" /></a></li>
+            </ul>
+          </div>
+        <!--.iteam_area--></div>
+      <!--.section--></div>
+				<div class="section shop_list">
+					<h2>
+						<img src="${pageContext.request.contextPath}/static/img/title-shop_list.gif" alt="" />
+					</h2>
+					<ul class="clearfix">
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop01.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop02.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop03.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop04.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop05.gif" alt="" /></a></li>
+						<li class="last"><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop06.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop07.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop08.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop09.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop10.gif" alt="" /></a></li>
+						<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop11.gif" alt="" /></a></li>
+						<li class="last"><a href="#"><img src="${pageContext.request.contextPath}/static/img/logo-shop12.gif" alt="" /></a></li>
+					</ul>
+				</div>
+				<!--.inner-->
+			</div>
+			<!--#contents-->
+		</div>
+		<jsp:include page="footer.jsp" />
+		<!--.page-wrapper-->
+	</div>
+	<script>
+		$('.photo_box').each(function() {
+			$(this).luara({
+				width : "520",
+				height : "272",
+				interval : 4500,
+				selected : "seleted",
+				deriction : "left"
+			});
+		});
+
+		$(".banner_list").luara({
+			width : "749",
+			height : "441",
+			interval : 4500,
+			selected : "seleted",
+			deriction : "left"
+		});
+
+		/*
+		<li class="arrow"><img src="${pageContext.request.contextPath}/static/img/icon_left.png" alt="" /></li>
+		<li><img src="${pageContext.request.contextPath}/static/img/bnr_list_small.jpg" alt="" /></li>
+		<li><img src="${pageContext.request.contextPath}/static/img/bnr_list_small.jpg" alt="" /></li>
+		<li><img src="${pageContext.request.contextPath}/static/img/bnr_list_small.jpg" alt="" /></li>
+		<li><img src="${pageContext.request.contextPath}/static/img/bnr_list_small.jpg" alt="" /></li>
+		<li><img src="${pageContext.request.contextPath}/static/img/bnr_list_small.jpg" alt="" /></li>
+		<li class="arrow"><img src="${pageContext.request.contextPath}/static/img/icon_right.png" alt="" /></li>
+		 */
+		$(".banner_list").find("ol li").each(function(idx) {
+			$(this).append('<img src="${pageContext.request.contextPath}/static/banner/'+(idx + 1)+'.jpg" width="129px" height="55px" alt="" />');
+		});
+
+		$(".banner_list a").eq(0).append('<img src="${pageContext.request.contextPath}/static/img/icon_left.png" alt="" />').click(function() {
+			var ol = $(".banner_list ol");
+			var left = parseInt(ol.css("left"));
+			left -= 137;
+			var max = ol.width() - 685;
+
+			if (max < 0) {
+				return;
+			}
+
+			if (left < -max) {
+				left = -max;
+			}
+
+			ol.animate({
+				left : left + "px"
+			});
+		});
+		$(".banner_list a").eq(1).append('<img src="${pageContext.request.contextPath}/static/img/icon_right.png" alt="" />').click(function() {
+			var ol = $(".banner_list ol");
+			var left = parseInt(ol.css("left"));
+			left += 137;
+
+			if (left > 0) {
+				left = 0;
+			}
+
+			ol.animate({
+				left : left + "px"
+			});
+
+		});
+
+		$(".banner_list ol").width($(".banner_list").find("ol li").size() * 138);
+	</script>
+</body>
+</html>

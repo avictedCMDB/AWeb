@@ -1,0 +1,27 @@
+package com.avic.market.models;
+
+public class Price {
+    private double salePrice;
+    private double countPrice;
+    private double agreePrice;
+    public double getSalePrice() {
+        return salePrice;
+    }
+    public void setSalePrice(double salePrice) {
+        this.salePrice = salePrice;
+    }
+    public double getCountPrice() {
+        return countPrice;
+    }
+    public void setCountPrice(double countPrice) {
+        this.countPrice = countPrice;
+    }
+    public double getAgreePrice() {
+        return agreePrice;
+    }
+    public void setAgreePrice(double agreePrice) {
+        this.agreePrice = agreePrice;
+    }
+    
+    
+}

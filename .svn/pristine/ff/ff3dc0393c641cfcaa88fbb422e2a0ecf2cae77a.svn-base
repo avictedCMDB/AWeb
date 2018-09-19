@@ -1,0 +1,56 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/tlds/tag.tld" prefix="mc"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>特殊商品管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/management_special.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/special.js"></script>
+</head>
+
+<body>
+<input type="hidden" id="path" value="${pageContext.request.contextPath}"/>
+  
+      <div id="matter_section">
+      	<div class="search_result section">
+          <table border="0">
+            <tr>
+              <th>商品名称</th>
+              <th width="155">型号</th>
+              <th width="200">品牌</th>
+              <th width="200">材质</th>
+              <th width="100">价格</th>
+              <th width="120">供应商</th>
+              <th width="100" class="last">操作</th>
+            </tr>
+             <c:forEach var="supGood" items="${supGoods}" varStatus="status">
+            <tr>
+              <td>${supGood.goodsName}</td>
+              <td>${supGood.goodsModel}</td>
+              <td>${supGood.brandName}</td>
+              <td>${supGood.goodsStuff}</td>  
+              <td><fmt:formatNumber value="${supGood.salePrice}" pattern="#0.00#"></fmt:formatNumber></td>              
+              <td>${supGood.supName}</td>  
+              <td><a href="javascript:void(0);" onclick="addCart('${supGood.supID}','${supGood.supGoodsID}','${supGoodsID}');">添加购物车</a></td>
+            </tr>
+            </c:forEach>
+          </table>
+        <!--.search_result--></div>
+      <!--#matter_section-->	
+      </div>
+</body> 
+</html>

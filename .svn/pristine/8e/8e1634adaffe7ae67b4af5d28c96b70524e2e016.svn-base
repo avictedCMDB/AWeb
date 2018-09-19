@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.OrderMapper">
+	
+	<insert id="insertOrder" parameterType="Order">
+		<selectKey resultType="java.lang.String" keyProperty="orderId" order="BEFORE">    
+         select to_char(sysdate, 'yyyyMMddHH24miss') || lpad(order_index.nextval, 6, '0') from dual     
+     	</selectKey>
+     
+     	insert into t_order (
+     		order_id,
+     		user_id,
+     		sup_id,
+     		order_status,
+     		order_time,
+     		order_amount,
+     		express_type,
+     		addr_prov,
+     		addr_city,
+     		addr_dist,
+     		addr_town,
+     		addr_detail,
+     		addr_all,
+     		addr_name,
+     		addr_zip,
+     		addr_phone,
+     		addr_tel,
+     		invoice_type,
+     		invoice_flag,
+     		invoice_content,
+     		invoice_company,
+     		invoice_num,
+     		decide_reason
+     	) values (
+     		#{orderId,jdbcType=VARCHAR},
+     		#{userId,jdbcType=VARCHAR},
+     		#{supId,jdbcType=INTEGER},
+     		1,
+     		sysdate,
+     		#{orderAmount,jdbcType=DOUBLE},
+     		#{expressType,jdbcType=INTEGER},
+     		#{addrProv,jdbcType=INTEGER},
+     		#{addrCity,jdbcType=INTEGER},
+     		#{addrDist,jdbcType=INTEGER},
+     		#{addrTown,jdbcType=INTEGER},
+     		#{addrDetail,jdbcType=VARCHAR},
+     		#{addrAll,jdbcType=VARCHAR},
+     		#{addrName,jdbcType=VARCHAR},
+     		#{addrZip,jdbcType=VARCHAR},
+     		#{addrPhone,jdbcType=VARCHAR},
+     		#{addrTel,jdbcType=VARCHAR},
+     		#{invoiceType,jdbcType=INTEGER},
+     		#{invoiceFlag,jdbcType=INTEGER},
+     		#{invoiceContent,jdbcType=VARCHAR},
+     		#{invoiceCompany,jdbcType=VARCHAR},
+     		#{invoiceNum,jdbcType=VARCHAR},
+     		#{decideReason,jdbcType=VARCHAR}
+     	)
+	</insert>
+	
+	<insert id="batchInsertOrderSnapshot">
+		insert into t_order_snapshot (
+			order_id, 
+			sup_id, 
+			sup_goods_id,
+			goods_name,
+			image_path,
+			goods_price,
+			buy_num,
+			refund_status
+		)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.orderId,jdbcType=VARCHAR},
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supGoodsId,jdbcType=VARCHAR},
+				#{item.goodsName,jdbcType=VARCHAR},
+				#{item.imagePath,jdbcType=VARCHAR},
+     			#{item.goodsPrice,jdbcType=DOUBLE},
+				#{item.buyNum,jdbcType=INTEGER},
+				1
+			from dual 
+		</foreach>
+	</insert>
+	
+</mapper>

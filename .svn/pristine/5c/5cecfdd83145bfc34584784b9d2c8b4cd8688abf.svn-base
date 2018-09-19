@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierGoodsInfoMapper">
+	<resultMap id="supplierGoodsInfoMap" type="com.avic.supplier.models.SupplierGoodsInfo">
+		<result column="SUP_CAT_ID" property="supCatId" jdbcType="VARCHAR"/>
+		<result column="SUP_ID" property="supId" jdbcType="INTEGER"/>
+		<result column="SUP_GOODS_ID" property="supGoodsId" jdbcType="VARCHAR"/>
+		<result column="GOODS_URL" property="goodsUrl" jdbcType="VARCHAR"/>
+		<result column="GOODS_MODEL" property="goodsModel" jdbcType="VARCHAR"/>
+		<result column="GOODS_WEIGHT" property="goodsWeight" jdbcType="VARCHAR"/>
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR"/>
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR"/>
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR"/>
+		<result column="PRODUCT_AREA" property="productArea" jdbcType="VARCHAR"/>
+		<result column="GOODS_CODE" property="goodsCode" jdbcType="VARCHAR"/>
+		<result column="GOODS_UNIT" property="goodsUnit" jdbcType="VARCHAR"/>
+		<result column="GOODS_SERVICE" property="goodsService" jdbcType="VARCHAR"/>
+		<result column="GOODS_DESC" property="goodsDesc" jdbcType="VARCHAR"/>
+		<result column="GOODS_PARAM" property="goodsParam" jdbcType="VARCHAR"/>
+		<result column="GOODS_WARE" property="goodsWare" jdbcType="VARCHAR"/>
+		<result column="GOODS_STATUS" property="goodsStatus" jdbcType="VARCHAR"/>
+		<result column="SALE_PRICE" property="salePrice" jdbcType="VARCHAR"/>
+		<result column="COUNT_PRICE" property="countPrice" jdbcType="VARCHAR"/>
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR"/>
+		<result column="POOL_ID" property="poolId" jdbcType="VARCHAR"/>
+		<result column="DELETE_FLAG" property="deleteFlag" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="supplierGoodsImageMap" type="com.avic.supplier.models.SupplierGoodsImage">
+		<result column="SUP_ID" property="supId" jdbcType="INTEGER"/>
+		<result column="SUP_GOODS_ID" property="supGoodsId" jdbcType="VARCHAR"/>
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryOrderDataMap" type="com.avic.supplier.models.SupplierGoodsInfo">
+		<result column="user_Id" property="userId" jdbcType="VARCHAR"/>
+		<result column="goods_Price" property="goodsPrice" jdbcType="VARCHAR"/>
+		<result column="buy_Num" property="buyNum" jdbcType="VARCHAR"/>
+		<result column="pay_Time" property="payTime" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryReportOrderDataMap" type="com.avic.supplier.models.SupplierGoodsInfo">
+		<result column="avg_Price" property="avgPrice" jdbcType="VARCHAR"/>
+		<result column="max_Price" property="maxPrice" jdbcType="VARCHAR"/>
+		<result column="min_Price" property="minPrice" jdbcType="VARCHAR"/>
+		<result column="now_Price" property="nowPrice" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="querySupplierGoodsInfoList" resultMap="supplierGoodsInfoMap">
+		select R.* 
+	  from (select SUP_CAT_ID,
+			       SUP_ID,
+			       SUP_GOODS_ID,
+			       GOODS_URL,
+			       GOODS_MODEL,
+			       GOODS_WEIGHT,
+			       IMAGE_PATH,
+			       BRAND_NAME,
+			       GOODS_NAME,
+			       PRODUCT_AREA,
+			       GOODS_CODE,
+			       GOODS_UNIT,
+			       GOODS_SERVICE,
+			       GOODS_DESC,
+			       GOODS_PARAM,
+			       GOODS_WARE,
+			       GOODS_STATUS,
+			       SALE_PRICE,
+			       COUNT_PRICE,
+			       AGREE_PRICE,
+			       POOL_ID,
+			       DELETE_FLAG,
+			       rownum RN
+			  from t_sup_goods
+			  where sup_id = #{supId}
+			  and DELETE_FLAG = #{deleteFlag,jdbcType=VARCHAR}
+			  <if test="goodsName != null and goodsName != ''">
+                and GOODS_NAME like '%'||#{goodsName,jdbcType=VARCHAR}||'%'  
+           	  </if>
+           	  <if test="brandName != null and brandName != ''">
+                and BRAND_NAME = #{brandName}
+           	  </if>
+           	  <if test="goodsStatus != null and goodsStatus != ''">
+                and GOODS_STATUS=#{goodsStatus,jdbcType=VARCHAR}
+           	  </if>
+           	  <if test="goodsDesc != null and goodsDesc != ''">
+                and GOODS_DESC like '%'||#{goodsDesc,jdbcType=VARCHAR}||'%' 
+           	  </if>
+           	  <if test="supGoodsId != null and supGoodsId != ''">
+                and SUP_GOODS_ID = #{supGoodsId,jdbcType=VARCHAR}
+           	  </if>
+           	  <!-- 
+           	  <if test="goodsDesc != null and goodsDesc != ''">
+                and DELETE_FLAG like '%'||#{goodsDesc}||'%' 
+           	  </if>
+           	   -->
+			) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="querySupplierGoodsInfoBrandNameList" resultMap="supplierGoodsInfoMap">
+		select BRAND_NAME
+		  from t_sup_goods
+		  where sup_id = #{supId}
+		  group by BRAND_NAME
+	
+	</select>
+	<select id="queryGoodsImg" resultMap="supplierGoodsImageMap" >
+		select * from T_GOODS_IMAGE t where t.sup_id = #{supId} and t.sup_goods_id = #{supGoodsId} order by show_order
+	</select>
+	
+	
+	
+	<update id="updateDeleteFlag" parameterType="com.avic.supplier.models.SupplierGoodsInfo">
+		update T_SUP_GOODS 
+		   set delete_flag= #{deleteFlag,jdbcType=VARCHAR}
+		   where SUP_GOODS_ID = #{supGoodsId,jdbcType=VARCHAR}
+		   and sup_id = #{supId}
+		 
+	</update>
+	<select id="queryOrderData" resultMap="queryOrderDataMap">
+		select R.* 
+	  from (select t.user_id, s.goods_price, s.buy_num, t.PAY_TIME,
+			       rownum RN
+			  from T_ORDER t ，T_ORDER_SNAPSHOT s
+			 where t.order_id = s.order_id
+			   and t.order_status >= '2'
+			   and s.sup_goods_id = #{supGoodsId}
+			   order by t.pay_time desc
+			) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="queryReportOrderData" resultMap="queryReportOrderDataMap">
+		select avg(s.goods_Price) avg_price,max(s.goods_Price) max_price,min(s.goods_Price) min_price
+			  from T_ORDER t ，T_ORDER_SNAPSHOT s
+			 where t.order_id = s.order_id
+			   and t.order_status >= '2'
+			   and s.sup_goods_id = #{supGoodsId}
+	</select>
+</mapper>

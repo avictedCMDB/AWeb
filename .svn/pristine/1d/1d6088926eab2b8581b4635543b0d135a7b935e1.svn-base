@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.RegisterMapper">
+
+	<select id="checkExCompanyInfo" resultType="java.lang.Integer">
+		select count(1)
+		  from t_company_info
+		  where COMPANY_NAME = #{companyName,jdbcType=VARCHAR} and COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+	</select>
+	<select id="checkExSup" resultType="java.lang.Integer">
+		select count(1)
+		  from SUP_USERS
+		  where SUP_NAME = #{supName,jdbcType=VARCHAR}
+		  <if test="supRegIphone != null and supRegIphone != ''">
+				  AND SUP_REG_IPHONE = #{supRegIphone,jdbcType=VARCHAR}
+			</if>
+	</select>
+	<select id="checkExUser" resultType="java.lang.Integer">
+		select count(1)
+		  from users
+		  where USERNAME = #{userName,jdbcType=VARCHAR}
+		  <if test="contactNum != null and contactNum != ''">
+			AND CONTACT_NUM = #{contactNum,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="checkIphone" resultType="java.lang.Integer">
+		select count(1)
+		  from T_COMPANY_INFO
+		  where CONTACT_IPHONE = #{contactIphone,jdbcType=VARCHAR} and COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="queryRegisterIndex" resultType="java.lang.String">
+		select to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(company_index.nextval,6,'0'),'','0') from dual
+	</select>
+	<select id="querySupIndex" resultType="java.lang.String">
+		select MAX(SUP_ID) +1 from T_SUP_INFO
+	</select>
+	<insert id="insertCompanyInfo" parameterType="com.avic.market.models.CompanyInfo">
+		insert into T_COMPANY_INFO (id,COMPANY_CODE,COMPANY_NAME,PARENT_COMPANY_ID,COMPANY_TYPE,COMPANY_DETAIL,CONTACT_IPHONE,CONTACT_PERSON,CONTACT_EMAIL，IF_CHECK)
+		values(#{id,jdbcType=VARCHAR},
+			   #{companyCode,jdbcType=VARCHAR},
+			   #{companyName,jdbcType=VARCHAR},
+			   #{parentCompanyId,jdbcType=VARCHAR},
+			   #{companyType,jdbcType=VARCHAR},
+			   #{companyDetail,jdbcType=VARCHAR},
+			   #{contactIphone,jdbcType=VARCHAR},
+			   #{contactPerson,jdbcType=VARCHAR},
+			   #{contactEmail,jdbcType=VARCHAR},
+			   '3'
+			   )
+	</insert>
+	<insert id="insertSupUser" parameterType="com.avic.market.models.SupUsers">
+		insert into SUP_USERS (SUP_NAME,SUP_PASSWORD,SUP_ID,SUP_ENABLED,CONTACT_NUM,SUP_REG_NAME,SUP_REG_EMAIL,SUP_REG_IPHONE,SUP_USERNAMECN) 
+		values(#{supName,jdbcType=VARCHAR},
+			   #{supPassword,jdbcType=VARCHAR},
+			   #{supId,jdbcType=VARCHAR},
+			   #{supEnabled,jdbcType=VARCHAR},
+			   #{contactNum,jdbcType=VARCHAR},
+			   #{supRegName,jdbcType=VARCHAR},
+			   #{supRegEmail,jdbcType=VARCHAR},
+			   #{supRegIphone,jdbcType=VARCHAR},
+			   #{supUsernamecn,jdbcType=VARCHAR}
+			  )
+	</insert>
+	<insert id="insertSupInfo" parameterType="com.avic.market.models.SupInfo">
+		insert into T_SUP_INFO (sup_id,SUP_NAME,SUP_CODE,COMPANY_CODE,CONTACT_NUM,CONTACT_PERSON,EMAIL)
+		values(#{supId,jdbcType=VARCHAR},
+				#{supName,jdbcType=VARCHAR},
+				#{supCode,jdbcType=VARCHAR},
+				#{companyCode,jdbcType=VARCHAR},
+				#{contactNum,jdbcType=VARCHAR},
+				#{contactPerson,jdbcType=VARCHAR},
+				#{email,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertUsers" parameterType="com.avic.market.models.Users">
+	insert into USERS (USERNAME,PASSWORD,ENABLED,USERID,COMPANYID,COMPANYNAME,CONTACT_NUM,CONTACT_PERSON,email,USERNAMECN) 
+	values(#{userName,jdbcType=VARCHAR},
+		   #{password,jdbcType=VARCHAR},
+		   #{enabled,jdbcType=VARCHAR},
+		   #{userId,jdbcType=VARCHAR},
+		   #{companyId,jdbcType=VARCHAR},
+		   #{companyName,jdbcType=VARCHAR},
+		   #{contactNum,jdbcType=VARCHAR},
+		   #{contactPerson,jdbcType=VARCHAR},
+		   #{email,jdbcType=VARCHAR},
+		   #{userNameCN,jdbcType=VARCHAR}
+		   
+	) 
+	</insert>
+	<update id="updateSupUserPassword" parameterType="com.avic.market.models.SupInfo">
+		update SUP_USERS set SUP_PASSWORD = #{supPassword,jdbcType=VARCHAR} where SUP_NAME = #{supName,jdbcType=VARCHAR}
+	</update>
+	<update id="updateUserPassword" parameterType="com.avic.market.models.Users">
+		update USERS set PASSWORD =  #{password,jdbcType=VARCHAR} where USERNAME = #{userName,jdbcType=VARCHAR}
+	</update>
+	<insert id="defaultUserRole">
+		insert into authorities (USERNAME, AUTHORITY, USERID)
+		select USERNAME,#{param2,jdbcType=VARCHAR} ,userid from users where COMPANYID = #{param1,jdbcType=VARCHAR}
+	</insert>
+	<select id="queryRegisterUserIndex" resultType="java.lang.String">
+		select to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(common_index.nextval,6,'0'),'','0') from dual
+	</select>	
+</mapper>

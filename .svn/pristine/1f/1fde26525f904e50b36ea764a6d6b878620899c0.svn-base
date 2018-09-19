@@ -1,0 +1,205 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.supplier.models.Order;
+import com.avic.supplier.models.SupplierExchange;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.services.OrderService;
+import com.avic.supplier.services.SupplierOrderService;
+
+@Controller
+@RequestMapping("/order")
+public class SupplierOrderController {
+	
+	protected static final Log logger = LogFactory
+			.getLog(SupplierOrderController.class);
+	
+	@Autowired
+	SupplierOrderService supplierOrderService;
+	
+    @Autowired
+    OrderService orderService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOrder") SupplierOrder supplierOrderParam,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+        if (supplierOrderParam.getOrderStatus() == null) {
+        	supplierOrderParam.setOrderStatus("");
+		}
+		//从session获取userid
+        String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+        supplierOrderParam.setSupId(supId);
+        List<SupplierOrder> ordersList = supplierOrderService.queryOrderList(supplierOrderParam);
+        //订单状态初始化结果集
+        List<SupplierOrder> ordersStatusList = supplierOrderService.queryOrderStatusList();
+        request.setAttribute("ordersList", ordersList);//查询结果集
+        request.setAttribute("orderQuery", supplierOrderParam);//查询条件回显
+        request.setAttribute("ordersStatusList", ordersStatusList);//订单状态列表结果集
+        //分页信息
+        String page = String.valueOf(supplierOrderParam.getPage());
+        int total = supplierOrderService.queryOrderListCount(supplierOrderParam);
+
+        int pages = (int) Math.ceil((double) total / supplierOrderParam.getPageSize());
+        
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/order?"
+        		+ "&orderId="+(supplierOrderParam.getOrderId() == null ?"":supplierOrderParam.getOrderId())
+        		+ "&goodsName="+URLEncoder.encode((supplierOrderParam.getGoodsName() == null ?"":supplierOrderParam.getGoodsName()),"GBK")
+        		+ "&companyName="+URLEncoder.encode((supplierOrderParam.getCompanyName() == null ?"":supplierOrderParam.getCompanyName()),"GBK")
+        		+ "&orderTime="+(supplierOrderParam.getOrderTime() == null ?"":supplierOrderParam.getOrderTime())
+        		+ "&orderStatus="+(supplierOrderParam.getOrderStatus() == null ?"":supplierOrderParam.getOrderStatus())
+                + "&page=%PAGE%");
+		return "order/supplier_order";
+	}
+    @RequestMapping("/detail")
+    public String detail(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        // 订单编号
+        String o = req.getParameter("o");
+
+        logger.info("订单详情-o["+o+"]");
+        
+        if (StringUtils.isEmpty(o)) {
+            throw new PageNotFoundException();
+        }
+        
+        Order order = orderService.getOrderDetail(o);
+        
+        if (o == null) {
+            throw new PageNotFoundException();
+        }
+        
+        
+        map.put("order", order);
+        
+        
+        return "order/detail";
+    }
+    @RequestMapping("/detailReviewed")
+    public String detailReviewed(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        // 订单编号
+        String o = req.getParameter("o");
+        
+        String authority = req.getParameter("authority");
+
+        logger.info("订单详情-o["+o+"]");
+        
+        if (StringUtils.isEmpty(o)) {
+            throw new PageNotFoundException();
+        }
+        
+        Order order = orderService.getOrderDetail(o);
+        
+        if (o == null) {
+            throw new PageNotFoundException();
+        }
+        
+        
+        map.put("order", order);
+        map.put("authority", authority);
+        
+        return "order/supplier_order_review";
+    }
+	/**
+	 * 传统供应商发货
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/doSend")
+	@ResponseBody
+	public Object doSend(@RequestParam("orderId") String orderId,
+			HttpSession httpSession) {
+		//更新订单状态
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+		supplierOrder.setOrderStatus("5");
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		return "0";
+	}
+	/**
+	 * 传统供应商审核成功
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/passStatus")
+	@ResponseBody
+	public Object passStatus(@RequestParam("orderId") String orderId,
+			@RequestParam("supplierReviewRemark") String supplierReviewRemark,
+			@RequestParam("supGoodsId") String supGoodsId,
+			@RequestParam("goodsPrice") String goodsPrice,
+			@RequestParam("buyNum") String buyNum,
+			@RequestParam("orderAmount") String orderAmount,
+			@RequestParam("authority") String authority,
+			HttpSession httpSession) {
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+		supplierOrder.setSupplierReviewRemark(supplierReviewRemark);
+		if ("ROLE_2C".equals(authority)) {
+			supplierOrder.setOrderStatus("15");
+		}else {
+			supplierOrder.setOrderStatus("1");
+		}
+		
+		supplierOrder.setOrderAmount(orderAmount);
+		supplierOrder.setSupplierReviewRemark(supplierReviewRemark);
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		//更新快照表价格
+		String[] supGoodsIds = supGoodsId.split(",");
+		String[] buyNums = buyNum.split(",");
+		String[] goodsPrices = goodsPrice.split(",");
+		for (int i = 0; i < supGoodsIds.length; i++) {
+			supplierOrder.setSupGoodsId(supGoodsIds[i]);
+			supplierOrder.setBuyNum(buyNums[i]);
+			supplierOrder.setGoodsPrice(goodsPrices[i]);
+			supplierOrderService.updataOrderPrice(supplierOrder);
+		}
+		return "0";
+	}
+	/**
+	 * 传统供应商审核拒绝
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/returnStatus")
+	@ResponseBody
+	public Object returnStatus(@RequestParam("orderId") String orderId,
+			@RequestParam("supplierReviewRemark") String supplierReviewRemark,
+			HttpSession httpSession) {
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+		supplierOrder.setOrderStatus("0");
+		supplierOrder.setSupplierReviewRemark(supplierReviewRemark);
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		return "0";
+	}
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjSupplierMapper">
+	<resultMap id="bidProjSupplierMap" type="com.avic.management.models.BidProjSupplier">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="join_type" property="joinType" jdbcType="INTEGER" />
+		<result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+		<result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="audit_user" property="auditUser" jdbcType="VARCHAR" />
+		<result column="fail_reason" property="failReason" jdbcType="VARCHAR" />
+		<result column="bid_num" property="bidNum" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertProjSupplier">
+		insert into bid_proj_supplier (
+			proj_id, sup_code, join_type, 
+			audit_status, join_time, bid_num
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{supCode,jdbcType=VARCHAR}, #{joinType,jdbcType=INTEGER},
+			#{auditStatus,jdbcType=INTEGER}, sysdate, #{bidNum,jdbcType=VARCHAR}
+		)
+	</insert>
+</mapper>

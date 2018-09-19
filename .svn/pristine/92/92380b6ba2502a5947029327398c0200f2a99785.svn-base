@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.ServicesMapper">
+	<resultMap id="servicesMap" type="Services">
+	    <result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" /> 
+		<result column="TYPE_ID" property="typeID" jdbcType="VARCHAR" />
+		<result column="SUP_ORDER_ID" property="supOrderID" jdbcType="VARCHAR" />
+		<result column="SERVICES_ID" property="servicesID" jdbcType="VARCHAR" />
+		<result column="SERVICES_TYPE" property="servicesType" jdbcType="VARCHAR" />
+		<result column="SERVICES_STATUS" property="servicesStatus" jdbcType="VARCHAR" />
+		<result column="AFSAPPLYTIME" property="afsApplyTime" jdbcType="VARCHAR" />
+		<result column="IFCANCEL" property="ifCancel" jdbcType="VARCHAR" />
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryServices" resultMap="servicesMap" parameterType="Services">
+	  SELECT * FROM (
+		SELECT ROWNUM AS RN, 
+	         T.ORDER_ID,
+             T.TYPE_ID,
+             T.SUP_ORDER_ID,
+             T.SERVICES_ID,
+             T.SERVICES_TYPE,
+             T.SERVICES_STATUS,
+             T.AFSAPPLYTIME,
+             T.IFCANCEL,
+             T.SUP_GOODS_ID
+        FROM T_SERVICES T
+       WHERE 1=1
+       <if test="orderID != null and orderID != ''">
+       	 AND T.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+       </if>
+        <if test="typeID != null and typeID != ''">
+       	 AND T.TYPE_ID = #{typeID,jdbcType=VARCHAR}
+       </if>
+        <if test="supOrderID != null and supOrderID != ''">
+       	 AND T.SUP_ORDER_ID = #{supOrderID,jdbcType=VARCHAR}
+       </if>
+        <if test="serviceID != null and serviceID != ''">
+       	 AND T.SERVICES_ID = #{serviceID,jdbcType=VARCHAR}
+       </if>) R
+   		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<insert id="insertServices" parameterType="Services">
+     
+     	INSERT INTO T_SERVICES
+            (
+              ORDER_ID,
+              TYPE_ID,
+              SUP_ORDER_ID,
+              SERVICES_ID,
+              SERVICES_TYPE,
+              SERVICES_STATUS,
+              AFSAPPLYTIME,
+              IFCANCEL
+            )
+      VALUES
+            (
+              #{orderID,jdbcType=VARCHAR},
+              #{typeID,jdbcType=VARCHAR},
+              #{supOrderID,jdbcType=VARCHAR},
+              #{servicesID,jdbcType=VARCHAR},
+              #{servicesType,jdbcType=VARCHAR},
+              #{servicesStatus,jdbcType=VARCHAR},
+              #{afsApplyTime,jdbcType=VARCHAR},
+              #{ifCancel,jdbcType=VARCHAR}
+            )
+	</insert>
+	
+	
+	<update id="mergeServices" parameterType="Services">
+		MERGE INTO T_SERVICES T
+             USING DUAL
+		        ON (T.SERVICES_ID = #{servicesID,jdbcType=VARCHAR})
+ WHEN MATCHED THEN
+		      UPDATE
+		         SET SERVICES_TYPE = #{servicesType,jdbcType=VARCHAR},
+		             SERVICES_STATUS = #{servicesStatus,jdbcType=VARCHAR}
+WHEN NOT MATCHED THEN
+		      INSERT
+		            (
+		             ID,
+		             ORDER_ID,
+		             TYPE_ID,
+		             SUP_ORDER_ID,
+		             SERVICES_ID,
+		             SERVICES_TYPE,
+		             SERVICES_STATUS,
+		             AFSAPPLYTIME,
+		             IFCANCEL,
+		             SUP_GOODS_ID
+		            )
+		      VALUES
+		           (
+		           	 SERVICES_INDEX.NEXTVAL,
+		             #{orderID,jdbcType=VARCHAR},
+		             #{typeID,jdbcType=VARCHAR},
+		             #{supOrderID,jdbcType=VARCHAR},
+		             #{servicesID,jdbcType=VARCHAR},
+		             #{servicesType,jdbcType=VARCHAR},
+		             #{servicesStatus,jdbcType=VARCHAR},
+		             NOW(),
+		             '0',
+		             #{supGoodsID,jdbcType=VARCHAR}
+		            )
+	</update>
+</mapper>

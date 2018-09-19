@@ -1,0 +1,24 @@
+$(document).ready(function(){
+	$('#allchecked').click(function(){
+		var allcheck = $("#allchecked").is(':checked');
+		$('input[name="subCheckbox"]').prop('checked',allcheck);
+	});
+});
+
+function doInit(path){
+	document.getElementById("searchForm").action=path+"/management/orderExchange/orderSelect";
+	document.getElementById("searchForm").submit();
+}
+
+function doConfirm(){
+	var spCodesTemp = "";
+	$('input:checkbox[name=subCheckbox]:checked').each(function(i){
+		if(0==i){
+			spCodesTemp = $(this).val();
+		}else{
+			spCodesTemp += (","+$(this).val());
+		}
+	});
+	window.returnValue = spCodesTemp;
+	window.close();
+}

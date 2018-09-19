@@ -1,0 +1,169 @@
+package com.avic.management.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.Cart;
+import com.avic.management.models.Enterprise;
+import com.avic.management.services.CartService;
+import com.avic.management.services.CommonService;
+import com.avic.management.services.EnterpriseService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/enterprise")
+public class EnterpriseController {
+    protected static final Log logger = LogFactory.getLog(EnterpriseController.class);
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    CommonService commonService;
+    @Autowired
+    EnterpriseService enterpriseService;
+    @Autowired
+    CartService cartService; 
+    
+    @RequestMapping("")
+    public String enterpriseGoods(HttpServletRequest req,@ModelAttribute("enterprise") Enterprise enterprise,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("询价列表");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        
+        List<Enterprise> enterprises = new ArrayList<Enterprise>();
+       //查询数量
+        enterprise.setUserID(user.getUserId());
+        int total = enterpriseService.queryEnterpriseCount(enterprise);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        enterprise.setPage(pageNum);
+        enterprise.setPageSize(PAGE_SIZE);
+        String startDate1 = "";
+        String endDate1 = "";
+        String startDate2 = "";
+        String endDate2 = "";
+        if(!"".equals(enterprise.getStartDate1())&&enterprise.getStartDate1()!=null){
+        	startDate1 = enterprise.getStartDate1();
+        	enterprise.setStartDate1(enterprise.getStartDate1()+" 00:00:00");
+        }
+        if(!"".equals(enterprise.getEndDate1())&&enterprise.getEndDate1()!=null){
+        	endDate1 = enterprise.getEndDate1();
+        	enterprise.setEndDate1(enterprise.getEndDate1()+" 59:59:59");
+        }
+        if(!"".equals(enterprise.getStartDate2())&&enterprise.getStartDate2()!=null){
+        	startDate2 = enterprise.getStartDate2();
+        	enterprise.setStartDate2(enterprise.getStartDate2()+" 00:00:00");
+        }
+        if(!"".equals(enterprise.getEndDate2())&&enterprise.getEndDate2()!=null){
+        	endDate2 = enterprise.getEndDate2();
+        	enterprise.setEndDate2(enterprise.getEndDate2()+" 59:59:59");
+        }
+        enterprises = enterpriseService.queryEnterprises(enterprise);
+        enterprise.setStartDate1(startDate1);
+        enterprise.setEndDate1(endDate1);
+        enterprise.setStartDate2(startDate2);
+        enterprise.setEndDate2(endDate2);
+        map.put("enterprise", enterprise);
+        map.put("enterprises", enterprises);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","management/audit/auditorAudit?goodsName=" + URLEncoder.encode(enterprise.getGoodsName()==null?"":enterprise.getGoodsName(), "GBK") 
+								+ "&startTime1=" + URLEncoder.encode(enterprise.getStartDate1()==null?"":enterprise.getStartDate1(), "GBK")
+								+ "&endDate1=" + URLEncoder.encode(enterprise.getEndDate1()==null?"":enterprise.getEndDate1(), "GBK")
+			                    + "&startTime2=" + URLEncoder.encode(enterprise.getStartDate2()==null?"":enterprise.getStartDate2(), "GBK")
+			                    + "&endDate2=" + URLEncoder.encode(enterprise.getEndDate2()==null?"":enterprise.getEndDate2(), "GBK")
+			                    + "&supName=" + URLEncoder.encode(enterprise.getSupName()==null?"":enterprise.getSupName(), "GBK")
+			                    + "&enquiryStatus=" + URLEncoder.encode(enterprise.getEnquiryStatus()==null?"":enterprise.getEnquiryStatus(), "GBK")+ "&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "enterprise/management_enterprise";
+    }
+    
+    
+    @RequestMapping("/addCart")
+    @ResponseBody
+    public Object addCart(HttpServletRequest req,@ModelAttribute("cart") Cart cart,HttpSession httpSession) {
+        logger.info("询价列表商品添加到购物车");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		cart.setUserID(user.getUserId());
+		
+		int count = cartService.queryCatCount(cart);
+		if(count>0){
+			cartService.updateCart(cart);
+		}else{
+			//添加到购物车
+			cartService.addCart(cart);
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("status", "success");
+		return map;
+    }
+    
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Object delEnterpriseGoods(@RequestParam("goodsID")String goodID,HttpServletRequest req,HttpSession httpSession) {
+        logger.info("删除询价商品");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		Enterprise enterprise = new Enterprise();
+		enterprise.setId(goodID);
+		enterpriseService.deleteEnterpriseGood(enterprise);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("status", "success");
+		return map;
+    }
+    
+}

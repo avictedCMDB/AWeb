@@ -1,0 +1,408 @@
+package com.avic.supplier.models;
+
+import java.util.Date;
+
+public class SupplierProject {
+	
+	private String compName;
+	
+//	PROJ_ID            VARCHAR2 (32),
+	private String	projId;
+//	PROJ_NAME          VARCHAR2 (64),
+	private String	projName;
+//	BID_CAT            VARCHAR2 (8),
+	private String	bidCat;
+//	PROJ_TYPE          NUMBER (1),
+	private int		projType;
+//	DECIDE_TYPE        NUMBER (1),
+	private int 	decideType;
+//	CURRENCY           VARCHAR2 (4),
+	private String 	currency;
+//	EXCHANGE_RATE      VARCHAR2 (16),
+	private String	exchangeRate;
+//	MIN_TENDER         NUMBER (4),
+	private int		minTender;
+//	USER_ID            VARCHAR2 (32),
+	private String	userId;
+//	COMPANY_ID         VARCHAR2 (32),
+	private String companyId;
+//	QUOTA_TYPE         NUMBER (1),
+	private int		quotaType;
+//  QUOTA_LIMIT_TYPE   NUMBER (1),
+	private int		quotaLimitType;
+//  QUOTA_LIMIT_NUM    NUMBER (10),
+	private long	quotaLimitNum;
+//  SPLIT_TYPE         NUMBER (1),
+	private int		splitType;
+//  PROJ_STATUS        NUMBER (1),
+	private int		projStatus;
+//  JOIN_END_TIME      DATE,
+	private Date	joinEndTime;
+//  BID_START_TIME     DATE,
+	private Date	bidStartTime;
+//  TRIAL_END_TIME     DATE,
+	private Date	trialEndTime;
+//  BID_DURATION       NUMBER (10),
+	private long	bidDuration;
+//  BID_END_TIME       DATE,
+	private Date	bidEndTime;
+//  TIMEOUT_INTERVAL   NUMBER (10),
+	private long	timeoutInterval;
+//  MIN_INCR_TYPE      NUMBER (1),
+	private	int		minIncrType;
+//  MIN_INCR_VAL       NUMBER (10),
+	private long	minIncrVal;
+//  QUOTA_DECR_LIMIT   NUMBER (10),
+	private long	quotaDecrLimit;
+//  TIMES_LIMIT_TYPE   NUMBER (1),
+	private int		timesLimitType;
+//  TIMES_LIMIT_NUM    NUMBER (10),
+	private long	timesLimitNum;
+//  ACCEPT_TYPE        NUMBER (1),
+	private int		acceptType;
+//  TENDER_PRICE       NUMBER (10),
+	private long	tender_price;
+//  BID_BOND           NUMBER (10),
+	private long	bidBond;
+//  BIDDER_QUAL        VARCHAR2 (500),
+	private String	bidder_qual;
+//  BID_INVITATION     VARCHAR2 (500),
+	private String	bidInvitation;
+//  BID_TIME_RULE      VARCHAR2 (500),
+	private String	bidTimeRule;
+//  BID_QUOTA_RULE     VARCHAR2 (500),
+	private String bidQuotaRule;
+//  CAUTION            VARCHAR2 (500),
+	private String	caution;
+//  REMARK             VARCHAR2 (500),
+	private String remark;
+//  CREATE_TIME        DATE,
+	private Date	createTime;
+//  PUBLISH_QUOTA      NUMBER (1),
+	private int	publicQuota;
+//  NOTICE_STATUS      NUMBER (1),
+	private int noticeStatus;
+//  PUBLISH_TIME       DATE,
+	private Date publishTime;
+//  TIMEOUT_END_TIME   DATE
+	private Date timeoutEndTime;
+	
+	private String bidResult;
+	
+	private int budget;
+	private String obsoleteReason;
+	private String contractTpl;
+	
+	private String bidCatName;
+	private String currencyName;
+	private int budgetPublic;
+	
+	
+	public int getBudgetPublic() {
+        return budgetPublic;
+    }
+	public void setBudgetPublic(int budgetPublic) {
+        this.budgetPublic = budgetPublic;
+    }
+	public String getBidCatName() {
+        return bidCatName;
+    }
+    public void setBidCatName(String bidCatName) {
+        this.bidCatName = bidCatName;
+    }
+    public String getCurrencyName() {
+        return currencyName;
+    }
+    public void setCurrencyName(String currencyName) {
+        this.currencyName = currencyName;
+    }
+    public String getContractTpl() {
+        return contractTpl;
+    }
+	public void setContractTpl(String contractTpl) {
+        this.contractTpl = contractTpl;
+    }
+	public int getBudget() {
+        return budget;
+    }
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+    public String getObsoleteReason() {
+        return obsoleteReason;
+    }
+    public void setObsoleteReason(String obsoleteReason) {
+        this.obsoleteReason = obsoleteReason;
+    }
+    public String getBidResult() {
+        return bidResult;
+    }
+	public void setBidResult(String bidResult) {
+        this.bidResult = bidResult;
+    }
+	public String getSupCode() {
+		return supCode;
+	}
+	public void setSupCode(String supCode) {
+		this.supCode = supCode;
+	}
+	private String auditStatus;
+	private String supCode;
+	public String getProjId() {
+		return projId;
+	}
+	public void setProjId(String projId) {
+		this.projId = projId;
+	}
+	public String getProjName() {
+		return projName;
+	}
+	public void setProjName(String projName) {
+		this.projName = projName;
+	}
+	public String getBidCat() {
+		return bidCat;
+	}
+	public void setBidCat(String bidCat) {
+		this.bidCat = bidCat;
+	}
+	public int getProjType() {
+		return projType;
+	}
+	public void setProjType(int projType) {
+		this.projType = projType;
+	}
+	public int getDecideType() {
+		return decideType;
+	}
+	public void setDecideType(int decideType) {
+		this.decideType = decideType;
+	}
+	public String getCurrency() {
+		return currency;
+	}
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+	public int getMinTender() {
+		return minTender;
+	}
+	public void setMinTender(int minTender) {
+		this.minTender = minTender;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getCompanyId() {
+		return companyId;
+	}
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	public int getQuotaType() {
+		return quotaType;
+	}
+	public void setQuotaType(int quotaType) {
+		this.quotaType = quotaType;
+	}
+	public int getQuotaLimitType() {
+		return quotaLimitType;
+	}
+	public void setQuotaLimitType(int quotaLimitType) {
+		this.quotaLimitType = quotaLimitType;
+	}
+	public long getQuotaLimitNum() {
+		return quotaLimitNum;
+	}
+	public void setQuotaLimitNum(long quotaLimitNum) {
+		this.quotaLimitNum = quotaLimitNum;
+	}
+	public int getSplitType() {
+		return splitType;
+	}
+	public void setSplitType(int splitType) {
+		this.splitType = splitType;
+	}
+	public int getProjStatus() {
+		return projStatus;
+	}
+	public void setProjStatus(int projStatus) {
+		this.projStatus = projStatus;
+	}
+	public Date getJoinEndTime() {
+		return joinEndTime;
+	}
+	public void setJoinEndTime(Date joinEndTime) {
+		this.joinEndTime = joinEndTime;
+	}
+	public Date getBidStartTime() {
+		return bidStartTime;
+	}
+	public void setBidStartTime(Date bidStartTime) {
+		this.bidStartTime = bidStartTime;
+	}
+	public Date getTrialEndTime() {
+		return trialEndTime;
+	}
+	public void setTrialEndTime(Date trialEndTime) {
+		this.trialEndTime = trialEndTime;
+	}
+	public long getBidDuration() {
+		return bidDuration;
+	}
+	public void setBidDuration(long bidDuration) {
+		this.bidDuration = bidDuration;
+	}
+	public Date getBidEndTime() {
+		return bidEndTime;
+	}
+	public void setBidEndTime(Date bidEndTime) {
+		this.bidEndTime = bidEndTime;
+	}
+	public long getTimeoutInterval() {
+		return timeoutInterval;
+	}
+	public void setTimeoutInterval(long timeoutInterval) {
+		this.timeoutInterval = timeoutInterval;
+	}
+	public int getMinIncrType() {
+		return minIncrType;
+	}
+	public void setMinIncrType(int minIncrType) {
+		this.minIncrType = minIncrType;
+	}
+	public long getMinIncrVal() {
+		return minIncrVal;
+	}
+	public void setMinIncrVal(long minIncrVal) {
+		this.minIncrVal = minIncrVal;
+	}
+	public long getQuotaDecrLimit() {
+		return quotaDecrLimit;
+	}
+	public void setQuotaDecrLimit(long quotaDecrLimit) {
+		this.quotaDecrLimit = quotaDecrLimit;
+	}
+	public int getTimesLimitType() {
+		return timesLimitType;
+	}
+	public void setTimesLimitType(int timesLimitType) {
+		this.timesLimitType = timesLimitType;
+	}
+	public long getTimesLimitNum() {
+		return timesLimitNum;
+	}
+	public void setTimesLimitNum(long timesLimitNum) {
+		this.timesLimitNum = timesLimitNum;
+	}
+	public int getAcceptType() {
+		return acceptType;
+	}
+	public void setAcceptType(int acceptType) {
+		this.acceptType = acceptType;
+	}
+	public long getTender_price() {
+		return tender_price;
+	}
+	public void setTender_price(long tender_price) {
+		this.tender_price = tender_price;
+	}
+	public long getBidBond() {
+		return bidBond;
+	}
+	public void setBidBond(long bidBond) {
+		this.bidBond = bidBond;
+	}
+	public String getBidder_qual() {
+		return bidder_qual;
+	}
+	public void setBidder_qual(String bidder_qual) {
+		this.bidder_qual = bidder_qual;
+	}
+	public String getBidInvitation() {
+		return bidInvitation;
+	}
+	public void setBidInvitation(String bidInvitation) {
+		this.bidInvitation = bidInvitation;
+	}
+	public String getBidTimeRule() {
+		return bidTimeRule;
+	}
+	public void setBidTimeRule(String bidTimeRule) {
+		this.bidTimeRule = bidTimeRule;
+	}
+	public String getBidQuotaRule() {
+		return bidQuotaRule;
+	}
+	public void setBidQuotaRule(String bidQuotaRule) {
+		this.bidQuotaRule = bidQuotaRule;
+	}
+	public String getCaution() {
+		return caution;
+	}
+	public void setCaution(String caution) {
+		this.caution = caution;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	public int getPublicQuota() {
+		return publicQuota;
+	}
+	public void setPublicQuota(int publicQuota) {
+		this.publicQuota = publicQuota;
+	}
+	public int getNoticeStatus() {
+		return noticeStatus;
+	}
+	public void setNoticeStatus(int noticeStatus) {
+		this.noticeStatus = noticeStatus;
+	}
+	public Date getPublishTime() {
+		return publishTime;
+	}
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
+	}
+	public Date getTimeoutEndTime() {
+		return timeoutEndTime;
+	}
+	public void setTimeoutEndTime(Date timeoutEndTime) {
+		this.timeoutEndTime = timeoutEndTime;
+	}
+	public String getExchangeRate() {
+		return exchangeRate;
+	}
+	public void setExchangeRate(String exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+	
+	public String getCompName() {
+		return compName;
+	}
+	public void setCompName(String compName) {
+		this.compName = compName;
+	}
+	public String getAuditStatus() {
+		return auditStatus;
+	}
+	public void setAuditStatus(String auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+	
+	
+	
+
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ImageInfoMapper">
+	<resultMap id="imageInfoMap" type="com.avic.management.models.AuditImageInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="BUSINESS_ID" property="businessID" jdbcType="VARCHAR" />
+		<result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+		<result column="URL" property="url" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryImages" parameterType="com.avic.management.models.AuditImageInfo" resultMap="imageInfoMap">
+		SELECT ID,
+		       BUSINESS_ID,
+		       BUSINESS_TYPE,
+		       URL
+		 FROM T_IMAGE_INFO
+		WHERE BUSINESS_ID = #{businessID,jdbcType=VARCHAR}
+		  AND BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+	</select>
+</mapper>

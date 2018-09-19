@@ -1,0 +1,10 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.market.models.CompanyInfo;
+
+public interface CompanyInfoService {
+    public List<CompanyInfo> getCompanyList();
+    public int queryCompanyCount();
+}

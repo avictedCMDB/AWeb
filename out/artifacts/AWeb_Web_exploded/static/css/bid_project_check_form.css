@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+#contents .inner {
+	width: 800px;
+	margin: 0 auto;
+	padding: 0;
+	border:5px solid #dfdfdf;
+	border-radius: 5px;
+}
+#matter_section {
+	width: 790px;
+	padding:0 20px 20px;
+}
+.table_area tr td,
+.table_area tr th {
+	text-align: left;
+	padding-left:10px;
+	padding-right:10px;
+}
+.table_area tr th {
+	border-bottom: 1px solid #fff;
+	background: #eee
+}
+.table_area tr th span.red {
+	color: #ff4200;
+	margin-left: 5px;
+}
+.table_area tr th.last {
+	border-bottom: 1px solid #dfdfdf;
+	border-right: none;
+}
+
+.table_area tr td.name {
+	background: #0091dc;
+	color: #fff;
+	text-align: center;
+	font-weight: bold;
+}
+.table_area tr td button {
+	line-height: 28px;
+	height: 28px;
+}
+.table_area tr td.last{
+	border-left: none;
+}
+.submit_btn ul li {
+	margin:20px 5px 5px;
+}
+.result_inner {
+	margin-bottom: 0px;}
+
+.btn_list {
+	text-align: right;
+	padding-bottom: 15px;
+	padding-right: 10px;
+}
+.btn_list ul li {
+	display: inline-block;
+	margin-left: 10px;
+}
+

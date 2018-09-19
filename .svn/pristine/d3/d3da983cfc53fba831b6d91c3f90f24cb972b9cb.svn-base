@@ -1,0 +1,224 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area dl dt {
+	width: 75px;
+}
+#matter_section .search_area dl dd {
+	width: 197px;
+}
+#matter_section .search_area dl.date_list dd {
+	width: 230px;
+}
+#matter_section .special_input {
+	width: 80px;
+}
+.search_result table tr.company td {
+    border: none;
+    font-weight: bold;
+}
+#matter_section .search_result table tr.company td ul li.right_box {
+    float: right;
+    margin-left: 30px;
+}
+.search_result table tr.company td span {
+    font-weight: 100;
+}
+.price {
+    color: #ff4200;
+}
+.search_result table tr td.right_none {
+    border-right: none;
+}
+.search_result table tr td.left_none {
+    border-left: none;
+	text-align: left;
+}
+.info_detail {
+	background: #f6f4f5 none repeat scroll 0 0;
+    border: 1px solid #dfdfdf;
+    margin: 20px auto 0;
+    padding: 10px 0 5px 35px;
+    width: 990px;
+}
+.info_detail label {
+	 width: 120px;
+	 text-align: right;
+}
+.info_detail span {
+	min-width: 100px;
+	display: inline-block;
+	color: #4798ed;
+}
+.info_detail .form-group label {
+	float: left;
+}
+.info_detail textarea {
+	float: left;
+	width: 750px;
+	display: inline-block;
+}
+.search_result table tr td .btn {
+	display: block;
+    height: 26px;
+    line-height: 26px;
+    width: 25px;
+	padding: 0;
+}
+.search_result table tr td .form-control {
+	height: 26px;
+}
+.info_list dl {
+	float: left;
+}
+.info_list dl .form-control {
+	width: 350px;
+}
+.info_list dl dt {
+	line-height: 28px;
+}
+.info_list dl dt span {
+	color: #db433d;
+}
+.info_list .btn_add {
+	margin-left: 20px;
+	float: right;
+}
+.btn_area ul {
+	display: inline-block;
+}
+.btn_area ul li {
+	float: left;
+	margin: 0 5px;
+}
+.replace_step {
+    border-bottom: 1px solid #dfdfdf;
+    margin-bottom: 25px;
+    padding: 18px 85px 37px;
+}
+.replace_step ul.image_list li {
+    float: left;
+}
+.replace_step ul.text_step li {
+    float: left;
+    width: 305px;
+}
+.replace_step ul.text_step li.receipt_step {
+    text-align: right;
+    width: 95px;
+}
+.replace_step ul.text_step li.sale_step {
+    width: 280px;
+}
+.replace_step ul.text_step li.confirm_step {
+    width: 310px;
+}
+.replace_step ul.image_list {
+    margin: 0 auto 10px;
+    width: 964px;
+}
+h3.title_h3 {
+  border-left: 5px solid #0091dc;
+  font-size: 16px;
+  padding-left: 10px;
+  color: #0091dc;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+table.details {
+	width: 100%;
+	margin-top: 0;
+}
+.btn_area {
+	text-align: center;
+	margin: 30px 0;
+}
+/*审核资质*/
+#vat_info {
+	border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 712px;
+}
+#vat_info .inner {
+	width: 704px;
+}
+#vat_info .add_title {
+    background: #0091dc none repeat scroll 0 0;
+	border-left: right;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    height: 27px;
+    line-height: 27px;
+    padding: 0 10px;
+}
+#vat_info .add_title a {
+	float: right;
+	padding-top: 5px;
+	color: #fff;
+	display: block;
+}
+#vat_info .main_inner {
+	padding: 20px 40px;
+	font-size: 14px;
+}
+
+#vat_info dl {
+	margin-bottom: 15px;
+}
+#vat_info dl ul li:first-child {
+	margin-left: 0;
+}
+#vat_info dl dt {
+	width: 75px;
+	float: left;
+	line-height: 28px;
+	text-align: right;
+}
+#vat_info dl dd {
+	width: 540px;
+	float: left;
+}
+#vat_info .date_list li.input_box {
+	width: 250px;
+}
+#vat_info .date_list li {
+	float: left;
+	margin: 0 5px;
+	line-height: 24px;
+}
+#vat_info .inner {
+    width: 704px;
+}
+#vat_info .form-control {
+    height: 28px;
+}
+.gray {
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 12px;
+	background: #666;
+	border: none;
+}
+#vat_info .img_list p {
+	text-align: center;
+	width: 180px;
+	margin: 5px 0 0;
+}
+#vat_info .img_list p.img {
+    border: 1px solid #dfdfdf;
+    height: 57px;  
+}
+#vat_info p.attention {
+	margin-bottom: 0;
+	color:#aaa; 
+	font-size:12px;
+}
+#vat_info .btn_list {
+	text-align: center;
+	margin-top: 20px;
+}
+#vat_info .btn_list button {
+	}

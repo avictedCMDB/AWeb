@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.BrandMapper">
+	<resultMap id="brandMap" type="com.avic.supervise.models.Brand">
+	</resultMap>
+
+	<!-- 查询推荐品牌 -->
+	<select id="queryBrand" resultMap="brandMap">
+		SELECT DISTINCT X.BRAND_NAME,A.ID BID,A.RECOMMAND_DATE,
+		A.BRAND_IMAGE,A.BEGIN_DATE,A.END_DATE,NVL(A.IF_RECOMMAND,1) IF_RECOMMAND
+		FROM T_SUP_GOODS X, T_SUP_INFO I,T_BRAND_AD A
+		WHERE X.SUP_ID = I.SUP_ID
+		AND X.BRAND_NAME = A.BRAND_NAME(+)
+		AND X.GOODS_STATUS = '1'
+		AND I.SUP_TYPE = 1
+		AND I.IF_VALID = 1
+		<if test="brand_name != null and brand_name != ''">
+		<![CDATA[ AND X.BRAND_NAME LIKE '%' || #{brand_name} || '%' ]]>
+		</if>
+		<if test="begin_date != null and begin_date != ''">
+		<![CDATA[ AND A.BEGIN_DATE >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="end_date != null and end_date != ''">
+		<![CDATA[ AND A.END_DATE <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="if_recommand != null and if_recommand != '' and if_recommand != '-1'">
+			AND A.IF_RECOMMAND = #{if_recommand} 
+		</if>
+	  	ORDER BY A.RECOMMAND_DATE DESC
+	</select>
+	
+	<select id="queryBrandCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Brand">
+		SELECT COUNT(1) FROM (
+			SELECT DISTINCT X.BRAND_NAME,A.BEGIN_DATE,A.END_DATE,A.IF_RECOMMAND
+			FROM T_SUP_GOODS X, T_SUP_INFO I,T_BRAND_AD A
+			WHERE X.SUP_ID = I.SUP_ID
+			AND X.BRAND_NAME = A.BRAND_NAME(+)
+			AND X.GOODS_STATUS = '1'
+			AND I.SUP_TYPE = 1
+			AND I.IF_VALID = 1
+			<if test="brand_name != null and brand_name != ''">
+			<![CDATA[ AND X.BRAND_NAME LIKE '%' || #{brand_name} || '%' ]]>
+			</if>
+			<if test="begin_date != null and begin_date != ''">
+			<![CDATA[ AND A.BEGIN_DATE >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+			</if>
+			<if test="end_date != null and end_date != ''">
+			<![CDATA[ AND A.END_DATE <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+			</if>
+			<if test="if_recommand != null and if_recommand != '' and if_recommand != '-1'">
+				AND A.IF_RECOMMAND = #{if_recommand} 
+			</if>
+		)
+	</select>
+	
+	<update id="setIfRecommend" parameterType="com.avic.supervise.models.Brand">
+		UPDATE T_BRAND_AD 
+		   SET IF_RECOMMAND = '1'
+		 WHERE ID = #{bid,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询品牌信息 -->
+	<select id="getBrandInfoByBid" resultMap="brandMap" parameterType="com.avic.supervise.models.Brand">
+		SELECT T1.ID BID,T1.BRAND_NAME,
+		TO_CHAR(T1.BEGIN_DATE,'yyyy-mm-dd') as BEGIN_DATE,
+        TO_CHAR(T1.END_DATE,'yyyy-mm-dd') as END_DATE,
+        T1.IF_RECOMMAND,T1.BRAND_IMAGE 
+		FROM T_BRAND_AD T1 
+		WHERE T1.BRAND_NAME = #{brand_name,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateBrandInfoDate" parameterType="com.avic.supervise.models.Brand">
+		UPDATE T_BRAND_AD 
+		   SET BEGIN_DATE = TO_DATE(#{begin_date,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss'),
+		       END_DATE = TO_DATE(#{end_date,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss'),
+			   RECOMMAND_DATE = TO_DATE(TO_CHAR(sysdate,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss'),
+			   IF_RECOMMAND = '0'
+		 WHERE ID = #{bid,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询品牌信息 -->
+	<select id="getBrandInfoExtByBid" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Brand">
+	 	SELECT COUNT(1)
+		  FROM T_BRAND_AD 
+		 WHERE BRAND_NAME = #{brand_name,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateBrandExtPic" parameterType="com.avic.supervise.models.Brand">
+		UPDATE T_BRAND_AD 
+		   SET BRAND_IMAGE = #{brand_image,jdbcType=VARCHAR}
+		 WHERE BRAND_NAME = #{brand_name,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="addBrandInfoExt" parameterType="com.avic.supervise.models.Brand">
+		INSERT INTO T_BRAND_AD
+	           (
+	             ID,
+	             BRAND_IMAGE,
+	             BRAND_NAME,
+	             BEGIN_DATE,
+	             END_DATE,
+	             RECOMMAND_DATE,
+	             IF_RECOMMAND
+	           )
+	    VALUES
+	           (
+	           	 BRAND_INDEX.NEXTVAL,
+	             #{brand_image,jdbcType=VARCHAR},
+	             #{brand_name,jdbcType=VARCHAR},
+	             TO_DATE(#{begin_date,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss'),
+	             TO_DATE(#{end_date,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss'),
+	             TO_DATE(TO_CHAR(sysdate,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss'),
+	             '0'
+	           )
+	</insert>
+	<!-- 查询品牌扩展信息图片路径 -->
+	<select id="getBrandInfoExtImgPath" resultType="java.lang.String" parameterType="com.avic.supervise.models.Brand">
+		 	SELECT BRAND_IMAGE
+			  FROM T_BRAND_AD
+			 WHERE BRAND_NAME = #{brand_name,jdbcType=VARCHAR}
+	</select>
+</mapper>

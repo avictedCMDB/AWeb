@@ -1,0 +1,92 @@
+package com.avic.market.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.constants.UserRole;
+import com.avic.common.utils.Permission;
+import com.avic.market.models.BidProject;
+import com.avic.market.models.OffStandardRequire;
+import com.avic.market.services.BidProjectService;
+import com.avic.market.services.CompanyInfoService;
+import com.avic.market.services.GoodsService;
+import com.avic.market.services.OffStandardRequireService;
+import com.avic.market.services.OrderService;
+import com.avic.market.services.SupplierService;
+import com.avic.market.services.WebsiteNoticeService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/home")
+public class HomeController {
+    protected static final Log logger = LogFactory.getLog(HomeController.class);
+
+    @Autowired
+    BidProjectService bidProjectService;
+    @Autowired
+    GoodsService goodsService;
+    @Autowired
+    SupplierService supplierService;
+    @Autowired
+    OffStandardRequireService offStandardRequireService;
+    @Autowired
+    WebsiteNoticeService websiteNoticeService;
+    @Autowired
+    CompanyInfoService companyInfoService;
+    @Autowired
+    OrderService orderService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map, HttpSession sess) {
+        logger.info("ÐÂÊ×Ò³");
+        List<BidProject> notices = bidProjectService.getNoticeList(null, null, null, null, 1, 10);
+        map.put("goods", goodsService.getRandomGoods(8));
+        map.put("notices", notices);
+        map.put("results", bidProjectService.getResultList(null, null, null, null, 7, 1, 10));
+        List<OffStandardRequire> reqs = offStandardRequireService.queryLastestRequires(10);
+
+        if (reqs != null && reqs.size() > 0) {
+            for (OffStandardRequire i : reqs) {
+                try {
+                    i.setIndexLink(URLEncoder.encode(i.getGoodsName(), "GBK"));
+                } catch (UnsupportedEncodingException e) {
+                }
+                
+            }
+        }
+
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch(Exception e) {}
+        String supCode = (String) sess.getAttribute(SessionKeys.SUP_CODE);
+        
+        if (user != null || StringUtils.isEmpty(supCode)) {
+            map.put("reqLink", "management/specialGoods/offStandardRequirePage");
+        } else {
+            map.put("reqLink", "supplier/offStandRequire");
+        }
+        map.put("reqs", reqs);
+        map.put("sups", supplierService.getRecommandSup(10));
+        map.put("notice0", websiteNoticeService.queryWebsiteNoticeList("0", 1, 6));
+        map.put("notice1", websiteNoticeService.queryWebsiteNoticeList("1", 1, 6));
+        map.put("comp", companyInfoService.queryCompanyCount());
+        map.put("orderCount", orderService.queryOrderCount());
+        map.put("orderAmount", String.format("%.2f", orderService.queryOrderCount() / 10000.0));
+        map.put("projCount", bidProjectService.queryAllProjectCount());
+        map.put("projAmount", String.format("%.2f", bidProjectService.queryAllProjectAmount() / 10000.0));
+        return "index_new";
+    }
+}

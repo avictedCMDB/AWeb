@@ -1,0 +1,17 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.AuditImageInfo;
+import com.avic.management.models.AuditOrder;
+
+@Repository
+public interface ImageInfoMapper {
+	/**
+	 * 根据业务id查询图片
+	 * @return 
+	 */
+	public List<AuditImageInfo> queryImages(AuditImageInfo auditImageInfo);
+}

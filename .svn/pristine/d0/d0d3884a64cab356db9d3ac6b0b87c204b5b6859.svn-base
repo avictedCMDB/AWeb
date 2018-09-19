@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* CSS Document */
+.step_section .form-group.form-group_project {
+	width: 276px;
+}
+.step_section .form-group.form-group_project label.title {
+	width: 90px;
+}
+.step_section .form-group.form-group_project .input_area {
+	width: 186px;
+}
+
+
+
+.btn_list {
+	text-align: right;
+	padding-bottom: 15px;
+	padding-right: 10px;
+}
+.btn_list ul li {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.result_section .tab ul li {
+	margin-right: 10px;
+}
+.result_section .tab ul li a {
+	border: none;
+	border: 1px solid #dfdfdf;
+	border-radius: 0;
+}
+.result_section .tab .nav-tabs {
+	border-bottom: none;
+}
+.result_section .tab .nav > li > a {
+	padding: 5px 15px;
+}
+.result_section .tab .nav-tabs > li.active > a, .result_section .tab .nav-tabs > li.active > a:hover, .result_section .tab .nav-tabs > li.active > a:focus {
+	border: none;
+	background: none;
+	border: 1px solid #ff4200;
+	color: #ff4200;
+}
+.result_section .tab .nav > li > a:hover,
+.result_section .tab .nav > li > a:focus {
+	text-decoration: none;
+	background-color: #fff;
+}

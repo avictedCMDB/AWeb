@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysCategory" type="com.avic.market.models.SysCategory" />
+		<typeAlias alias="SupCategory" type="com.avic.market.models.SupCategory" />
+		<typeAlias alias="CategoryRelation" type="com.avic.market.models.CategoryRelation" />
+		<typeAlias alias="Supplier" type="com.avic.market.models.Supplier" />
+		<typeAlias alias="Goods" type="com.avic.market.models.Goods" />
+		<typeAlias alias="CartItem" type="com.avic.market.models.CartItem" />
+		<typeAlias alias="Address" type="com.avic.market.models.Address" />
+		<typeAlias alias="Invoice" type="com.avic.market.models.Invoice" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/market/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SupplierMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/GoodsMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/CartMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/AddressMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/InvoiceMapper.xml" />
+	</mappers>
+</configuration>
+
+

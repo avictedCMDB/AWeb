@@ -1,0 +1,66 @@
+package com.avic.common.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import javax.servlet.ServletContext;
+
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.util.SystemPropertyUtils;
+import org.springframework.web.context.ServletContextAware;
+
+
+public class ConfigHolder implements ServletContextAware {
+
+	private Properties prop = new Properties();
+	private String config;
+	private ServletContext context;
+	private static ConfigHolder instance;
+	
+	public static ConfigHolder getInstance() {
+        return instance;
+    }
+
+	public void setConfig(String config) {
+		this.config = config;
+	}
+
+	public void init() {
+		System.out.println("ConfigHolder init...");
+		if (StringUtils.isEmpty(config)) {
+			System.err.println("Can not load config : Config file is empty.");
+			return;
+		}
+
+		try {
+			if (!ResourceUtils.isUrl(config)) {
+				config = SystemPropertyUtils.resolvePlaceholders(config);
+				config = context.getRealPath(config);
+			}
+			System.out.println("ConfigHolder loading from file [" + config + "]");
+
+			File file = new File(config);
+			if (file.exists()) {
+				prop.load(new FileInputStream(file));
+			} else {
+				System.err.println("Can not load config : File [" + config + "] is not exist.");
+			}
+			System.out.println("ConfigHolder loaded.");
+		} catch (Exception e) {
+			System.err.println("Can not load config : " + e.getMessage());
+		}
+		
+		instance = this;
+	}
+
+	public String getConfig(String key) {
+		return prop.getProperty(key);
+	}
+
+	@Override
+	public void setServletContext(ServletContext context) {
+		this.context = context;
+	}
+}

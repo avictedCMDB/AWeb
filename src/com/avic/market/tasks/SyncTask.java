@@ -1,0 +1,91 @@
+package com.avic.market.tasks;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.avic.market.cpi.CpiService;
+
+@Component
+public class SyncTask {
+
+    protected static final Log logger = LogFactory.getLog(SyncTask.class);
+    
+    @Autowired
+    CpiService cpiService;
+    
+    // 每日4点执行
+    //@Scheduled(cron = "0 0 1 * * ?")
+   //@Scheduled(cron = "0 45 21 * * ?")
+    public void run() {
+        logger.info("数据同步任务开始 ...");
+        long start = System.currentTimeMillis();
+        try {
+            cpiService.syncGoods();
+        } catch (Exception e) {
+            logger.error("数据同步任务执行异常", e);
+        }
+        long end = System.currentTimeMillis();
+        logger.info("数据同步任务结束，用时：" + (end - start) / 1000 + "s");
+        
+    }
+    //每年执行一次
+   // @Scheduled(cron = "0 33 23 29 08 ?")    
+    public void runJdData() {
+        logger.info("数据同步任务开始 ...");
+        long start = System.currentTimeMillis();
+        try {
+            cpiService.syncJdGoods();
+        } catch (Exception e) {
+            logger.error("数据同步任务执行异常", e);
+        }
+        long end = System.currentTimeMillis();
+        logger.info("数据同步任务结束，用时：" + (end - start) / 1000 + "s");
+        
+    } 
+    
+   // @Scheduled(cron = "0 50 22 * * ?")
+    public void incrSync() {
+        logger.info("增量数据同步任务开始 ...");
+        long start = System.currentTimeMillis();
+        try {
+            cpiService.syncIncrGoods();
+        } catch (Exception e) {
+            logger.error("增量数据同步任务执行异常", e);
+        }
+        long end = System.currentTimeMillis();
+        logger.info("增量数据同步任务结束，用时：" + (end - start) / 1000 + "s");
+        
+    }
+    
+    
+//     @Scheduled(cron = "0 23 22 * * ?")//每小时执行
+       public void runUPDExchangeJDOrderStatus() {
+           logger.info("获取京东换货服务单状态 更新订单开始 ...");
+           long start = System.currentTimeMillis();
+           try {
+               cpiService.runUPDJDOrderStatus("1");
+           } catch (Exception e) {
+               logger.error("获取京东换货服务单状态 更新订单开始执行异常", e);
+           }
+           long end = System.currentTimeMillis();
+           logger.info("获取京东换货服务单状态 更新订单开始结束，用时：" + (end - start) / 1000 + "s");
+           
+       }
+       
+    // @Scheduled(cron = "0 0 */1 * * ?")//每小时执行
+       public void runUPDRefoundJDOrderStatus() {
+           logger.info("获取京东退货服务单状态 更新订单开始 ...");
+           long start = System.currentTimeMillis();
+           try {
+               cpiService.runUPDJDOrderStatus("2");
+           } catch (Exception e) {
+               logger.error("获取京东退货服务单状态 更新订单开始执行异常", e);
+           }
+           long end = System.currentTimeMillis();
+           logger.info("获取京东退货服务单状态 更新订单开始结束，用时：" + (end - start) / 1000 + "s");
+           
+       }
+}

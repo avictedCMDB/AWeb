@@ -1,0 +1,313 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>资料管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_myinfo.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <jsp:include page="../header.jsp" />
+  
+  
+  <div id="contents">
+    <div class="inner">
+<jsp:include page="../menu.jsp">
+    		<jsp:param name="menu" value="myinfo" />
+    	</jsp:include>
+      <div id="matter_section">
+        <div id="step">
+          <ul class="image_list clearfix">
+            <li class="selected">1</li>
+            <li>2</li>
+            <li>3</li>
+          </ul>
+        </div>
+        <div class="section_inner clearfix">
+          <div class="title">
+            <h2>完善企业基本信息<span>（带*为必填项）</span></h2>
+          </div>
+          
+          <div class="input_area">
+            <dl class="clearfix role">
+              <dt>用户身份</dt>
+              <dd class="role_area">
+                <div class="role_list clearfix">
+                  <ul>
+                    <li class="active"><a href="#">投标人/供应商</a></li>
+                    <li><a href="#">招标人/采购人</a></li>
+                  </ul>
+                </div>
+                <div class="attention">
+                  <ul>
+                    <li>1、投标人/供应商：您可以利用平台在线参与招标项目/供应链采购(企业采购)项目。</li>
+                    <li>2、招标人/采购人：您可以利用平台发布招标/采购信息，规范管理单位的招标/采购业务。</li>
+                  </ul>
+                </div>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>企业名称</dt>
+              <dd><input type="text" class="form-control" placeholder="请输入企业名称" ><span class="red remind">请输入正确的用户名</span></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>单位类型</dt>
+              <dd>
+                <select class="form-control">
+                  <option value="">内资</option>
+                  <option value="">国有全资</option>
+                  <option value="">集体全资</option>
+                  <option value="">股份合作</option>
+                  <option value="">联营</option>
+                  <option value="">国有联营</option>
+                  <option value="">集体联营</option>
+                  <option value="">国有与集体联营</option>
+                  <option value="">其他联营</option>
+                  <option value="">有限责任(公司)</option>
+                  <option value="">其他有限责任(公司)</option>
+                  <option value="">股份有限(公司)</option>
+                  <option value="">私有</option>
+                  <option value="">私有独资</option>
+                  <option value="">私有合伙</option>
+                  <option value="">私营有限责任(公司)</option>
+                  <option value="">私营股份有限(公司)</option>
+                  <option value="">个体经营</option>
+                  <option value="">其他私有</option>
+                  <option value="">其他内资</option>
+                  <option value="">港澳台投资</option>
+                  <option value="">内地和港澳台合资</option>
+                  <option value="">澳台合资澳台合作</option>
+                  <option value="">港澳台独资</option>
+                  <option value="">港澳台投资股份有限(公司)</option>
+                  <option value="">其他港澳台投资</option>
+                  <option value="">国外投资</option>
+                  <option value="">中外合资</option>
+                  <option value="">中外合作</option>
+                  <option value="">外资</option>
+                  <option value="">国外投资股份有限(公司)</option>
+                  <option value="">其他国外投资</option>
+                  <option value="">其他</option>
+                </select>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>用户类型</dt>
+              <dd>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox1" value="option1">工程</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox2" value="option2">货物</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox3" value="option3">服务</label>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>所在地区</dt>
+              <dd>
+                <div class="province">
+                  <select class="form-control">
+                    <option value="">北京市</option>
+                    <option value="">天津市</option>
+                    <option value="">河北省</option>
+                    <option value="">山西省</option>
+                    <option value="">内蒙古自治区</option>
+                    <option value="">辽宁省</option>
+                    <option value="">吉林省</option>
+                    <option value="">黑龙江省</option>
+                    <option value="">上海市</option>
+                    <option value="">江苏省</option>
+                    <option value="">浙江省</option>
+                    <option value="">安徽省</option>
+                    <option value="">福建省</option>
+                    <option value="">江西省</option>
+                    <option value="">山东省</option>
+                    <option value="">河南省</option>
+                    <option value="">湖北省</option>
+                    <option value="">湖南省</option>
+                    <option value="">广东省</option>
+                    <option value="">广西壮族自治区</option>
+                    <option value="">海南省</option>
+                    <option value="">重庆市</option>
+                    <option value="">四川省</option>
+                    <option value="">贵州省</option>
+                    <option value="">云南省</option>
+                    <option value="">西藏自治区</option>
+                    <option value="">陕西省</option>
+                    <option value="">甘肃省</option>
+                    <option value="">青海省</option>
+                    <option value="">宁夏回族自治区</option>
+                    <option value="">新疆维吾尔自治区</option>
+                    <option value="">台湾省</option>
+                    <option value="">香港特别行政区</option>
+                    <option value="">澳门特别行政区</option>
+                    <option value="">其他</option>
+                  </select>
+                </div>
+                <div class="city">
+                  <select class="form-control">
+                    <option value="">选择城市1</option>
+                    <option value="">选择城市2</option>
+                  </select>
+                </div>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>企业网址</dt>
+              <dd>
+                <input type="text" class="form-control" placeholder="请输入企业网址" >
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>单位地址</dt>
+              <dd>
+                <input type="text" class="form-control" placeholder="请输入单位地址" >
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>经营模式</dt>
+              <dd>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox1" value="option1">生产厂家</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox2" value="option2">经营批发</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox3" value="option3">商业服务</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox3" value="option3">招商代理</label>
+                <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox3" value="option3">其他</label>
+              </dd>
+            </dl>
+          </div>
+        </div>
+        <div class="section_inner clearfix">
+          <div class="title">
+            <h2>联系人信息<span>（如要修改联系人信息，请同步修改法人授权委托书和被授权人身份证）</span></h2>
+          </div>
+          
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt><span class="red">*</span>联系人</dt>
+              <dd><input type="text" class="form-control" placeholder="请输入联系人" ><span class="red remind">请输入正确的联系人</span></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>固定电话</dt>
+              <dd><input type="text" class="form-control" placeholder="请输入固定电话" ></dd>
+            </dl>
+            <dl class="clearfix role tel_area">
+              <dt><span class="red">*</span>手机号码</dt>
+              <dd>
+                <div class="input-group">
+                    <div class="input-group-btn tel_num">
+                      <label>中国 0086</label>
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">中国 +86</a></li>
+                        <li><a>台湾 +886</a> </li>
+                        <li><a>香港 +852</a> </li>
+                        <li><a>马来西亚 +60</a> </li>
+                        <li><a>新加坡 +65</a> </li>
+                        <li><a>日本 +81</a> </li>
+                        <li><a>韩国 +82</a> </li>
+                        <li><a>美国 +1</a> </li>
+                        <li><a>加拿大 +1</a> </li>
+                        <li><a>澳大利亚 +61</a> </li>
+                        <li><a>新西兰 +64</a> </li>
+                        <li><a>阿联酋 +791</a> </li>
+                        <li><a>安哥拉 +244</a> </li>
+                        <li><a>澳门 +853</a> </li>
+                        <li><a>巴西 +55</a> </li>
+                        <li><a>丹麦 +45</a> </li>
+                        <li><a>德国 +49</a> </li>
+                        <li><a>俄罗斯 +7</a> </li>
+                        <li><a>法国 +33</a> </li>
+                        <li><a>菲律宾 +63</a> </li>
+                        <li><a>芬兰 +358</a> </li>
+                        <li><a>荷兰 +31</a> </li>
+                        <li><a>捷克 +420</a> </li>
+                        <li><a>瑞士 +41</a> </li>
+                        <li><a>瑞典 +46</a> </li>
+                        <li><a>泰国 +66</a> </li>
+                        <li><a>委内瑞拉 +58</a> </li>
+                        <li><a>西班牙 +34</a> </li>
+                        <li><a>意大利 +39</a> </li>
+                        <li><a>印度 +91</a> </li>
+                        <li><a>印度尼西亚 +62</a> </li>
+                        <li><a>英国 +44</a> </li>
+                        <li><a>越南 +84</a> </li>
+                      </ul>
+                    </div>
+                    <input type="text" class="form-control" id="tel" placeholder="请填写手机号码" >
+                    <span class="remind_tel red">手机号码修改后，原用户名和修改后的手机号都可以进行登录</span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>电子邮箱</dt>
+              <dd><input type="text" class="form-control" placeholder="建议使用常用邮编" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>联系人地址</dt>
+              <dd><input type="text" class="form-control" placeholder="联系人地址" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>法定代表人</dt>
+              <dd><input type="text" class="form-control" placeholder="法定代表人" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>邮政编码</dt>
+              <dd><input type="text" class="form-control" placeholder="邮政编码" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>法定代表人手机</dt>
+              <dd><input type="text" class="form-control" placeholder="法定代表人手机" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>法定代表人单位电话</dt>
+              <dd><input type="text" class="form-control" placeholder="法定代表人单位电话" ></dd>
+            </dl>
+          </div>
+        <!-- .section --></div>
+        <div class="section_inner clearfix">
+          <div class="title">
+            <h2>财务负责人/采购负责人信息</h2>
+          </div>
+          
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt>财务负责人</dt>
+              <dd><input type="text" class="form-control" placeholder="财务负责人" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>财务负责人联系方式</dt>
+              <dd><input type="text" class="form-control" placeholder="财务负责人联系方式" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>业务负责人</dt>
+              <dd><input type="text" class="form-control" placeholder="采购负责人" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>业务负责人联系方式</dt>
+              <dd><input type="text" class="form-control" placeholder="采购负责人联系方式" ></dd>
+            </dl>
+          </div>
+        </div>
+        <div class="btn_area">
+          <button class="btn btn-default blue" type="button" onclick="window.location.href='${pageContext.request.contextPath}/supplier/supplierMyinfo/page2'">保存并下一步</button>
+        </div>
+      </div>
+    </div>
+  <!--#contents--></div>
+  <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

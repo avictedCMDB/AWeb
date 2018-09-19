@@ -1,0 +1,8 @@
+#Wed Aug 09 17:02:12 CST 2017
+eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/message.properties=GBK
+encoding//WebRoot/static/bjca/BJCAWebSignCom.js=UTF-8
+encoding//WebRoot/static/css/app.style.css=UTF-8
+encoding//src/com/avic/management/controllers/bid/AuditController.java=GBK
+encoding//src/com/avic/market/cpi/adapters/JdServiceAdapter.java=GBK
+encoding//src/com/avic/market/tasks/SyncTask.java=GBK

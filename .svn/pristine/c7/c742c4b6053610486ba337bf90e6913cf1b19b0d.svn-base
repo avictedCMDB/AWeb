@@ -1,0 +1,98 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_return.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierUtil.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+ <jsp:include page="../header.jsp" />
+  
+  
+  <div id="contents">
+    <div class="inner">
+	  <h2>退货查看</h2>
+      <div class="replace_step">
+        <ul class="image_list clearfix">
+          <li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="1"/></li>
+          <c:if test="${supplierReturn.refoundStatus >= '1'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="2"/></li> </c:if>
+          <c:if test="${supplierReturn.refoundStatus < '1'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step02.gif" alt="2"/></li> </c:if>
+          <c:if test="${supplierReturn.refoundStatus >= '3'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="2"/></li> </c:if>
+          <c:if test="${supplierReturn.refoundStatus < '3'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step03.gif" alt="2"/></li> </c:if>
+          <c:if test="${supplierReturn.refoundStatus >= '4'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="2"/></li> </c:if>
+          <c:if test="${supplierReturn.refoundStatus < '4'}"> <li><img src="${pageContext.request.contextPath}/static/img/management/img-step04.gif" alt="2"/></li> </c:if>
+	    </ul>
+        <ul class="text_step clearfix">
+          <li>采购人退货申请</li>
+          <li class="confirm_step">供应商确认完成</li>
+          <li class="sale_step">采购人发货完成</li>
+          <li class="receipt_step">供应商收货完成</li>
+	    </ul>	      
+	    	<!--.replace_step-->	
+      </div>
+      <h3>退货单基本信息</h3>
+      <div class="info_detail">
+        <div class="txt_area">
+          <label>退货单号：</label>
+          <span>${supplierReturn.refoundId}</span>
+          <label>采购单位：</label>
+          <span>${supplierReturn.companyname}</span>
+          <label>订单编号：</label>
+          <span>${supplierReturn.orderId}</span>
+          <label>联系人：</label>
+          <span>${supplierReturn.addrName}</span>
+          <label>联系电话：</label>
+          <span>${supplierReturn.addrPhone}</span>
+          <label>附件：</label>
+          <span></span>
+          <label>备注：</label>
+          <span>${supplierReturn.companyname}</span>
+        </div>
+      </div>
+      <h3>退货单明细信息</h3>
+      <div class="search_result">
+        <table class="details">
+          <tr>
+            <th width="40">序号</th>
+            <th colspan="2">商品名称</th>
+            <th width="100">单价(元)</th>
+            <th width="100">退货数量</th>
+            <th width="100">总金额(元)</th>
+            <th width="200" class="last">退货原因</th>
+          </tr>
+          <c:forEach var="supplierReturn" items="${supplierReturnList}" varStatus="status">
+          <tr>
+	          <td>${supplierReturn.rn}</td>
+	          <td width="77" class="right_none"><p class="img_pro"><a href="#"><img src="${supplierReturn.imagePath}" width="44px" height="44px"/></a></p></td>
+	          <td class="left_none"><a href="#">${supplierReturn.goodsName}</a></td>
+	          <td class="price">${supplierReturn.agreePrice}</td>
+	          <td>${supplierReturn.refoundNum}</td>
+	          <td class="price">${supplierReturn.sumRefoundPrice}</td>
+	          <td>${supplierReturn.refoundReason}</td>
+          </tr>
+        </c:forEach>
+        </table>
+      </div>
+      <div class="btn_area"><button type="button" class="btn btn-default gray" onclick="history.go(-1)">返回</button></div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+ <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

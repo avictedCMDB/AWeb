@@ -1,0 +1,20 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierCodeList;
+import com.avic.supplier.models.SupplierExchange;
+
+public interface SupplierExchangeService {
+	
+	public List<SupplierExchange> queryExchangeOrderList(SupplierExchange supplierExchange);
+	
+	public Integer queryExchangeOrderListCount(SupplierExchange supplierExchange);
+	
+	public List<SupplierCodeList> queryExchangeOrderStatusList();
+	
+	public List<SupplierExchange> queryExchangeOrderDetailed(SupplierExchange supplierExchange);
+	
+	public void updateExchangeOrderStatus(SupplierExchange supplierExchange) ;
+
+}

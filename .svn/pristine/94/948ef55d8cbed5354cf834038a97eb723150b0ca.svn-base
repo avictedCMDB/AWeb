@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.GoodsMapper">
+	<resultMap id="goodsResultMap" type="Goods">
+		<id column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+		<result column="goods_model" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="goods_weight" property="goodsWeight" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="product_area" property="productArea" jdbcType="VARCHAR" />
+		<result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="goods_unit" property="goodsUnit" jdbcType="VARCHAR" />
+		<result column="goods_service" property="goodsService" jdbcType="CLOB" />
+		<result column="goods_desc" property="goodsDesc" jdbcType="CLOB" />
+		<result column="goods_param" property="goodsParam" jdbcType="CLOB" />
+		<result column="goods_ware" property="goodsWare" jdbcType="CLOB" />
+		<result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+		<result column="sale_price" property="salePrice" jdbcType="DOUBLE" />
+		<result column="count_price" property="countPrice" jdbcType="DOUBLE" />
+		<result column="agree_price" property="agreePrice" jdbcType="DOUBLE" />
+		<result column="pool_id" property="poolId" jdbcType="INTEGER" />
+		<result column="sys_cat_id" property="sysCatId" jdbcType="INTEGER" />
+		<result column="sale_num" property="saleNum" jdbcType="INTEGER" />
+	</resultMap>
+	
+
+	<delete id="deleteSupCatGoods">
+		delete 
+		  from t_sup_goods
+		 where sup_id = #{supId}
+		   and pool_id = #{poolId}
+	</delete>
+	
+	<insert id="batchInsertSupGoods" parameterType="java.util.List">
+		 insert into t_sup_goods (
+		 	sup_cat_id, sup_id, sup_goods_id, goods_url, goods_model, goods_weight, image_path, 
+		 	brand_name, goods_name, product_area, goods_code, goods_unit, goods_service, goods_desc, 
+		 	goods_param, goods_ware, goods_status, sale_price, count_price, agree_price, pool_id)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.supCatId,jdbcType=INTEGER},
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supGoodsId,jdbcType=VARCHAR},
+				#{item.goodsUrl,jdbcType=VARCHAR},
+				#{item.goodsModel,jdbcType=VARCHAR},
+				#{item.goodsWeight,jdbcType=VARCHAR},
+				#{item.imagePath,jdbcType=VARCHAR},
+				#{item.brandName,jdbcType=VARCHAR},
+				#{item.goodsName,jdbcType=VARCHAR},
+				#{item.productArea,jdbcType=VARCHAR},
+				#{item.goodsCode,jdbcType=VARCHAR},
+				#{item.goodsUnit,jdbcType=VARCHAR},
+				#{item.goodsService,jdbcType=CLOB},
+				#{item.goodsDesc,jdbcType=CLOB},
+				#{item.goodsParam,jdbcType=CLOB},
+				#{item.goodsWare,jdbcType=CLOB},
+				#{item.goodsStatus,jdbcType=INTEGER},
+				#{item.salePrice,jdbcType=DOUBLE},
+				#{item.countPrice,jdbcType=DOUBLE},
+				#{item.agreePrice,jdbcType=DOUBLE},
+				#{item.poolId,jdbcType=INTEGER}
+			from dual 
+		</foreach>
+	</insert>
+	
+	<insert id="insertSupGoods" parameterType="Goods">
+		 insert into t_sup_goods (
+		 	sup_cat_id, sup_id, sup_goods_id, goods_url, goods_model, goods_weight, image_path, 
+		 	brand_name, goods_name, product_area, goods_code, goods_unit, goods_service, goods_desc, 
+		 	goods_param, goods_ware, goods_status, sale_price, count_price, agree_price, pool_id)
+		 values (
+				#{supCatId,jdbcType=INTEGER},
+				#{supId,jdbcType=INTEGER},
+				#{supGoodsId,jdbcType=VARCHAR},
+				#{goodsUrl,jdbcType=VARCHAR},
+				#{goodsModel,jdbcType=VARCHAR},
+				#{goodsWeight,jdbcType=VARCHAR},
+				#{imagePath,jdbcType=VARCHAR},
+				#{brandName,jdbcType=VARCHAR},
+				#{goodsName,jdbcType=VARCHAR},
+				#{productArea,jdbcType=VARCHAR},
+				#{goodsCode,jdbcType=VARCHAR},
+				#{goodsUnit,jdbcType=VARCHAR},
+				#{goodsService,jdbcType=CLOB},
+				#{goodsDesc,jdbcType=CLOB},
+				#{goodsParam,jdbcType=CLOB},
+				#{goodsWare,jdbcType=CLOB},
+				#{goodsStatus,jdbcType=INTEGER},
+				#{salePrice,jdbcType=DOUBLE},
+				#{countPrice,jdbcType=DOUBLE},
+				#{agreePrice,jdbcType=DOUBLE},
+				#{poolId,jdbcType=INTEGER}
+			)
+	</insert>
+	
+	
+	<select id="queryGoodsCount" resultType="java.lang.Integer">
+			select count(1) 
+			from t_sup_goods a 
+			<if test="catStart > 0">
+			left join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+			</if>
+			where 1=1
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name = #{brand}
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+	</select>
+	
+	<select id="queryGoodsList" resultMap="goodsResultMap">
+		select * from (
+			select rownum rn, a.*, b.sale_num 
+			from t_sup_goods a 
+			left join t_goods_extra b 
+			on a.sup_id = b.sup_id 
+			and a.sup_goods_id = b.sup_goods_id
+			<if test="catStart > 0">
+			left join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+			</if>
+			where 1=1
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name = #{brand}
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+			<if test="order > 0">
+			order by a.agree_price desc
+			</if>
+			) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	
+	<select id="queryGoodsBrand" resultType="java.lang.String">
+			select distinct brand_name
+			from t_sup_goods a 
+			<if test="catStart > 0">
+			left join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+			</if>
+			where 1=1
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+	</select>
+	
+</mapper>

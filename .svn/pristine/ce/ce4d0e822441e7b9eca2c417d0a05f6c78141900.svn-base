@@ -1,0 +1,45 @@
+$(function(){ 
+	changeSearchParam(1);
+}); 
+
+function search(){
+	document.getElementById("orderForm").action="/AWeb/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}
+function clearSearchParam(){
+	$("#startTime").val("");
+	$("#endTime").val("");
+	$("#searchGoodsName").val("");
+	$("#searchOrderId").val("");
+	$("#searchSupName").val("");
+}
+
+function changeSearchParam(status){
+	if(status==1){
+		$("#allLi").removeClass();
+		$("#passLi").removeClass();
+		$("#resetLi").removeClass();
+		$("#waitLi").addClass("active");
+		$("#orderStatus").val(1);
+	}else if(status==2){
+		$("#waitLi").removeClass();
+		$("#allLi").removeClass();
+		$("#resetLi").removeClass();
+		$("#passLi").addClass("active");
+		$("#orderStatus").val(15);
+	}else if(status == 3){
+		$("#waitLi").removeClass();
+		$("#passLi").removeClass();
+		$("#allLi").removeClass();
+		$("#resetLi").addClass("active");
+		$("#orderStatus").val(0);
+	}else{
+		$("#waitLi").removeClass();
+		$("#passLi").removeClass();
+		$("#resetLi").removeClass();
+		$("#allLi").addClass("active");
+		$("#orderStatus").val("");
+	}
+	document.getElementById("orderForm").action="/AWeb/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}

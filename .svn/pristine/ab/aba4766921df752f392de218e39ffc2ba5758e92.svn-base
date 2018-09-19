@@ -1,0 +1,38 @@
+function search(){
+	document.getElementById("orderForm").action="/AWeb/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}
+function clearSearchParam(){
+	$("#startTime").val("");
+	$("#endTime").val("");
+	$("#searchGoodsName").val("");
+	$("#searchOrderId").val("");
+	$("#searchSupName").val("");
+}
+
+//${pageContext.request.contextPath}/management/audit/confirm?orderID=${audit.orderID}&searchFlg=2
+function showAuditDiv(searchFlg,orderID){
+	var path = $("#path").val();
+	var url = path+"/management/audit/confirm?orderID="+orderID+"&searchFlg="+searchFlg;
+	window.showModalDialog(url,window,'dialogWidth:1000px;dialogHeight:800px;status:no;');
+}
+
+function auditSubmit(){
+	var path = $("#path").val();
+	if($("input[name='optionsRadiosinline']:checked").val()==""){
+		alert("请选择审核结果！");
+		return;
+	}
+	if($("#auditReviewRemark").val()==""){
+		alert("请输入审核意见！");
+		return;
+	}
+	$("#reviewResult").val($("input[name='optionsRadiosinline']:checked").val());
+	$("#reviewRemark").val($("#auditReviewRemark").val());
+	document.getElementById("auditForm").action="/AWeb/management/audit/auditConfirm";
+	document.getElementById("auditForm").submit();
+}
+
+function cacleParentWindow(){
+	window.close();
+}

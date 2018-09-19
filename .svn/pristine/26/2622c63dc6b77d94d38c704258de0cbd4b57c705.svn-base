@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierAddressMapper">
+	<resultMap id="supplierAddressMap" type="com.avic.supplier.models.SupplierAddress">
+		<result column="sup_address_id" property="supAddressId" jdbcType="VARCHAR" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="sup_area_level_one" property="supAreaLevelOne" jdbcType="VARCHAR" />
+		<result column="sup_area_level_two" property="supAreaLevelTwo" jdbcType="VARCHAR" />
+		<result column="sup_area_level_three" property="supAreaLevelThree" jdbcType="VARCHAR" />
+		<result column="sup_address_detail" property="supAddressDetail" jdbcType="VARCHAR" />
+		<result column="sup_tel" property="supTel" jdbcType="VARCHAR" />
+		<result column="sup_iphone" property="supIphone" jdbcType="VARCHAR" />
+		<result column="if_default" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="querySupplierAddressList" resultMap="supplierAddressMap">
+		select R.* 
+		from (select sup_address_id,
+			       sup_name,
+			       are1.SUP_AREA_NAME sup_area_level_one,
+			       are2.SUP_AREA_NAME sup_area_level_two,
+			       are3.SUP_AREA_NAME sup_area_level_three,
+			       sup_address_detail,
+			       sup_tel,
+			       sup_iphone,
+			       if_default,
+			       t_sup_address.sup_id,
+			       rownum rn
+			  from t_sup_address, t_Sup_Area are1, t_Sup_Area are2, t_Sup_Area are3
+			 where t_sup_address.sup_area_level_one = are1.sup_area_id
+			   and t_sup_address.sup_area_level_two = are2.sup_area_id
+			   and t_sup_address.sup_area_level_three = are3.sup_area_id
+			   and t_sup_address.sup_id = are1.sup_id
+			   and t_sup_address.sup_id = are2.sup_id
+			   and t_sup_address.sup_id = are3.sup_id
+			   and  t_sup_address.sup_id = #{supId}
+			 order by if_default desc) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="querySupplierAddressListCount" resultType="java.lang.Integer">
+		select Count(1)
+			  from t_sup_address, t_Sup_Area are1, t_Sup_Area are2, t_Sup_Area are3
+			 where t_sup_address.sup_area_level_one = are1.sup_area_id
+			   and t_sup_address.sup_area_level_two = are2.sup_area_id
+			   and t_sup_address.sup_area_level_three = are3.sup_area_id
+			   and t_sup_address.sup_id = are1.sup_id
+			   and t_sup_address.sup_id = are2.sup_id
+			   and t_sup_address.sup_id = are3.sup_id
+			   and  t_sup_address.sup_id = #{supId}
+	</select>
+	<select id="querySupplierAddress" resultMap="supplierAddressMap">
+		select   sup_address_id ,
+				       sup_name,
+				       sup_area_level_one,
+				       sup_area_level_two,
+				       sup_area_level_three,
+				       sup_address_detail,
+				       sup_tel,
+				       sup_iphone,
+				       if_default,
+				       sup_id,
+				       rownum rn
+			 from t_sup_address
+			 where  sup_address_id = #{supAddressId}
+	</select>
+	<select id="querySupplierIndex" resultType="java.lang.String">
+		select to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(supplier_index.nextval,6,'0'),'','0') from dual
+	</select>
+	<delete id="deleteSupplierAddress"  parameterType="com.avic.supplier.models.SupplierAddress">
+		DELETE  FROM t_sup_address TMA
+      		   WHERE TMA.sup_address_id = #{supAddressId,jdbcType=VARCHAR}
+	</delete>
+	<update id="updateSupplierAddress" parameterType="com.avic.supplier.models.SupplierAddress">
+		update t_sup_address TMA
+		   set if_default= #{ifDefault,jdbcType=VARCHAR}
+		   <if test="supAreaLevelOne != null and supAreaLevelOne != ''">
+                , sup_area_level_one=#{supAreaLevelOne,jdbcType=VARCHAR}
+           </if>
+           <if test="supAreaLevelTwo != null and supAreaLevelTwo != ''">
+                , sup_area_level_two=#{supAreaLevelTwo,jdbcType=VARCHAR}
+           </if>
+           <if test="supAreaLevelThree != null and supAreaLevelThree != ''">
+                , sup_area_level_three=#{supAreaLevelThree,jdbcType=VARCHAR}
+           </if>
+           <if test="supAddressDetail != null and supAddressDetail != ''">
+                , sup_address_detail=#{supAddressDetail,jdbcType=VARCHAR}
+           </if>
+           <if test="supIphone != null and supIphone != ''">
+                , sup_iphone=#{supIphone,jdbcType=VARCHAR}
+           </if>
+           <if test="supTel != null and supTel != ''">
+                , sup_tel=#{supTel,jdbcType=VARCHAR}
+           </if>
+           <if test="supName != null and supName != ''">
+                ,sup_name = #{supName,jdbcType=VARCHAR}
+         </if>
+		 where 1=1
+		 <if test="supAddressId != null and supAddressId != ''">
+              and  TMA.sup_address_id = #{supAddressId,jdbcType=VARCHAR}
+         </if>
+         <if test="supId != null and supId != ''">
+               and TMA.sup_id = #{supId,jdbcType=INTEGER}
+         </if>
+		 
+	</update>
+	<insert id="insertSupplierAddress" parameterType="com.avic.supplier.models.SupplierAddress">
+		 insert into t_sup_address (sup_address_id, sup_name, sup_area_level_one,
+		 							SUP_AREA_LEVEL_TWO,SUP_AREA_LEVEL_THREE,SUP_ADDRESS_DETAIL,
+		 							SUP_TEL,SUP_IPHONE,IF_DEFAULT,SUP_ID)
+		 values (
+				#{supAddressId,jdbcType=VARCHAR},
+				#{supName,jdbcType=VARCHAR},
+				#{supAreaLevelOne,jdbcType=VARCHAR},
+				#{supAreaLevelTwo,jdbcType=VARCHAR},
+				#{supAreaLevelThree,jdbcType=VARCHAR},
+				#{supAddressDetail,jdbcType=VARCHAR},
+				#{supTel,jdbcType=VARCHAR},
+				#{supIphone,jdbcType=VARCHAR},
+				#{ifDefault,jdbcType=VARCHAR},
+				#{supId,jdbcType=INTEGER}
+				
+				) 
+	</insert>
+	
+</mapper>

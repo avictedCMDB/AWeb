@@ -1,0 +1,108 @@
+package com.avic.management.controllers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.management.models.MarketAddress;
+import com.avic.management.models.SupArea;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.MarketAddressService;
+import com.avic.management.services.SupAreaService;
+import com.avic.management.services.SupInfoService;
+import com.avic.market.cpi.exceptions.NoSuchSupplierException;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+
+@Controller
+@RequestMapping("/address")
+public class MarketAddressController {
+    protected static final Log logger = LogFactory.getLog(MarketAddressController.class);
+    
+    @Autowired
+    MarketAddressService marketAddressService;
+    @Autowired
+    SupInfoService supInfoService;
+    @Autowired
+    SupAreaService areaService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("地区管理");
+        List<MarketAddress> marketAddresses = new ArrayList<MarketAddress>();
+        marketAddresses = marketAddressService.queryMarketAddressList();
+        map.put("marketAddresses", marketAddresses);
+        return "management_address";
+    }
+    
+    @RequestMapping("/delete/{addressID}")
+    public String deleteAddress(Map<String, Object> map,@PathVariable("addressID")String addressID) {
+        logger.info("删除地区");
+        marketAddressService.deleteMarketAddress(addressID);
+        return "redirect:/management/address";
+    }
+    
+    @RequestMapping("/setDefault/{addressID}")
+    public String setDefault(Map<String, Object> map,@PathVariable("addressID")String addressID) {
+        logger.info("设置默认地区");
+        MarketAddress marketAddress = new MarketAddress();
+        marketAddress.setAddressID(addressID);
+        marketAddressService.setDefault(marketAddress);
+        return "redirect:/management/address";
+    }
+    
+    @RequestMapping("/addAddressPage")
+    public String showAddressPage(Map<String, Object> map) {
+        logger.info("跳转添加地址页面");
+        return "management_address_add";
+    }
+    
+    @RequestMapping("/add")  
+    public String saveMarketAddress(@ModelAttribute("marketAddress") MarketAddress marketAddress){ 
+    	//TODO 生成区域id
+    	marketAddress.setAddressID("201605022238150001");
+    	marketAddressService.addMarketAddress(marketAddress);
+        return "redirect:/management/address";  
+    }  
+    @RequestMapping("/update")  
+    public String updateMarketAddress(@ModelAttribute("marketAddress") MarketAddress marketAddress){ 
+    	marketAddressService.updateMarketAddress(marketAddress);
+        return "redirect:/management/address";  
+    } 
+    
+    @RequestMapping("/loadData")
+    @ResponseBody
+    public Object loadData() throws NoSuchSupplierException, ServiceExecutionFailedException {
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	//加载供应商信息
+        List<SupInfo> supInfos = new ArrayList<SupInfo>();
+        supInfos = supInfoService.querySupInfos();
+        //加载地区信息
+        List<SupArea> areas = new ArrayList<SupArea>();
+        areas = areaService.queryAreas();
+        map.put("supInfos", supInfos);
+        map.put("areas", areas);
+    	return map;
+    }
+    
+    @RequestMapping("/loadSubArea")
+    @ResponseBody
+    public Object loadAreaLebelTwo(@RequestParam("parentId")String parentId) throws NoSuchSupplierException, ServiceExecutionFailedException {
+    	SupArea supArea = new SupArea();
+    	supArea.setSupParentArea(parentId);
+        //加载地区信息
+        List<SupArea> areas = new ArrayList<SupArea>();
+        areas = areaService.querySubAreas(supArea);
+    	return areas;
+    }
+}

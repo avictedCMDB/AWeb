@@ -1,0 +1,11 @@
+function search(){
+	var path = $("#path").val();
+	document.getElementById("searchForm").action=path+"/management/specialGoods/offStandardRequirePage";
+	document.getElementById("searchForm").submit();
+}
+
+function clear(){
+	$("#status").val("");
+	$("#supID").val("");
+	$("#goodsDescNew").val("");
+}

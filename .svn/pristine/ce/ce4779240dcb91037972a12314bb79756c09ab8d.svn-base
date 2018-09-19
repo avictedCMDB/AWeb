@@ -1,0 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>地址管理|中航招标网</title>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/managementAddress.js"></script>
+</head>
+<body>
+<div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="${pageContext.request.contextPath}/static/img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+</body>
+</html>

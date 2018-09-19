@@ -1,0 +1,24 @@
+package com.avic.supplier.services.impl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierUserMapper;
+import com.avic.supplier.models.SupplierUser;
+import com.avic.supplier.services.SupplierSupUserService;
+@Service
+public class SupplierSupUserServiceImpl implements SupplierSupUserService{
+	
+	protected static final Log logger = LogFactory.getLog(SupplierSupUserServiceImpl.class);
+	
+	@Autowired
+	SupplierUserMapper supUserMapper;
+
+	@Override
+	public SupplierUser queryLoginUser(SupplierUser supplierUser) {
+		return supUserMapper.queryLoginUser(supplierUser);
+	}
+	
+}

@@ -1,0 +1,19 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+import java.util.Map;
+
+import com.avic.supplier.models.SupplierOffStandRequire;
+
+public interface SupplierOffStandRequireService {
+	
+	public List<SupplierOffStandRequire> querySupplierOffStandRequiret(SupplierOffStandRequire supplierOffStandRequire) ;
+	
+	public Integer querySupplierOffStandRequiretCount(SupplierOffStandRequire supplierOffStandRequire);
+	
+	public Map<String, Object> uploadData(List<List<String>> supplierGoodInfos);
+	
+	public void updateStatus(String id ,String goodsIds,String supId,String sendFilePath);
+	
+	
+}

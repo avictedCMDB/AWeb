@@ -1,0 +1,4 @@
+
+function showAddInvoice(action){
+	window.location.href = action+"/management/invoice/addInvoicePage";
+}

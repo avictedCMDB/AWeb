@@ -1,0 +1,17 @@
+package com.avic.supplier.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierStatement;
+@Repository
+public interface SupplierStatementMapper {
+	
+	public List<SupplierStatement> queryStatmentList(SupplierStatement supplierStatement);
+	
+	public Integer queryStatmentListCount(SupplierStatement supplierStatement);
+	
+	public List<SupplierStatement> queryStatmentListDetailed(SupplierStatement supplierStatement);
+
+}

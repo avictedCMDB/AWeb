@@ -1,0 +1,19 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.Exchange;
+import com.avic.management.models.Invoice;
+
+@Repository
+public interface ExchangeMapper {
+	/**
+	 * 查询换货单列表
+	 * @return 
+	 */
+	public List<Exchange> queryExchange(Exchange exchange);
+	
+	
+}

@@ -1,0 +1,58 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.mappers.SupInfoMapper;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.SupInfoService;
+
+@Service
+public class SupInfoServiceImpl implements SupInfoService {
+    protected static final Log logger = LogFactory.getLog(SupInfoServiceImpl.class);
+
+    @Autowired
+    SupInfoMapper supInfoMapper;
+
+	@Override
+	public List<SupInfo> querySupInfos() {
+		return supInfoMapper.querySupInfos();
+	}
+
+	@Override
+	public List<SupInfo> querySupInfosBySupType(SupInfo supInfo) {
+		return supInfoMapper.querySupInfosBySupType(supInfo);
+	}
+
+	@Override
+	public List<SupInfo> querySupInfosTelBySupID(SupInfo supInfo) {
+		return supInfoMapper.querySupInfosTelBySupID(supInfo);
+	}
+
+	@Override
+	public int queryBidSupInfoCount(String supCode, String supName, String contactPerson, String contactNum) {
+	    return supInfoMapper.queryBidSupInfoCount(supCode, supName, contactPerson, contactNum);
+	}
+	
+	@Override
+	public List<SupInfo> queryBidSupInfoList(String supCode, String supName, String contactPerson, String contactNum, int page, int size) {
+
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+	    return supInfoMapper.queryBidSupInfoList(supCode, supName, contactPerson, contactNum, start, end);
+	}
+	
+	@Override
+	public SupInfo querySupInfoByCode(String supCode) {
+	    return supInfoMapper.querySupInfoByCode(supCode);
+	}
+}

@@ -1,0 +1,22 @@
+package com.avic.market.controllers;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.utils.Permission;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/my")
+public class MyController {
+
+	@RequestMapping("")
+	public String index (HttpSession session) {
+        Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+		return "my/index";
+	}
+	
+}

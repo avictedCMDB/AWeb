@@ -1,0 +1,162 @@
+package com.avic.supervise.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.supervise.models.Company;
+import com.avic.supervise.models.CompanyInfo;
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.CompanyInfoService;
+import com.avic.supervise.services.CompanyService;
+import com.avic.supervise.services.UserService;
+
+@Controller
+@RequestMapping("/companyInfo")
+public class CompanyInfoController {
+    protected static final Log logger = LogFactory.getLog(CompanyInfoController.class);
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    CompanyInfoService companyInfoService;
+    @Autowired
+    UserService userService;
+    
+	@RequestMapping("")
+    public String index(@ModelAttribute("companyInfo") CompanyInfo companyInfo,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("公司列表查询");
+        //查询合作采购单位列表
+        List<CompanyInfo> companyInfos = new ArrayList<CompanyInfo>();
+        User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+        companyInfo.setParentCompanyId(user.getCompanyId());       	
+        String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        //查询数量
+        
+        int total = companyInfoService.getCompanyInfoCount(companyInfo);
+        companyInfo.setPage(pageNum);
+        companyInfo.setPageSize(PAGE_SIZE);
+        companyInfos = companyInfoService.queryCompanyInfoList(companyInfo);
+        
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        
+        map.put("companyInfos", companyInfos);
+        map.put("companyName", companyInfo.getCompanyName());
+        map.put("companyCode", companyInfo.getCompanyCode());
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","supervise/companyInfo?companyName="+URLEncoder.encode(companyInfo.getCompanyName()==null?"":companyInfo.getCompanyName(), "GBK")
+					+"&companyCode="+URLEncoder.encode(companyInfo.getCompanyCode()==null?"":companyInfo.getCompanyCode(), "GBK")+"&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "companyInfo/company_list";
+    }
+	
+	
+	@RequestMapping("/initEditCompany")
+    public String initEditCompany(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("初始化编辑公司");
+        CompanyInfo company = new CompanyInfo();
+        if(!"".equals(companyInfo.getId()) && companyInfo.getId()!=null){
+        	
+        	company.setId(companyInfo.getId());
+            company = companyInfoService.queryCompanyInfo(company);
+        	map.put("companyInfo", company);
+        }else{
+        	String companyID = companyInfoService.getSeqID();
+        	company.setCompanyCode(companyID);
+        	map.put("companyInfo", company);
+        }
+        return "companyInfo/company_edit";
+    }
+	
+	
+	 	@RequestMapping("/addCompanyInfo")
+	 	@ResponseBody
+	    public Object addCompany(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("添加公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+	        companyInfo.setId(companyInfo.getCompanyCode());
+	        companyInfo.setParentCompanyId(user.getCompanyId());
+	        companyInfo.setCreateUser(user.getUserId());
+	        int companyCount = companyInfoService.getCompanyInfoCountByCompanyName(companyInfo);
+	        if(companyCount>0){
+	        	result.put("status","公司名称已经存在！");
+	        	return result;
+	        }else{
+	        	companyInfoService.addCompanyInfo(companyInfo);
+	        	result.put("status","success");
+	        }
+	       
+	        return result;
+	    }
+	 	
+	 	@RequestMapping("/updCompanyInfo")
+	 	@ResponseBody
+	    public Object updCompanyInfo(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("修改公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        int companyCount = companyInfoService.getCompanyInfoCountByCompanyName(companyInfo);
+	        if(companyCount>0){
+	        	result.put("status","公司名称已经存在！");
+	        	return result;
+	        }else{
+	        	companyInfoService.updateCompanyInfo(companyInfo);
+	        	User user = new User();
+	        	user.setCompanyName(companyInfo.getCompanyName());
+	        	user.setCompanyId(companyInfo.getId());
+	        	userService.updateUserCompany(user);
+	        	result.put("status","success");
+	        }
+	        
+	        return result;
+	    }
+	 	
+	 	@RequestMapping("/delCompanyInfo")
+	 	@ResponseBody
+	    public Object delCompanyInfo(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("删除公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        int userCount = userService.queryUserByCompanyID(companyInfo.getId());
+	        if(userCount>0){
+	        	result.put("status","公司下存在用户，无法删除！");
+	        	return result;
+	        }else{
+	        	companyInfoService.deleteCompany(companyInfo);
+	        	result.put("status","success");
+	        }
+	        
+	        return result;
+	    }
+}

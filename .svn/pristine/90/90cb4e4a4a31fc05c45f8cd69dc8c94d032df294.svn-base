@@ -1,0 +1,151 @@
+package com.avic.supervise.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.supervise.models.Menu;
+import com.avic.supervise.models.Node;
+import com.avic.supervise.models.Role;
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.RoleService;
+import com.avic.supervise.services.UserService;
+
+@Controller
+@RequestMapping("/superviseRole")
+public class SuperviseRoleController {
+
+	protected static final Log logger = LogFactory
+			.getLog(SuperviseRoleController.class);
+
+	@Autowired
+	RoleService roleService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map, HttpSession httpSession,
+			@ModelAttribute("Role") Role roleParam)
+			throws UnsupportedEncodingException {
+		logger.info("监管平台设置角色管理");
+		User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+		roleParam.setParentRoleId(user.getAuthority());
+		List<Role> roleList = roleService.queryRoleList(roleParam);
+		map.put("roleList", roleList);
+		// 分页信息
+		String page = String.valueOf(roleParam.getPage());
+
+		int total = roleService.queryRoleListCount(roleParam);
+
+		int pages = (int) Math.ceil((double) total / roleParam.getPageSize());
+//
+		map.put("page", page);
+		map.put("total", total);
+		map.put("pages", pages);
+		map.put("roleParam", roleParam);
+		map.put("pageAction",
+				"supervise/superviseRole"
+						+ "?page=%PAGE%"
+						+ "&systemFlag="+roleParam.getSystemFlag()
+						+ "&isUseable="+roleParam.getIsUseable()
+						+ "&ifPayRole="+roleParam.getIfPayRole()
+						+ "&roleName="+ URLEncoder.encode(
+								roleParam.getRoleName() == null ? ""
+										: roleParam.getRoleName(), "GBK"));
+		return "role/supervise_role";
+	}
+
+	@RequestMapping("roleAddPage")
+	public String roleAddPage(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("type") String type)
+			throws UnsupportedEncodingException {
+		map.put("type", type);
+		return "role/supervise_role_add";
+	}
+	
+	@RequestMapping("roleUpdatePage")
+	public String roleUpdatePage(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("roleId") String roleId,
+			@RequestParam("type") String type)
+			throws UnsupportedEncodingException {
+		// 获取角色信息
+		Role role = new Role();
+		role.setId(roleId);
+		List<Role> roleList = roleService.queryRoleList(role);
+		map.put("role", roleList.get(0));
+		map.put("type", type);
+		return "role/supervise_role_add";
+	}
+	@RequestMapping("deployUserRolePage")
+	public String deployUserRolePage(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("roleId") String roleId,@RequestParam("systemFlag") String systemFlag)
+			throws UnsupportedEncodingException {
+		List<Node> menuList = roleService.queryMenu(roleId,systemFlag);
+		map.put("menuList", menuList);
+		map.put("roleId", roleId);
+		return "role/supervise_role_allot";
+	}
+	@RequestMapping("deployUserRole")
+	@ResponseBody
+	public String deployUserRole(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam(value ="menuIds", required = false) String menuIds,
+			@RequestParam(value ="roleId", required = false) String roleId)
+			throws UnsupportedEncodingException {
+		if (menuIds.length() != 0) {
+			menuIds =menuIds.substring(0,menuIds.length() -1);
+		}
+		roleService.deployUserRole(roleId, menuIds);
+		return "0";
+	}
+	@RequestMapping("doRoleExchange")
+	@ResponseBody
+	public Object doRoleExchange(@RequestParam(value="type", required = false) String type,
+			@RequestParam(value="roleId", required = false) String roleId,
+			@RequestParam(value="roleName", required = false) String roleName,
+			@RequestParam(value="isUseable", required = false) String isUseable,
+			@RequestParam(value="remarks", required = false) String remarks,
+			@RequestParam(value="systemFlag", required = false) String systemFlag,
+			@RequestParam(value="ifPayRole", required = false) String ifPayRole,
+			HttpSession httpSession)
+			throws UnsupportedEncodingException {
+		Role role = new Role();
+		role.setId(roleId);
+		role.setRoleName(roleName);
+		role.setIsUseable(isUseable);
+		role.setRemarks(remarks);
+		role.setSystemFlag(systemFlag);
+		role.setIfPayRole(ifPayRole);
+		User logUser = (User)httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+		role.setCreateUser(logUser.getUserName());
+		role.setUpdateUser(logUser.getUserName());
+		role.setParentRoleId(logUser.getAuthority());
+		roleService.roleExchange(role, type);
+		return "0";
+	}
+	@RequestMapping("deleteRole")
+	@ResponseBody
+	public Object deleteRole(@RequestParam("roleId") String roleId,
+			HttpSession httpSession)
+			throws UnsupportedEncodingException {
+		String reult = roleService.roleDelete(roleId);
+		return reult;
+	}
+}

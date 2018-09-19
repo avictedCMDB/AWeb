@@ -1,0 +1,269 @@
+var supIDParam = "";
+var strArseaLebelOne = "";
+var strAreaLebelTwo =  "";
+var strAreaLebelThree = "";
+var strAreaLebelFour = "";
+$(function(){
+	var path = $("#path").val();
+	supIDParam = $("#supIDParam").val();
+	strArseaLebelOne = $("#strArseaLebelOne").val();
+	strAreaLebelTwo =  $("#strAreaLebelTwo").val();
+	strAreaLebelThree = $("#strAreaLebelThree").val();
+	strAreaLebelFour = $("#strAreaLebelFour").val();
+	var url=path+"/management/address/loadData";
+	if(supIDParam =="2"|| supIDParam =="4"){
+		$("#areaDD").append("<select  id='areaLebelSelFour' name='areaLebelSelFour' class='form-control'  onchange='checkAreaLebelSelFour();'><option>请选择</option></select>");
+    }
+	$.getJSON(url,function (data) {
+        $(data).each(function () {
+        	$(this.supInfos).each(function () {
+        		if(supIDParam == this.supID){
+        			$("#supID").append($("<option/>").text(this.supName).attr("value",this.supID).attr("selected", true));
+        			loadAddrOne(this.supID);
+        		}else{
+        			$("#supID").append($("<option/>").text(this.supName).attr("value",this.supID));
+        		}
+            	
+                
+            });
+        	/*$(this.areas).each(function () {
+        		if(strArseaLebelOne == this.supAreaName){
+        			$("#arseaLebelSelOne").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID).attr("selected", true));
+        			$("#arseaLebelOne").val(strArseaLebelOne);
+        			checkCity();
+        		}else{
+        			$("#arseaLebelSelOne").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+        		}
+            });*/
+        });
+    });
+	
+	/*if(strAreaLebelTwo!=""){
+		$("#areaLebelSelTwo").append($("<option/>").text(strAreaLebelTwo).attr("value",strAreaLebelTwo).attr("selected", true));
+		$("#areaLebelTwo").val(strAreaLebelTwo);
+	}
+	if(strAreaLebelThree!=""){
+		$("#areaLebelSelThree").append($("<option/>").text(strAreaLebelThree).attr("value",strAreaLebelThree).attr("selected", true));
+		$("#areaLebelThree").val(strAreaLebelThree);
+	}*/
+	
+});
+
+function loadAddrOne(supID){
+	var path = $("#path").val();
+	$("#arseaLebelSelOne").empty();
+	$("#arseaLebelSelOne").append($("<option/>").text("请选择").attr("value",""));
+	var url=path+"/management/address/loadAreaDate/"+supID;
+	$.getJSON(url,function (data) {
+        $(data).each(function () {
+        	$(this.areas).each(function () {
+        		if(strArseaLebelOne == this.supAreaID){
+        			$("#arseaLebelSelOne").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID).attr("selected", true));
+        			$("#arseaLebelOne").val(strArseaLebelOne);
+        			checkCity();
+        		}else{
+        			$("#arseaLebelSelOne").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+        		}
+            });
+        });
+    });
+}
+
+
+//省级联市
+function checkCity(){
+		var path = $("#path").val();
+	    var supID = $("#supID").val();
+        $("#areaLebelSelTwo").empty();
+        $("#arseaLebelOne").val($("#arseaLebelSelOne")[0].options[$("#arseaLebelSelOne")[0].selectedIndex].text=="请选择"?"":$("#arseaLebelSelOne")[0].options[$("#arseaLebelSelOne")[0].selectedIndex].value);
+        var data = $("#arseaLebelSelOne").val();
+        var url=path+"/management/address/loadSubArea?parentId="+data+"&supID="+supID;
+        $("#areaLebelSelTwo").append($("<option/>").text("请选择").attr("value",""));
+        $.getJSON(url,function (data) {
+            $(data).each(function () {
+            	if(strAreaLebelTwo==this.supAreaID){
+            		$("#areaLebelSelTwo").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID).attr("selected", true));
+            	}else{
+            		$("#areaLebelSelTwo").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+            	}
+                
+            });
+            checkDistrict();
+        });
+}
+//市级联区
+function checkDistrict(){
+		var path = $("#path").val();
+		var supID = $("#supID").val();
+	    $("#areaLebelSelThree").empty();
+	    $("#areaLebelTwo").val($("#areaLebelSelTwo")[0].options[$("#areaLebelSelTwo")[0].selectedIndex].text=="请选择"?"":$("#areaLebelSelTwo")[0].options[$("#areaLebelSelTwo")[0].selectedIndex].value);
+        var data = $("#areaLebelSelTwo").val();
+        var url=path+"/management/address/loadSubArea?parentId="+data+"&supID="+supID;
+	    $("#areaLebelSelThree").append($("<option/>").text("请选择").attr("value",""));
+	    $.getJSON(url,function (data) {
+	        $(data).each(function () {
+	        	if(strAreaLebelThree==this.supAreaID){
+	        		$("#areaLebelSelThree").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID).attr("selected", true));
+	        	}else{
+	        		$("#areaLebelSelThree").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+	        	}
+	            
+	        });
+	        checkAreaLebelSelThree();
+	    });
+}
+//市级联区
+function checkAreaLebelSelThree(){
+	var path = $("#path").val();
+	var supID = $("#supID").val();
+	if($("#supID").val()=="1"){
+		$("#areaLevelFour").val("");
+		$("#areaLebelThree").val($("#areaLebelSelThree")[0].options[$("#areaLebelSelThree")[0].selectedIndex].text=="请选择"?"":$("#areaLebelSelThree")[0].options[$("#areaLebelSelThree")[0].selectedIndex].value);
+	}else{
+		$("#areaLebelSelFour").empty();
+	    $("#areaLebelThree").val($("#areaLebelSelThree")[0].options[$("#areaLebelSelThree")[0].selectedIndex].text=="请选择"?"":$("#areaLebelSelThree")[0].options[$("#areaLebelSelThree")[0].selectedIndex].value);
+        var data = $("#areaLebelSelThree").val();
+        var url=path+"/management/address/loadSubArea?parentId="+data+"&supID="+supID;
+	    $("#areaLebelSelFour").append($("<option/>").text("请选择").attr("value",""));
+	    $.getJSON(url,function (data) {
+	        $(data).each(function () {
+	        	if(strAreaLebelFour==this.supAreaID){
+	        		$("#areaLebelSelFour").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID).attr("selected", true));
+	        	}else{
+	        		$("#areaLebelSelFour").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+	        	}
+	            
+	        });
+	        checkAreaLebelSelFour();
+	    });
+	    $("#areaLebelSelFour").change(function(){
+	    	checkAreaLebelSelFour();
+	    });
+	    
+	}
+}
+
+//市级联区
+function checkAreaLebelSelFour(){
+	$("#areaLevelFour").val($("#areaLebelSelFour")[0].options[$("#areaLebelSelFour")[0].selectedIndex].text=="请选择"?"":$("#areaLebelSelFour")[0].options[$("#areaLebelSelFour")[0].selectedIndex].value);
+}
+function cancle(){
+	var path = $("#path").val();
+	window.location.href=path+"/management/address";
+}
+
+function editMarketAddress(type){
+	var path = $("#path").val();
+	if($("#name").val()==""||$("#name").val()==null){
+		alert("请填写收货人姓名！");
+		$("#name").focus();
+		return;
+	}
+	if($("#supID").val()==""){
+		alert("请选择供应商！");
+		$("#supID").focus();
+		return;
+	}
+	if(supIDParam == "2" || supIDParam == "4"){
+		if($("#arseaLebelSelOne").val()=="" || $("#areaLebelSelTwo").val()=="" ||$("#areaLebelSelThree").val()=="" || ($("#areaLebelSelFour").val()=="" &&  $("#areaLebelSelFour option").length != 1)){
+			alert("请完整选择所在区域！");
+			return;
+		}		
+	}else{
+		if($("#arseaLebelSelOne").val()=="" || $("#areaLebelSelTwo").val()=="" ||$("#areaLebelSelThree").val()==""){
+			alert("请完整选择所在区域！");
+			return;
+		}		
+	}
+
+	if($("#addressDetail").val()==""||$("#addressDetail").val()==null){
+		alert("请填写详细地址！");
+		$("#addressDetail").focus();
+		return;
+	}
+	if($("#email").val()==""||$("#email").val()==null){
+		alert("请填写电子邮箱！");
+		$("#email").focus();
+		return;
+	}else{
+		if(!checkEmail($("#email").val())){
+			alert("请确认电子邮箱是否正确！");
+			$("#email").focus();
+			return;
+		}
+	}
+	if($("#phone").val()==""||$("#phone").val()==null){
+		alert("请填写手机号码！");
+		$("#phone").focus();
+		return;
+	}else{
+		if(!checkMobile($("#phone").val())){
+			alert("请确认手机号码是否正确！");
+			$("#phone").focus();
+			return;
+		}
+	}
+	if($("#zipCode").val()==""||$("#zipCode").val()==null){
+		alert("请填写邮政编码！");
+		$("#zipCode").focus();
+		return;
+	}else{
+		if(!checkZipCode($("#zipCode").val())){
+			alert("请确认邮政编码是否正确！");
+			$("#zipCode").focus();
+			return;
+		}
+	}
+	if($("#ifDefaultCB").is(':checked') == true){
+		$("#ifDefault").val("1");
+	}else{
+		$("#ifDefault").val("0");
+	}
+	if(type==1){
+		document.getElementById("marketAddressForm").action=path+"/management/address/add";
+		document.getElementById("marketAddressForm").submit();
+	}else{
+		var updAddressID = $("#updAddressID").val();
+		document.getElementById("marketAddressForm").action=path+"/management/address/update?addressID="+updAddressID;
+		document.getElementById("marketAddressForm").submit();
+	}
+	
+}
+
+function addAreaSel(){
+	$("#areaLebelSelFour").remove();
+	if($("#supID").val()=="2"||$("#supID").val()=="4"){
+		$("#areaDD").append("<select  id='areaLebelSelFour' name='areaLebelSelFour' class='form-control'  onchange='checkAreaLebelSelFour();'><option value='' selected='selected'>请选择</option></select>");
+		checkAreaLebelSelThree();
+	}else{
+		$("#areaLevelFour").val("");
+	}
+	loadAddrOne($("#supID").val());
+}
+
+function checkEmail(str){
+    var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+    if(re.test(str)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function checkMobile(str) {
+    var re = /^1\d{10}$/;
+    if (re.test(str)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function checkZipCode(str) {
+    var re = /^[1-9][0-9]{5}$/;
+    if (re.test(str)) {
+        return true;
+    } else {
+        return false;
+    }
+}

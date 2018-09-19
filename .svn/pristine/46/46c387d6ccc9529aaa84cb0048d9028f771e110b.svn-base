@@ -1,0 +1,72 @@
+$(document).ready(function(){
+	doInit();
+	
+	$('#allchecked').click(function(){
+		var allcheck = $("#allchecked").is(':checked');
+		$('input[name="subCheckbox"]').prop('checked',allcheck);
+	});
+});
+
+function doInit(){
+	var path = $('#path').val();
+	var sup_type = $('#sup_type').val();
+	var sup_name = $('#sup_name').val();
+	var url=path+"/management/specialGoods/supSelectData?o="+sup_type+"&sup_name="+sup_name;
+
+	$.ajax({
+	    url: url,
+	    type: "POST",
+	    contentType : 'application/json;charset=gbk', //设置请求头信息
+	    dataType:"json",
+	    success: function(dataJson){
+	    	var strHtml = getSelectedGoodsHtml(dataJson,path);
+			$("tr[id^='tr_']").each(function(){
+				this.remove();
+			});
+			
+			$('#title_tr').after(strHtml);
+	    },
+	    error: function(res){
+            alert('系统忙，请稍后再试。');
+        }
+	});
+}
+
+function getSelectedGoodsHtml(dataJson,path){
+	var strArr = new Array();
+	if(dataJson!=null && dataJson!="" && dataJson !=undefined){
+		$(dataJson).each(function (i) {
+			var goodsDetailUrl = path+"/market/goods/show?sid="+this.sup_id+"&gid="+this.sup_goods_id;
+			strArr.push("<tr id='tr_"+this.sup_id+"'>");
+		      strArr.push("<td><input type='checkbox' name='subCheckbox' value='"+this.sup_id+"'></td>");
+		      strArr.push("<td>"+(i+1)+"</td>");
+		      strArr.push("<td class='left_none'>"+this.sup_name+"</td>");
+		    strArr.push("</tr>");
+	    });
+	    
+	    return strArr.join("");
+    }else{
+    	return "";
+    }
+}
+
+function doConfirm(){
+	var spCodesTemp = "";
+	$('input:checkbox[name=subCheckbox]:checked').each(function(i){
+		if(0==i){
+			spCodesTemp = $(this).val();
+		}else{
+			spCodesTemp += ("','"+$(this).val());
+		}
+	});
+	if(spCodesTemp!=null && spCodesTemp!=''){
+		spCodesTemp = "'"+spCodesTemp+"'";
+	}
+	
+	if(window.opener){
+		var fWindowText1 = window.opener.document.getElementById("sup_goods_id");
+		fWindowText1.value = spCodesTemp;
+		window.opener.childCallParentMethod();
+    }
+	window.close();
+}

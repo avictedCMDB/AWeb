@@ -1,0 +1,37 @@
+#content .inner {
+    padding: 0px;
+}
+#header {
+    margin-bottom: 0;
+    padding-top: 15px;
+}
+.path {
+	padding: 8px 0;
+}
+.path li {
+    float: left;
+    font-size: 12px;
+    padding-right: 10px;
+}
+.path li span {
+	padding-left: 10px;
+}
+.main_inner {
+	background-color: #fff;
+	padding: 20px 40px 40px;
+	font-size: 14px;
+}
+.main_inner h2 {
+	font-size: 22px;
+	padding-bottom: 20px;
+}
+.main_inner p.time {
+	text-align: center;
+	color: #aaa;
+	margin-bottom: 20px;
+}
+.article p{
+	text-indent: 20px;
+	margin-bottom: 30px;
+	line-height: 23px;
+}

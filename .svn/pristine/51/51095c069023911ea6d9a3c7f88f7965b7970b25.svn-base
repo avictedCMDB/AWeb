@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierStatementMapper">
+	<resultMap id="queryStatmentListMap" type="com.avic.supplier.models.SupplierStatement">
+		<result column="SETTLE_ID" property="settleId" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR" />
+		<result column="ORDER_NUM" property="orderNum" jdbcType="VARCHAR" />
+		<result column="GOODS_NUM" property="goodsNum" jdbcType="VARCHAR" />
+		<result column="SETTLE_AMOUNT" property="settleAmount" jdbcType="VARCHAR" />
+		<result column="DATE_START" property="dateStart" jdbcType="VARCHAR" />
+		<result column="DATE_END" property="dateEnd" jdbcType="VARCHAR" />
+		<result column="SETTLE_STATUS" property="settleStatus" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+		<result column="COMPLETE_TIME" property="completeTime" jdbcType="VARCHAR" />
+		<result column="COMPLETE_OPERATOR" property="completeOperator" jdbcType="VARCHAR" />
+		<result column="CREATE_OPERATOR" property="createOperator" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="queryStatmentListDetailedMap" type="com.avic.supplier.models.SupplierStatement">
+		<result column="BUSI_ID" property="busiId" jdbcType="VARCHAR" /> 
+		<result column="BUSI_TYPE" property="busiType" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+		<result column="TOTAL_NUM" property="totalNum" jdbcType="VARCHAR" />
+		<result column="SETTLE_AMOUNT" property="settleAmount" jdbcType="VARCHAR" />
+		<result column="SETTLE_STATUS" property="settleStatus" jdbcType="VARCHAR" />
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR" />
+		<result column="SETTLE_TIME" property="settleTime" jdbcType="VARCHAR" />
+		<result column="SETTLE_OPERATOR" property="settleOperator" jdbcType="VARCHAR" />
+		<result column="SETTLE_ID" property="settleId" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryStatmentList" resultMap="queryStatmentListMap" parameterType="com.avic.supplier.models.SupplierStatement">
+		SELECT * FROM (select SETTLE_ID,
+						       SUP_ID ,
+						       ORDER_NUM,
+						       GOODS_NUM,
+						       SETTLE_AMOUNT,
+						       DATE_START,
+						       DATE_END,
+						       SETTLE_STATUS,
+						       CREATE_TIME,
+						       COMPLETE_TIME,
+						       COMPLETE_OPERATOR,
+						       CREATE_OPERATOR,
+						       rownum rn
+						  from T_SETTLE_RECORD t
+						  where SUP_ID = #{supId}
+						  <if test="settleId != null and settleId != ''">
+				             and SETTLE_ID like  '%'|| #{settleId,jdbcType=VARCHAR} || '%'
+				          </if>
+						  ) R
+	     WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="queryStatmentListDetailed" resultMap="queryStatmentListDetailedMap" parameterType="com.avic.supplier.models.SupplierStatement">
+		select BUSI_ID,
+		       BUSI_TYPE,
+		       CREATE_TIME,
+		       COMPANY_NAME,
+		       TOTAL_NUM,
+		       SETTLE_AMOUNT,
+		       SETTLE_STATUS,
+		       SUP_ID,
+		       SETTLE_TIME,
+		       SETTLE_OPERATOR,
+		       SETTLE_ID
+		  from T_SETTLE_DATA t
+		  where t.SETTLE_ID = #{settleId}
+	</select>
+</mapper>

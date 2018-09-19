@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SupGoodsMapper">
+	<resultMap id="supGoodsMap" type="com.avic.management.models.SupGoods">
+		<result column="SUP_CAT_ID" property="supCatID" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+		<result column="GOODS_URL" property="goodsURL" jdbcType="VARCHAR" />
+		<result column="GOODS_MODEL" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="GOODS_WEIGHT" property="goodsWeight" jdbcType="VARCHAR" />
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" /> 
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="PRODUCT_AREA" property="productArea" jdbcType="VARCHAR" />
+		<result column="GOODS_CODE" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="GOODS_UNIT" property="goodsUnit" jdbcType="VARCHAR" />
+		<result column="GOODS_STATUS" property="goodsStatus" jdbcType="VARCHAR" />
+		<result column="SALE_PRICE" property="salePrice" jdbcType="VARCHAR" />
+		<result column="COUNT_PRICE" property="countPrice" jdbcType="VARCHAR" />
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR" />
+		<result column="POOL_ID" property="poolID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryGoods" parameterType="com.avic.management.models.SupGoods" resultMap="supGoodsMap">
+	SELECT TSG.SUP_CAT_ID,
+	       TSG.SUP_ID,
+	       TSG.SUP_GOODS_ID,
+	       TSG.GOODS_URL,
+	       TSG.GOODS_MODEL,
+	       TSG.GOODS_WEIGHT,
+	       TSG.IMAGE_PATH,
+	       TSG.BRAND_NAME,
+	       TSG.GOODS_NAME,
+	       TSG.PRODUCT_AREA,
+	       TSG.GOODS_CODE,
+	       TSG.GOODS_UNIT,
+	       TSG.GOODS_STATUS,
+	       TSG.SALE_PRICE,
+	       TSG.COUNT_PRICE,
+	       TSG.RAISE_PRICE AGREE_PRICE,
+	       TSG.POOL_ID
+	  FROM T_SUP_GOODS TSG
+	 WHERE TSG.SUP_ID = #{supID,jdbcType=VARCHAR}
+	   AND TSG.SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

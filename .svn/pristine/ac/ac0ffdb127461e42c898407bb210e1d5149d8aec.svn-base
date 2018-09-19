@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SpecialGoodsMapper">
+	<resultMap id="specialGoodsMap" type="com.avic.management.models.SpecialGoodsBean">
+	</resultMap>
+	
+	<select id="supSelectDoInitData" parameterType="com.avic.management.models.SpecialGoodsBean" resultMap="specialGoodsMap">
+		<choose>
+			<when test="sup_type == 1">
+			SELECT T1.SUP_INFO_ID SUP_ID,T2.SUP_NAME FROM T_ENTERPRISE_SUP_MAPPING T1 
+			LEFT OUTER JOIN T_SUP_INFO T2 ON T1.SUP_INFO_ID=T2.SUP_ID 
+			WHERE T1.IF_BUILDING=0 
+			AND T2.SUP_TYPE='1' 
+			AND T1.COMPANY_ID = #{company_id,jdbcType=VARCHAR}
+			<if test="sup_name != null and sup_name != ''">
+				<![CDATA[ AND T2.SUP_NAME LIKE '%' || #{sup_name} || '%' ]]>
+			</if>
+			ORDER BY T2.SUP_NAME
+			</when>
+			<otherwise>
+			SELECT T1.SUP_ID,T1.SUP_NAME FROM T_SUP_INFO T1 
+			WHERE T1.IF_VALID=1 
+			AND T1.SUP_TYPE='1' 
+			<if test="sup_name != null and sup_name != ''">
+				<![CDATA[ AND T1.SUP_NAME LIKE '%' || #{sup_name} || '%' ]]>
+			</if>
+			AND T1.SUP_ID NOT IN (
+			SELECT T2.SUP_INFO_ID FROM T_ENTERPRISE_SUP_MAPPING T2
+			WHERE T2.IF_BUILDING=0 AND T2.COMPANY_ID = #{company_id,jdbcType=VARCHAR})
+			ORDER BY T1.SUP_NAME
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="InsertT_OFF_STANDARD_REQUIRE" parameterType="com.avic.management.models.SpecialGoodsBean">
+	<selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+		SELECT to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(STANDARD_REQUIRE_INDEX.NEXTVAL,6,'0'),'','0') FROM DUAL
+	</selectKey>
+    INSERT INTO T_OFF_STANDARD_REQUIRE(
+    	ID,GOODS_DESC_NEW,<if test="sup_id != null and sup_id != ''">SUP_ID,</if>STATUS,USER_ID,IS_RELEASE,GOODS_NAME,CLOSE_DATE)
+	VALUES(
+		#{id,jdbcType=VARCHAR},
+		#{goods_desc_new,jdbcType=VARCHAR},
+		<if test="sup_id != null and sup_id != ''">
+		#{sup_id,jdbcType=VARCHAR},
+		</if>
+		0,
+		#{user_id,jdbcType=VARCHAR},
+		#{isRelease,jdbcType=VARCHAR},
+		#{goodsName,jdbcType=VARCHAR},
+		to_date(#{closeDate,jdbcType=VARCHAR},'yyyy-MM-dd')
+	)
+	</insert>
+	
+	<insert id="InsertT_IMAGE_INFO" parameterType="com.avic.management.models.SpecialGoodsBean">
+    INSERT INTO T_IMAGE_INFO(ID, BUSINESS_ID, BUSINESS_TYPE, URL)
+	VALUES(
+		to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(IMAGE_INDEX.NEXTVAL,6,'0'),'','0'),
+		#{id,jdbcType=VARCHAR},
+		'8',
+		#{url,jdbcType=VARCHAR}
+	)
+	</insert>
+	
+	<delete id="deleteSpecialImage"  parameterType="com.avic.management.models.SpecialGoodsBean">
+		DELETE FROM T_IMAGE_INFO 
+		 WHERE BUSINESS_ID =#{id,jdbcType=VARCHAR}
+		   AND BUSINESS_TYPE = '8'
+	</delete>
+	
+	
+	
+	
+	<select id="getRelationShipSupCount" parameterType="com.avic.management.models.SpecialGoodsBean" resultType="java.lang.Integer">
+	SELECT COUNT(T1.SUP_INFO_ID) SUPCOUNT FROM T_ENTERPRISE_SUP_MAPPING T1 
+	WHERE T1.IF_BUILDING=0 AND T1.COMPANY_ID = #{company_id,jdbcType=VARCHAR}
+	</select>
+</mapper>

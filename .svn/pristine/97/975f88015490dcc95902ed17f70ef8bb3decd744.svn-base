@@ -1,0 +1,16 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.OrderSnapshot;
+import com.avic.supervise.models.Order;
+
+@Repository
+public interface OrderMapper {
+    public int queryManageOrderCount(@Param("supId") int supId, @Param("orderId") String orderId, @Param("goodsName") String goodsName, @Param("companyName") String companyName, @Param("timeStart") String timeStart, @Param("timeEnd") String timeEnd);
+    public List<Order> queryManageOrderList(@Param("supId") int supId, @Param("orderId") String orderId, @Param("goodsName") String goodsName, @Param("companyName") String companyName, @Param("timeStart") String timeStart, @Param("timeEnd") String timeEnd, @Param("start") int start, @Param("end") int end);
+    public List<OrderSnapshot> queryMultiOrderSnapshot(@Param("list") List<String> orderIds);
+}

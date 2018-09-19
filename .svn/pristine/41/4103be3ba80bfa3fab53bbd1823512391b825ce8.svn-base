@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.InvoiceMapper">
+	<resultMap id="invoiceResultMap" type="Invoice">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<result column="order_amount" property="orderAmount" jdbcType="DOUBLE" />
+		<result column="order_amount_init" property="orderAmountInit" jdbcType="DOUBLE" />
+		<result column="goods_num" property="goodsNum" jdbcType="INTEGER" /> 
+		<result column="invoice_company" property="invoiceCompany" jdbcType="VARCHAR" /> 
+		<result column="invoice_status" property="invoiceStatus" jdbcType="VARCHAR" /> 
+		<result column="express_name" property="expressName" jdbcType="VARCHAR" /> 
+		<result column="express_code" property="expressCode" jdbcType="VARCHAR" />
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR" />
+		<result column="invoice_flag" property="invoiceFlag" jdbcType="INTEGER" /> 
+		<result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="invoice_type" property="invoiceType" jdbcType="INTEGER" /> 
+		<result column="refunding" property="refunding" jdbcType="INTEGER" /> 
+		<result column="companyid" property="companyId" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+		<result column="vat_receive_name" property="vatReceiveName" jdbcType="VARCHAR" />
+		<result column="vat_receive_tel" property="vatReceiveTel" jdbcType="VARCHAR" />
+		<result column="vat_receive_detail" property="vatReceiveDetail" jdbcType="VARCHAR" />
+		<result column="vat_receive_prov" property="vatReceiveProv" jdbcType="INTEGER" />
+		<result column="vat_receive_city" property="vatReceiveCity" jdbcType="INTEGER" />
+		<result column="vat_receive_dist" property="vatReceiveDist" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="addr_all" property="addrAll" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="vatMap" type="com.avic.supervise.models.VatInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="TAXPAYER_CODE" property="taxpayerCode" jdbcType="VARCHAR" /> 
+		<result column="REGISTER_PATH" property="registerPath" jdbcType="VARCHAR" /> 
+		<result column="REGISTER_TEL" property="registerTel" jdbcType="VARCHAR" /> 
+		<result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" /> 
+		<result column="BANK_ACCOUNT" property="bankAccount" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="INTEGER" /> 
+		<result column="VAT_RECEIVE_NAME" property="vatReceiveName" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_TEL" property="vatReceiveTel" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_PROV" property="vatReceiveProv" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_CITY" property="vatReceiveCity" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_DIST" property="vatReceiveDist" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_DETAIL" property="vatReceiveDetail" jdbcType="VARCHAR" />
+		<result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="AUDIT_CONTENT" property="auditContent" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="imgMap" type="com.avic.supervise.models.ImageInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="BUSINESS_ID" property="businessId" jdbcType="VARCHAR" /> 
+		<result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" /> 
+		<result column="URL" property="url" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<select id="queryInvoiceList" resultMap="invoiceResultMap">
+	select * from (
+		
+select row_number() over (order by invoice_status asc, pay_time desc) rn, order_id, addr_all, order_amount - refund_price as order_amount, order_amount_init - refund_price_init as order_amount_init, pay_time, invoice_status, express_name, express_code, invoice_type, buy_num - refund_num as goods_num, refunding, companyid, companyname
+ from (
+        select a.order_id, addr_all, order_amount, pay_time, invoice_status, express_name, express_code, invoice_type, b.companyid, b.companyname, a.order_amount_init,
+       (select sum(buy_num) from t_order_snapshot c where c.order_id = a.order_id) as buy_num,
+       (select nvl(sum(refound_amount), 0) from t_order_refound d where d.order_id = a.order_id and d.refound_status = '5') as refund_num,
+       (select nvl(sum(refound_price), 0) from t_order_refound e where e.order_id = a.order_id and e.refound_status = '5') as refund_price,
+       (select nvl(sum(refound_price_init), 0) from t_order_refound f where f.order_id = a.order_id and f.refound_status = '5') as refund_price_init,
+       (select count(1) from t_order_refound f where f.order_id = a.order_id and f.refound_status &lt;&gt; '5' and f.refound_status &lt;&gt; '2' and f.refound_status &lt;&gt; '6') as refunding
+       
+          from t_order a,users b
+          where a.user_id = b.userid
+            and order_status = 20
+		 <if test="companyId != null and companyId != ''">
+		   and b.companyid = #{companyId}
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and a.order_id like '%'||#{orderId}||'%'
+		 </if>
+		   <if test="timeStart != null and timeStart != ''">
+		   and pay_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="timeEnd != null and timeEnd != ''">
+		   and pay_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		 <if test="invoiceStatus != null and invoiceStatus != ''">
+		   and invoice_status = #{invoiceStatus}
+		 </if>
+        )
+            where buy_num &gt; refund_num
+		 ) x
+		 <if test="start != -1 and end != -1">
+	where x.rn between #{start} and #{end}
+	</if>
+	</select>
+	<select id="queryInvoiceStat" resultType="java.lang.Double">
+		select nvl(sum(order_amount - refund_price), 0) from 
+		(
+        select a.order_id, order_amount,
+       (select nvl(sum(refound_price), 0) from t_order_refound e where e.order_id = a.order_id and e.refound_status = '5') as refund_price,
+       (select sum(buy_num) from t_order_snapshot c where c.order_id = a.order_id) as buy_num,
+       (select nvl(sum(refound_amount), 0) from t_order_refound d where d.order_id = a.order_id and d.refound_status = '5') as refund_num
+       
+          from t_order a,users b
+          where a.user_id = b.userid
+            and order_status = 20
+		 <if test="companyId != null and companyId != ''">
+		   and b.companyid = #{companyId}
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and a.order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="invoiceStatus != null and invoiceStatus != ''">
+		   and invoice_status = #{invoiceStatus}
+		 </if>
+		   <if test="timeStart != null and timeStart != ''">
+		   and pay_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="timeEnd != null and timeEnd != ''">
+		   and pay_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if> )
+            where buy_num &gt; refund_num
+	</select>
+	<select id="queryInvoiceCount" resultType="java.lang.Integer">
+		select count(1) from 
+		(
+        select a.order_id, 
+       (select sum(buy_num) from t_order_snapshot c where c.order_id = a.order_id) as buy_num,
+       (select nvl(sum(refound_amount), 0) from t_order_refound d where d.order_id = a.order_id and d.refound_status = '5') as refund_num
+       
+          from t_order a,users b
+          where a.user_id = b.userid
+            and order_status = 20
+		 <if test="companyId != null and companyId != ''">
+		   and b.companyid = #{companyId}
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and a.order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="invoiceStatus != null and invoiceStatus != ''">
+		   and invoice_status = #{invoiceStatus}
+		 </if>
+		   <if test="timeStart != null and timeStart != ''">
+		   and pay_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="timeEnd != null and timeEnd != ''">
+		   and pay_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if> )
+            where buy_num &gt; refund_num
+	</select>
+	<select id="queryInvoiceDetail" resultMap="invoiceResultMap">
+		select rownum rn, order_id, order_amount, user_id, addr_all,
+			   invoice_company, invoice_status, express_name, express_code, invoice_num, invoice_flag, invoice_content, invoice_type, 
+			   vat_receive_name, vat_receive_tel, vat_receive_detail, vat_receive_prov, vat_receive_city, vat_receive_dist
+		  from t_order a
+		 where order_id = #{orderId}
+	</select>
+	<select id="queryDefaultVat" resultMap="vatMap">
+		select *
+		  from t_vat_info
+		 where user_id = #{userId}
+	</select>
+	<update id="updateOrderInvoice">
+		update t_order
+		   set invoice_company = #{invoice.invoiceCompany,jdbcType=VARCHAR}
+		     , invoice_num = #{invoice.invoiceNum,jdbcType=VARCHAR}
+		     , invoice_flag = #{invoice.invoiceFlag,jdbcType=INTEGER}
+		     , invoice_content = #{invoice.invoiceContent,jdbcType=VARCHAR}
+		     , express_name = #{invoice.expressName,jdbcType=VARCHAR}
+		     , express_code = #{invoice.expressCode,jdbcType=VARCHAR}
+		     , invoice_type = #{invoice.invoiceType,jdbcType=INTEGER}
+		     , vat_receive_name = #{invoice.vatReceiveName,jdbcType=VARCHAR}
+		     , vat_receive_tel = #{invoice.vatReceiveTel,jdbcType=VARCHAR}
+		     , vat_receive_detail = #{invoice.vatReceiveDetail,jdbcType=VARCHAR}
+		     , vat_receive_prov = #{invoice.vatReceiveProv,jdbcType=INTEGER}
+		     , vat_receive_city = #{invoice.vatReceiveCity,jdbcType=INTEGER}
+		     , vat_receive_dist = #{invoice.vatReceiveDist,jdbcType=INTEGER}
+		     , invoice_status = '1'
+		where order_id in 
+		 <foreach close=")" collection="orderIds" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+	</update>
+		<select id="queryVatInfoList" resultMap="vatMap">
+		select R.* 
+		from (select ID,
+			       COMPANY_NAME,
+			       TAXPAYER_CODE,
+			       REGISTER_PATH,
+			       REGISTER_TEL,
+			       BANK_NAME,
+			       BANK_ACCOUNT,
+			       USER_ID,
+			       CREATE_DATE,
+			       VAT_RECEIVE_NAME,
+			       VAT_RECEIVE_TEL,
+			       VAT_RECEIVE_PROV,
+			       VAT_RECEIVE_CITY,
+			       VAT_RECEIVE_DIST,
+			       VAT_RECEIVE_DETAIL,
+			       AUDIT_STATUS,
+			       AUDIT_CONTENT,
+			       rownum rn
+			  from T_VAT_INFO t
+			  where 1=1
+			   <if test="companyName != null and companyName != ''">
+               and COMPANY_NAME like '%'||#{companyName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerPath != null and registerPath != ''">
+	               and REGISTER_PATH like '%'||#{registerPath,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerTel != null and registerTel != ''">
+	               and REGISTER_TEL like '%'||#{registerTel,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankName != null and bankName != ''">
+	               and BANK_NAME like '%'||#{bankName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankAccount != null and bankAccount != ''">
+	               and BANK_ACCOUNT like '%'||#{bankAccount,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="taxpayerCode != null and taxpayerCode != ''">
+	               and TAXPAYER_CODE like '%'||#{taxpayerCode,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="auditStatus != null and auditStatus != ''">
+	               and AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+	         </if>
+	          <if test="id != null and id != ''">
+	               and ID = #{id,jdbcType=VARCHAR}
+	         </if>) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="queryVatInfoCount" resultType="java.lang.Integer">
+		select COUNT(1)
+			  from T_VAT_INFO t
+			  where 1=1
+			   <if test="companyName != null and companyName != ''">
+               and COMPANY_NAME like '%'||#{companyName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerPath != null and registerPath != ''">
+	               and REGISTER_PATH like '%'||#{registerPath,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerTel != null and registerTel != ''">
+	               and REGISTER_TEL like '%'||#{registerTel,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankName != null and bankName != ''">
+	               and BANK_NAME like '%'|| #{bankName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankAccount != null and bankAccount != ''">
+	               and BANK_ACCOUNT like '%'||#{bankAccount,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="taxpayerCode != null and taxpayerCode != ''">
+	               and TAXPAYER_CODE like '%'||#{taxpayerCode,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="auditStatus != null and auditStatus != ''">
+	               and AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+	         </if>
+	         <if test="id != null and id != ''">
+	               and ID = #{id,jdbcType=VARCHAR}
+	         </if>
+	</select>
+	<select id="queryImageInfo" resultMap="imgMap">
+		select t.*, t.rowid
+		  from T_IMAGE_INFO t
+		 where t.business_id =#{id,jdbcType=VARCHAR}
+		   and t.business_type =#{businessType,jdbcType=VARCHAR}
+	</select>
+	<update id="updateVatInfo">
+		update T_VAT_INFO set AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+		AUDIT_CONTENT = #{auditContent,jdbcType=VARCHAR}
+		 where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="doNoInvoice">
+		UPDATE T_ORDER T1
+		SET T1.INVOICE_STATUS = '2',T1.INVOICE_TYPE = '0'
+		WHERE T1.ORDER_ID IN 
+		 <foreach collection="list" item="item" index="index" open="(" separator="," close=")"> 
+			#{item}
+		 </foreach>
+	</update>
+</mapper>

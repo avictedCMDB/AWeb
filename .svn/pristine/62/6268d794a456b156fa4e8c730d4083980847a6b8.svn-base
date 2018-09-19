@@ -1,0 +1,233 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="商品搜索" name="title" />
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/product-list.css" rel="stylesheet">
+<script type="text/javascript">
+function toggleBrand() {
+	var ul = $("#brand_ul");
+	if (ul.attr("data-org-height")) {		
+		if (ul.attr("data-expanded") == "true") {
+				ul.height(72);
+				ul.attr("data-expanded", "false");
+		} else {
+			ul.height(ul.attr("data-org-height"));
+			ul.attr("data-expanded", "true");
+		}
+	}
+}
+</script>
+</head>
+
+<body>
+	<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+		<div id="nav_area">
+			<div class="inner clearfix">
+				<jsp:include page="../categorys.jsp" />
+			</div>
+			<!--#nav_area-->
+		</div>
+		<div id="contents">
+			<div class="inner">
+				<div class="breadcrumb">
+					<ul>
+						<li><a href="${pageContext.request.contextPath}">首页</a><span>&gt;</span></li>
+						<c:if test="${cat1 > 0}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat1}">${categoryCache.getCategoryName(cat1)}</a><span>&gt;</span></li>
+						</c:if>
+						<c:if test="${cat2 > 0}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat2}">${categoryCache.getCategoryName(cat2)}</a><span>&gt;</span></li>
+						</c:if>
+						<c:if test="${cat3 > 0}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat3}">${categoryCache.getCategoryName(cat3)}</a><span>&gt;</span></li>
+						</c:if>
+						<c:if test="${searchKeyword != ''}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat}&q=${fn:escapeXml(searchKeyword)}">搜索“${fn:escapeXml(searchKeyword)}”</a><span>&gt;</span></li>
+						</c:if>
+					</ul>
+					<!--.breadcrumb-->
+				</div>
+
+				<div id="product_list" class="clearfix">
+					<div id="category">
+						<h2>
+							所有类目<img src="${pageContext.request.contextPath}/static/img/product-list/icon-arrow-down.gif" alt="">
+						</h2>
+						<ul>
+							<li><a href="#">办公设备</a></li>
+							<li><a href="#">电脑及配件</a></li>
+							<li><a href="#">数码</a></li>
+							<li><a href="#">办公家具</a></li>
+							<li><a href="#">办公家电</a></li>
+							<li><a href="#">劳防用品</a></li>
+							<li><a href="#">生活用品</a></li>
+							<li><a href="#">五金工具/刃具/量具/锁具</a></li>
+							<li><a href="#">食品饮料</a></li>
+							<li class="none_dotted"><a href="#">卡券及商务礼品</a></li>
+						</ul>
+						<!--#category-->
+					</div>
+
+					<div id="contact_main">
+						<p>
+							<!-- <strong class="font-color-red font-16">全部</strong> -->搜索到<strong class="font-color-red font-16">${total}</strong>件相关商品
+						</p>
+						<div id="brands_price">
+							<div class="brands clearfix">
+								<div class="sl_key">品牌</div>
+								<div class="sl_value clearfix">
+									<ul style="overflow:hidden;" id="brand_ul">
+									<c:forEach var="item" items="${brandList}" varStatus="sta">
+											<li><a <c:if test="${item == searchBrand}">style="color:#db433d;"</c:if> href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=${price}&brand=${fn:escapeXml(item)}&o=${order}&view=${view}">${fn:escapeXml(item)}</a></li>
+									</c:forEach>
+									</ul>
+									<div class="clearfix"></div>
+									<div class="btn_more">
+										<a href="javascript:void(0);" onclick="toggleBrand();"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-more.gif" alt=""></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="brands clearfix">
+								<div class="sl_key">价格</div>
+								<div class="sl_value clearfix">
+									<ul>
+										<li><a <c:if test="${price == '0,3'}">style="color:#db433d;"</c:if> href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=0,3&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=${view}">0-3</a></li>
+										<li><a <c:if test="${price == '4,8'}">style="color:#db433d;"</c:if> href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=4,8&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=${view}">4-8</a></li>
+										<li><a <c:if test="${price == '9,29'}">style="color:#db433d;"</c:if> href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=9,29&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=${view}">9-29</a></li>
+										<li><a <c:if test="${price == '30,0'}">style="color:#db433d;"</c:if> href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=30,0&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=${view}">30以上</a></li>
+									</ul>
+								</div>
+							</div>
+							<!--#brands-->
+						</div>
+						<div id="sort_row">
+							<ul class="clearfix">
+								<li><a href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=${price}&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=list" <c:if test="${view == 'list'}"> class="active"</c:if>><img src="${pageContext.request.contextPath}/static/img/product-list/btn-list.gif" alt="列表"></a></li>
+								<li><a href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=${price}&brand=${fn:escapeXml(searchBrand)}&o=${order}&view=pic" <c:if test="${view == 'pic'}"> class="active"</c:if>><img src="${pageContext.request.contextPath}/static/img/product-list/btn-preview.gif" alt="大图"></a></li>
+								<li><a href="${pageContext.request.contextPath}/market/goods/search?q=${fn:escapeXml(searchKeyword)}&cat=${cat}&price=${price}&brand=${fn:escapeXml(searchBrand)}&o=${order > 0 ? 0 : 1}&view=${view}" <c:if test="${order > 0}"> class="active"</c:if>><img src="${pageContext.request.contextPath}/static/img/product-list/btn-price.gif" alt="价格"></a></li>
+							</ul>
+						</div>
+
+						<div id="items">
+							<ul class="clearfix">
+								<c:forEach var="item" items="${list}" varStatus="sta">
+									<c:choose>
+										<c:when test="${sta.index % 4 == 3}">
+											<li class="none">
+										</c:when>
+										<c:otherwise>
+											<li>
+										</c:otherwise>
+									</c:choose>
+									<div class="photo">
+									<a href="${pageContext.request.contextPath}/market/goods/show?gid=${item.supGoodsId}&sid=${item.supId}">
+										<img src="${item.imagePath}" alt="" width="220px" height="190px">
+									</a>
+									</div>
+									<div class="price">￥${item.agreePrice }</div>
+									<div class="volume">销量：${item.saleNum }</div>
+									<a href="${pageContext.request.contextPath}/market/goods/show?gid=${item.supGoodsId}&sid=${item.supId}" class="describe" style="height:35px; display:block; overflow:hidden;">${item.goodsName }</a>
+									<ul class="btn_list clearfix">
+										<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-cart.gif" alt="加入购物车"></a></li>
+										<li><a href="#"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-collection.gif" alt="收藏"></a></li>
+										<li class="none"><a href="#"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-contrast.gif" alt="对比"></a></li>
+									</ul>
+									</li>
+								</c:forEach>
+							</ul>
+							<!--#items-->
+						</div>
+						<c:if test="${pages > 0}">
+							<div id="flip" class="clearfix" style="padding-left:0; float:right;">
+								<ul>
+									<c:if test="${page > 1}">
+										<li><a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', page - 1))}">上一页</a></li>
+									</c:if>
+
+									<c:set var="minPage" value="${page - 3}"></c:set>
+									<c:set var="maxPage" value="${page + 3}"></c:set>
+
+									<c:if test="${minPage < 1 }">
+										<c:set var="minPage" value="1"></c:set>
+									</c:if>
+
+									<c:if test="${maxPage > pages}">
+										<c:set var="maxPage" value="${pages}"></c:set>
+									</c:if>
+									
+									<c:if test="${minPage > 1}">									
+										<li><a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', 1))}">1</a></li>
+									</c:if>
+									
+									<c:if test="${minPage > 2}">
+
+										<li class="select"><a href="#">...</a></li>
+									</c:if>
+									<c:forEach varStatus="i" begin="${minPage}" end="${maxPage}" step="1">
+									
+										<c:set var="idx" value="${i.count + minPage - 1}"></c:set>
+										
+										<c:choose>
+											<c:when test="${idx == page}">
+												<li class="select font-color-red">
+											</c:when>
+											<c:otherwise>
+												<li>
+											</c:otherwise>
+										</c:choose>
+										
+										<a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', idx))}">${idx}</a></li>
+									</c:forEach>
+
+									<c:if test="${maxPage < pages - 1}">
+										<li class="select"><a href="#">...</a></li>
+									</c:if>
+									<c:if test="${maxPage < pages}">
+										<li><a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', pages))}">${pages}</a></li>
+									</c:if>
+
+									<c:if test="${page < pages}">
+										<li><a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', page + 1))}">下一页</a></li>
+									</c:if>
+									
+								</ul>
+								<!--#flip-->
+							</div>
+						</c:if>
+						<!--#contact_main-->
+					</div>
+					<!--#product_list-->
+				</div>
+				<!--.inner-->
+			</div>
+			<!--#contents-->
+		</div>
+		<jsp:include page="../footer.jsp" />
+		<!--.page-wrapper-->
+	</div>
+	<script type="text/javascript">
+	var brandHeight = $("#brand_ul").height();
+	if (brandHeight > 72) {
+		$("#brand_ul").height(72);
+		$("#brand_ul").attr("data-org-height", brandHeight);
+	}
+	
+	$(".breadcrumb ul li span").last().hide();
+
+	function top_search() {
+		var kw = $.trim($("#search_keyword").val());
+		window.location.href = "${pageContext.request.contextPath}/market/goods/search?cat=${cat}&view=${view}&q=" + kw;
+	}
+	</script>
+</body>
+
+</html>

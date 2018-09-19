@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>换货管理|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/manage_common.css" rel="stylesheet">
+<link href="css/management_exchange.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="#"><span class="fa fa-user"></span>经办人用户</a><span>|</span></li>
+        <li><a href="#">采购管理中心</a><span>|</span></li>
+        <li><a href="#">超市首页 </a><span>|</span></li>
+        <li><a href="#">登录</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="img/management/logo-management.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner details">
+      <h2>换货管理</h2>
+      <div class="section">
+        <h3>换货单基本信息</h3>
+        <div class="section_info">
+          <label>订单编号：</label>
+          <span>D100003110000</span>
+          <label>采购单位名称：</label>
+          <span>中航青云</span>
+          <label>采购人联系人：</label>
+          <span>李先生</span>
+          <label>采购人联系电话：</label>
+          <span>13811189077</span>
+          <label>换货单编号： 	</label>
+          <span>H100002110000</span>
+          <label>换货总数量：</label>
+          <span>2</span>
+        </div>
+        <div class="section_info">
+          <label>备注：</label>
+          <span>备注备注备注备注</span>
+        </div>
+        <div class="section_info">
+          <label>附件：</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="section detail_exchange">
+        <h3>换货单明细</h3>
+        <table border="0">
+          <tr>
+            <th width="40">序号</th>
+            <th colspan="2">商品名称</th>	
+            <th width="110">单价(元)</th>
+            <th width="110">换货数量</th>
+            <th width="110">退换金额</th>
+            <th width="200" class="last">换货原因</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+            <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+            <td class="price">1.54</td>
+            <td>2</td>
+            <td>3.08</td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="btn_close">
+        <button type="button" class="btn btn-default gray">关闭</button>
+      </div>
+      
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

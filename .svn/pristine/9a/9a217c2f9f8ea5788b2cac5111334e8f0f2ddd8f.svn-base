@@ -1,0 +1,216 @@
+package com.avic.management.models;
+
+import java.util.Date;
+
+public class BidContract {
+    String contractId;
+    String projId;
+    String userId;
+    String supCode;
+    Date createTime;
+    Date uploadTime;
+    Date signTime;
+    String aCompanyName;
+    String aAddress;
+    String aPostcode;
+    String aPhone;
+    String aFax;
+    String aTitle;
+    String aBank;
+    String aAccount;
+    String aTax;
+    String aSign;
+    String bCompanyName;
+    String bAddress;
+    String bPostcode;
+    String bPhone;
+    String bFax;
+    String bTitle;
+    String bBank;
+    String bAccount;
+    String bTax;
+    String bSign;
+    
+    
+    String aParam;
+    String bParam;
+    
+    
+    
+    public String getaParam() {
+        return aParam;
+    }
+    public void setaParam(String aParam) {
+        this.aParam = aParam;
+    }
+    public String getbParam() {
+        return bParam;
+    }
+    public void setbParam(String bParam) {
+        this.bParam = bParam;
+    }
+    public String getContractId() {
+        return contractId;
+    }
+    public void setContractId(String contractId) {
+        this.contractId = contractId;
+    }
+    public String getProjId() {
+        return projId;
+    }
+    public void setProjId(String projId) {
+        this.projId = projId;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public String getSupCode() {
+        return supCode;
+    }
+    public void setSupCode(String supCode) {
+        this.supCode = supCode;
+    }
+    public Date getCreateTime() {
+        return createTime;
+    }
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    public Date getUploadTime() {
+        return uploadTime;
+    }
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+    public Date getSignTime() {
+        return signTime;
+    }
+    public void setSignTime(Date signTime) {
+        this.signTime = signTime;
+    }
+    public String getaCompanyName() {
+        return aCompanyName;
+    }
+    public void setaCompanyName(String aCompanyName) {
+        this.aCompanyName = aCompanyName;
+    }
+    public String getaAddress() {
+        return aAddress;
+    }
+    public void setaAddress(String aAddress) {
+        this.aAddress = aAddress;
+    }
+    public String getaPostcode() {
+        return aPostcode;
+    }
+    public void setaPostcode(String aPostcode) {
+        this.aPostcode = aPostcode;
+    }
+    public String getaPhone() {
+        return aPhone;
+    }
+    public void setaPhone(String aPhone) {
+        this.aPhone = aPhone;
+    }
+    public String getaFax() {
+        return aFax;
+    }
+    public void setaFax(String aFax) {
+        this.aFax = aFax;
+    }
+    public String getaTitle() {
+        return aTitle;
+    }
+    public void setaTitle(String aTitle) {
+        this.aTitle = aTitle;
+    }
+    public String getaBank() {
+        return aBank;
+    }
+    public void setaBank(String aBank) {
+        this.aBank = aBank;
+    }
+    public String getaAccount() {
+        return aAccount;
+    }
+    public void setaAccount(String aAccount) {
+        this.aAccount = aAccount;
+    }
+    public String getaTax() {
+        return aTax;
+    }
+    public void setaTax(String aTax) {
+        this.aTax = aTax;
+    }
+    public String getaSign() {
+        return aSign;
+    }
+    public void setaSign(String aSign) {
+        this.aSign = aSign;
+    }
+    public String getbCompanyName() {
+        return bCompanyName;
+    }
+    public void setbCompanyName(String bCompanyName) {
+        this.bCompanyName = bCompanyName;
+    }
+    public String getbAddress() {
+        return bAddress;
+    }
+    public void setbAddress(String bAddress) {
+        this.bAddress = bAddress;
+    }
+    public String getbPostcode() {
+        return bPostcode;
+    }
+    public void setbPostcode(String bPostcode) {
+        this.bPostcode = bPostcode;
+    }
+    public String getbPhone() {
+        return bPhone;
+    }
+    public void setbPhone(String bPhone) {
+        this.bPhone = bPhone;
+    }
+    public String getbFax() {
+        return bFax;
+    }
+    public void setbFax(String bFax) {
+        this.bFax = bFax;
+    }
+    public String getbTitle() {
+        return bTitle;
+    }
+    public void setbTitle(String bTitle) {
+        this.bTitle = bTitle;
+    }
+    public String getbBank() {
+        return bBank;
+    }
+    public void setbBank(String bBank) {
+        this.bBank = bBank;
+    }
+    public String getbAccount() {
+        return bAccount;
+    }
+    public void setbAccount(String bAccount) {
+        this.bAccount = bAccount;
+    }
+    public String getbTax() {
+        return bTax;
+    }
+    public void setbTax(String bTax) {
+        this.bTax = bTax;
+    }
+    public String getbSign() {
+        return bSign;
+    }
+    public void setbSign(String bSign) {
+        this.bSign = bSign;
+    }
+    
+    
+}

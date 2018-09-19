@@ -1,0 +1,73 @@
+package com.avic.supplier.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.models.MarketAddress;
+import com.avic.market.mappers.SupplierMapper;
+import com.avic.supplier.mappers.CategoryMapper;
+import com.avic.supplier.mappers.SupplierAddressMapper;
+import com.avic.supplier.models.SupplierAddress;
+import com.avic.supplier.services.SupplierAddressService;
+import com.avic.supplier.utils.CodeConstants;
+
+@Service
+public class SupplierAddressServiceImpl implements SupplierAddressService{
+    protected static final Log logger = LogFactory.getLog(SupplierAddressServiceImpl.class);
+    
+    @Autowired
+    SupplierAddressMapper supplierAddressMapper;
+
+   	@Override
+   	public List<SupplierAddress> querySupplierAddressList(SupplierAddress supplierAddress) {
+   		return supplierAddressMapper.querySupplierAddressList(supplierAddress);
+   	}
+
+   	@Override
+   	public void deleteSupplierAddress(String supAddressId) {
+   		String [] addresses = supAddressId.split(",");
+   		for (int i = 0; i < addresses.length; i++) {
+   			supplierAddressMapper.deleteSupplierAddress(addresses[i]);
+   		}
+   	}
+
+   	@Override
+   	public void updateSupplierAddress(SupplierAddress supplierAddress) {
+   		supplierAddressMapper.updateSupplierAddress(supplierAddress);
+   	}
+
+	@Override
+	public void insertSupplierAddress(SupplierAddress supplierAddress) {
+		// 判断是否为默认地址
+		if (CodeConstants.IS_DEFAULT.equals(supplierAddress.getIfDefault())) {
+        	SupplierAddress unDefParam =  new SupplierAddress();
+        	// 清空已设置的默认地址
+        	unDefParam.setIfDefault(CodeConstants.NO_DEFAULT);
+        	unDefParam.setSupId(supplierAddress.getSupId());
+        	supplierAddressMapper.updateSupplierAddress(unDefParam);
+		}
+		String index = supplierAddressMapper.querySupplierIndex();
+		supplierAddress.setSupAddressId(index);
+		supplierAddressMapper.insertSupplierAddress(supplierAddress);
+	}
+
+	@Override
+	public SupplierAddress querySupplierAddress(String supAddressId) {
+		return supplierAddressMapper.querySupplierAddress(supAddressId);
+	}
+
+	@Override
+	public Integer querySupplierAddressListCount(SupplierAddress supplierAddress) {
+		return supplierAddressMapper.querySupplierAddressListCount(supplierAddress);
+	}
+
+	@Override
+	public String querySupplierIndex() {
+		return supplierAddressMapper.querySupplierIndex();
+	}
+
+}

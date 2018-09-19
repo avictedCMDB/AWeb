@@ -1,0 +1,268 @@
+package com.avic.common.beans;
+
+import java.io.Serializable;
+
+public class GoodsToCompare implements Serializable{
+	private static final long serialVersionUID = -4924624311155595695L;
+	private String supOneID; 		    //比对供应商1ID
+	private String supGoodsOneID; 		//比对商品1ID
+	private String supTwoID; 		 	//比对供应商2ID
+	private String supGoodsTwoID; 		//比对商品2ID
+	private String supThreeID; 		 	//比对供应商3ID
+	private String supGoodsThreeID; 	//比对商品3ID
+	private String supFourID; 		 	//比对供应商4ID
+	private String supGoodsFourID; 		//比对商品4ID
+	
+	private String compareID; 		 		//比对ID
+	private String supCheckedID; 			//比对后别选中的商品平台编号
+	private String supGoodsCheckedID; 		//比对后别选中的商品编号
+	private String ProCheckedReason; 		//选中原因
+	private String remark;					//备注
+	
+	private String supGoodsOneImagePath;
+	private String supGoodsOneGoodsName;
+	private String supGoodsOneAgreePrice;
+	private String supGoodsOneBrandName;
+	private String supGoodsOneProductArea;
+	private String supGoodsTwoImagePath;
+	private String supGoodsTwoGoodsName;
+	private String supGoodsTwoAgreePrice;
+	private String supGoodsTwoBrandName;
+	private String supGoodsTwoProductArea;
+	private String supGoodsThreeImagePath;
+	private String supGoodsThreeGoodsName;
+	private String supGoodsThreeAgreePrice;
+	private String supGoodsThreeBrandName;
+	private String supGoodsThreeProductArea;
+	private String supGoodsFourImagePath;
+	private String supGoodsFourGoodsName;
+	private String supGoodsFourAgreePrice;
+	private String supGoodsFourBrandName;
+	private String supGoodsFourProductArea;
+	private String companyName;
+	
+	private String chooseGoodsIndex;
+	
+	private String returnUrl; 		 //转发的url
+	
+	
+	public String getChooseGoodsIndex() {
+		return chooseGoodsIndex;
+	}
+	public void setChooseGoodsIndex(String chooseGoodsIndex) {
+		this.chooseGoodsIndex = chooseGoodsIndex;
+	}
+	public String getReturnUrl() {
+		return returnUrl;
+	}
+	public void setReturnUrl(String returnUrl) {
+		this.returnUrl = returnUrl;
+	}
+	public String getSupOneID() {
+		return supOneID;
+	}
+	public void setSupOneID(String supOneID) {
+		this.supOneID = supOneID;
+	}
+	public String getSupGoodsOneID() {
+		return supGoodsOneID;
+	}
+	public void setSupGoodsOneID(String supGoodsOneID) {
+		this.supGoodsOneID = supGoodsOneID;
+	}
+	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public String getSupTwoID() {
+		return supTwoID;
+	}
+	public void setSupTwoID(String supTwoID) {
+		this.supTwoID = supTwoID;
+	}
+	public String getSupGoodsTwoID() {
+		return supGoodsTwoID;
+	}
+	public void setSupGoodsTwoID(String supGoodsTwoID) {
+		this.supGoodsTwoID = supGoodsTwoID;
+	}
+	public String getSupThreeID() {
+		return supThreeID;
+	}
+	public void setSupThreeID(String supThreeID) {
+		this.supThreeID = supThreeID;
+	}
+	public String getSupGoodsThreeID() {
+		return supGoodsThreeID;
+	}
+	public void setSupGoodsThreeID(String supGoodsThreeID) {
+		this.supGoodsThreeID = supGoodsThreeID;
+	}
+	public String getSupFourID() {
+		return supFourID;
+	}
+	public void setSupFourID(String supFourID) {
+		this.supFourID = supFourID;
+	}
+	public String getSupGoodsFourID() {
+		return supGoodsFourID;
+	}
+	public void setSupGoodsFourID(String supGoodsFourID) {
+		this.supGoodsFourID = supGoodsFourID;
+	}
+	public String getCompareID() {
+		return compareID;
+	}
+	public void setCompareID(String compareID) {
+		this.compareID = compareID;
+	}
+	public String getSupCheckedID() {
+		return supCheckedID;
+	}
+	public void setSupCheckedID(String supCheckedID) {
+		this.supCheckedID = supCheckedID;
+	}
+	public String getSupGoodsCheckedID() {
+		return supGoodsCheckedID;
+	}
+	public void setSupGoodsCheckedID(String supGoodsCheckedID) {
+		this.supGoodsCheckedID = supGoodsCheckedID;
+	}
+	public String getProCheckedReason() {
+		return ProCheckedReason;
+	}
+	public void setProCheckedReason(String proCheckedReason) {
+		ProCheckedReason = proCheckedReason;
+	}
+	public String getSupGoodsOneImagePath() {
+		return supGoodsOneImagePath;
+	}
+	public void setSupGoodsOneImagePath(String supGoodsOneImagePath) {
+		this.supGoodsOneImagePath = supGoodsOneImagePath;
+	}
+	public String getSupGoodsOneGoodsName() {
+		return supGoodsOneGoodsName;
+	}
+	public void setSupGoodsOneGoodsName(String supGoodsOneGoodsName) {
+		this.supGoodsOneGoodsName = supGoodsOneGoodsName;
+	}
+	public String getSupGoodsOneAgreePrice() {
+		return supGoodsOneAgreePrice;
+	}
+	public void setSupGoodsOneAgreePrice(String supGoodsOneAgreePrice) {
+		this.supGoodsOneAgreePrice = supGoodsOneAgreePrice;
+	}
+	public String getSupGoodsOneBrandName() {
+		return supGoodsOneBrandName;
+	}
+	public void setSupGoodsOneBrandName(String supGoodsOneBrandName) {
+		this.supGoodsOneBrandName = supGoodsOneBrandName;
+	}
+	public String getSupGoodsOneProductArea() {
+		return supGoodsOneProductArea;
+	}
+	public void setSupGoodsOneProductArea(String supGoodsOneProductArea) {
+		this.supGoodsOneProductArea = supGoodsOneProductArea;
+	}
+	public String getSupGoodsTwoImagePath() {
+		return supGoodsTwoImagePath;
+	}
+	public void setSupGoodsTwoImagePath(String supGoodsTwoImagePath) {
+		this.supGoodsTwoImagePath = supGoodsTwoImagePath;
+	}
+	public String getSupGoodsTwoGoodsName() {
+		return supGoodsTwoGoodsName;
+	}
+	public void setSupGoodsTwoGoodsName(String supGoodsTwoGoodsName) {
+		this.supGoodsTwoGoodsName = supGoodsTwoGoodsName;
+	}
+	public String getSupGoodsTwoAgreePrice() {
+		return supGoodsTwoAgreePrice;
+	}
+	public void setSupGoodsTwoAgreePrice(String supGoodsTwoAgreePrice) {
+		this.supGoodsTwoAgreePrice = supGoodsTwoAgreePrice;
+	}
+	public String getSupGoodsTwoBrandName() {
+		return supGoodsTwoBrandName;
+	}
+	public void setSupGoodsTwoBrandName(String supGoodsTwoBrandName) {
+		this.supGoodsTwoBrandName = supGoodsTwoBrandName;
+	}
+	public String getSupGoodsTwoProductArea() {
+		return supGoodsTwoProductArea;
+	}
+	public void setSupGoodsTwoProductArea(String supGoodsTwoProductArea) {
+		this.supGoodsTwoProductArea = supGoodsTwoProductArea;
+	}
+	public String getSupGoodsThreeImagePath() {
+		return supGoodsThreeImagePath;
+	}
+	public void setSupGoodsThreeImagePath(String supGoodsThreeImagePath) {
+		this.supGoodsThreeImagePath = supGoodsThreeImagePath;
+	}
+	public String getSupGoodsThreeGoodsName() {
+		return supGoodsThreeGoodsName;
+	}
+	public void setSupGoodsThreeGoodsName(String supGoodsThreeGoodsName) {
+		this.supGoodsThreeGoodsName = supGoodsThreeGoodsName;
+	}
+	public String getSupGoodsThreeAgreePrice() {
+		return supGoodsThreeAgreePrice;
+	}
+	public void setSupGoodsThreeAgreePrice(String supGoodsThreeAgreePrice) {
+		this.supGoodsThreeAgreePrice = supGoodsThreeAgreePrice;
+	}
+	public String getSupGoodsThreeBrandName() {
+		return supGoodsThreeBrandName;
+	}
+	public void setSupGoodsThreeBrandName(String supGoodsThreeBrandName) {
+		this.supGoodsThreeBrandName = supGoodsThreeBrandName;
+	}
+	public String getSupGoodsThreeProductArea() {
+		return supGoodsThreeProductArea;
+	}
+	public void setSupGoodsThreeProductArea(String supGoodsThreeProductArea) {
+		this.supGoodsThreeProductArea = supGoodsThreeProductArea;
+	}
+	public String getSupGoodsFourImagePath() {
+		return supGoodsFourImagePath;
+	}
+	public void setSupGoodsFourImagePath(String supGoodsFourImagePath) {
+		this.supGoodsFourImagePath = supGoodsFourImagePath;
+	}
+	public String getSupGoodsFourGoodsName() {
+		return supGoodsFourGoodsName;
+	}
+	public void setSupGoodsFourGoodsName(String supGoodsFourGoodsName) {
+		this.supGoodsFourGoodsName = supGoodsFourGoodsName;
+	}
+	public String getSupGoodsFourAgreePrice() {
+		return supGoodsFourAgreePrice;
+	}
+	public void setSupGoodsFourAgreePrice(String supGoodsFourAgreePrice) {
+		this.supGoodsFourAgreePrice = supGoodsFourAgreePrice;
+	}
+	public String getSupGoodsFourBrandName() {
+		return supGoodsFourBrandName;
+	}
+	public void setSupGoodsFourBrandName(String supGoodsFourBrandName) {
+		this.supGoodsFourBrandName = supGoodsFourBrandName;
+	}
+	public String getSupGoodsFourProductArea() {
+		return supGoodsFourProductArea;
+	}
+	public void setSupGoodsFourProductArea(String supGoodsFourProductArea) {
+		this.supGoodsFourProductArea = supGoodsFourProductArea;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
+	
+}

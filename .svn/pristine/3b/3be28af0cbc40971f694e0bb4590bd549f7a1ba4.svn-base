@@ -1,0 +1,171 @@
+@charset "utf-8";
+/* CSS Document */
+#contents .inner {
+	width: 950px;
+	margin: 0 auto;
+	padding: 0;
+	border:5px solid #dfdfdf;
+	border-radius: 5px;
+	display: table;
+	font-size: 0;
+}
+#matter_section {
+	width: 700px;
+	display: table-cell;
+	float: none;
+	vertical-align: top;
+	padding: 20px 20px 20px 0;
+	font-size: 12px;
+}
+#right_section {
+	width: 240px;
+	display: table-cell;
+	background: #0091dc;
+	color: #fff;
+	vertical-align: top;
+	font-size: 12px;
+	padding: 20px;
+	
+}
+
+
+
+.tab {
+	padding: 0 20px;
+	font-size: 12px;
+}
+#matter_section .tab ul li {
+	margin-right: 10px;
+}
+#matter_section .tab ul li a {
+	border: none;
+	border: 1px solid #dfdfdf;
+	border-radius: 0;
+}
+#matter_section .tab .nav-tabs {
+	border-bottom: none;
+}
+#matter_section .tab .nav > li > a {
+	padding: 5px 15px;
+}
+#matter_section .tab .nav-tabs > li.active > a, #matter_section .tab .nav-tabs > li.active > a:hover, #matter_section .tab .nav-tabs > li.active > a:focus {
+	border: none;
+	background: none;
+	border: 1px solid #ff4200;
+	color: #ff4200;
+}
+#matter_section .tab .nav > li > a:hover,
+#matter_section .tab .nav > li > a:focus {
+	text-decoration: none;
+	background-color: #fff;
+}
+.tab_section .table_rank,.tab_section .title_list{
+	padding-left: 20px;
+}
+.red {
+	color: #ff4200;
+}
+.tab_section .title_list {
+	background: #9ab8dc;
+	color: #fff;
+	margin-left: 20px;
+	margin-top: 20px;
+	
+}
+.tab_section .title_list h2 {
+	display: inline-block;
+	font-size: 16px;
+	text-align: center;
+	margin: 0;
+	line-height: 36px;
+}
+.tab_section .title_list p {
+	text-align: right;
+	display: inline-block;
+	float: right;
+	height: 28px;
+	margin: 4px 4px 0 0;
+	padding: 0 20px;
+	line-height: 28px;
+	background: #fff;
+	border-radius: 4px;
+	color: #9ab8dc;
+	
+}
+p.red {
+	text-align: right;
+	margin-top: 5px;
+}
+
+
+#matter_section .chat {
+	margin-top: 20px;
+	margin-left: 20px;
+	border: 1px solid #dfdfdf;
+}
+#matter_section .chat_content {
+	padding: 30px;
+	height: 130px;
+	overflow-y: scroll; 
+}
+#matter_section .chat_content ul li {
+	margin-bottom: 10px;
+}
+#matter_section .chat_content ul li p {
+	margin: 0;
+}
+#matter_section .chat_content ul li p.title {
+	color: #aaaaaa;
+}
+#matter_section .chat_sent {
+	background: #f2f2f2;
+	border-top: 1px solid #dfdfdf;
+	padding: 20px;
+}
+#matter_section .chat_sent .select {
+	width: 150px;
+	float: left;
+	margin-right: 20px;
+}
+#matter_section .chat_sent .blue {
+	height: 34px;
+}
+#right_section .info_list dl {
+	margin-bottom: 10px;
+}
+#right_section .info_list dl dt {
+	float: left;
+}
+#right_section .info_list dl dd {
+	word-break:break-all;
+}
+.price {
+	margin-top: 40px
+}
+.price h2 {
+	font-size: 16px;
+	font-weight: bold;
+}
+.btn.orange {
+	background: #ff4200;
+	color: #fff;
+	border: none;
+	width: 100%;
+	margin-top: 20px;
+}
+.btn.orange:hover {
+	background: #dfdfdf;
+	color: #000;
+}
+.price p {
+	text-align: center;
+	margin-top: 10px;
+	color: #fff;
+}
+.price p a{
+	color: #fff;
+	text-decoration: underline;
+}
+.price p a:hover {
+	text-decoration: none;
+}

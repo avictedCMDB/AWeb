@@ -1,0 +1,15 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.BidProject;
+
+@Repository
+public interface BidProjectMapper {
+    public void insertProject(BidProject proj);
+    public int queryProjectCount(@Param("projId") String projId, @Param("projName") String projName, @Param("bidCat") String bidCat, @Param("createTime") String createTime, @Param("status") List<String> status);
+    public List<BidProject> queryProjectList(@Param("projId") String projId, @Param("projName") String projName, @Param("bidCat") String bidCat, @Param("createTime") String createTime, @Param("status") List<String> status, @Param("start") int start, @Param("end") int end);
+}

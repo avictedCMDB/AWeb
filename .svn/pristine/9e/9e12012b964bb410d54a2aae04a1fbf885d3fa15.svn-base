@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.RefundMapper">
+	<resultMap id="refundResultMap" type="Refund">
+		<id column="refound_id" property="refundId" jdbcType="VARCHAR" /> 
+		<result column="order_id" property="orderId" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="VARCHAR" />
+		<result column="refound_status" property="refundStatus" jdbcType="VARCHAR" />
+		<result column="refound_date" property="refundDate" jdbcType="DATE" />
+		<result column="refound_amount" property="refundAmount" jdbcType="INTEGER" />
+		<result column="refound_price" property="refundPrice" jdbcType="DOUBLE" />
+		<result column="refound_price_init" property="refundPriceInit" jdbcType="DOUBLE" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+		<result column="addr_name" property="addrName" jdbcType="VARCHAR" />
+		<result column="addr_tel" property="addrTel" jdbcType="VARCHAR" />
+		<result column="addr_phone" property="addrPhone" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="refundGoodsResultMap" type="RefundGoods">
+		<result column="refound_id" property="refundId" jdbcType="VARCHAR" /> 
+		<result column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="VARCHAR" />
+		<result column="refound_num" property="refundNum" jdbcType="INTEGER" />
+		<result column="refound_reason" property="refundReason" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="goods_price_init" property="goodsPriceInit" jdbcType="DOUBLE" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryRefundList" resultMap="refundResultMap">
+	select * from (
+		select row_number() over (order by refound_date desc) rn, a.*, c.companyname
+		  from t_order_refound a, users c
+		 where a.user_id = c.userid
+		 <if test="refundId != null and refundId != ''">
+		   and refound_id like '%'||#{refundId}||'%'
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="supId != null and supId != ''">
+		   and sup_id = #{supId}
+		 </if>
+		 <if test="refundStatus != null and refundStatus != ''">
+		   and refound_status = #{refundStatus}
+		 </if>
+		 <if test="refundStatus == null or refundStatus == ''">
+		   and refound_status in ('4', '5')
+		 </if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and refound_date &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and refound_date &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		) x
+	where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="queryRefundCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_order_refound
+		 where 1 = 1
+		 <if test="refundId != null and refundId != ''">
+		   and refound_id like '%'||#{refundId}||'%'
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="supId != null and supId != ''">
+		   and sup_id = #{supId}
+		 </if>
+		 <if test="refundStatus != null and refundStatus != ''">
+		   and refound_status = #{refundStatus}
+		 </if>
+		 <if test="refundStatus == null or refundStatus == ''">
+		   and refound_status in ('4', '5')
+		 </if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and refound_date &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and refound_date &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+	</select>
+	
+	<select id="queryRefundStat" resultMap="refundResultMap">
+		select sum(REFOUND_PRICE) REFOUND_PRICE
+		  from t_order_refound
+		 where 1 = 1
+		 <if test="refundId != null and refundId != ''">
+		   and refound_id like '%'||#{refundId}||'%'
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="supId != null and supId != ''">
+		   and sup_id = #{supId}
+		 </if>
+		 <if test="refundStatus != null and refundStatus != ''">
+		   and refound_status = #{refundStatus}
+		 </if>
+		   and refound_status = '5'
+		 <if test="timeStart != null and timeStart != ''">
+		   and refound_date &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and refound_date &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+	</select>
+	
+	<select id="queryRefundDetail" resultMap="refundResultMap">
+		select a.*, b.addr_name, b.addr_tel, b.addr_phone, c.companyname
+		  from t_order_refound a, t_order b, users c
+		 where a.user_id = c.userid
+		   and a.order_id = b.order_id
+		   and a.refound_id = #{refundId}
+	</select>
+	<select id="queryRefundGoods" resultMap="refundGoodsResultMap">
+		select a.*, b.goods_price, b.goods_price_init, b.goods_name, b.image_path, c.sup_type
+		  from t_refound_goods a, t_order_snapshot b, t_sup_info c
+		 where a.refound_id = #{refundId}
+		   and a.sup_id = c.sup_id
+		   and b.order_id = #{orderId}
+		   and a.sup_id = to_char(b.sup_id)
+		   and a.sup_goods_id = b.sup_goods_id
+	</select>
+	<update id="updateRefundStatus">
+		update t_order_refound set refound_status = 5 where refound_id = #{refundId}
+	</update>
+	
+</mapper>

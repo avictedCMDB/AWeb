@@ -1,0 +1,36 @@
+package com.avic.supplier.services.impl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.utils.MD5;
+import com.avic.supplier.mappers.SupplierUserMapper;
+import com.avic.supplier.models.SupplierUser;
+import com.avic.supplier.services.SupplierSupUserService;
+@Service
+public class SupplierSupUserServiceImpl implements SupplierSupUserService{
+	
+	protected static final Log logger = LogFactory.getLog(SupplierSupUserServiceImpl.class);
+	
+	@Autowired
+	SupplierUserMapper supUserMapper;
+
+	@Override
+	public SupplierUser queryLoginUser(SupplierUser supplierUser) {
+		String passWord = MD5.getMessageDigest(supplierUser.getSupPassword().getBytes());
+		supplierUser.setSupPassword(passWord);
+		return supUserMapper.queryLoginUser(supplierUser);
+	}
+
+	@Override
+	public void updateSupPassWord(String password, String supId) {
+		supUserMapper.updateSupPassWord(password, supId);
+	}
+	
+	@Override
+	public SupplierUser queryUserById(String userId) {
+	    return supUserMapper.queryUserById(userId);
+	}
+}

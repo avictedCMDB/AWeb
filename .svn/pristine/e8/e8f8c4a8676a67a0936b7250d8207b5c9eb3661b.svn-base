@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.CartMapper">
+	<resultMap id="cartMap" type="com.avic.management.models.Cart">
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+		<result column="BUY_NUM" property="buyNum" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<insert id="addCart" parameterType="com.avic.management.models.Cart">
+		INSERT INTO T_CART
+            (
+              USER_ID,
+              SUP_ID,
+              SUP_GOODS_ID,
+              BUY_NUM
+              <if test="quoteID != null and quoteID != ''">
+              ,QUOTE_ID
+              </if>
+            )
+     VALUES
+            (
+	             #{userID,jdbcType=VARCHAR},
+	             #{supID,jdbcType=VARCHAR},
+	             #{supGoodsID,jdbcType=VARCHAR},
+	             #{buyNum,jdbcType=VARCHAR}
+	              <if test="quoteID != null and quoteID != ''">
+	              , #{quoteID,jdbcType=VARCHAR}
+	              </if>
+	          )
+	</insert>
+	
+	<select id="queryCatCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.Cart">
+			 SELECT COUNT(1) FROM T_CART 
+			 WHERE USER_ID =  #{userID,jdbcType=VARCHAR}
+			 AND SUP_ID =  #{supID,jdbcType=VARCHAR}
+			 AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCart" parameterType="com.avic.management.models.Cart">
+		UPDATE T_CART 
+		   SET BUY_NUM = BUY_NUM + #{buyNum,jdbcType=INTEGER}
+		  WHERE USER_ID =  #{userID,jdbcType=VARCHAR}
+			 AND SUP_ID =  #{supID,jdbcType=VARCHAR}
+			 AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,89 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="meta.jsp">
+	<jsp:param value="登录" name="title"/>
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/login.css" rel="stylesheet">
+<script type="text/javascript">
+$(function () {
+	$("#login_btn").click(function () {
+		var name = $("#f_name").val();
+		var pass = $("#f_pass").val();
+		
+		if (name == '') {
+			alert("请输入用户名");
+			return;
+		}
+		
+		if (pass == '') {
+			alert("请输入密码");
+			return;
+		}
+		
+		$("#login_form").submit();
+	});
+
+	<c:if test="${error != null}">
+	alert("${error}");
+	</c:if>
+});
+
+function name_key_down(event) {
+	/*
+	if (event.keyCode == 13) {
+		$("#f_pass").focus();
+	}
+	*/
+}
+function pass_key_down(event) {
+	if (event.keyCode == 13) {
+		$("#login_btn").trigger("click");
+	}
+}
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_login">
+    <div class="inner">
+      <h1><img src="${pageContext.request.contextPath}/static/img/img-logo.png" alt="" /></h1>
+    </div>
+  </div>
+  <div id="contents">
+    <div class="inner clearfix">
+      <div class="img_left"><img src="${pageContext.request.contextPath}/static/img/login/bg-login.png" /></div>
+      <div class="login_box">
+        <h2><img src="${pageContext.request.contextPath}/static/img/login/title-login.png" alt="用户登录" /></h2>
+        <div class="login_inner">
+          <div class="inner_bottom">
+			<form action="${pageContext.request.contextPath}/passport/login/submit" method="post" id="login_form">
+				<input type="hidden" name="f_redirect" value="${fn:escapeXml(redirect)}"/>
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-user"></i></span> <input name="f_name" id="f_name" type="text" class="form-control" onkeydown="name_key_down(event)">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-lock" style="margin-left:2px;"></i></span> <input name="f_pass" id="f_pass" type="password" class="form-control" onkeydown="pass_key_down(event)">
+				</div>
+				<div class="forget">
+					<p>
+						<a href="#">忘记密码？</a>
+					</p>
+				</div>
+				<div class="btn_area">
+					<button type="button" class="btn btn_login" id="login_btn">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+				</div>
+			</form>
+		</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

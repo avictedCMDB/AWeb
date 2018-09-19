@@ -1,0 +1,171 @@
+body {
+	font-size: 12px;
+	color: #656565;
+}
+.search_cate {
+	font-size: 16px;
+}
+.font-color-red {
+	color: #ff4200;
+}
+
+.font-color-gray {
+	color: #cacaca;
+}
+
+.breadcrumb {
+	padding: 8px 0;
+}
+
+.breadcrumb li {
+	float: left;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+.breadcrumb li span {
+	padding-left: 10px;
+}
+
+#cart_main {
+	padding: 20px 20px 40px;
+	background-color: #fff;	
+}
+
+#btn_list ul {
+	float: right;
+}
+
+#btn_list li {
+	padding-left: 10px;
+	float: left;
+}
+
+#title_list {
+	margin-top: 10px;
+	padding: 10px 0;
+	background-color: #dfdfdf;
+}
+
+#title_list .tableStyle01 {
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+}
+
+#title_list .tableStyle01 th {
+    font-weight: bold;
+    text-align: center;
+}
+
+.item_info a {
+	color: #008ad3;
+}
+
+.item_info .supplier {
+	padding: 7px 0 7px 20px;
+	float: left;
+}
+
+.item_info .total {
+	padding-top: 12px;
+	float: right;
+}
+
+.item_info .tableStyle02 {
+    margin: 0 auto;
+    border: 1px solid #dfdfdf;
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    line-height: 1.5;
+}
+.item_info .tableStyle02 a:hover {
+	text-decoration: underline;
+}
+.item_info .tableStyle02 td {
+    border-bottom: 1px solid #dfdfdf;
+    padding: 12px 0;
+    text-align: center;
+}
+
+.item_info .img_bor {
+	margin: 0 8px;
+	border: 1px solid #dfdfdf;
+}
+
+.item_info .product_info {
+	padding-left: 20px;
+	width: 100%;
+	text-align: left;
+}
+
+.item_info span.btn_reduce {
+	padding: 5px 7px;
+	color: #3a3c39;
+	border: 1px solid #e5e5e5;
+	border-right: none;
+	background-color: #f0f0f0;
+	cursor: pointer;
+}
+
+.item_info span.amount {
+	padding: 5px 15px;
+	border: 1px solid #aaa;
+}
+
+.item_info span.btn_add {
+	padding: 5px;
+	color: #3a3c39;
+	border: 1px solid #e5e5e5;
+	border-left: none;
+	background-color: #f0f0f0;
+	cursor: pointer;
+}
+
+#gather {
+	margin-top: 20px;
+	position: relative;
+	min-height: 37px;
+	background-color: #dfdfdf;
+}
+
+#gather .select_all {
+	padding: 5px 20px;
+	float: left;
+}
+
+#gather .operations {
+	padding: 10px 0 0 10px;
+	float: left;
+}
+
+#gather .preview {
+	padding: 4px 190px 0 0;
+	float: right;
+}
+
+#gather .preview .amount_sum {
+	margin-bottom: 0;
+	padding-right: 25px;
+	float: left;
+}
+
+#gather .preview .price_sum {
+	margin-bottom: 0;
+	float: left;
+}
+
+#gather .preview .sum_style {
+	padding: 0 5px;
+	color: #ff4200;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+#gather .orders {
+	position: absolute;
+	top: -6px;
+	right: 0;
+}

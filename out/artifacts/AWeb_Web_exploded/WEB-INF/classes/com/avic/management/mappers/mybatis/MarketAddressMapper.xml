@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.MarketAddressMapper">
+	<resultMap id="marketAddressMap" type="com.avic.management.models.MarketAddress">
+		<result column="ADDRESS_ID" property="addressID" jdbcType="VARCHAR" /> 
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_ONE" property="arseaLebelOne" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_TWO" property="areaLebelTwo" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_THREE" property="areaLebelThree" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_FOUR" property="areaLevelFour" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_ONE_NAME" property="areaLevelOneName" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_TWO_NAME" property="areaLevelTwoName" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_THREE_NAME" property="areaLevelThreeName" jdbcType="VARCHAR" />
+		<result column="AREA_LEVEL_FOUR_NAME" property="areaLevelFourName" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="TEL" property="tel" jdbcType="VARCHAR" />
+		<result column="ADDRESS_DETAIL" property="addressDetail" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
+		<result column="ZIPCODE" property="zipCode" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="IF_DEFAULT" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryMarketAddressList" resultMap="marketAddressMap" parameterType="com.avic.management.models.MarketAddress">
+		SELECT * FROM (
+			  SELECT ROWNUM AS RN,
+			  		 TMA.ADDRESS_ID,
+			         TMA.NAME,
+			         TMA.AREA_LEVEL_ONE,
+			         TMA.AREA_LEVEL_TWO,
+			         TMA.AREA_LEVEL_THREE,
+			         TMA.AREA_LEVEL_FOUR,
+			         (SELECT TSA.SUP_AREA_NAME FROM T_SUP_AREA TSA WHERE TSA.SUP_AREA_ID = TMA.AREA_LEVEL_ONE and TSA.Sup_Id = TMA.Sup_Id) AS AREA_LEVEL_ONE_NAME,
+               		 (SELECT TSA.SUP_AREA_NAME FROM T_SUP_AREA TSA WHERE TSA.SUP_AREA_ID = TMA.AREA_LEVEL_TWO and TSA.Sup_Id = TMA.Sup_Id) AS AREA_LEVEL_TWO_NAME,
+               		 (SELECT TSA.SUP_AREA_NAME FROM T_SUP_AREA TSA WHERE TSA.SUP_AREA_ID = TMA.AREA_LEVEL_THREE and TSA.Sup_Id = TMA.Sup_Id) AS AREA_LEVEL_THREE_NAME,
+               		 (SELECT TSA.SUP_AREA_NAME FROM T_SUP_AREA TSA WHERE TSA.SUP_AREA_ID = TMA.AREA_LEVEL_FOUR and TSA.Sup_Id = TMA.Sup_Id) AS AREA_LEVEL_FOUR_NAME,
+			         TMA.SUP_ID,
+			         TMA.TEL,
+			         TMA.ADDRESS_DETAIL,
+			         TMA.PHONE,
+			         TMA.ZIPCODE,
+			         TMA.USER_ID,
+			         TMA.IF_DEFAULT,
+			         TSI.SUP_NAME
+			    FROM T_MARKET_ADDRESS TMA
+		   LEFT JOIN T_SUP_INFO TSI
+			      ON TMA.SUP_ID = TSI.SUP_ID
+			   WHERE TMA.USER_ID = #{userID,jdbcType=VARCHAR}
+			ORDER BY TMA.IF_DEFAULT DESC) R
+   		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+  
+	</select>
+	
+	<select id="queryMarketAddressCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.MarketAddress">
+			  SELECT COUNT(1)
+			    FROM T_MARKET_ADDRESS TMA
+			   WHERE TMA.USER_ID = #{userID,jdbcType=VARCHAR}
+	</select>
+	<select id="queryMarketAddressByAddressID" parameterType="com.avic.management.models.MarketAddress" resultMap="marketAddressMap">
+			  SELECT TMA.ADDRESS_ID,
+			         TMA.NAME,
+			         TMA.AREA_LEVEL_ONE,
+			         TMA.AREA_LEVEL_TWO,
+			         TMA.AREA_LEVEL_THREE,
+			         TMA.AREA_LEVEL_FOUR,
+			         TMA.SUP_ID,
+			         TMA.TEL,
+			         TMA.ADDRESS_DETAIL,
+			         TMA.EMAIL,
+			         TMA.PHONE,
+			         TMA.ZIPCODE,
+			         TMA.USER_ID,
+			         TMA.IF_DEFAULT,
+			         TSI.SUP_NAME
+			    FROM T_MARKET_ADDRESS TMA
+		   LEFT JOIN T_SUP_INFO TSI
+			      ON TMA.SUP_ID = TSI.SUP_ID
+			   WHERE TMA.ADDRESS_ID = #{addressID,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryContantDefault" resultType="java.lang.Integer">
+		  SELECT COUNT(*) 
+			FROM t_market_address 
+			WHERE if_default = '2'
+	</select>
+	
+	<insert id="addMarketAddress" parameterType="com.avic.management.models.MarketAddress">
+		INSERT INTO T_MARKET_ADDRESS
+            (
+               ADDRESS_ID,
+               NAME,
+               AREA_LEVEL_ONE,
+               AREA_LEVEL_TWO,
+               AREA_LEVEL_THREE,
+               AREA_LEVEL_FOUR,
+               SUP_ID,
+               TEL,
+               ADDRESS_DETAIL,
+               EMAIL,
+               PHONE,
+               ZIPCODE,
+               USER_ID,
+               IF_DEFAULT
+            )
+      VALUES
+            (
+            	#{addressID,jdbcType=VARCHAR},
+            	#{name,jdbcType=VARCHAR},
+            	#{arseaLebelOne,jdbcType=VARCHAR},
+            	#{areaLebelTwo,jdbcType=VARCHAR},
+            	#{areaLebelThree,jdbcType=VARCHAR},
+            	#{areaLevelFour,jdbcType=VARCHAR},
+            	#{supID,jdbcType=VARCHAR},
+            	#{tel,jdbcType=VARCHAR},
+            	#{addressDetail,jdbcType=VARCHAR},
+            	#{email,jdbcType=VARCHAR},
+            	#{phone,jdbcType=VARCHAR},
+            	#{zipCode,jdbcType=VARCHAR},
+            	#{userID,jdbcType=VARCHAR},
+            	#{ifDefault,jdbcType=VARCHAR}
+            )
+	</insert>
+	
+	<update id="updateMarketAddress" parameterType="com.avic.management.models.MarketAddress">
+		update T_MARKET_ADDRESS TMA
+		   set NAME = #{name,jdbcType=VARCHAR},
+               AREA_LEVEL_ONE = #{arseaLebelOne,jdbcType=VARCHAR},
+               AREA_LEVEL_TWO = #{areaLebelTwo,jdbcType=VARCHAR},
+               AREA_LEVEL_THREE = #{areaLebelThree,jdbcType=VARCHAR},
+               AREA_LEVEL_FOUR = #{areaLevelFour,jdbcType=VARCHAR},
+               SUP_ID = #{supID,jdbcType=VARCHAR},
+               TEL = #{tel,jdbcType=VARCHAR},
+               ADDRESS_DETAIL = #{addressDetail,jdbcType=VARCHAR},
+               EMAIL = #{email,jdbcType=VARCHAR},
+               PHONE = #{phone,jdbcType=VARCHAR},
+               ZIPCODE = #{zipCode,jdbcType=VARCHAR},
+               USER_ID = #{userID,jdbcType=VARCHAR},
+               IF_DEFAULT = #{ifDefault,jdbcType=VARCHAR}
+		 where TMA.ADDRESS_ID = #{addressID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="setDefault" parameterType="com.avic.management.models.MarketAddress">
+		update T_MARKET_ADDRESS TMA
+		   set IF_DEFAULT = '1'
+		 where TMA.ADDRESS_ID = #{addressID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="setOtherDefault" parameterType="com.avic.management.models.MarketAddress">
+		update T_MARKET_ADDRESS TMA
+		   set IF_DEFAULT = '0'
+		 where TMA.ADDRESS_ID != #{addressID,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteMarketAddress"  parameterType="com.avic.management.models.MarketAddress">
+		DELETE  FROM T_MARKET_ADDRESS TMA
+      		   WHERE TMA.ADDRESS_ID = #{addressID,jdbcType=VARCHAR}
+	</delete>
+	
+</mapper>

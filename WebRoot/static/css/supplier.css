@@ -1,0 +1,76 @@
+@charset "utf-8";
+/* CSS Document */
+.company_info dl {
+	width: 290px;
+	float: left;
+}
+.company_info dl dt {
+	width: 120px;
+	border: 1px solid #dfdfdf;
+}
+.company_info dl dd {
+	margin-left: 140px;
+	font-weight: bold;
+	font-size: 14px;
+	padding-top: 40px;
+	width: 150px;
+}
+.company_info dl dd span {
+	font-size: 12px;
+	font-weight: 100;
+}
+.red {
+	color: #ff4200;
+}
+#matter_section .remind_area {
+	width: 660px;
+	float: left;
+	padding: 6px 0 16px 16px;
+	border: 1px solid #dfdfdf;
+	margin-top: 20px;
+}
+#matter_section .remind_area ul li {
+	float: left;
+	padding: 0;
+	margin-top: 10px;
+	width: 320px;
+	overflow: hidden;
+}
+#matter_section .remind_area ul li dl {
+	margin: 0;
+	padding: 0;
+	
+}
+#matter_section .remind_area ul li dl dt {
+	float: left;
+	width: 66px;
+	height: 25px;
+	background: #0091dc;
+	margin: 0 5px 0 0;
+	font-size: 14px;
+	line-height: 25px;
+	color: #fff;
+	text-align: center;
+	display: block;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: none;
+}
+#matter_section .remind_area ul li dl dd {
+	float: left;
+	padding: 4px 0 0;
+	margin: 0 5px 0 0;
+	color: #4698ee;
+	font-size: 12px;
+	font-weight: 100;
+	width: auto;
+}
+#matter_section .remind_area ul li dl dd span {
+	color: #ff4200;
+	font-weight: bold;
+}
+#matter_section .manage_photo {
+	margin: 50px 0 50px;
+	text-align: center;
+}

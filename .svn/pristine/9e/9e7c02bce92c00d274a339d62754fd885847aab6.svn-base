@@ -1,0 +1,47 @@
+package com.avic.supervise.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supervise.mappers.CompanyInfoMapper;
+import com.avic.supervise.models.CompanyInfo;
+import com.avic.supervise.services.CompanyInfoService;
+
+@Service
+public class CompanyInfoServiceImpl implements CompanyInfoService {
+    protected static final Log logger = LogFactory.getLog(CompanyInfoServiceImpl.class);
+
+    @Autowired
+    CompanyInfoMapper companyInfoMapper;
+
+	@Override
+	public List<CompanyInfo> queryCompanyInfoList(CompanyInfo companyInfo) {
+		return companyInfoMapper.queryCompanyInfoList(companyInfo);
+	}
+
+	@Override
+	public int getCompanyInfoCount(CompanyInfo companyInfo) {
+		return companyInfoMapper.getCompanyInfoCount(companyInfo);
+	}
+
+	@Override
+	public void updateCompanyInfo(CompanyInfo companyInfo) {
+		companyInfoMapper.updateCompanyInfo(companyInfo);
+	}
+
+	@Override
+	public void addCompanyInfo(CompanyInfo companyInfo) {
+		companyInfoMapper.addCompanyInfo(companyInfo);
+	}
+
+	@Override
+	public CompanyInfo queryCompanyInfo(CompanyInfo companyInfo) {
+		return companyInfoMapper.queryCompanyInfo(companyInfo);
+	}
+
+
+}

@@ -1,0 +1,40 @@
+package com.avic.market.utils;
+
+import java.util.Date;
+
+public class ViewHelper {
+    
+    public long timeDiff(Date to) {
+        Date from = new Date();
+        long time1 = from.getTime();
+        long time2 = to.getTime();
+        return time2 - time1;
+    }
+    
+    public String bidLastTime(Date to) {
+        long diff = timeDiff(to);
+        long day = diff / (24 * 60 * 60 * 1000);
+        long hour = (diff / (60 * 60 * 1000) - day * 24);
+        long min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);
+        long sec = (diff / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+        
+
+        if (day < 0) {
+            day = 0;
+        }
+        
+        if (hour < 0) {
+            hour = 0;
+        }
+        
+        if (min < 0) {
+            min = 0;
+        }
+        
+        if (sec < 0) {
+            sec = 0;
+        }
+        
+        return "<span class=\"red\">" + day + "</span>天<span class=\"red\">" + String.format("%02d", hour) + ":" + String.format("%02d", min) + ":" + String.format("%02d", sec) + "</span>";
+    }
+}

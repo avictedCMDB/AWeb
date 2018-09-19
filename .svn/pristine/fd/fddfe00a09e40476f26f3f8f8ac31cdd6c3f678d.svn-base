@@ -1,0 +1,64 @@
+package com.avic.supervise.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.mappers.InvoiceMapper;
+import com.avic.supervise.models.Invoice;
+import com.avic.supervise.models.VatInfo;
+import com.avic.supervise.services.InvoiceService;
+
+@Service
+public class InvoiceServiceImpl implements InvoiceService {
+    
+    @Autowired
+    InvoiceMapper invoiceMapper;
+
+    @Override
+    public int getInvoiceCount(String orderId, int supId, String invoiceStatus) throws ServiceException {
+        return invoiceMapper.queryInvoiceCount(orderId, supId, invoiceStatus);
+    }
+
+    @Override
+    public List<Invoice> getInvoiceList(String orderId, int supId, String invoiceStatus, int page, int size) throws ServiceException {
+
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+        return invoiceMapper.queryInvoiceList(orderId, supId, invoiceStatus, start, end);
+    }
+    
+    @Override
+    public Invoice getInvoiceDetail(String orderId) throws ServiceException {
+        return invoiceMapper.queryInvoiceDetail(orderId);
+    }
+    
+    @Transactional
+    @Override
+    public void updateOrderInvoice(Invoice invoice) throws ServiceException {
+        try {
+            invoiceMapper.updateOrderInvoice(invoice);
+        } catch(Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+	@Override
+	public List<VatInfo> queryVatInfoList(VatInfo vatInfo) {
+		return invoiceMapper.queryVatInfoList(vatInfo);
+	}
+
+	@Override
+	public int queryVatInfoCount(VatInfo vatInfo) {
+		return invoiceMapper.queryVatInfoCount(vatInfo);
+	}
+
+}

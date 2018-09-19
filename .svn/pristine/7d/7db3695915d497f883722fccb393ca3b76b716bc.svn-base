@@ -1,0 +1,37 @@
+package com.avic.management.models;
+
+import java.io.Serializable;
+
+public class SpecialGoodsBean implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private	String	sup_type	;	//	1:合作供应商;2:平台其他供应商;
+	private	String	sup_id	;	//	供应商id
+	private	String	sup_name	;	//	供应商名称
+	private	String	company_id	;	//	企业ID
+	
+	public String getCompany_id() {
+		return company_id;
+	}
+	public void setCompany_id(String company_id) {
+		this.company_id = company_id;
+	}
+	public String getSup_id() {
+		return sup_id;
+	}
+	public void setSup_id(String sup_id) {
+		this.sup_id = sup_id;
+	}
+	public String getSup_name() {
+		return sup_name;
+	}
+	public void setSup_name(String sup_name) {
+		this.sup_name = sup_name;
+	}
+	public String getSup_type() {
+		return sup_type;
+	}
+	public void setSup_type(String sup_type) {
+		this.sup_type = sup_type;
+	}
+}

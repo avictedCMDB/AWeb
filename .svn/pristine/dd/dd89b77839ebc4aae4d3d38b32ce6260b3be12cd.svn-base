@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.CompanyInfoMapper">
+	<resultMap id="companyResultMap" type="CompanyInfo">
+		<result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryCompanyList" resultMap="companyResultMap">
+		select 	company_code, company_name
+		from 	t_company_info
+		where PARENT_COMPANY_ID = 'system'
+		order by company_name
+	</select>
+	
+	
+	<select id="queryCompanyCount" resultType="java.lang.Integer">
+		select 	count(1)
+		from 	t_company_info
+		where PARENT_COMPANY_ID = 'system'
+	</select>
+</mapper>

@@ -1,0 +1,174 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section h2 {
+	font-size: 16px;
+	color: #0091dc;
+	border-bottom: 1px solid #dfdfdf;
+	text-align: center;
+	padding-bottom: 10px;
+	font-weight: bold;
+}
+#matter_section h3 {
+	font-size: 14px;
+	line-height: 25px;
+	font-weight: bold;	
+}
+#matter_section h4 {
+	font-size: 14px;
+	color: #0091dc;
+	font-weight:  bold;
+	margin-bottom: 0;
+	padding-left: 30px;
+}
+#matter_section h4 img {
+	margin-right: 10px;
+}
+#matter_section p {
+	font-size: 14px;
+	padding-left: 30px;
+	line-height: 25px;
+}
+#matter_section p.pay_info {
+	padding-left: 0;
+}
+#matter_section p.blue_text {
+	font-weight: bold;
+}
+#matter_section p span.underline {
+	border-bottom: 1px solid #000;
+}
+.list_notice .form-group label.title,
+.step_section .form-group label.title {
+	float: none;
+	margin-bottom: 0;
+}
+.list_notice .form-group,
+.step_section .form-group {
+	margin-bottom: 0px;
+}
+#matter_section .list_inner {
+	padding: 10px 30px;
+}
+.list_notice {
+	padding: 0 30px 0px;
+	margin-top: 20px;
+}
+.list_notice h3 {
+	font-weight: bold;
+	font-size: 15px;
+	vertical-align: middle;
+	margin: 0;
+	line-height: 25px;
+	color: #0089d1;
+}
+.list_notice h3 img {
+	margin-right: 5px;
+	margin-top: -5px;
+	display: inline-block;
+}
+.list_notice .notice_inner {
+	padding: 5px 25px 0;
+}
+.list_notice .form-group a {
+	color: #0089d1;
+	text-decoration: underline;
+}
+.list_notice .form-group a:hover {
+	text-decoration: none;
+}
+.list_notice table {
+	width: 100%;
+	margin-top: 10px;	
+}
+.list_notice table tr td.left {
+	text-align: left;
+}
+.list_notice table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 28px;
+	text-align: center;
+	font-size: 12px;
+}
+.list_notice table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.list_notice table tr td {
+	border:1px solid #dfdfdf;
+	padding: 6px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.list_notice table tr td a {
+    color: #0089d1;
+    margin: 0 2px;
+}
+.list_notice table tr td a:hover {
+	color: #ff4200;
+}
+.other {
+	border: 1px solid #dfdfdf;
+	padding: 10px 20px;
+	width: 500px;
+	background: #f6f4f5;
+}
+.other p {
+	margin: 0;
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.other p span {
+	margin-left: 10px;
+}
+.list_notice table.info {
+	margin-top: 0;
+}
+.list_notice table.info tr th {
+	text-align: right;
+	border-bottom: 1px solid #fff;
+	padding-right: 20px;
+}
+.list_notice table.info tr td {
+	text-align: left;
+}
+.list_notice table.info tr td .form-control {
+	height: 28px;
+}
+.signo {
+	padding: 30px 60px;
+}
+.signo dl {
+	width: 400px;
+	float: left;
+}
+.signo dl dt {
+	font-size: 14px;
+	float: left;
+	width: 100px;
+}
+.signo dl dd {
+	border-bottom: 1px solid #000;
+	width: 200px;
+	float: left;
+}
+.signo dl dd .form-control {
+	border: none;
+	box-shadow: none;
+}
+#matter_section p {
+	margin-bottom: 0;
+}
+#matter_section h4 {
+	margin-bottom: 10px;
+}
+.signo_special {
+	padding: 30px 60px 0;
+}
+.suggestion {
+	padding: 10px 20px 20px;
+	background-color: #f1f1f1;
+}

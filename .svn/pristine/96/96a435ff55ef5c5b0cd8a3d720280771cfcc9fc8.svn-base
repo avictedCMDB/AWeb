@@ -1,0 +1,188 @@
+package com.avic.supplier.models;
+
+import com.avic.supplier.utils.BaseModels;
+
+public class SupplierGoodsEnquiry extends BaseModels{
+	
+	private String id;
+	
+	private String goodsId;
+	
+	private String goodsName;
+	
+	private String goodsModel;
+	
+	private String goodsNum;
+	
+	private String goodsPriceBefore;
+	
+	private String goodsPriceAfter;
+	
+	private String enquiryDate;
+	
+	private String enquiryDateStar;
+	
+	private String enquiryDateEnd;
+	
+	private String superOfferDate;
+	
+	private String superOfferDateStar;
+	
+	private String superOfferDateEnd;
+	
+	private String supId;
+	
+	private String enquiryStatus;
+	
+	private String enquiryStatusName;
+	
+	private String contactTel;
+	
+	private String priceValidDate;
+	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getGoodsModel() {
+		return goodsModel;
+	}
+
+	public void setGoodsModel(String goodsModel) {
+		this.goodsModel = goodsModel;
+	}
+
+	public String getGoodsNum() {
+		return goodsNum;
+	}
+
+	public void setGoodsNum(String goodsNum) {
+		this.goodsNum = goodsNum;
+	}
+
+	public String getGoodsPriceBefore() {
+		return goodsPriceBefore;
+	}
+
+	public void setGoodsPriceBefore(String goodsPriceBefore) {
+		this.goodsPriceBefore = goodsPriceBefore;
+	}
+
+	public String getGoodsPriceAfter() {
+		return goodsPriceAfter;
+	}
+
+	public void setGoodsPriceAfter(String goodsPriceAfter) {
+		this.goodsPriceAfter = goodsPriceAfter;
+	}
+
+	public String getEnquiryDate() {
+		return enquiryDate;
+	}
+
+	public void setEnquiryDate(String enquiryDate) {
+		this.enquiryDate = enquiryDate;
+	}
+
+	public String getEnquiryDateStar() {
+		return enquiryDateStar;
+	}
+
+	public void setEnquiryDateStar(String enquiryDateStar) {
+		this.enquiryDateStar = enquiryDateStar;
+	}
+
+	public String getEnquiryDateEnd() {
+		return enquiryDateEnd;
+	}
+
+	public void setEnquiryDateEnd(String enquiryDateEnd) {
+		this.enquiryDateEnd = enquiryDateEnd;
+	}
+
+	public String getSuperOfferDate() {
+		return superOfferDate;
+	}
+
+	public void setSuperOfferDate(String superOfferDate) {
+		this.superOfferDate = superOfferDate;
+	}
+
+	public String getSuperOfferDateStar() {
+		return superOfferDateStar;
+	}
+
+	public void setSuperOfferDateStar(String superOfferDateStar) {
+		this.superOfferDateStar = superOfferDateStar;
+	}
+
+	public String getSuperOfferDateEnd() {
+		return superOfferDateEnd;
+	}
+
+	public void setSuperOfferDateEnd(String superOfferDateEnd) {
+		this.superOfferDateEnd = superOfferDateEnd;
+	}
+
+	public String getSupId() {
+		return supId;
+	}
+
+	public void setSupId(String supId) {
+		this.supId = supId;
+	}
+
+	public String getEnquiryStatus() {
+		return enquiryStatus;
+	}
+
+	public void setEnquiryStatus(String enquiryStatus) {
+		this.enquiryStatus = enquiryStatus;
+	}
+
+	public String getEnquiryStatusName() {
+		return enquiryStatusName;
+	}
+
+	public void setEnquiryStatusName(String enquiryStatusName) {
+		this.enquiryStatusName = enquiryStatusName;
+	}
+
+	public String getContactTel() {
+		return contactTel;
+	}
+
+	public void setContactTel(String contactTel) {
+		this.contactTel = contactTel;
+	}
+
+	public String getPriceValidDate() {
+		return priceValidDate;
+	}
+
+	public void setPriceValidDate(String priceValidDate) {
+		this.priceValidDate = priceValidDate;
+	}
+
+}

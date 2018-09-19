@@ -1,0 +1,590 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<jsp:include page="meta.jsp">
+	<jsp:param value="首页" name="title" />
+</jsp:include>
+<script src="${pageContext.request.contextPath}/static/js/index_top.js"></script>
+
+<link href="${pageContext.request.contextPath}/static/css/index_top.css" rel="stylesheet">
+
+	<script type="text/javascript">
+		$(function() {
+
+			$(".cart-add-btn").click(function () {
+				var sid = $(this).attr("data-sid");
+				var gid = $(this).attr("data-gid");
+				
+				async('${pageContext.request.contextPath}/market/cart/add', {sid:sid, gid:gid, num:1}, function (msg) {
+					setCartNum(msg.result);
+					alert("添加购物车成功");
+				});
+			});
+			
+			$("#notice_more").click(function () {
+				var type = $(".notice-tab.active").find("a").attr("data-type");
+				window.location.href = "${pageContext.request.contextPath}/market/notice?type=" + type;
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div class="page-wrapper">
+		<jsp:include page="header.jsp">
+			<jsp:param value="index" name="page" />
+		</jsp:include>
+
+		<div id="content">
+			<div class="inner">
+				<div class="clearfix" id="top_area">
+					<div id="slider" class="carousel slide">
+						<!-- 轮播（Carousel）指标 -->
+						<ol class="carousel-indicators">
+							<li data-target="#slider" data-slide-to="0" class="active"></li>
+							<li data-target="#slider" data-slide-to="1"></li>
+							<li data-target="#slider" data-slide-to="2"></li>
+							<li data-target="#slider" data-slide-to="3"></li>
+							<li data-target="#slider" data-slide-to="4"></li>
+						</ol>
+						<!-- 轮播（Carousel）项目 -->
+						<div class="carousel-inner">
+							<div class="item active">
+								<img src="${pageContext.request.contextPath}/static/img/index_top/slide1.jpg" alt="First slide">
+								<div class="carousel-caption">
+								    <h2>多方合作 公开透明</h2>
+								    <p>价格优于电商官网，提供企业级金牌服务，尊享大客户体验</p>
+								</div>
+							</div>
+							<div class="item">
+								<img src="${pageContext.request.contextPath}/static/img/index_top/slide1.jpg" alt="Second slide">
+								<div class="carousel-caption">
+								    <h2>多方合作 公开透明</h2>
+								    <p>价格优于电商官网，提供企业级金牌服务，尊享大客户体验</p>
+								</div>
+							</div>
+							<div class="item">
+								<img src="${pageContext.request.contextPath}/static/img/index_top/slide1.jpg" alt="Third slide">
+								<div class="carousel-caption">
+								    <h2>多方合作 公开透明</h2>
+								    <p>价格优于电商官网，提供企业级金牌服务，尊享大客户体验</p>
+								</div>
+							</div>
+							<div class="item">
+								<img src="${pageContext.request.contextPath}/static/img/index_top/slide1.jpg" alt="Fourth slide">
+								<div class="carousel-caption">
+								    <h2>多方合作 公开透明</h2>
+								    <p>价格优于电商官网，提供企业级金牌服务，尊享大客户体验</p>
+								</div>
+							</div>
+							<div class="item">
+								<img src="${pageContext.request.contextPath}/static/img/index_top/slide1.jpg" alt="Fifth slide">
+								<div class="carousel-caption">
+								    <h2>多方合作 公开透明</h2>
+								    <p>价格优于电商官网，提供企业级金牌服务，尊享大客户体验</p>
+								</div>
+							</div>
+						</div>	
+					</div>
+					<div class="right_box">
+						<!-- 网站公告 -->
+						<div class="info_area">
+							<div class="title clearfix">
+								<ul>
+									<li class="title_list active notice-tab"><a href="#news_system" data-toggle="tab" data-type="0">公告信息</a></li>
+									<li class="title_list notice-tab"><a href="#news_industry" data-toggle="tab" data-type="1">公司动态</a></li>
+									<li class="more"><a href="#" id="notice_more">更多</a></li>
+								</ul>
+							</div>
+							<div id="invite_tenders_content" class="tab-content">
+								<div class="tab-pane fade in active" id="news_system">
+									<div class="tab_inner">
+										<div class="info_list">
+											<ul>
+											<c:forEach var="i" varStatus="sta" items="${notice0 }">
+											
+												<li<c:if test="${sta.last }"> class="none-bottom"</c:if>><a href="${pageContext.request.contextPath}/market/notice/detail?id=${i.id}">${i.noticeSubject }</a></li>
+											
+											</c:forEach>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade in" id="news_industry">
+									<div class="tab_inner">
+										<div class="info_list">
+											<ul>
+											<c:forEach var="i" varStatus="sta" items="${notice1 }">
+											
+												<li<c:if test="${sta.last }"> class="none-bottom"</c:if>><a href="${pageContext.request.contextPath}/market/notice/detail?id=${i.id}">${i.noticeSubject }</a></li>
+											
+											</c:forEach>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					    <!-- 登陆入口 -->
+						<div class="logoin_area">
+							<div class="logoin_list">
+								<ul class="clearfix">
+									<li><a href="http://bid.aited.cn"><img src="${pageContext.request.contextPath}/static/img/index_top/btn-login01.png" alt="电子招标"></a></li>
+									<li class="none-right"><a href="${pageContext.request.contextPath}/passport/login"><img src="${pageContext.request.contextPath}/static/img/index_top/btn-login02.png" alt="采购人"></a></li>
+									<li class="none-bottom"><a href="${pageContext.request.contextPath}/supplier/login"><img src="${pageContext.request.contextPath}/static/img/index_top/btn-login03.png" alt="供应商"></a></li>
+									<li class="none-right none-bottom"><a href="${pageContext.request.contextPath}/supervise/login"><img src="${pageContext.request.contextPath}/static/img/index_top/btn-login04.png" alt="管理平台"></a></li>
+								</ul>
+							</div>
+							<!-- 注册按钮 -->
+							<div class="btn-login"><button type="button" class="btn btn-default blue" onclick="window.open('${pageContext.request.contextPath}/market/register')">立即注册</button></div>
+						</div>
+						<div class="img-tel"><img src="${pageContext.request.contextPath}/static/img/index_top/img-tel.gif"></div>
+					</div>
+				<!-- #top_area --></div>
+				<div class="section" id="count_area">
+				    <div class="count_list clearfix">
+				    	<ul>
+				    		<li>
+				    			<p class="cate_title">入驻会员</p>
+				    			<p class="num green">${comp }<span>家</span></p>
+				    		</li>
+				    		<li>
+				    			<p class="cate_title">商品交易</p>
+				    			<p class="num">${orderCount }<span>项</span></p>
+				    			
+				    		</li>
+				    		<li>
+				    			<p class="cate_title">成交金额</p>
+				    			<p class="num orange">${orderAmount }<span>万元</span></p>
+				    		</li>
+				    		<li>
+				    			<p class="cate_title">竞价采购</p>
+				    			<p class="num red">${projCount }<span>项</span></p>
+				    		</li>
+				    		<li class="last">
+				    			<p class="cate_title">采购金额</p>
+				    			<p class="num pink">${projAmount }<span>万元</span></p>
+				    		</li>
+				    	</ul>
+				    </div>
+				<!-- #cate_area --></div>
+				<div class="section" id="floor01" style="display: none;">
+					<div class="title">
+						<p>提供最简易的购物模式</p>
+						<h2>电子招标</h2>
+					</div>
+					<div class="tab_area">
+					    <!-- tab切换导航 -->
+						<ul id="invite_tenders" class="nav nav-tabs">
+							<li class="active"><a href="#goods" data-toggle="tab">货物</a></li>
+							<li><a href="#project" data-toggle="tab">工程</a></li>
+							<li><a href="#service" data-toggle="tab">服务</a></li>
+						</ul>
+						<!-- tab切换内容 -->
+						<div id="invite_tenders_content" class="tab-content">
+							<!-- 货物 -->
+							<div class="tab-pane fade in active" id="goods">
+								<div class="tab_inner">
+									<ul>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【货物】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+									</ul>
+									<div class="more">
+										<p><a href="#">查看更多&gt;</a></p>
+									</div>
+								</div>
+							</div>
+							<!-- 工程 -->
+							<div class="tab-pane fade" id="project">
+								<div class="tab_inner">
+									<ul>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【工程】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+									</ul>
+									<div class="more">
+										<p><a href="#">查看更多&gt;</a></p>
+									</div>
+								</div>
+							</div>
+							<!-- 服务 -->
+							<div class="tab-pane fade" id="service">
+								<div class="tab_inner">
+									<ul>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【服务】</span>需求商品名称需求商品名称</p>
+												<p class="time">发布时间：<span>2017-05-10</span></p>
+											</div>
+											<div class="btn_detail"><button type="button" class="btn btn-default blue">发售中</button></div>
+										</li>
+									</ul>
+									<div class="more">
+										<p><a href="#">查看更多&gt;</a></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				<!-- #floor01 --></div>
+				
+				<div class="section" id="floor03">
+					<div class="title">
+						<p>阳光，高效，诚信</p>
+						<h2>电子竞价</h2>
+					</div>
+					<div class="tab_area">
+					    <!-- tab切换导航 -->
+						<ul id="bid" class="nav nav-tabs">
+							<li class="active"><a href="#bid_info" data-toggle="tab">竞价公告</a></li>
+							<li><a href="#bid_result" data-toggle="tab">竞价结果</a></li>
+						</ul>
+						<!-- tab切换内容 -->
+						<div id="bid_content" class="tab-content">
+							<!-- 货物 -->
+							<div class="tab-pane fade in active" id="bid_info">
+								<div class="tab_inner">
+									<ul>
+									<c:forEach varStatus="sta" var="i" items="${notices }">
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【公告】</span>${i.projName }</p>
+												<p class="time">发布时间：<span><fmt:formatDate value="${i.publishTime}" pattern="yyyy-MM-dd"/></span></p>
+											</div>
+											<div class="btn_detail"><a href="${pageContext.request.contextPath}/market/bid/notice?projId=${i.projId}" target="_blank" class="btn btn-default blue">查看详情</a></div>
+										</li>
+									</c:forEach>
+									</ul>
+									<div class="more">
+										<p><a href="${pageContext.request.contextPath}/market/bid/index">查看更多&gt;</a></p>
+									</div>
+								</div>
+							</div>
+							<!-- 工程 -->
+							<div class="tab-pane fade" id="bid_result">
+								<div class="tab_inner">
+									<ul>
+									<c:forEach varStatus="sta" var="i" items="${results }">
+										<li class="clearfix">
+											<div class="text_area">
+												<p><span class="red">【结果】</span>${i.projName }</p>
+												<p class="time">发布时间：<span><fmt:formatDate value="${i.noticeTime}" pattern="yyyy-MM-dd"/></span></p>
+											</div>
+											<div class="btn_detail"><a href="${pageContext.request.contextPath}/market/bid/result/show?projId=${i.projId}" target="_blank" class="btn btn-default blue">定标通知书</a></div>
+										</li>
+									</c:forEach>
+									</ul>
+									<div class="more">
+										<p><a href="${pageContext.request.contextPath}/market/bid/index">查看更多&gt;</a></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				<!-- #floor03 --></div>
+				
+				<div class="section" id="floor02">
+					<div class="title">
+						<p>电商同步，正品低价</p>
+						<h2>超市直采</h2>
+					</div>
+					<div class="cate_list">
+						<ul class="clearfix">
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=1"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate01.png"></span><span class="txt">办公用品</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=2"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate02.png"></span><span class="txt">办公设备</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=7"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate03.png"></span><span class="txt">生活用品</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=3"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate04.png"></span><span class="txt">电脑及配件</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=5"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate05.png"></span><span class="txt">办公家电</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=10"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate06.png"></span><span class="txt">食品饮料</span></a>
+							</li>
+							<li>
+								<a href="${pageContext.request.contextPath}/market/goods/search?cat=4"><span><img src="${pageContext.request.contextPath}/static/img/index_top/icon-cate07.png"></span><span class="txt">数码用品</span></a>
+							</li>
+						</ul>
+					</div>
+					<div class="goods_list carousel slide" data-ride="carousel" data-shift="1">
+					    <div class="carousel-inner">
+						<ul class="clearfix row item active">
+						<c:forEach var="i" varStatus="sta" items="${goods }">
+							<c:if test="${sta.index == 4 }">
+						</ul>
+						<ul class="clearfix row item">
+							</c:if>
+							<li>
+								<div class="photo"><a href="${pageContext.request.contextPath}/market/goods/show?gid=${i.supGoodsId}&sid=${i.supId}"><img width="260px" height="290px" src="${i.imagePath}" alt=""><img src="${pageContext.request.contextPath}/static/img/index_top/icon-off.png" alt="OFF" class="off"></a></div>
+								<div class="name clearfix">
+									<p class="name_list"><a href="${pageContext.request.contextPath}/market/goods/show?gid=${i.supGoodsId}&sid=${i.supId}">${i.goodsName }</a></p>
+									<p class="buy_buttom"><a href="javascript:void(0);" data-sid="${i.supId}" data-gid="${i.supGoodsId}" class="cart-add-btn"><img src="${pageContext.request.contextPath}/static/img/index_top/icon-buy.png" alt=""></a></p>
+								</div>
+								<p class="price">￥${i.agreePrice }<span><s>￥${i.salePrice }</s></span></p>
+							</li>
+						</c:forEach>
+						</ul>
+						</div>
+						<div class="more">
+							<p><a href="${pageContext.request.contextPath}/market/index">查看更多&gt;</a></p>
+						</div>
+					</div>
+				<!-- #floor02 --></div>
+				
+				<div class="section" id="floor04">
+					<div class="title">
+						<p>高效匹配，促进供需合作</p>
+						<h2>专业市场</h2>
+					</div>
+					<div class="need_area">
+						<ul class="clearfix">
+						<c:forEach var="i" varStatus="sta" items="${reqs }">
+						    <li class="clearfix">
+						    	<div class="text_area">
+						    		<p><span class="red">【求购】</span>${i.goodsName }</p>
+						    		<p class="time">发布时间：<span><fmt:formatDate value="${i.createDate}" pattern="yyyy-MM-dd"/></span></p>
+								</div>
+								<div class="btn_detail"><a href="${pageContext.request.contextPath}/${reqLink}?goodsName=${i.indexLink}" class="btn btn-default blue">查看详情</a></div>
+							</li>
+						</c:forEach>
+						</ul>
+						<div class="more">
+							<p><a href="${pageContext.request.contextPath}/${reqLink}">查看更多&gt;</a></p>
+						</div>
+					</div>
+					<div class="supplier_list">
+					    <h3>入驻企业</h3>
+					    <div class="carousel slide" data-ride="carousel" data-shift="1">
+					        <div class="carousel-inner">
+								<ul class="clearfix row item active">
+								<c:forEach var="i" varStatus="sta" items="${sups }">
+								<c:if test="${sta.index == 5}">
+								</ul>
+								<ul class="clearfix row item">
+								</c:if>
+									<li><a href="#"><img width="258px" height="90px" src="${i.supImage }" alt=""></a></li>
+								</c:forEach>
+								</ul>
+							</div>
+						</div>
+					</div>
+				<!-- #floor04 --></div>
+			<!-- .inner --></div>
+		<!-- #content --></div>
+		<jsp:include page="footer.jsp" />
+		<!--.page-wrapper-->
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,15 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierOrder;
+
+public interface SupplierOrderService {
+	
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder);
+	
+	public Integer queryOrderListCount(SupplierOrder supplierOrder);
+	
+	public List<SupplierOrder> queryOrderStatusList();
+
+}

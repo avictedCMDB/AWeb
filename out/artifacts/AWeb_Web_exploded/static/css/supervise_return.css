@@ -1,0 +1,138 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area dl dt {
+	width: 75px;
+}
+#matter_section .search_area dl dd {
+	width: 197px;
+}
+#matter_section .search_area dl.date_list dd {
+	width: 230px;
+}
+#matter_section .special_input {
+	width: 80px;
+}
+.search_result table tr.company td {
+    border: none;
+    font-weight: bold;
+}
+#matter_section .search_result table tr.company td ul li.right_box {
+    float: right;
+    margin-left: 30px;
+}
+.search_result table tr.company td span {
+    font-weight: 100;
+}
+.price {
+    color: #ff4200;
+}
+.search_result table tr td.right_none {
+    border-right: none;
+}
+.search_result table tr td.left_none {
+    border-left: none;
+	text-align: left;
+}
+
+
+
+
+.info_detail {
+	background: #f6f4f5 none repeat scroll 0 0;
+    border: 1px solid #dfdfdf;
+    margin: 20px auto 0;
+    padding: 10px 0 5px 35px;
+    width: 990px;
+}
+.info_detail label {
+	 width: 120px;
+	 text-align: right;
+}
+.info_detail span {
+	min-width: 100px;
+	display: inline-block;
+	color: #4798ed;
+}
+.info_detail .form-group label {
+	float: left;
+}
+.info_detail textarea {
+	float: left;
+	width: 750px;
+	display: inline-block;
+}
+.search_result table tr td .btn {
+	display: block;
+    height: 26px;
+    line-height: 26px;
+    width: 25px;
+	padding: 0;
+}
+.search_result table tr td .form-control {
+	height: 26px;
+}
+.info_list dl {
+	float: left;
+}
+.info_list dl .form-control {
+	width: 350px;
+}
+.info_list dl dt {
+	line-height: 28px;
+}
+.info_list dl dt span {
+	color: #db433d;
+}
+.info_list .btn_add {
+	margin-left: 20px;
+	float: right;
+}
+.btn_area ul {
+	display: inline-block;
+}
+.btn_area ul li {
+	float: left;
+	margin: 0 5px;
+}
+.replace_step {
+    border-bottom: 1px solid #dfdfdf;
+    margin-bottom: 25px;
+    padding: 18px 85px 37px;
+}
+.replace_step ul.image_list li {
+    float: left;
+}
+.replace_step ul.text_step li {
+    float: left;
+    width: 305px;
+}
+.replace_step ul.text_step li.receipt_step {
+    text-align: right;
+    width: 95px;
+}
+.replace_step ul.text_step li.sale_step {
+    width: 280px;
+}
+.replace_step ul.text_step li.confirm_step {
+    width: 310px;
+}
+.replace_step ul.image_list {
+    margin: 0 auto 10px;
+    width: 964px;
+}
+h3.title_h3 {
+  border-left: 5px solid #0091dc;
+  font-size: 16px;
+  padding-left: 10px;
+  color: #0091dc;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+table.details {
+	width: 100%;
+	margin-top: 0;
+}
+.btn_area {
+	text-align: center;
+	margin: 30px 0;
+}

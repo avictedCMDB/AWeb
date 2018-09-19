@@ -1,0 +1,256 @@
+package com.avic.common.utils;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import com.avic.common.beans.GoodsToCompare;
+import com.avic.management.models.CodeList;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
+
+public class Html2Pdf {
+
+	public static void html2Pdf(GoodsToCompare goodsToCompare,List<CodeList> reasonCodes,String pdfPath,String fontPath) throws DocumentException, IOException {
+		String outputFile = pdfPath;
+        OutputStream os = new FileOutputStream(outputFile);  
+        ITextRenderer renderer = new ITextRenderer();  
+        ITextFontResolver fontResolver = renderer.getFontResolver();  
+        fontResolver.addFont(fontPath,  
+                BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);  
+        StringBuffer html = new StringBuffer();  
+        // DOCTYPE 必需写否则类似于 这样的字符解析会出现错误  
+        html.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");  
+        html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");  
+        html.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">")  
+                .append("<head>")  
+                .append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />")  
+                .append("<style type=\"text/css\" mce_bogus=\"1\">body {font-family: SimSun;}</style>")  
+                .append("</head>")  
+        .append("<body>");  
+        html.append("<div>" +
+        		"<div><h2>商品比对管理</h2><div>" +
+        		"<table><tbody>" +
+        		"<tr>" +
+        		"<th>商品图片</th>"); 
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\"><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td>" +
+            		"<p><img src=\""+goodsToCompare.getSupGoodsOneImagePath()+"\" width=\"180\" height=\"160\"></img></p>" +
+            		"<p>"+goodsToCompare.getSupGoodsOneGoodsName()+"</p>" +
+            		"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\"><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td>" +
+            		"<p><img src=\""+goodsToCompare.getSupGoodsTwoImagePath()+"\" width=\"180\" height=\"160\"></img></p>" +
+            		"<p>"+goodsToCompare.getSupGoodsTwoGoodsName()+"</p>" +
+            		"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\"><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td>" +
+            		"<p><img src=\""+goodsToCompare.getSupGoodsThreeImagePath()+"\" width=\"180\" height=\"160\"></img></p>" +
+            		"<p>"+goodsToCompare.getSupGoodsThreeGoodsName()+"</p>" +
+            		"</td>");
+        }
+        
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\"><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td>" +
+            		"<p><img src=\""+goodsToCompare.getSupGoodsFourImagePath()+"\" width=\"180\" height=\"160\"></img></p>" +
+            		"<p>"+goodsToCompare.getSupGoodsFourGoodsName()+"</p>" +
+            		"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr>" +
+        		"<th>价格</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>￥"+goodsToCompare.getSupGoodsOneAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>￥"+goodsToCompare.getSupGoodsTwoAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>￥"+goodsToCompare.getSupGoodsThreeAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>￥"+goodsToCompare.getSupGoodsFourAgreePrice()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th>品牌</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsOneBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsTwoBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsThreeBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsFourBrandName()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th>产地</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsOneProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsTwoProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsThreeProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td></td>");
+        	}
+        }else{
+        	 html.append("<td>"+goodsToCompare.getSupGoodsFourProductArea()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th>是否选购</th>");
+        
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsOneID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td>未选商品</td>");
+        	 }else{
+        		 html.append("<td>已选商品</td>");
+        	 }
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsTwoID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td>未选商品</td>");
+        	 }else{
+        		 html.append("<td>已选商品</td>");
+        	 }
+        }
+        
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsThreeID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td>未选商品</td>");
+        	 }else{
+        		 html.append("<td>已选商品</td>");
+        	 }
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsFourID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td>未选商品</td>");
+        	 }else{
+        		 html.append("<td>已选商品</td>");
+        	 }
+        }
+        html.append("</tr><tr><th>采购理由</th>");
+        html.append("<td colspan=\"4\">");
+        for (int i = 0; i < reasonCodes.size(); i++) {
+        	if(goodsToCompare.getProCheckedReason().equals(reasonCodes.get(i).getCodeValue())){
+        		html.append("<label><input type=\"radio\" checked=\"checked\"></input>"+reasonCodes.get(i).getCodeText()+"</label>");
+            }else{
+            	html.append("<label></label>");
+            }
+		}
+        
+        html.append("</td>" +
+        		"</tr>");
+        html.append("<tr><th>备注</th>");
+        if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        	html.append("<td colspan=\"4\"></td>");
+        }else{
+        	html.append("<td colspan=\"4\">"+goodsToCompare.getRemark()+"</td>");
+        }
+        
+        html.append("</tr>" +
+        		"</tbody></table>" +
+        		"</div>" +
+        		"</div>" +
+        		"</div>");  
+        html.append("</body></html>");  
+        System.out.println(html.toString());  
+        renderer.setDocumentFromString(html.toString());  
+        // 解决图片的相对路径问题  
+        // renderer.getSharedContext().setBaseURL("file:/F:/teste/html/");  
+        renderer.layout();  
+        renderer.createPDF(os);  
+        os.close();  
+		
+
+	}
+
+}

@@ -1,0 +1,55 @@
+function removeSupGoods(index){
+	if(index==1){
+		$("#supOneID").val("");
+		$("#supGoodsOneID").val("");
+	}else if(index==2){
+		$("#supTwoID").val("");
+		$("#supGoodsTwoID").val("");
+	}else if(index==3){
+		$("#supThreeID").val("");
+		$("#supGoodsThreeID").val("");
+	}else if(index==4){
+		$("#supFourID").val("");
+		$("#supGoodsFourID").val("");
+	}
+	document.getElementById("commitForm").action="/AWeb/management/compare/detail";
+	document.getElementById("commitForm").submit();
+}
+
+//添加购物车
+function addCart(){
+	var goodsCount=0;
+	if	($("#supGoodsOneID").val()!=""){
+		goodsCount++;
+	}
+	if	($("#supGoodsTwoID").val()!=""){
+		goodsCount++;
+	}
+	if	($("#supGoodsThreeID").val()!=""){
+		goodsCount++;
+	}
+	if	($("#supGoodsFourID").val()!=""){
+		goodsCount++;
+	}
+	if(goodsCount<3){
+		alert("至少添加三件商品");
+		return;
+	}
+	if($("#ProCheckedReasonTRA").val()==""){
+		alert("请输入选择原因");
+		return;
+	}
+	var chooseGoodsIndex = $("input[name='optionsRadiosinline']:checked").val();
+	if(chooseGoodsIndex==""||typeof(chooseGoodsIndex) == "undefined"){
+		alert("请选择选购商品");
+		return;
+	}
+	$("#ProCheckedReason").val($("#ProCheckedReasonTRA").val());
+	$("#chooseGoodsIndex").val(chooseGoodsIndex);
+	document.getElementById("commitForm").action="/AWeb/management/compare/addCart";
+	document.getElementById("commitForm").submit();
+}
+
+function cancle(){
+	window.location.href="/AWeb/"+$("#returnUrl").val();
+}

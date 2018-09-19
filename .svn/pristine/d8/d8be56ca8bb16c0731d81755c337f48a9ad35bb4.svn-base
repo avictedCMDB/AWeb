@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SettleMapper">
+	<insert id="insertSettleData">
+		insert into t_settle_data (busi_id, busi_type, create_time, company_name, total_num, settle_amount, settle_status, sup_id)
+		values (
+			#{busiId,jdbcType=VARCHAR}, #{busiType,jdbcType=INTEGER}, sysdate, #{companyName,jdbcType=VARCHAR},
+			#{totalNum,jdbcType=INTEGER}, #{settleAmount,jdbcType=DOUBLE}, 0, #{supId,jdbcType=INTEGER})
+	</insert>
+	
+</mapper>

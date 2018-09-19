@@ -1,0 +1,97 @@
+connection1.driverClass=oracle.jdbc.driver.OracleDriver
+connection1.jdbcUrl=jdbc:oracle:thin:@192.168.9.72:1521:orcl
+connection1.username=avictest
+connection1.password=avictest
+connection1.initialPoolSize=2
+connection1.minPoolSize=1
+connection1.maxPoolSize=5
+connection1.acquireIncrement=1
+connection1.maxIdleTime=0
+connection1.maxStatements=0
+
+invoice.title=\u4e2d\u822a\u6280\u56fd\u9645\u7ecf\u8d38\u53d1\u5c55\u6709\u9650\u516c\u53f8
+# ========================================================
+# Raise price para
+# ========================================================
+raise_jd=0.01
+raise_staples=0.01
+raise_colipu=0.01
+raise_suplier=0
+
+chinapay.prod=0
+# ========================================================
+# China Pay Test 
+# ========================================================
+chinapay.mer.id.0001=000001604120541
+chinapay.mer.id.0002=000001604120541
+chinapay.mer.id.0004=000001604120541
+chinapay.url.pay=http://newpayment-test.chinapay.com/CTITS/service/rest/page/nref/000000000017/0/0/0/0/0
+chinapay.url.refund=http://newpayment-test.chinapay.com/CTITS/service/rest/forward/syn/000000000065/0/0/0/0/0
+# ========================================================
+# China Pay Production 
+# ========================================================
+#chinapay.mer.id.0001=808080201308813
+#chinapay.mer.prk.0001=C:/eclipse_AGB/workspace/AWeb/WebRoot/WEB-INF/cert/MerPrK_808080201308813_20160128155816.key
+#chinapay.mer.id.0002=808080201308814
+#chinapay.mer.prk.0002=C:/eclipse_AGB/workspace/AWeb/WebRoot/WEB-INF/cert/MerPrK_808080201308814_20160128155538.key
+#chinapay.mer.id.0004=808080201308820
+#chinapay.mer.prk.0004=C:/eclipse_AGB/workspace/AWeb/WebRoot/WEB-INF/cert/MerPrK_808080201308820_20160128160027.key
+#chinapay.mer.pbk=C:/eclipse_AGB/workspace/AWeb/WebRoot/WEB-INF/cert/PgPubk.key
+#chinapay.mer.id=
+#chinapay.url.pay=https://payment.chinapay.com/pay/TransGet
+#chinapay.url.refund=http://console.chinapay.com/refund/SingleRefund.jsp
+#chinapay.url.pay=https://payment.chinapay.com/CTITS/payment/TransGet
+#chinapay.url.refund=https://payment.chinapay.com/CTITS/refund/SingleRefund.jsp
+
+chinapay.callback.page=http://localhost:8080/AWeb/${module}/callback/page
+chinapay.callback.notify=http\://localhost\:8080/AWeb/${module}/callback/notify
+chinapay.callback.refund=http\://localhost\:8080/AWeb/management/finance/callback/refund
+# ========================================================
+# Alipay Pay Production 
+# ========================================================
+alipay.param.partner=2088021589008070
+alipay.param.seller_id=2088021589008070
+alipay.param.private_key=MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJSde3HNYPDEjRnOZSDyiX+mhGW/ZCtdUf74PL7SqtlkXuTUYjoSoWSiDnzPF8diwXX5U7I+NKeG3tEm5Oifo1DI6tOWKyW8hFJH/d20q5ocTYempDeIH0mfGFHoX3YcY2YNTUXuzGUvoJVmQOYeis5Q0MXfDxlrlf8zmtNrDiCDAgMBAAECgYAQ2BiZuXF3WI+1kRMdPOAgu7rd3Wd5EsasY25fInmC0kF/JiNL+biZM1T5CG/lhWfv+yZlWW+WXU773bCsPQvBfA0TcuoAlgMKWz6wkVaUwSpBOF2GAbRh+7vIjC2b1B748NzkXWbFRmw98jwZK9rUBwY948I8k4+/F4ZRjN8BgQJBAMOQ/J4ee+5vyS0sKf/JeLRzpW3T7AW8WFLqLO5VSvch5CuBF5QQ1Qqv7u5fbsFdBTZGedOeGyvoL4KodcFNNbECQQDCij6jN7EcZU6TIc2faDFn4p/SkTZxn5w8Z1hmC4v/zNgMVQfQN2dvd+ABzgyGz8V0ns5jY79S97+5lUaH9aJzAkALsEW4+Z90n8/JWGNmO1dwiZzwlIL90MUCp6Zp1EU3whnOE9gh7GOfUOaZ7rBC9FlUZh/v6vo6xJTaXVE0bXXxAkAbAy8nYrhJBRgf/fWbSNBzaFhg2KECrfL3wDHaGYhbAIqPS89F7iuCotaL6Zx7q6XzR4nI6zTJxHTuw/eDMWxZAkBgK907p10r/wRen+2vm0+b10vc89/PSe2ja6Xamnp5SpJkZ0dSa4keLYcuOqGzwsrqBw4AL6OTxMhHNuqFNF66
+alipay.param.alipay_public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB
+alipay.param.sign_type=RSA
+alipay.param.input_charset=gbk
+alipay.param.payment_type=1
+alipay.param.service=create_direct_pay_by_user
+alipay.param.url=https://mapi.alipay.com/gateway.do?
+alipay.callback.notify_url=http\://localhost\:8080/AWeb/${module}/notifyurl
+alipay.callback.return_url=http\://localhost\:8080/AWeb/${module}/returnurl
+
+alipay.refund.param.service=refund_fastpay_by_platform_pwd
+alipay.refund.callback.notify_url=http\://localhost\:8080/AWeb/supervise/refund/callback/notityurl
+
+
+# ========================================================
+# image upload 
+# ========================================================
+market_url = /upload/market
+vat_url = /upload/vat
+supplier_url = /upload/supplier
+supplier_recommend_url = /upload/supplierRecommend
+supplier_picture = /upload/supplierPicture
+brand_url = /upload/brand
+off_standard = /upload/standard
+supplier_contract = /upload/supplier/contract
+supplier_excel = /upload/supplier/execl
+help_url = /upload/help
+kindeditor_url = /upload/kindeditor
+
+# ========================================================
+# shortMessage
+# ========================================================
+#\u751f\u4ea7\u5730\u5740
+# uri=http://sdk999ws.eucp.b2m.cn:8080/sdk/SDKService?wsdl 
+#\u6d4b\u8bd5\u5730\u5740  
+uri=http://sdk999in.eucp.b2m.cn:8080/sdk/SDKService?wsdl
+# \u4ebf\u7f8e\u77ed\u4fe1\u914d\u7f6e
+#\u8f6f\u4ef6\u5e8f\u5217\u53f79SDK-EMY-0999-JBYTP 3SDK-EMY-0130-OBSMN
+SmsSerialNo=9SDK-EMY-0999-JDWTP
+#\u81ea\u5b9a\u4e49\u5173\u952e\u5b57(key\u503c)128598
+SmsKey=852170
+#\u81ea\u5b9a\u4e49\u7b7e\u540d
+SmsSign=\u3010\u4e2d\u822a\u6280\u56fd\u9645\u7ecf\u8d38\u53d1\u5c55\u6709\u9650\u516c\u53f8\u3011
+

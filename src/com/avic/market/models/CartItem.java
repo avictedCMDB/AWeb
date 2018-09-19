@@ -1,0 +1,102 @@
+package com.avic.market.models;
+
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String userId;
+    private int supId;
+    private String supGoodsId;
+    private int buyNum;
+    private String goodsName;
+    private String imagePath;
+    private double agreePrice;
+    private int goodsStatus;
+    private int compare;
+    private int stock;
+    private int supType;
+    private String compareId;
+    private String goodsModel;
+    
+    public String getGoodsModel() {
+        return goodsModel;
+    }
+    public void setGoodsModel(String goodsModel) {
+        this.goodsModel = goodsModel;
+    }
+    public String getCompareId() {
+        return compareId;
+    }
+    public void setCompareId(String compareId) {
+        this.compareId = compareId;
+    }
+    public int getSupType() {
+        return supType;
+    }
+    public void setSupType(int supType) {
+        this.supType = supType;
+    }
+    
+    public int getStock() {
+        return stock;
+    }
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public int getSupId() {
+        return supId;
+    }
+    public void setSupId(int supId) {
+        this.supId = supId;
+    }
+    public String getSupGoodsId() {
+        return supGoodsId;
+    }
+    public void setSupGoodsId(String supGoodsId) {
+        this.supGoodsId = supGoodsId;
+    }
+    public int getBuyNum() {
+        return buyNum;
+    }
+    public void setBuyNum(int buyNum) {
+        this.buyNum = buyNum;
+    }
+    public String getGoodsName() {
+        return goodsName;
+    }
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+    public String getImagePath() {
+        return imagePath;
+    }
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+    public double getAgreePrice() {
+        return agreePrice;
+    }
+    public void setAgreePrice(double agreePrice) {
+        this.agreePrice = agreePrice;
+    }
+    public int getGoodsStatus() {
+        return goodsStatus;
+    }
+    public void setGoodsStatus(int goodsStatus) {
+        this.goodsStatus = goodsStatus;
+    }
+    public int getCompare() {
+        return compare;
+    }
+    public void setCompare(int compare) {
+        this.compare = compare;
+    }
+    
+    
+}

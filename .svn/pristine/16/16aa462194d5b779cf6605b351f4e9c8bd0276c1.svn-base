@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航采购网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supervise_order.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierUtil.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierOrderExchange.js"></script>
+<link href="${pageContext.request.contextPath}/static/css/imgbox.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.imgbox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	<c:forEach var="image" items="${supplierOrderContract.supplierGoodsImages}" varStatus="status">
+		$("#img_${status.index}").imgbox();
+	</c:forEach>
+
+	});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+  <div id="contents">
+    <div class="inner">
+      <div id="order_details">
+        <div class="section_main pro_info">
+          <h2>商品信息</h2>
+          <table>
+            <tr>
+              <th colspan="2">商品名称</th>
+              <th width="200">单价（元）</th>
+              <th width="200">数量（个）</th>
+              <th width="200">总价（元）</th>
+            </tr>
+            <c:forEach varStatus="sta" var="item" items="${order.snapshots}">
+            <tr>
+              <td class="left_align" width="77">
+                <p class="img_pro"><a href="#"><img alt="" src="${item.imagePath}" width="55px" height="55px"/></a></p>
+              </td>
+              <td class="left_align"><a href="${pageContext.request.contextPath}/supplier/goodsInfo/queryDetailed/${item.supGoodsId}" target="_blank">${item.goodsName}</a></td>
+              <td><fmt:formatNumber value="${item.goodsPrice}" pattern="#0.00#"></fmt:formatNumber></td>
+              <td>${item.buyNum}</td>
+              <td><fmt:formatNumber value="${item.goodsPrice * item.buyNum}" pattern="#0.00#"></fmt:formatNumber></td>
+            </tr>
+            </c:forEach>
+          </table>
+        </div>
+        <div class="section_main clearfix section_inner">
+          <div class="special_area first">
+            <h2>地址信息</h2>
+            <div class="details_list">
+              <dl class="dl-horizontal">
+                <dt>配送要求：</dt>
+                <dd>${order.expressType == 1 ? '物流配送' : '上门自取'}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>配送地址：</dt>
+                <dd>${fn:escapeXml(order.addrDetail)}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>收件人姓名：</dt>
+                <dd>${order.addrName}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>联系电话：</dt>
+                <dd>${order.addrPhone == '' ? order.addrTel : order.addrPhone}</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="special_area">
+            <h2>合同信息</h2>
+            <div class="details_list">
+              <dl class="dl-horizontal">
+                <dt>是否续订合同：</dt>
+                <dd>
+                   <label class="checkbox-inline">
+                       <input value="1" name="contractType" $<c:if test="${supplierOrderContract.contractAttachmentPath != null and supplierOrderContract.contractAttachmentPath != ''}"> checked="checked" </c:if> type="radio" disabled/>是
+                   </label>
+                   <label class="checkbox-inline special">
+                       <input value="2" name="contractType" $<c:if test="${supplierOrderContract.contractAttachmentPath == null or supplierOrderContract.contractAttachmentPath == ''}"> checked="checked" </c:if> type="radio" disabled/>否
+                   </label>
+               </dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>合同编号：</dt>
+                <dd><input class="form-control" type="text" name="contractCode" value="${supplierOrderContract.contractCode}" readonly="readonly" id="contractCode"/></dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>合同名称：</dt>
+                <dd><input class="form-control" type="text" name="contractName" value="${supplierOrderContract.contractName}" id="contractName" readonly="readonly"/></dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>合同金额：</dt>
+                <dd><input class="form-control" type="text" name="contractPrice" value="${supplierOrderContract.contractPrice}" id="contractPrice" readonly="readonly"/></dd>
+              </dl>
+            </div>
+          </div>
+          <div class="special_area">
+            <h2>合同附件</h2>
+            <div class="details_list">
+                <a href="<c:if test="${supplierOrderContract.contractAttachmentPath != null and supplierOrderContract.contractAttachmentPath != ''}">${pageContext.request.contextPath}/supplier/order/downloadContract?downFile=${supplierOrderContract.contractAttachmentPath}</c:if>" target="blank"><c:if test="${supplierOrderContract.contractAttachmentPath != null and supplierOrderContract.contractAttachmentPath != ''}">${pageContext.request.contextPath}</c:if>${supplierOrderContract.contractAttachmentPath}</a>
+            </div>
+          </div>
+          <div class="special_area">
+            <h2>合同快照</h2>
+            <div class="details_list">
+                <div class="up_img">
+                    <ul>
+                    	<c:forEach var="supplierGoodsImage" items="${supplierOrderContract.supplierGoodsImages}" varStatus="status">
+                    		<li><a id="img_${status.index}" href="${pageContext.request.contextPath}${supplierGoodsImage.imagePath}"><img height='80px' width='80px' src="${pageContext.request.contextPath}${supplierGoodsImage.imagePath}"/></a></li>
+                    	</c:forEach>
+                    </ul>
+                </div>
+            </div>
+          </div>
+          </div>
+        <div class="btn_list">
+          <ul class="list-inline">
+            <li><button type="button" class="btn btn-default gray" onclick="history.go(-1);">返回</button></li>
+          </ul>
+        </div>
+      <!--.order_details--></div>
+      
+      
+      
+      <!--.inner--> 
+    </div>
+    <!--#contents--> 
+  </div>
+	<jsp:include page="../footer.jsp" />
+  <!--.page-wrapper--> 
+</div>
+</body>
+</html>

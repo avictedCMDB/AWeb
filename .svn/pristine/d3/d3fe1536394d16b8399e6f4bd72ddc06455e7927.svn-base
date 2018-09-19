@@ -1,0 +1,116 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.common.shortMessage.ShortMessageUtils;
+import com.avic.common.utils.CommonFileUtils;
+import com.avic.management.mappers.OrderExchangeMapper;
+import com.avic.management.models.OrderExchangeBean;
+import com.avic.management.services.OrderExchangeService;
+
+@Service
+public class OrderExchangeServiceImpl implements OrderExchangeService {
+    protected static final Log logger = LogFactory.getLog(OrderExchangeServiceImpl.class);
+
+    @Autowired
+    OrderExchangeMapper orderExchangeMapper;
+
+	@Override
+	public OrderExchangeBean getOrderDetail(String order_id) {
+		return orderExchangeMapper.getOrderDetail(order_id);
+	}
+
+	@Override
+	public List<OrderExchangeBean> orderSelectDoInit(OrderExchangeBean oeBean) {
+		return orderExchangeMapper.orderSelectDoInit(oeBean);
+	}
+
+	@Override
+	public List<OrderExchangeBean> orderSelectMainDoInit(OrderExchangeBean oeBean) {
+		return orderExchangeMapper.orderSelectMainDoInit(oeBean);
+	}
+
+	@Override
+	@Transactional
+	public String doSaveInTables(List<OrderExchangeBean> oeBeanList,
+			Map<String, String> paramMap) throws ServiceException {
+		OrderExchangeBean oeBean = new OrderExchangeBean();
+		String sup_goods_ids = "";
+		String result = "ok";
+		try {
+			//1.更新订单表状态为申请换货
+			oeBean.setOrder_id(paramMap.get("order_id"));
+			orderExchangeMapper.updateT_ORDER(oeBean);
+			//2.插入换货主表
+			String exchange_id = (orderExchangeMapper.getExchangeId()).getExchange_id();
+			oeBean.setExchange_id(exchange_id);
+			oeBean.setSup_id(paramMap.get("sup_id"));
+			oeBean.setRemark(paramMap.get("remark"));
+			oeBean.setExchange_amount(paramMap.get("exchange_amount"));
+			oeBean.setExchange_price(paramMap.get("exchange_price"));
+			oeBean.setUser_id(paramMap.get("user_id"));
+			oeBean.setExchange_price_init(paramMap.get("exchange_price_init"));
+			orderExchangeMapper.InsertT_ORDER_EXCHANGE(oeBean);
+			//3.插入换货商品表记录
+			for(int i=0;i<oeBeanList.size();i++){
+				OrderExchangeBean tmpBean = (OrderExchangeBean) oeBeanList.get(i);
+				tmpBean.setOrder_id(paramMap.get("order_id"));
+				tmpBean.setSup_id(paramMap.get("sup_id"));
+				tmpBean.setExchange_id(exchange_id);
+				orderExchangeMapper.InsertT_EXCHANGE_GOODS(tmpBean);
+				
+				if(i==0){
+					sup_goods_ids = tmpBean.getSup_goods_id();
+				}else{
+					sup_goods_ids += "," + tmpBean.getSup_goods_id();
+				}
+			}
+			//4.更新订单快照表商品的退货状态
+			oeBean.setSup_goods_id(sup_goods_ids);
+			orderExchangeMapper.updateT_ORDER_SNAPSHOT(oeBean);
+			
+			//5.插入附件图片表(如果上传了图片)
+			int imgCount = NumberUtils.toInt(paramMap.get("imgCount"));
+			if(imgCount>0){
+				String[] imgPaths = paramMap.get("imgPaths").split(",");
+				for(int i=0;i<imgCount;i++){
+					oeBean.setUrl(imgPaths[i]);
+					orderExchangeMapper.InsertT_IMAGE_INFO(oeBean);
+				}
+			}
+			
+//			6.以短信的形式告诉供应商
+			String contact_num = orderExchangeMapper.getContact_num(oeBean.getSup_id());//获取供应商联系电话（字段中存多个电话会以逗号分隔）
+			String cns[] = {};
+			if(contact_num!=null && !"".equals(contact_num)){
+				if(contact_num.indexOf(",")>0){
+					cns = contact_num.split(",");
+				}else{
+					cns = new String[1];
+					cns[0] = contact_num;
+				}
+				
+				String path = OrderExchangeServiceImpl.class.getResource("/").getPath();
+				String websiteURL = (path.replace("/build/classes", "").replace("%20"," ").replace("classes/", "") + "message.properties");
+				StringBuffer msg = new StringBuffer();
+				String subMsg1 = CommonFileUtils.getMsg(websiteURL,"changeInfo1");
+				String subMsg2 = CommonFileUtils.getMsg(websiteURL,"changeInfo2");
+				msg.append(subMsg1).append(oeBean.getOrder_id()).append(subMsg2);
+				ShortMessageUtils.sendSMS(cns, msg.toString());
+			}
+		} catch (Exception e) {
+			result="error";
+			throw new ServiceException(e);
+		}
+		return result;
+	}
+}

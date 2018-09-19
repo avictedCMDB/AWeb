@@ -1,0 +1,20 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.OrderExchangeBean;
+
+@Repository
+public interface OrderExchangeMapper {
+	/**
+	 * 获取要换货单基本信息
+	 */
+	public OrderExchangeBean getOrderDetail(String order_id);
+	
+	/**
+	 * 获取订单商品列表
+	 */
+	public List<OrderExchangeBean> orderSelectDoInit(OrderExchangeBean oeBean);
+}

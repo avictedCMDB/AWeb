@@ -1,0 +1,158 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="../meta.jsp" >
+	<jsp:param value="订单管理" name="title"/>
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/supervise_order.css" rel="stylesheet">
+<script type="text/javascript">
+$(function () {
+	$("#clear").click(function () {
+		$("#supId").val("");
+		$("#orderId").val("");
+		$("#goodsName").val("");
+		$("#companyName").val("");
+		$("#time").val("");
+		$("#orderStatus").val("");
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  
+  <jsp:include page="../header.jsp" />
+  
+  <div id="contents">
+    <div class="inner">
+    	
+      <jsp:include page="../left.jsp">
+      	<jsp:param value="order" name="menu"/>
+      </jsp:include>	
+    	
+      <div id="matter_section">
+      	<h2>订单管理</h2>
+      	<div class="search_area section">
+          <form action="${pageContext.request.contextPath}/supervise/order/list" method="get">
+          <div class="search_list clearfix">
+            <dl class="clearfix">
+              <dt>供应商名称：</dt>
+              <dd>
+                <select class="form-control" name="supId" id="supId">
+                	<option value="">全部</option>
+					<c:forEach var="item" varStatus="sta" items="${sups}">
+					<option value="${item.supId}" <c:if test="${supId == item.supId}">selected="selected"</c:if>>${item.supName }</option>
+					</c:forEach>
+                </select>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>订单编号：</dt>
+              <dd>
+                <input type="text" class="form-control" name="orderId" id="orderId" value="${orderId}">
+              </dd>
+            </dl>
+            <dl class="clearfix last">
+              <dt>商品名称：</dt>
+              <dd>
+                <input type="text" class="form-control" name="goodsName" id="goodsName" value="${goodsName}">
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>采购单位：</dt>
+              <dd>
+                <input type="text" class="form-control" name="companyName" id="companyName" value="${companyName}">
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>下单时间：</dt>
+              <dd>
+                <select class="form-control" name="time" id="time">
+                  <option value="">全部</option>
+                  <option value="1" <c:if test="${time == 1}">selected="selected"</c:if>>最近一个月</option>
+                  <option value="3" <c:if test="${time == 3}">selected="selected"</c:if>>最近三个月</option>
+                  <option value="12" <c:if test="${time == 12}">selected="selected"</c:if>>最近一年</option>
+                </select>
+              </dd>
+            </dl>
+            <dl class="clearfix last">
+              <dt>订单状态：</dt>
+              <dd>
+                <select class="form-control" name="orderStatus" id="orderStatus">
+                    <option value="">全部</option>
+					<c:forEach var="item" varStatus="sta" items="${codes}">
+					<option value="${item.codeValue}" <c:if test="${orderStatus == item.codeValue}">selected="selected"</c:if>>${item.codeText }</option>
+					</c:forEach>
+                </select>
+              </dd>
+            </dl>
+          </div>
+          <div class="btn_list">
+            <ul>
+              <li><button type="submit" class="btn btn-default red">查询</button></li>
+              <li><button type="button" id="clear" class="btn btn-default gray">清空</button></li>
+            </ul>
+          </div></form>
+        </div>
+        <div class="search_result">
+          <table>
+            <tr>
+              <th colspan="2">商品信息</th>
+              <th width="95">单价(元)</th>
+              <th width="75">数量</th>
+              <th width="95">金额(元)</th>
+              <th width="110">订单状态</th>
+              <th width="110" class="last">操作</th>
+            </tr>
+			<c:forEach var="item" varStatus="sta" items="${list}">
+            <tr class="company">
+              <td colspan="7">
+                <ul>
+                  <li>订单编号：<a href="${pageContext.request.contextPath}/supervise/order/detail?o=${item.orderId}">${item.orderId}</a></li>
+                  <li>供应商：<span>${item.supName}</span></li>
+                  <li>采购单位：<span>${item.companyName}</span></li>
+                  <li class="right_box">下单时间：<span><fmt:formatDate pattern="yyyy-MM-dd" 
+            value="${item.orderTime}" /></span></li>
+                  <li class="right_box">合计：<span class="price"><fmt:formatNumber value="${item.orderAmount}" pattern="#0.00#"></fmt:formatNumber></li>
+                  
+                </ul>
+              </td>
+            </tr>
+            <c:forEach var="goods" varStatus="sta" items="${item.snapshots}">
+            <tr>
+              <td class="right_none"><p class="img_pro"><a href="${pageContext.request.contextPath}/supervise/order/goods?gid=${goods.supGoodsId}&sid=${goods.supId}">
+              
+              	<c:if test="${goods.supType == 1}">
+                <img width="55px" height="55px" src="${pageContext.request.contextPath}${goods.imagePath == null ? '/static/img/img-profession.jpg' : goods.imagePath}">
+				</c:if>
+				<c:if test="${goods.supType == 0}">
+                <img width="55px" height="55px" src="${goods.imagePath}">
+				</c:if>
+              </a></p></td>
+              <td width="387" class="left_none"><a href="${pageContext.request.contextPath}/supervise/order/goods?gid=${goods.supGoodsId}&sid=${goods.supId}">${fn:escapeXml(goods.goodsName)}</a></td>
+              <td class="price"><fmt:formatNumber value="${goods.goodsPrice}" pattern="#0.00#"></fmt:formatNumber></td>
+              <td class="num">${goods.buyNum }</td>
+              <td class="price"><fmt:formatNumber value="${goods.goodsPrice * goods.buyNum}" pattern="#0.00#"></fmt:formatNumber></td>
+              <c:if test="${sta.index == 0 }">
+              <td rowspan="${fn:length(item.snapshots)}">${item.orderStatusName}</td>
+              <td rowspan="${fn:length(item.snapshots)}"><a href="${pageContext.request.contextPath}/supervise/order/detail?o=${item.orderId}">查看</a></td>
+              </c:if>
+            </tr>
+            </c:forEach>
+            </c:forEach>
+          </table>
+        </div>
+        <jsp:include page="../page.jsp" />
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

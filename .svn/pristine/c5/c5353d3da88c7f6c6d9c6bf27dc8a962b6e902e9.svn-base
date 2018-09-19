@@ -1,0 +1,11 @@
+package com.avic.market.mappers;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Address;
+
+@Repository
+public interface InvoiceMapper {
+    public Address queryUserInvoice(@Param("userId") String userId);
+}

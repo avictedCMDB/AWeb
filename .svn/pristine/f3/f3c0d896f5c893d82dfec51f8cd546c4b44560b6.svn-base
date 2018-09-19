@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.CompanyInfoMapper">
+	<resultMap id="companyInfoMap" type="com.avic.supervise.models.CompanyInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="COMPANY_TYPE" property="companyType" jdbcType="VARCHAR" />
+		<result column="IF_CHECK" property="ifCheck" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="CONTACT_EMAIL" property="contactEmail" jdbcType="VARCHAR" />
+		<result column="CONTACT_IPHONE" property="contactIphone" jdbcType="VARCHAR" />
+		<result column="USERNAME" property="userName" jdbcType="VARCHAR" />
+		<result column="PARENT_COMPANY_ID" property="parentCompanyId" jdbcType="VARCHAR" />
+		<result column="LEVEL" property="level" jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询公司列表 -->
+	<select id="queryCompanyInfoList" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+		select * from （SELECT  R.*,ROWNUM RK FROM (
+			SELECT 
+			       TCI.ID,
+			       TCI.COMPANY_CODE,
+			       TCI.COMPANY_NAME,
+			       TCI.IF_CHECK,
+			       TCI.IF_DELETE,
+			       TCI.COMPANY_TYPE,
+			       TCI.CREATE_DATE,
+			       TCI.CONTACT_PERSON,
+			       TCI.CONTACT_IPHONE,
+			       TCI.CONTACT_EMAIL,
+			       SU.SUP_NAME AS USERNAME,
+			       decode(TCI.if_check,3,0,0,1,1,2,2,3) check_level 
+			  FROM t_company_info TCI ,T_SUP_INFO SUI,SUP_USERS SU 
+			  where TCI.COMPANY_CODE = SUI.COMPANY_CODE 
+			  and SUI.SUP_ID = SU.SUP_ID and TCI.IF_DELETE = '1'  AND TCI.IF_CHECK IS NOT NULL AND TCI.PARENT_COMPANY_ID = 'system' 
+			  and SU.if_manager = 0
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND TCI.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND TCI.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+			   <if test="companyType != null and companyType != ''">
+			  	AND TCI.COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+			  </if>
+			  <if test="contactPerson != null and contactPerson != ''">
+			  	AND TCI.CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="contactIphone != null and contactIphone != ''">
+			  	AND TCI.CONTACT_IPHONE LIKE CONCAT('%',CONCAT(#{contactIphone,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="userName != null and userName != ''">
+			  	AND SU.SUP_NAME LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="ifCheck != null and ifCheck != ''">
+			  	AND TCI.IF_CHECK = #{ifCheck,jdbcType=VARCHAR}
+			  </if>
+			 <if test="timeStart != null and timeStart != ''">
+			   AND TCI.CREATE_DATE &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+			 <if test="timeEnd != null and timeEnd != ''">
+			   AND TCI.CREATE_DATE &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+		   ORDER BY check_level,TCI.create_date DESC) R ) w
+        WHERE w.RK BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryCompanyInfo" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+			SELECT TCI.ID,
+			       TCI.COMPANY_CODE,
+			       TCI.COMPANY_NAME,
+			       TCI.CREATE_DATE,
+			       TCI.CONTACT_PERSON,
+			       TCI.CONTACT_IPHONE,
+			       TCI.CONTACT_EMAIL,
+			       TCI.CONTACT_FAX,
+			       TCI.PARENT_COMPANY_ID
+			  FROM T_COMPANY_INFO TCI
+			 WHERE TCI.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询公司数量 -->
+	<select id="getCompanyInfoCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		    SELECT COUNT(1)
+			  FROM t_company_info TCI ,T_SUP_INFO SUI,SUP_USERS SU 
+			  where TCI.COMPANY_CODE = SUI.COMPANY_CODE  and SUI.SUP_ID = SU.SUP_ID 
+               and TCI.IF_DELETE = '1'
+               AND TCI.IF_CHECK IS NOT NULL
+               AND TCI.PARENT_COMPANY_ID = 'system'
+               and if_manager = 0
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND TCI.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND TCI.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+			    <if test="companyType != null and companyType != ''">
+			  	AND TCI.COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+			  </if>
+			  <if test="contactPerson != null and contactPerson != ''">
+			  	AND TCI.CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="contactIphone != null and contactIphone != ''">
+			  	AND TCI.CONTACT_IPHONE LIKE CONCAT('%',CONCAT(#{contactIphone,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="userName != null and userName != ''">
+			  	AND SU.SUP_NAME LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="ifCheck != null and ifCheck != ''">
+			  	AND TCI.IF_CHECK = #{ifCheck,jdbcType=VARCHAR}
+			  </if>
+			 <if test="timeStart != null and timeStart != ''">
+			   AND TCI.CREATE_DATE &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+			 <if test="timeEnd != null and timeEnd != ''">
+			   AND TCI.CREATE_DATE &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+	</select>
+	
+	<!-- 添加公司-->
+	<insert id="addCompanyInfo" parameterType="com.avic.supervise.models.CompanyInfo">
+		INSERT INTO T_COMPANY_INFO
+		            (
+		              ID,
+		              COMPANY_CODE,
+			          COMPANY_NAME,
+			          CREATE_DATE,
+			          CREATE_USER,
+			          IF_DELETE,
+			          IF_CHECK,
+			          PARENT_COMPANY_ID,
+			          CONTACT_FAX,
+			          CONTACT_PERSON,
+			          CONTACT_IPHONE,
+			          CONTACT_EMAIL
+		            )
+		      VALUES
+		            (
+		              #{id,jdbcType=VARCHAR},
+		              #{companyCode,jdbcType=VARCHAR},
+		              #{companyName,jdbcType=VARCHAR},
+		              sysdate,
+		              #{createUser,jdbcType=VARCHAR},
+		              '1',
+		              '1',
+		              #{parentCompanyId,jdbcType=VARCHAR},
+		              #{contactFax,jdbcType=VARCHAR},
+		              #{contactPerson,jdbcType=VARCHAR},
+		              #{contactIphone,jdbcType=VARCHAR},
+		              #{contactEmail,jdbcType=VARCHAR}
+		            )
+	</insert>
+	
+	<update id="updateCompanyInfo" parameterType="com.avic.supervise.models.CompanyInfo">
+		UPDATE T_COMPANY_INFO
+		   SET COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+		   	   PARENT_COMPANY_ID = #{parentCompanyId,jdbcType=VARCHAR},
+		   	   CONTACT_FAX = #{contactFax,jdbcType=VARCHAR},
+		   	   CONTACT_PERSON = #{contactPerson,jdbcType=VARCHAR},
+			   CONTACT_IPHONE = #{contactIphone,jdbcType=VARCHAR},
+			   CONTACT_EMAIL = #{contactEmail,jdbcType=VARCHAR},
+		       CREATE_DATE = sysdate
+		 WHERE ID =  #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 删除机构-->
+	<update id="deleteCompany" parameterType="com.avic.supervise.models.CompanyInfo">
+		UPDATE T_COMPANY_INFO
+		   SET IF_DELETE = '0'
+		 WHERE ID =  #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 删除SUP_INFO-->
+	<update id="deleteSupInfo" parameterType="com.avic.supervise.models.CompanyInfo">
+		UPDATE T_SUP_INFO
+		   SET IF_VALID = '0'
+		 WHERE COMPANY_CODE =  #{id,jdbcType=VARCHAR}
+	</update>	
+	
+	<!-- 查询公司数量 -->
+	<select id="getCompanyInfoCountByCompanyName" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		    SELECT COUNT(1)
+			  FROM T_COMPANY_INFO
+			 WHERE COMPANY_NAME = #{companyName,jdbcType=VARCHAR}
+			   AND IF_DELETE = '1'
+			   AND ID != #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!--生成ID-->
+	<select id="getSeqID" resultType="java.lang.String">
+		    SELECT to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(COMPANY_INDEX.NEXTVAL,6,'0'),'','0') FROM DUAL
+	</select>
+	
+	
+	<select id="querySupplierCompanyInfoList" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+		select * from (SELECT R.*,ROWNUM RK FROM (
+			SELECT k.ID,
+			       k.COMPANY_CODE,
+			       k.COMPANY_NAME,
+			       k.IF_CHECK,
+			       k.IF_DELETE,
+			       k.COMPANY_TYPE,
+			       k.CREATE_DATE,
+			       k.CONTACT_PERSON,
+			       k.CONTACT_IPHONE,
+			       k.CONTACT_EMAIL,
+			       u.USERNAME,
+			       decode(k.if_check,3,0,0,1,1,2,2,3) check_level
+			      from t_company_info k,USERS u where k.id = u.COMPANYID and k.IF_DELETE = '1' and k.IF_CHECK IS NOT NULL 
+			      and k.PARENT_COMPANY_ID = 'system' and u.if_manager = 0
+			  
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND k.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND k.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+			   <if test="companyType != null and companyType != ''">
+			  	AND k.COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+			  </if>
+			  <if test="contactPerson != null and contactPerson != ''">
+			  	AND k.CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="contactIphone != null and contactIphone != ''">
+			  	AND k.CONTACT_IPHONE LIKE CONCAT('%',CONCAT(#{contactIphone,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="userName != null and userName != ''">
+			  	AND U.USERNAME LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="ifCheck != null and ifCheck != ''">
+			  	AND k.IF_CHECK = #{ifCheck,jdbcType=VARCHAR}
+			  </if>
+			 <if test="timeStart != null and timeStart != ''">
+			   AND k.CREATE_DATE &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+			 <if test="timeEnd != null and timeEnd != ''">
+			   AND k.CREATE_DATE &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+		   ORDER BY check_level, k.create_date DESC) R ) w
+        WHERE w.RK BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 查询公司数量 -->
+	<select id="getSupplierCompanyInfoCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		    SELECT COUNT(1) from 
+			  t_company_info k,USERS u where k.id = u.COMPANYID
+			 and k.IF_DELETE = '1'
+               AND K.IF_CHECK IS NOT NULL
+               AND K.PARENT_COMPANY_ID = 'system'
+               AND u.if_manager = 0
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND K.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND K.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+			    <if test="companyType != null and companyType != ''">
+			  	AND K.COMPANY_TYPE = #{companyType,jdbcType=VARCHAR}
+			  </if>
+			  <if test="contactPerson != null and contactPerson != ''">
+			  	AND K.CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="contactIphone != null and contactIphone != ''">
+			  	AND K.CONTACT_IPHONE LIKE CONCAT('%',CONCAT(#{contactIphone,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="userName != null and userName != ''">
+			  	AND U.USERNAME LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="ifCheck != null and ifCheck != ''">
+			  	AND K.IF_CHECK = #{ifCheck,jdbcType=VARCHAR}
+			  </if>
+			 <if test="timeStart != null and timeStart != ''">
+			   AND K.CREATE_DATE &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+			 <if test="timeEnd != null and timeEnd != ''">
+			   AND K.CREATE_DATE &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+			 </if>
+	</select>
+	
+	<select id="queryDepartments" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+		 <!-- SELECT T.ID,
+	            T.COMPANY_CODE,
+	            T.COMPANY_NAME,
+	            T.PARENT_COMPANY_ID
+	       FROM T_COMPANY_INFO T                   
+	 START WITH T.COMPANY_CODE = #{companyCode} CONNECT BY PRIOR T.COMPANY_CODE = T.PARENT_COMPANY_ID -->
+	 
+			SELECT T.ID, T.COMPANY_CODE, T.COMPANY_NAME, T.PARENT_COMPANY_ID,LEVEL
+			  FROM T_COMPANY_INFO T
+			 WHERE T.IF_DELETE = '1'
+		START WITH T.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+		CONNECT BY PRIOR T.COMPANY_CODE = T.PARENT_COMPANY_ID
+		ORDER BY T.CREATE_DATE ASC
+	</select>
+	
+	<select id="queryOrganizationDepartments" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+			 SELECT * FROM 
+                      (
+                        SELECT K.ID,
+                               K.COMPANY_CODE,
+                               K.COMPANY_NAME,
+                               K.CREATE_DATE
+                          FROM T_COMPANY_INFO K
+                         WHERE K.IF_DELETE = '1'
+                       START WITH K.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR} CONNECT BY PRIOR K.COMPANY_CODE = K.PARENT_COMPANY_ID
+                      ) T
+                 WHERE T.COMPANY_CODE != 'system'
+                 ORDER BY T.CREATE_DATE ASC
+	</select>
+	
+	<select id="queryOrganizationUserCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		SELECT COUNT(*)
+        FROM USERS U 
+        WHERE U.COMPANYID IN (
+                   SELECT T.COMPANY_CODE
+                     FROM T_COMPANY_INFO T
+                    WHERE T.IF_DELETE = '1'
+               START WITH T.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+         CONNECT BY PRIOR T.COMPANY_CODE = T.PARENT_COMPANY_ID
+        )
+	</select>
+	
+	<select id="queryOrganizationDepartmentCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		SELECT COUNT(*)
+		  FROM T_COMPANY_INFO T 
+		 WHERE T.PARENT_COMPANY_ID = #{companyCode,jdbcType=VARCHAR}
+		   AND T.IF_DELETE = '1'
+	</select>
+	
+	<!-- 删除部门以及子部门 -->
+	<update id="deleteCompanyDepartments" parameterType="com.avic.supervise.models.CompanyInfo">
+		UPDATE T_COMPANY_INFO
+		   SET IF_DELETE = '0'
+		 WHERE ID IN (SELECT T.ID
+                     FROM T_COMPANY_INFO T
+                    WHERE T.IF_DELETE = '1'
+               START WITH T.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+         CONNECT BY PRIOR T.COMPANY_CODE = T.PARENT_COMPANY_ID)
+	</update>
+</mapper>

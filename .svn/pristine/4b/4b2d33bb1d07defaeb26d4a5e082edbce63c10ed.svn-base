@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ManagementMapper">
+	<resultMap id="managementMap" type="com.avic.management.models.Management">
+		<result column="WAIT_ORDER_COUNT" property="waitOrderCount" jdbcType="INTEGER" /> 
+		<result column="REJECT_ORDER_COUNT" property="rejectOrderCount" jdbcType="INTEGER" />
+		<result column="RETURN_ORDER_COUNT" property="returnOrderCount" jdbcType="INTEGER" />
+		<result column="CHANGE_ORDER_COUNT" property="changeOrderCount" jdbcType="INTEGER" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryManagementCount" resultMap="managementMap" parameterType="com.avic.management.models.Management">
+		SELECT 
+	      (SELECT COUNT(*) FROM T_ORDER WHERE ORDER_STATUS = '2' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS WAIT_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM T_ORDER WHERE ORDER_STATUS = '6' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS REJECT_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM t_order_refound WHERE ORDER_STATUS = '9' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS RETURN_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '1' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS CHANGE_ORDER_COUNT
+ 		FROM DUAL
+	</select>
+	
+</mapper>

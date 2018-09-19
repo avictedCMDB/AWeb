@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.CompanyMyInfoMapper">
+	<resultMap id="companyMyInfoMap" type="com.avic.management.models.CompanyMyInfo">
+		<result column="ID" property="id"	jdbcType="VARCHAR" />
+	    <result column="COMPANY_NAME" property="companyName"	jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate"	jdbcType="VARCHAR" />
+		<result column="CREATE_USER" property="createUser"	jdbcType="VARCHAR" />
+		<result column="PARENT_COMPANY_ID" property="parentCompanyID"	jdbcType="VARCHAR" />
+		<result column="ADDRESS" property="address"		jdbcType="VARCHAR" />
+		<result column="REGISTED_TYPE" property="registedType"	jdbcType="VARCHAR" />
+		<result column="COMPANY_TYPE" property="companyType"	jdbcType="VARCHAR" />
+		<result column="REG_ADDR_PROVINCE" property="regAddrProvince"	jdbcType="VARCHAR" />
+		<result column="REG_ADDR_CITY" property="regAddrCity"	jdbcType="VARCHAR" />
+		<result column="CORPORATION_TEL" property="corporationTel"	jdbcType="VARCHAR" />
+		<result column="CORPORATION_EMAIL" property="corporationEmail"	jdbcType="VARCHAR" />
+		<result column="CORPORATION_NAME" property="corporationName"	jdbcType="VARCHAR" />
+		<result column="REG_FUND" property="regFund"		jdbcType="VARCHAR" />
+		<result column="LICENCE_CODE" property="licenceCode"	jdbcType="VARCHAR" />
+		<result column="COMPANY_TEL" property="licenceCode"	jdbcType="VARCHAR" />
+		<result column="COMPANY_EMAIL" property="companyEmail"	jdbcType="VARCHAR" />
+		<result column="RESPONSIBLE_NAME" property="responsibleName"	jdbcType="VARCHAR" />
+		<result column="RESPONSIBLE_MOBILE" property="responsibleMobile" jdbcType="VARCHAR" />
+		<result column="RESPONSIBLE_EMAIL" property="responsibleEmail"	jdbcType="VARCHAR" />
+		<result column="COMPANY_DETAIL" property="companyDetail"	jdbcType="VARCHAR" />
+		<result column="COMPANY_MODEL" property="companyModel"	jdbcType="VARCHAR" />
+		<result column="USER_TYPE" property="userType"		jdbcType="VARCHAR" />
+		<result column="MANAGEMENT_TYPE" property="managementType"	jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson"	jdbcType="VARCHAR" />
+		<result column="CONTACT_TEL" property="contactTel"	jdbcType="VARCHAR" />
+		<result column="CONTACT_IPHONE" property="contactIphone"	jdbcType="VARCHAR" />
+		<result column="CONTACT_EMAIL" property="contactEmail"	jdbcType="VARCHAR" />
+		<result column="CONTACT_ADDRESS" property="contactAddress"	jdbcType="VARCHAR" />
+		<result column="CORPORATION_IPHONE" property="corporationIphone" jdbcType="VARCHAR" />
+		<result column="COMPANY_POSTCODE" property="companyPostcode"	jdbcType="VARCHAR" />
+		<result column="FINANCE_NAME" property="financeName"	jdbcType="VARCHAR" />
+		<result column="FINANCE_MOBILE" property="financeMobile"	jdbcType="VARCHAR" />
+		<result column="SOCIAL_CREDIT_CODE" property="socialCreditCode" jdbcType="VARCHAR" />
+		<result column="LICENCE_FILE" property="licenceFile"	jdbcType="VARCHAR" />
+		<result column="BANK_NAME" property="bankName"		jdbcType="VARCHAR" />
+		<result column="BANK_CODE" property="bankCode"		jdbcType="VARCHAR" />
+		<result column="BANK_FILE" property="bankFile"		jdbcType="VARCHAR" />
+		<result column="QU_LEVEL" property="quLevel"		jdbcType="VARCHAR" />
+		<result column="QU_COMPANY" property="quCompany"	jdbcType="VARCHAR" />
+		<result column="QU_FILE" property="quFile"		jdbcType="VARCHAR" />
+		<result column="SECURITY_FILE" property="securityFile"	jdbcType="VARCHAR" />
+		<result column="IMPORT_AND_EXPORT_FILE" property="importAndExportFile"   jdbcType="VARCHAR" />
+		<result column="BUSINESS_FILE" property="businessFile"	jdbcType="VARCHAR" />
+		<result column="IF_CHECK" property="ifCheck"		jdbcType="VARCHAR" />
+		<result column="TAX_CODE" property="taxCode"		jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax"	jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_CODE" property="organizationCode"	jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_FILE" property="organizationFile"	jdbcType="VARCHAR" />
+		<result column="TAX_FILE" property="taxFile"		jdbcType="VARCHAR" />
+		<result column="CHECKED_DATE" property="checkedDate"	jdbcType="VARCHAR" />
+		<result column="CHECKED_USER" property="checkedUser"	jdbcType="VARCHAR" />
+		<result column="LICENCE_NAME" property="licenceName"	jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_NAME" property="organizationName"	jdbcType="VARCHAR" />
+		<result column="TAX_NAME" property="taxName"		jdbcType="VARCHAR" />
+		<result column="BANK_FILE_NAME" property="bankFileName"	jdbcType="VARCHAR" />
+		<result column="QU_FILE_NAME" property="quFileName"	jdbcType="VARCHAR" />
+		<result column="SECURITY_FILE_NAME" property="securityFileName" jdbcType="VARCHAR" />
+		<result column="IMPORT_AND_EXPORT_FILE_NAME" property="importAndExportFileName" jdbcType="VARCHAR" />
+		<result column="BUSINESS_FILE_NAME" property="businessFileName"	  jdbcType="VARCHAR" />
+		<result column="COMPANY_WEBSITE" property="companyWebsite"	  jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 查询企业信息（企业资料管理） -->
+	<select id="queryCompanyMyInfo" parameterType="com.avic.management.models.CompanyMyInfo" resultMap="companyMyInfoMap">
+		select ID,
+		       COMPANY_CODE,
+		       COMPANY_NAME,
+		       CREATE_DATE,
+		       CREATE_USER,
+		       PARENT_COMPANY_ID,
+		       ADDRESS,
+		       REGISTED_TYPE,
+		       COMPANY_TYPE,
+		       REG_ADDR_PROVINCE,
+		       REG_ADDR_CITY,
+		       CORPORATION_TEL,
+		       CORPORATION_EMAIL,
+		       CORPORATION_NAME,
+		       REG_FUND,
+		       LICENCE_CODE,
+		       COMPANY_TEL,
+		       COMPANY_EMAIL,
+		       RESPONSIBLE_NAME,
+		       RESPONSIBLE_MOBILE,
+		       RESPONSIBLE_EMAIL,
+		       COMPANY_DETAIL,
+		       COMPANY_MODEL,
+		       USER_TYPE,
+		       MANAGEMENT_TYPE,
+		       CONTACT_PERSON,
+		       CONTACT_TEL,
+		       CONTACT_IPHONE,
+		       CONTACT_EMAIL,
+		       CONTACT_ADDRESS,
+		       CORPORATION_IPHONE,
+		       COMPANY_POSTCODE,
+		       FINANCE_NAME,
+		       FINANCE_MOBILE,
+		       SOCIAL_CREDIT_CODE,
+		       LICENCE_FILE,
+		       BANK_NAME,
+		       BANK_CODE,
+		       BANK_FILE,
+		       QU_LEVEL,
+		       QU_COMPANY,
+		       QU_FILE,
+		       SECURITY_FILE,
+		       IMPORT_AND_EXPORT_FILE,
+		       BUSINESS_FILE,
+		       IF_CHECK,
+		       TAX_CODE,
+		       CONTACT_FAX,
+		       ORGANIZATION_CODE,
+		       ORGANIZATION_FILE,
+		       TAX_FILE,
+		       CHECKED_DATE,
+		       CHECKED_USER,
+		       LICENCE_NAME,
+		       ORGANIZATION_NAME,
+		       TAX_NAME,
+		       BANK_FILE_NAME,
+		       QU_FILE_NAME,
+		       SECURITY_FILE_NAME,
+		       IMPORT_AND_EXPORT_FILE_NAME,
+		       BUSINESS_FILE_NAME,
+		       COMPANY_WEBSITE
+		  from t_company_info
+		  where CREATE_USER = #{createUser,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCompanyMyInfo" parameterType="com.avic.management.models.CompanyMyInfo">
+		UPDATE t_company_info
+   		   SET <!-- COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}, -->
+		       COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+		       <!-- CREATE_DATE = #{createDate,jdbcType=VARCHAR}, -->
+		       <!-- PARENT_COMPANY_ID = #{parentCompanyID,jdbcType=VARCHAR}, -->
+		       ADDRESS = #{address,jdbcType=VARCHAR},
+		       <!-- REGISTED_TYPE = #{registedType,jdbcType=VARCHAR}, -->
+		       <!-- COMPANY_TYPE = #{companyType,jdbcType=VARCHAR},   -->               
+               REG_ADDR_PROVINCE = #{regAddrProvince,jdbcType=VARCHAR},       
+	           REG_ADDR_CITY = #{regAddrCity,jdbcType=VARCHAR},              
+      		   CORPORATION_TEL = #{corporationTel,jdbcType=VARCHAR},                           <!-- CORPORATION_EMAIL = #{corporationEmail,jdbcType=VARCHAR},      -->                    CORPORATION_NAME = #{corporationName,jdbcType=VARCHAR},                          <!-- REG_FUND = #{regFund,jdbcType=VARCHAR},           -->                        <!-- LICENCE_CODE = #{licenceCode,jdbcType=VARCHAR},   -->                            <!-- COMPANY_TEL = #{companyTel,jdbcType=VARCHAR},    -->                            <!-- COMPANY_EMAIL = #{companyEmail,jdbcType=VARCHAR},       -->                       RESPONSIBLE_NAME = #{responsibleName,jdbcType=VARCHAR},                          RESPONSIBLE_MOBILE = #{responsibleMobile,jdbcType=VARCHAR},                        <!-- RESPONSIBLE_EMAIL = #{responsibleEmail,jdbcType=VARCHAR},     -->                     COMPANY_MODEL = #{companyModel,jdbcType=VARCHAR},                             USER_TYPE = #{userType,jdbcType=VARCHAR},                                 MANAGEMENT_TYPE = #{managementType,jdbcType=VARCHAR},                           CONTACT_PERSON = #{contactPerson,jdbcType=VARCHAR},                            CONTACT_TEL = #{contactTel,jdbcType=VARCHAR},                               CONTACT_IPHONE = #{contactIphone,jdbcType=VARCHAR},                            CONTACT_EMAIL = #{contactEmail,jdbcType=VARCHAR},                             CONTACT_ADDRESS = #{contactAddress,jdbcType=VARCHAR},                           CORPORATION_IPHONE = #{corporationIphone,jdbcType=VARCHAR},                        COMPANY_POSTCODE = #{companyPostcode,jdbcType=VARCHAR},                          FINANCE_NAME = #{financeName,jdbcType=VARCHAR},                              FINANCE_MOBILE = #{financeMobile,jdbcType=VARCHAR},                            <!-- SOCIAL_CREDIT_CODE = #{socialCreditCode,jdbcType=VARCHAR}, -->                       <!--  LICENCE_FILE = #{licenceFile,jdbcType=VARCHAR},    -->                          <!--  BANK_NAME = #{bankName,jdbcType=VARCHAR},    -->                              <!-- BANK_CODE = #{bankCode,jdbcType=VARCHAR},      -->                            <!-- BANK_FILE = #{bankFile,jdbcType=VARCHAR},    -->                             <!--  QU_LEVEL = #{quLevel,jdbcType=VARCHAR},   -->                                <!-- QU_COMPANY = #{quCompany,jdbcType=VARCHAR},       -->                          <!-- QU_FILE = #{quFile,jdbcType=VARCHAR}, -->                                   <!-- SECURITY_FILE = #{securityFile,jdbcType=VARCHAR},  -->                            <!-- IMPORT_AND_EXPORT_FILE = #{importAndExportFile,jdbcType=VARCHAR},    -->                <!--  BUSINESS_FILE = #{businessFile,jdbcType=VARCHAR},     -->                         <!-- IF_CHECK = #{ifCheck,jdbcType=VARCHAR},   -->                                <!-- TAX_CODE = #{taxCode,jdbcType=VARCHAR},   -->                                <!-- CONTACT_FAX = #{contactFax,jdbcType=VARCHAR},    -->                            <!-- ORGANIZATION_CODE = #{organizationCode,jdbcType=VARCHAR}, -->               <!-- ORGANIZATION_FILE = #{organizationFile,jdbcType=VARCHAR},   -->                      <!--  TAX_FILE = #{taxFile,jdbcType=VARCHAR},        -->                           <!-- CHECKED_DATE = #{checkedDate,jdbcType=VARCHAR},       -->                        <!-- CHECKED_USER = #{checkedUser,jdbcType=VARCHAR},   -->                            <!-- LICENCE_NAME = #{licenceName,jdbcType=VARCHAR},       -->                        <!-- ORGANIZATION_NAME = #{organizationName,jdbcType=VARCHAR},    -->                      <!-- TAX_NAME = #{taxName,jdbcType=VARCHAR},             -->                      <!-- BANK_FILE_NAME = #{bankFileName,jdbcType=VARCHAR},  -->                          <!--  QU_FILE_NAME = #{quFileName,jdbcType=VARCHAR},    -->                          <!--  SECURITY_FILE_NAME = #{securityFileName,jdbcType=VARCHAR},     -->                    <!-- IMPORT_AND_EXPORT_FILE_NAME = #{importAndExportFileName,jdbcType=VARCHAR}, -->               <!-- BUSINESS_FILE_NAME = #{businessFileName,jdbcType=VARCHAR}, -->
+               COMPANY_WEBSITE = #{companyWebsite,jdbcType=VARCHAR}
+         WHERE ID = #{id,jdbcType=VARCHAR}
+               
+	</update>   
+	
+	<update id="updateCompanyMyInfo2" parameterType="com.avic.management.models.CompanyMyInfo">
+		UPDATE t_company_info
+   		   SET CORPORATION_EMAIL = #{corporationEmail,jdbcType=VARCHAR},          
+               REG_FUND = #{regFund,jdbcType=VARCHAR},                   
+               LICENCE_CODE = #{licenceCode,jdbcType=VARCHAR},               
+               SOCIAL_CREDIT_CODE = #{socialCreditCode,jdbcType=VARCHAR},         
+               LICENCE_FILE = #{licenceFile,jdbcType=VARCHAR},               
+               BANK_NAME = #{bankName,jdbcType=VARCHAR},                  
+               BANK_CODE = #{bankCode,jdbcType=VARCHAR},                  
+               BANK_FILE = #{bankFile,jdbcType=VARCHAR},                  
+               QU_LEVEL = #{quLevel,jdbcType=VARCHAR},                   
+               QU_COMPANY = #{quCompany,jdbcType=VARCHAR},                 
+               QU_FILE = #{quFile,jdbcType=VARCHAR},                    
+               SECURITY_FILE = #{securityFile,jdbcType=VARCHAR},              
+               IMPORT_AND_EXPORT_FILE = #{importAndExportFile,jdbcType=VARCHAR},     
+               BUSINESS_FILE = #{businessFile,jdbcType=VARCHAR},              
+               TAX_CODE = #{taxCode,jdbcType=VARCHAR},                   
+               CONTACT_FAX = #{contactFax,jdbcType=VARCHAR},                
+               ORGANIZATION_CODE = #{organizationCode,jdbcType=VARCHAR},
+               ORGANIZATION_FILE = #{organizationFile,jdbcType=VARCHAR},          
+               TAX_FILE = #{taxFile,jdbcType=VARCHAR},                   
+               LICENCE_NAME = #{licenceName,jdbcType=VARCHAR},               
+               ORGANIZATION_NAME = #{organizationName,jdbcType=VARCHAR},          
+               TAX_NAME = #{taxName,jdbcType=VARCHAR},                   
+               BANK_FILE_NAME = #{bankFileName,jdbcType=VARCHAR},             
+               QU_FILE_NAME = #{quFileName,jdbcType=VARCHAR},               
+               SECURITY_FILE_NAME = #{securityFileName,jdbcType=VARCHAR},         
+               IMPORT_AND_EXPORT_FILE_NAME = #{importAndExportFileName,jdbcType=VARCHAR},
+               COMPANY_DETAIL = #{companyDetail,jdbcType=VARCHAR},   
+               BUSINESS_FILE_NAME = #{businessFileName,jdbcType=VARCHAR}
+         WHERE ID = #{id,jdbcType=VARCHAR}
+               
+	</update>   
+</mapper>

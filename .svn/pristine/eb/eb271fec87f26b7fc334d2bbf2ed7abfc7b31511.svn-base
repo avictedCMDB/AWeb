@@ -1,0 +1,67 @@
+connection1.driverClass=oracle.jdbc.driver.OracleDriver
+connection1.jdbcUrl=jdbc:oracle:thin:@192.168.9.16:1521:orcl
+connection1.username=avic
+connection1.password=avic
+connection1.initialPoolSize=2
+connection1.minPoolSize=1
+connection1.maxPoolSize=5
+connection1.acquireIncrement=1
+connection1.maxIdleTime=0
+connection1.maxStatements=0
+
+invoice.title=\u4e2d\u822a\u6280\u56fd\u9645\u7ecf\u8d38\u53d1\u5c55\u6709\u9650\u516c\u53f8
+# ========================================================
+# Raise price para
+# ========================================================
+raise_jd=0.1
+raise_staples=0.1
+raise_colipu=0.1
+
+chinapay.prod=0
+# ========================================================
+# China Pay Test 
+# ========================================================
+chinapay.mer.id.0001=000001604120541
+chinapay.mer.id.0002=000001604120541
+chinapay.mer.id.0004=000001604120541
+chinapay.url.pay=http://newpayment-test.chinapay.com/CTITS/service/rest/page/nref/000000000017/0/0/0/0/0
+chinapay.url.refund=http://newpayment-test.chinapay.com/CTITS/service/rest/forward/syn/000000000065/0/0/0/0/0
+# ========================================================
+# China Pay Production 
+# ========================================================
+#chinapay.mer.id.0001=808080201308813
+#chinapay.mer.prk.0001=D:/Workspaces/blade.learning.jee/Avic/Aweb/WebRoot/WEB-INF/cert/MerPrK_808080201308813_20160128155816.key
+#chinapay.mer.id.0002=808080201308814
+#chinapay.mer.prk.0002=D:/Workspaces/blade.learning.jee/Avic/Aweb/WebRoot/WEB-INF/cert/MerPrK_808080201308814_20160128155538.key
+#chinapay.mer.id.0004=808080201308820
+#chinapay.mer.prk.0004=D:/Workspaces/blade.learning.jee/Avic/Aweb/WebRoot/WEB-INF/cert/MerPrK_808080201308820_20160128160027.key
+#chinapay.mer.pbk=D:/Workspaces/blade.learning.jee/Avic/Aweb/WebRoot/WEB-INF/cert/PgPubk.key
+#chinapay.mer.id=
+#chinapay.url.pay=https://payment.chinapay.com/CTITS/payment/TransGet
+#chinapay.url.refund=https://payment.chinapay.com/CTITS/refund/SingleRefund.jsp
+
+chinapay.callback.page=http://localhost:8080/AWeb/${module}/callback/page
+chinapay.callback.notify=http\://localhost\:8080/AWeb/${module}/callback/notify
+chinapay.callback.refund=http\://localhost\:8080/AWeb/management/finance/callback/refund
+
+# ========================================================
+# image upload 
+# ========================================================
+market_url = /upload/market
+vat_url = /upload/vat
+supplier_url = /upload/supplier
+# ========================================================
+# shortMessage
+# ========================================================
+#\u751f\u4ea7\u5730\u5740
+# uri=http://sdk999ws.eucp.b2m.cn:8080/sdk/SDKService?wsdl 
+#\u6d4b\u8bd5\u5730\u5740  
+uri=http://sdk999in.eucp.b2m.cn:8080/sdk/SDKService?wsdl
+# \u4ebf\u7f8e\u77ed\u4fe1\u914d\u7f6e
+#\u8f6f\u4ef6\u5e8f\u5217\u53f79SDK-EMY-0999-JBYTP 3SDK-EMY-0130-OBSMN
+SmsSerialNo=9SDK-EMY-0999-JDWTP
+#\u81ea\u5b9a\u4e49\u5173\u952e\u5b57(key\u503c)128598
+SmsKey=852170
+#\u81ea\u5b9a\u4e49\u7b7e\u540d
+SmsSign=\u3010\u4e2d\u822a\u6280\u56fd\u9645\u7ecf\u8d38\u53d1\u5c55\u6709\u9650\u516c\u53f8\u3011
+

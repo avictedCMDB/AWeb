@@ -1,0 +1,91 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/tlds/tag.tld" prefix="mc"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>商品需求管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/supplier_list.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/special.js"></script>
+</head>
+
+<body>
+<input type="hidden" id="path" value="${pageContext.request.contextPath}"/>
+  <div id="vat_info">
+  <div class="inner">
+    <div class="add_title clearfix">供应商</div>
+    <div class="main_inner">
+      <div class="list_area clearfix">
+      
+      
+      <c:forEach var="quote" items="${quotes}" varStatus="status">
+          <div class="section_area">
+              <h2>${quote.supName}</h2>
+              <div  style="margin-top:20px;"><span>报价单下载：<a href="${pageContext.request.contextPath}/management/specialGoods/downloadSpecial?specialPath=${quote.qupteAttachmentPath}">${quote.fileName}</a></span></div>
+	      <!-- <div id="matter_section">
+	      	<div class="search_result section"> -->
+	      	 <div class="price" style="float:right;">合计：<span><fmt:formatNumber value="${amounts.get(status.index)}" pattern="#0.00#"></fmt:formatNumber></span>元</div>
+	          <table border="0">
+	            <tr>
+	              <th width="40"><input type="checkbox" id="checkAll${quote.supID}" onclick="checkAll(${quote.supID});"/></th>
+	              <th width="155">商品名称</th>
+	              <th width="125">型号</th>
+	              <th width="100">品牌</th>
+	              <th width="150">材质</th>
+	              <th width="100">商品单价</th>
+	              <th width="150">数量</th>
+	              <th width="150">单项总价</th>
+	              <!-- <th width="100" class="last">操作</th> -->
+	            </tr>
+	             <c:forEach var="quoteDetail" items="${quote.quoteDetails}" varStatus="status">
+		             	<tr>
+			              <td><input name="supGoodsParams${quote.supID}" type="checkbox" value="${quote.supID},${quoteDetail.goodsID},${quoteDetail.quoteNum},${quote.id}" onclick="addSup(${quote.supID});"/></td>
+			              <td>${quoteDetail.goodsName}</td>
+			              <td>${quoteDetail.goodsModel}</td>
+			              <td>${quoteDetail.brandName}</td>
+			              <td>${quoteDetail.goodsStuff}</td>  
+			              <td><fmt:formatNumber value="${quoteDetail.salePrice}" pattern="#0.00#"></fmt:formatNumber></td>              
+			              <td>${quoteDetail.quoteNum}</td>  
+			              <td><fmt:formatNumber value="${quoteDetail.priceAll}" pattern="#0.00#"></fmt:formatNumber></td>
+			            </tr>
+	            </c:forEach>
+	          </table>
+	          
+	       </div>
+	     </c:forEach>
+	       
+       </div>
+       <div class="btn_list">
+          <button class="btn btn-default blue" onclick="addCart();">添加购物车</button>
+          <button class="btn btn-default blue" onclick="addCompare();">添加比对</button>
+          <button class="btn btn-default gray" onclick="cancle();">返回</button>
+       </div>
+    </div>
+    </div>
+</div>
+<form action="${pageContext.request.contextPath}/management/compare/detail" method="post" id="compare_form">
+		<input type="hidden" name="supOneID" id="sid_0"/>
+		<input type="hidden" name="supGoodsOneID" id="gid_0"/>
+		<input type="hidden" name="supTwoID" id="sid_1"/>
+		<input type="hidden" name="supGoodsTwoID" id="gid_1"/>
+		<input type="hidden" name="supThreeID" id="sid_2"/>
+		<input type="hidden" name="supGoodsThreeID" id="gid_2"/>
+		<input type="hidden" name="supFourID" id="sid_3"/>
+		<input type="hidden" name="supGoodsFourID" id="gid_3"/>
+	</form>
+</body> 
+</html>

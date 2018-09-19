@@ -1,0 +1,69 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.management.models.Order;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.services.SupplierOrderService;
+
+@Controller
+@RequestMapping("/order")
+public class SupplierOrderController {
+	
+	protected static final Log logger = LogFactory
+			.getLog(SupplierLoginController.class);
+	@Autowired
+	SupplierOrderService supplierOrderService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOrder") SupplierOrder supplierOrderParam,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+        //从session获取userid
+        String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+        supplierOrderParam.setSupId(supId);
+        List<SupplierOrder> ordersList = supplierOrderService.queryOrderList(supplierOrderParam);
+        //订单状态初始化结果集
+        List<SupplierOrder> ordersStatusList = supplierOrderService.queryOrderStatusList();
+        request.setAttribute("ordersList", ordersList);//查询结果集
+        request.setAttribute("orderQuery", supplierOrderParam);//查询条件回显
+        request.setAttribute("ordersStatusList", ordersStatusList);//订单状态列表结果集
+        //分页信息
+        String page = String.valueOf(supplierOrderParam.getPage());
+        int total = supplierOrderService.queryOrderListCount(supplierOrderParam);
+
+        int pages = (int) Math.ceil((double) total / supplierOrderParam.getPageSize());
+        
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/order?"
+        		+ "&orderId="+(supplierOrderParam.getOrderId() == null ?"":supplierOrderParam.getOrderId())
+        		+ "&goodsName="+URLEncoder.encode((supplierOrderParam.getGoodsName() == null ?"":supplierOrderParam.getGoodsName()),"GBK")
+        		+ "&companyName="+URLEncoder.encode((supplierOrderParam.getCompanyName() == null ?"":supplierOrderParam.getCompanyName()),"GBK")
+        		+ "&orderTime="+(supplierOrderParam.getOrderTime() == null ?"":supplierOrderParam.getOrderTime())
+        		+ "&orderStatus="+(supplierOrderParam.getOrderStatus() == null ?"":supplierOrderParam.getOrderStatus())
+                + "&page=%PAGE%");
+		return "order/supplier_order";
+	}
+}

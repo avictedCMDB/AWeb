@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>发票管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_invoice.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/invoice.js"></script>
+</head>
+<body>
+<div class="page-wrapper">
+   <jsp:include page="header.jsp" />  
+  <div id="contents">
+    <div class="inner details">
+      <h2>新增发票</h2>
+      <div class="add_details">
+      <form action="" method="post" id="editInvoiceForm">
+      <input id="ifDefault" name="ifDefault" type="hidden"/>
+      <c:choose>
+		<c:when test="${empty invoice}"> 
+	        <dl class="clearfix">
+	          <dt><span class="red_remind">*</span>付款单位名称：</dt>
+	          <dd><input id="companyName" name="companyName" type="text" class="form-control"></dd>
+	        </dl>
+	        <dl class="clearfix">
+	          <dt><span class="red_remind">*</span>税务登记号：</dt>
+	          <dd><input id="invocieNum" name="invocieNum" type="text" class="form-control"></dd>
+	        </dl>
+	        <dl class="clearfix">
+	          <dt><span class="red_remind">*</span>发票内容：</dt>
+	          <dd>
+	            <p>
+	            	
+	            	<input type="radio" name="invoiceFlag" id="invoiceFlag1" value="0" checked onclick="chooseInvoiceFlg();">明细
+	            	<input type="radio" name="invoiceFlag" id="invoiceFlag2" value="1" onclick="chooseInvoiceFlg();">自定义
+	            </p>
+	            <p id="invoiceContentP" style="display:none"><input id="invoiceContent" name="invoiceContent" type="text" class="form-control"></p>
+	            <p>
+	            	<input name="setDefaultCB" id="setDefaultCB" type="checkbox">设置为默认发票
+	            </p>
+	          </dd>
+	        </dl>
+	        <div class="btn_add btn_middle">
+	          <ul>
+	            <li><button type="button" class="btn btn-default red"  onclick="saveInvoice(1);">保存</button></li>
+	            <!-- <li><button type="button" class="btn btn-default red">保存并增加</button></li> -->
+	            <li><button type="button" class="btn btn-default gray" onclick="cancle();">取消</button></li>
+	          </ul>
+	        </div>
+        </c:when>
+			<c:otherwise> 
+			<input type="hidden" id="invoiceID" value="${invoice.invoiceID}"/>
+				<dl class="clearfix">
+		          <dt><span class="red_remind">*</span>付款单位名称：</dt>
+		          <dd><input id="companyName" name="companyName" value="${invoice.companyName}" type="text" class="form-control"></dd>
+		        </dl>
+		        <dl class="clearfix">
+		          <dt><span class="red_remind">*</span>税务登记号：</dt>
+		          <dd><input id="invocieNum" name="invocieNum" value="${invoice.invocieNum}" type="text" class="form-control"></dd>
+		        </dl>
+		        <dl class="clearfix">
+		          <dt><span class="red_remind">*</span>发票内容：</dt>
+		          <dd>
+		            <p>
+		            	<c:choose>
+						   <c:when test="${invoice.invoiceFlag == '0'}">  
+						    <input type="radio" name="invoiceFlag" id="invoiceFlag1" value="0"  checked="checked"  onclick="chooseInvoiceFlg();">明细
+		            		<input type="radio" name="invoiceFlag" id="invoiceFlag2" value="1"  onclick="chooseInvoiceFlg();">自定义
+						   </c:when>
+						   <c:otherwise> 
+						    <input type="radio" name="invoiceFlag" id="invoiceFlag1" value="0">明细
+		            		<input type="radio" name="invoiceFlag" id="invoiceFlag2" value="1"  checked="checked">自定义
+						   </c:otherwise>
+				  		</c:choose>
+		            </p>
+		            <c:choose>
+						   <c:when test="${invoice.invoiceFlag == '0'}">  
+						    <p id="invoiceContentP" style="display:none"><input id="invoiceContent" name="invoiceContent" type="text" class="form-control"></p>
+						   </c:when>
+						   <c:otherwise> 
+						    <p id="invoiceContentP"><input id="invoiceContent" name="invoiceContent" value="${invoice.invoiceContent}" type="text" class="form-control"></p>
+						   </c:otherwise>
+				  		</c:choose>
+		            <p>
+		            	<c:choose>
+						   <c:when test="${invoice.ifDefault == '0'}">  
+						    <input name="setDefaultCB" id="setDefaultCB" type="checkbox">设置为默认发票
+						   </c:when>
+						   <c:otherwise> 
+						    <input  name="setDefaultCB" id="setDefaultCB" type="checkbox" checked>设置为默认发票
+						   </c:otherwise>
+				  		</c:choose>
+		            </p>
+		          </dd>
+		        </dl>
+		        <div class="btn_add btn_middle">
+		          <ul>
+		            <li><button type="button" class="btn btn-default red" onclick="saveInvoice(2);">保存</button></li>
+		            <!-- <li><button type="button" class="btn btn-default red">保存并增加</button></li> -->
+		            <li><button type="button" class="btn btn-default gray" onclick="cancle();">取消</button></li>
+		          </ul>
+		        </div>
+			</c:otherwise>
+		</c:choose>
+        </form>
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+<jsp:include page="footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.ProductCompare;
+
+public interface ProductCompareService {
+	/**
+	 * 查询比对信息列表
+	 * @return 
+	 */
+	public List<ProductCompare> queryProductCompares(ProductCompare productCompare);
+	/**
+	 * 查询比对信息
+	 * @return 
+	 */
+	public ProductCompare queryProductCompare(ProductCompare productCompare);
+	/**
+	 * 添加比对信息
+	 * @return 
+	 */
+	public void addProductCompare(ProductCompare productCompare);
+	/**
+	 * 修改比对信息
+	 * @return 
+	 */
+	public void updateProductCompare(ProductCompare productCompare);
+	/**
+	 * 删除比对信息
+	 * @return 
+	 */
+	public void delProductCompare(ProductCompare productCompare);
+	/**
+	 * 查询比对商品列表数量
+	 * @return 
+	 */
+	public int queryProductCompareCount(ProductCompare productCompare);
+	/**
+	 * 根据订单ID查询比对ID
+	 * @return 
+	 */
+	public List<ProductCompare> queryCompareIDS(ProductCompare productCompare);
+	/**
+	 * 查询审核比对信息列表
+	 * @return 
+	 */
+	public List<ProductCompare> queryAuditProductCompares(ProductCompare productCompare);
+	/**
+	 * 查询审核比对商品列表数量
+	 * @return 
+	 */
+	public int queryAuditProductCompareCount(ProductCompare productCompare);
+}

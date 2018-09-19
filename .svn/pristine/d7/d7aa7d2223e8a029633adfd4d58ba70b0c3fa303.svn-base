@@ -1,0 +1,18 @@
+## Security properties configuration file
+
+#the location of verify file
+verify.file=D\:\\Workspaces\\blade.learning.jee\\Avic\\Aweb\\WebRoot\\WEB-INF\\cert\\cp_test.cer
+#
+sign.filePath=/opt/secss
+#location of sign file
+sign.file=D\:\\Workspaces\\blade.learning.jee\\Avic\\Aweb\\WebRoot\\WEB-INF\\cert\\avic_test.pfx
+#
+sign.file.password=1
+#
+sign.cert.type=PKCS12
+#
+sign.invalid.fields=Signature,CertId
+#
+signature.field=Signature
+#
+log4j.name=CONSOLE

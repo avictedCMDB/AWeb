@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.QuoteMapper">
+	<resultMap id="quoteMap" type="com.avic.management.models.Quote">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" />
+		<result column="BUY_COMPANY" property="buyCompany" jdbcType="VARCHAR" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR" />
+		<result column="CONTACT_TEL" property="contactTel" jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR" />
+		<result column="QUOTE_DATE" property="quoteDate" jdbcType="VARCHAR" />
+		<result column="SEND_PERSON" property="sendPerson" jdbcType="VARCHAR" />
+		<result column="SEND_PERSON_TEL" property="sendPersonTel" jdbcType="VARCHAR" />
+		<result column="SEND_PERSON_FAX" property="sendPersonFax" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="QUOTE_ATTACHMENT_PATH" property="qupteAttachmentPath" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="REQUIRE" property="requireID" jdbcType="VARCHAR" />
+		<result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryQuoteBySupID" resultMap="quoteMap">
+		SELECT TQI.ID,
+		       TQI.ORDER_ID,
+		       TQI.BUY_COMPANY,
+		       TQI.CONTACT_NAME,
+		       TQI.CONTACT_TEL,
+		       TQI.CONTACT_FAX,
+		       TQI.QUOTE_DATE,
+		       TQI.SEND_PERSON,
+		       TQI.SEND_PERSON_TEL,
+		       TQI.SEND_PERSON_FAX,
+		       TQI.SUP_ID,
+		       TQI.FILE_NAME,
+		       TQI.QUOTE_ATTACHMENT_PATH,
+		       TSI.SUP_NAME
+		  FROM T_QUOTE_INFO TQI
+	 LEFT JOIN T_SUP_INFO TSI
+		    ON (TQI.SUP_ID = TSI.SUP_ID)
+		 WHERE  1=1
+		 <if test="supID != null and supID != ''">
+		 	AND TQI.SUP_ID = #{supID,jdbcType=VARCHAR}
+		 </if>
+		 <if test="orderID != null and orderID != ''">
+		 	AND TQI.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+		 </if>
+		 <if test="requireID != null and requireID != ''">
+		 	AND TQI.REQUIRE_ID = #{requireID,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+</mapper>

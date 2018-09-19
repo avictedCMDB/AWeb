@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.SupMapper">
+	<resultMap id="supInfoResultMap" type="SupInfo">
+		<id column="sup_id" property="supId" jdbcType="INTEGER" /> 
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" /> 
+	</resultMap>
+	<resultMap id="areaResultMap" type="SupArea">
+		<id column="sup_area_id" property="supAreaId" jdbcType="VARCHAR" /> 
+		<id column="sup_id" property="supId" jdbcType="INTEGER" /> 
+		<result column="sup_area_name" property="supAreaName" jdbcType="VARCHAR" />
+		<result column="sup_area_level" property="supAreaLevel" jdbcType="INTEGER" />
+		<result column="sup_parent_area" property="supParentArea" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="querySupInfoList" resultMap="supInfoResultMap">
+		select sup_id, sup_name, sup_type
+		  from t_sup_info
+		 where if_valid = 1
+	</select>
+	
+	<select id="querySupArea" resultMap="areaResultMap">
+		select *
+		  from t_sup_area
+		 where sup_parent_area = #{parent}
+		   and sup_id = #{supId}
+	</select>
+</mapper>

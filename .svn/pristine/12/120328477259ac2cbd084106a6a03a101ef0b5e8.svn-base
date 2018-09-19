@@ -1,0 +1,417 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>资料管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_myinfo.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li class="first"><a href="#"><span class="fa fa-user"></span>晨光科力普</a><span>|</span></li>
+        <li><a href="#">管理中心 </a><span>|</span></li>
+        <li><a href="#">退出</a><span>|</span></li>
+        <li><a href="#">帮助</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="img/supplier/logo_supplier.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <img src="img/supplier/bnr-supplier.jpg" />
+      </div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner">
+      <div id="side_navi">
+        <dl>
+          <dt class="tlt_merchandise">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+          <dd>
+            <ul>
+              <li><a href="#"><span class="fa fa-caret-right"></span>超市订单管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>发货管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>退货管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>换货管理</a></li>
+            </ul>
+          </dd>
+          <dt class="tlt_transaction">信息维护<span class="fa fa-caret-square-o-down"></span></dt>
+          <dd>
+            <ul>
+              <li><a href="#"><span class="fa fa-caret-right"></span>联系人信息</a></li>
+              <li><a href="#"><span class="fa fa-caret-right"></span>地址库管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>快递公司管理</a></li>
+            </ul>
+          </dd>
+          <dt class="tlt_reeturns ">结算管理<span class="fa fa-caret-square-o-down"></span></dt>
+          <dd>
+            <ul>
+              <li><a href="#"><span class="fa fa-caret-right"></span>结算单管理</a></li>
+            </ul>
+          </dd>
+          <dt class="tlt_receipt">我的超市<span class="fa fa-caret-square-o-down"></span></dt>
+          <dd>
+            <ul>
+              <li><a href="#"><span class="fa fa-caret-right"></span>商品信息管理</a></li>
+              <li><a href="#"><span class="fa fa-caret-right"></span>自动上下架</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>商品标签管理</a></li>
+                        <li><a href="#"><span class="fa fa-caret-right"></span>商品回收站</a></li>
+            </ul>
+          </dd>
+          <dt class="tlt_receipt">资料管理<span class="fa fa-caret-square-o-down"></span></dt>
+          <dd class="last_child">
+            <ul>
+              <li class="active"><a href="#"><span class="fa fa-caret-right"></span>资料管理</a></li>
+            </ul>
+          </dd>
+        </dl>
+        <!--#side_navi-->
+      </div>
+      <div id="matter_section">
+        <div id="step">
+          <ul class="image_list clearfix">
+            <li class="selected">1</li>
+            <li class="selected">2</li>
+            <li>3</li>
+          </ul>
+        </div>
+        <div class="attention02">
+          <p>扫描件上传说明</p>
+          <ul>
+            <li>1. 企业证件需上传<span class="red">彩色原件</span></li>
+            <li>2. 请确保您注册的<span class="red">企业名称与上传证件的名称一致</span></li>
+            <li>3. 扫描件支持JPG,PNG,BMP,JPEG式，文件最大不超过5M。</li>
+            <li>4. 请保证扫描件内容的清晰度，能够正常识别。</li>
+          </ul>
+        </div>
+        <div class="section_inner clearfix section_step">
+          <div class="title">
+            <h2>上传企业三证<span>（带*为必填项）</span></h2>
+          </div>
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt><span class="red">*</span>是否统一社会信用代码</dt>
+              <dd class="role_area">
+                <label class="checkbox-inline">
+                  <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked>是
+                </label>
+                <label class="checkbox-inline">
+                  <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2">否
+                </label>
+              </dd>
+            </dl>
+            <!-- 选择是显示的内容 -->
+            <div class="yes_area">
+              <dl class="clearfix">
+                <dt><span class="red">*</span>统一社会信用代码</dt>
+                <dd><input type="text" class="form-control" placeholder="统一社会信用代码" ><span class="red remind">统一社会信用代码</span></dd>
+              </dl>
+              <dl class="clearfix">
+                <dt><span class="red">*</span>注册资金</dt>
+                <dd>
+                  <div class="money_input"><input type="text" class="form-control" ></div>
+                  <div class="unit">
+                    <select class="form-control">
+                      <option value="">元</option>
+                      <option value="">万元</option>
+                    </select>
+                  </div>
+                  <div class="unit">
+                    <select class="form-control">
+                      <option value="">人民币</option>
+                      <option value="">美元</option>
+                      <option value="">欧元</option>
+                      <option value="">日元</option>
+                      <option value="">港币</option>
+                      <option value="">台币</option>
+                    </select>
+                  </div>
+                  <div class="nothing">
+                    <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox1" value="option1">无注册资金</label>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="clearfix">
+                <dt><span class="red">*</span>经营范围</dt>
+                <dd>
+                  <textarea class="form-control" rows="3"></textarea>
+                </dd>
+              </dl>
+              <dl class="clearfix">
+                <dt><span class="red">*</span>营业执照扫描件</dt>
+                <dd>
+                  <div class="up_button" style="display: none;">
+                    <a href="#">上传<input class="form-control" type="file"></a>
+                  </div>
+                  <div class="diplay_area">
+                    <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                  </div>
+                </dd>
+              </dl>
+            </div>
+            <!-- 选择否显示的内容 -->
+            <div class="no_area">
+              <div class="paper clearfix">
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>组织机构代码证</dt>
+                  <dd><input type="text" class="form-control" ></dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>组织机构代码证扫描件</dt>
+                  <dd>
+                    <div class="up_button">
+                      <a href="#">上传<input class="form-control" type="file"></a>
+                    </div>
+                    <div class="diplay_area" style="display: none;">
+                      <span>0512_2.jpg</span>
+                      <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="paper clearfix">
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>营业执照号码</dt>
+                  <dd><input type="text" class="form-control" ></dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>注册资金</dt>
+                  <dd>
+                    <div class="money_input"><input type="text" class="form-control" ></div>
+                    <div class="unit">
+                      <select class="form-control">
+                        <option value="">元</option>
+                        <option value="">万元</option>
+                      </select>
+                    </div>
+                    <div class="unit">
+                      <select class="form-control">
+                        <option value="">人民币</option>
+                        <option value="">美元</option>
+                        <option value="">欧元</option>
+                        <option value="">日元</option>
+                        <option value="">港币</option>
+                        <option value="">台币</option>
+                      </select>
+                    </div>
+                    <div class="nothing">
+                      <label class="checkbox-inline"><input type="checkbox" id="inlineCheckbox1" value="option1">无注册资金</label>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>经营范围</dt>
+                  <dd>
+                    <textarea class="form-control" rows="3"></textarea>
+                  </dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>营业执照扫描件</dt>
+                  <dd>
+                    <div class="up_button">
+                      <a href="#">上传<input class="form-control" type="file"></a>
+                    </div>
+                    <div class="diplay_area" style="display: none;">
+                      <span>0512_2.jpg</span>
+                      <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+              <div class="paper clearfix paper_last">
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>税务登记证号码</dt>
+                  <dd><input type="text" class="form-control" ></dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt><span class="red">*</span>税务登记证号码扫描件</dt>
+                  <dd>
+                    <div class="up_button">
+                      <a href="#">上传<input class="form-control" type="file"></a>
+                    </div>
+                    <div class="diplay_area" style="display: none;">
+                      <span>0512_2.jpg</span>
+                      <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section_inner clearfix section_step">
+          <div class="title">
+            <h2>开户许可证</h2>
+          </div>
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt><span class="red">*</span>开户银行</dt>
+              <dd><input type="text" class="form-control"></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>银行基本户账号</dt>
+              <dd><input type="text" class="form-control" ></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt><span class="red">*</span>开户许可证扫描件</dt>
+              <dd>
+                <div class="up_button">
+                  <a href="#">上传<input class="form-control" type="file"></a>
+                </div>
+                <div class="diplay_area" style="display: none;">
+                  <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                </div>
+              </dd>
+            </dl>
+            
+          </div>
+        <!-- .section --></div>
+        <div class="section_inner clearfix section_step">
+          <div class="title">
+            <h2>资信证书<span>（资信等级是银行等单位开具的信用等级证明，如没有可以不用上传。）</span></h2>
+          </div>
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt>资信等级</dt>
+              <dd><input type="text" class="form-control"></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>资信证书颁发单位</dt>
+              <dd><input type="text" class="form-control"></dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>资信证书扫描件</dt>
+              <dd>
+                <div class="up_button">
+                  <a href="#">上传<input class="form-control" type="file"></a>
+                </div>
+                <div class="diplay_area" style="display: none;">
+                  <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                </div>
+              </dd>
+            </dl>
+            
+          </div>
+        <!-- .section --></div>
+        <div class="section_inner clearfix section_step">
+          <div class="title">
+            <h2>其他证件<span>（工程类企业必须上传安全生产许可证）</span></h2>
+          </div>
+          <div class="input_area">
+            <dl class="clearfix">
+              <dt>安全生产许可证扫描件</dt>
+              <dd>
+                <div class="up_button">
+                  <a href="#">上传<input class="form-control" type="file"></a>
+                </div>
+                <div class="diplay_area" style="display: none;">
+                  <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                </div>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>进出口企业批文扫描件</dt>
+              <dd>
+                <div class="up_button" style="display: none;">
+                  <a href="#">上传<input class="form-control" type="file"></a>
+                </div>
+                <div class="diplay_area">
+                  <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                </div>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>经营许可证扫描件</dt>
+              <dd>
+                <div class="up_button">
+                  <a href="#">上传<input class="form-control" type="file"></a>
+                </div>
+                <div class="diplay_area" style="display: none;">
+                  <span>0512_2.jpg</span>
+                    <a href="#">查看</a><a href="#">修改</a><a href="#">删除</a>
+                </div>
+              </dd>
+            </dl>
+            
+          </div>
+        <!-- .section --></div>
+        <div class="btn_area">
+          <button class="btn btn-default" type="button" onclick="history.go(-1)">返回上一步</button>
+          <button class="btn btn-default blue" type="button" onclick="alert('保存成功！')">保存并下一步</button>
+        </div>
+      </div>
+    </div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierInfoExtMapper">
+	<resultMap id="supplierInfoExtMap" type="com.avic.supplier.models.SupplierInfoExt">
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR" /> 
+		<result column="BUSI_RANGE" property="busiRange" jdbcType="VARCHAR" />
+		<result column="BUSI_TYPE" property="busiType" jdbcType="VARCHAR" />
+		<result column="SUP_IMAGE" property="supImage" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="querySupplierInfoExt" resultMap="supplierInfoExtMap" parameterType="com.avic.supplier.models.SupplierInfoExt">
+		select * from t_sup_info_ext t where t.sup_id = #{supId}
+	</select>
+	<update id="saveSupplierInfoExt">
+		merge into t_sup_info_ext t
+		USING DUAL
+		ON (t.SUP_ID=#{supId})
+		When matched then
+		  update
+		     set BUSI_RANGE = #{busiRange},
+		     BUSI_TYPE = #{busiType},
+		     SUP_IMAGE = #{supImage}
+		When not matched then
+		  INSERT
+		    (SUP_ID,
+		     BUSI_RANGE,
+		     BUSI_TYPE,
+		     SUP_IMAGE)
+		  VALUES
+		    (#{supId},
+		     #{busiRange},
+		     #{busiType},
+		     #{supImage})
+	</update>
+</mapper>

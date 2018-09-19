@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.RefoundGoodsMapper">
+	<resultMap id="refoundGoodsMap" type="com.avic.management.models.RefoundGoods">
+		<result column="REFOUND_ID" property="refoundID" jdbcType="VARCHAR" /> 
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+		<result column="REFOUND_NUM" property="refoundNum" jdbcType="VARCHAR" />
+		<result column="REFOUND_REASON" property="refoundReason" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<delete id="delRefoundGoods" parameterType="com.avic.management.models.RefoundGoods">
+		 DELETE FROM T_REFOUND_GOODS 
+	      WHERE REFOUND_ID = #{refoundID,jdbcType=VARCHAR}
+	        AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</delete>
+</mapper>

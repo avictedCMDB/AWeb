@@ -1,0 +1,87 @@
+
+$(document).ready(function(){
+	var images = $("a[name='image_show']");
+	images.each(function(index){
+		$("#image_show"+index).imgbox();//加载绑定图片放大效果
+	 });
+});
+
+
+function search(){
+	var path = $("#path").val();
+	document.getElementById("orderForm").action=path+"/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}
+function clearSearchParam(){
+	$("#startTime").val("");
+	$("#endTime").val("");
+	$("#searchGoodsName").val("");
+	$("#searchOrderId").val("");
+	$("#searchSupName").val("");
+}
+
+//${pageContext.request.contextPath}/management/audit/confirm?orderID=${audit.orderID}&searchFlg=2
+function showAuditDiv(searchFlg,orderID){
+	var path = $("#path").val();
+	var url = path+"/management/audit/confirm?orderID="+orderID+"&searchFlg="+searchFlg;
+	var result = window.showModalDialog(url,window,'dialogWidth:800px;dialogHeight:650px;status:no;');
+	if(result != "" && result != null && result != undefined){
+		window.location.reload();
+	}
+	
+}
+
+function auditSubmit(){
+	var path = $("#path").val();
+	if($("input[name='optionsRadiosinline']:checked").val()==""){
+		alert("请选择审核结果！");
+		return;
+	}
+	/*if($("#auditReviewRemark").val()==""){
+		alert("请输入审核意见！");
+		return;
+	}*/
+	var orderID = $("#orderID").val();
+	//获取图片路径
+	var imgArray = new Array();
+	var imgObj = $('input:hidden[name=hidden_path]');
+	imgObj.each(function(i){
+		imgArray.push(imgObj[i].value);
+	});
+	var imagePaths = imgArray.join(",");
+	
+	$.ajax({
+        type: "POST",
+        url: path+"/management/audit/auditConfirm",
+        contentType:"application/x-www-form-urlencoded; charset=utf-8", 
+        data: {
+        	orderID:orderID,
+        	reviewRemark:$("#auditReviewRemark").val(),
+        	reviewResult:$("input[name='optionsRadiosinline']:checked").val(),
+        	imagePaths:imagePaths
+        },
+        success: function(data) {
+        	if("success"==data){
+    			alert("审核成功！");
+    		}
+    		window.returnValue = "reload";
+    		window.close();
+        }
+    });
+	
+//	$("#reviewResult").val($("input[name='optionsRadiosinline']:checked").val());
+//	$("#reviewRemark").val($("#auditReviewRemark").val());
+//	document.getElementById("auditForm").action="";
+//	document.getElementById("auditForm").submit();
+}
+
+function cacleParentWindow(){
+	window.close();
+}
+
+function selectOrderStatus(orderStatus){
+	var path = $("#path").val();
+	$("#orderStatus").val(orderStatus);
+	document.getElementById("orderForm").action=path+"/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}

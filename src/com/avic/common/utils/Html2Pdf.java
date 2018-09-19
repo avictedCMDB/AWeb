@@ -1,0 +1,281 @@
+package com.avic.common.utils;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import com.avic.common.beans.GoodsToCompare;
+import com.avic.management.models.CodeList;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
+
+public class Html2Pdf {
+
+	public static void html2Pdf(GoodsToCompare goodsToCompare,List<CodeList> reasonCodes,String pdfPath,String fontPath) throws DocumentException, IOException {
+		String h2class = "border-bottom: 1px solid #dfdfdf; color: #0091dc; font-size: 16px; font-weight: bold; margin-bottom: 15px; padding: 0 0 30px; text-align: center; width:700px;";
+		String thClass = "background: #dfdfdf; border-bottom: 1px solid #fff; font-size: 12px; line-height: 32px; text-align: center; width:90px;";
+		String tdClass = "border-right: 1px solid #dfdfdf; border-top: 1px solid #dfdfdf; font-size: 12px; padding: 10px; width:130px; vertical-align: top;";
+		String th2Class = "background: #dfdfdf; border-bottom: 1px solid #fff; font-size: 12px; line-height: 32px; text-align: center;";
+		String td1Class = "border-right: 1px solid #dfdfdf; border-top: 1px solid #dfdfdf; font-size: 12px; padding: 10px;";
+//		String table = "border=0 cellspacing=0 cellpadding=0";
+		
+		String outputFile = pdfPath;
+        OutputStream os = new FileOutputStream(outputFile);  
+        ITextRenderer renderer = new ITextRenderer();  
+        ITextFontResolver fontResolver = renderer.getFontResolver();  
+        fontResolver.addFont(fontPath,  
+                BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);  
+        StringBuffer html = new StringBuffer();  
+        // DOCTYPE 必需写否则类似于 这样的字符解析会出现错误  
+        html.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");  
+        html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");  
+        html.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">")  
+                .append("<head>")  
+                .append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />")  
+                .append("<style type=\"text/css\" mce_bogus=\"1\">body {font-family: SimSun;}</style>")  
+                .append("</head>")  
+        .append("<body>");  
+        html.append("<div>" +
+        		"<div><h2 style='"+h2class+"'>比价结果单</h2><div>" +
+        		"<table style='border=0 cellspacing=0 cellpadding=0'><tbody>" +
+        		"<tr>" +
+        		"<th style='"+thClass+"'>商品图片</th>"); 
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+tdClass+"' width=\"200\"><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td style='"+tdClass+"'>" +
+            		"<p style='width:130px;'><img src=\""+goodsToCompare.getSupGoodsOneImagePath()+"\" width=\"120\" height=\"100\"></img></p>" +
+            		"<p style='width:130px;'>"+goodsToCompare.getSupGoodsOneGoodsName().replaceAll("&","&amp;")+"</p>" +
+            		"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\" style='"+tdClass+"'><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td style='"+tdClass+"'>" +
+            		"<p style='width:130px;'><img src=\""+goodsToCompare.getSupGoodsTwoImagePath()+"\" width=\"120\" height=\"100\"></img></p>" +
+            		"<p style='width:130px;'>"+goodsToCompare.getSupGoodsTwoGoodsName().replaceAll("&","&amp;")+"</p>" +
+            		"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td width=\"200\" style='"+tdClass+"'><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td style='"+tdClass+"'>" +
+            		"<p style='width:130px;'><img src=\""+goodsToCompare.getSupGoodsThreeImagePath()+"\" width=\"120\" height=\"100\"></img></p>" +
+            		"<p style='width:130px;'>"+goodsToCompare.getSupGoodsThreeGoodsName().replaceAll("&","&amp;")+"</p>" +
+            		"</td>");
+        }
+        
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td  width=\"200\" style='"+tdClass+"'><p>暂无比对项</p></td>");
+        	}
+        }else{
+        	html.append("<td style='"+tdClass+"'>" +
+            		"<p style='width:130px;'><img src=\""+goodsToCompare.getSupGoodsFourImagePath()+"\" width=\"120\" height=\"100\"></img></p>" +
+            		"<p style='width:130px;'>"+goodsToCompare.getSupGoodsFourGoodsName().replaceAll("&","&amp;")+"</p>" +
+            		"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr>" +
+        		"<th style='"+th2Class+"'>价格</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>￥"+goodsToCompare.getSupGoodsOneAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>￥"+goodsToCompare.getSupGoodsTwoAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>￥"+goodsToCompare.getSupGoodsThreeAgreePrice()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>￥"+goodsToCompare.getSupGoodsFourAgreePrice()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th style='"+th2Class+"'>品牌</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsOneBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsTwoBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsThreeBrandName()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsFourBrandName()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th style='"+th2Class+"'>产地</th>");
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsOneProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsTwoProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsThreeProductArea()+"</td>");
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'></td>");
+        	}
+        }else{
+        	 html.append("<td style='"+td1Class+"'>"+goodsToCompare.getSupGoodsFourProductArea()+"</td>");
+        }
+        html.append("</tr>" +
+        		"<tr><th style='"+th2Class+"'>是否选购</th>");
+        if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        	if(!"".equals(goodsToCompare.getChooseGoodsIndex())){
+        		if("1".equals(goodsToCompare.getChooseGoodsIndex())){
+        			goodsToCompare.setSupGoodsCheckedID(goodsToCompare.getSupGoodsOneID());
+        		}else if("2".equals(goodsToCompare.getChooseGoodsIndex())){
+        			goodsToCompare.setSupGoodsCheckedID(goodsToCompare.getSupGoodsTwoID());
+        		}else if("3".equals(goodsToCompare.getChooseGoodsIndex())){
+        			goodsToCompare.setSupGoodsCheckedID(goodsToCompare.getSupGoodsThreeID());
+        		}else if("4".equals(goodsToCompare.getChooseGoodsIndex())){
+        			goodsToCompare.setSupGoodsCheckedID(goodsToCompare.getSupGoodsFourID());
+        		}
+        	}
+        }
+        if("".equals(goodsToCompare.getSupOneID()) || goodsToCompare.getSupOneID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsOneID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td style='"+td1Class+"'>未选商品</td>");
+        	 }else{
+        		 html.append("<td style='"+td1Class+"'>已选商品</td>");
+        	 }
+        }
+        if("".equals(goodsToCompare.getSupTwoID()) || goodsToCompare.getSupTwoID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsTwoID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td style='"+td1Class+"'>未选商品</td>");
+        	 }else{
+        		 html.append("<td style='"+td1Class+"'>已选商品</td>");
+        	 }
+        }
+        
+        if("".equals(goodsToCompare.getSupThreeID()) || goodsToCompare.getSupThreeID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsThreeID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td style='"+td1Class+"'>未选商品</td>");
+        	 }else{
+        		 html.append("<td style='"+td1Class+"'>已选商品</td>");
+        	 }
+        }
+        if("".equals(goodsToCompare.getSupFourID()) || goodsToCompare.getSupFourID()==null){
+        	if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        		html.append("<td style='"+td1Class+"'>未选择商品</td>");
+        	}
+        }else{
+        	 if(!goodsToCompare.getSupGoodsFourID().equals(goodsToCompare.getSupGoodsCheckedID())){
+        		 html.append("<td style='"+td1Class+"'>未选商品</td>");
+        	 }else{
+        		 html.append("<td style='"+td1Class+"'>已选商品</td>");
+        	 }
+        }
+        html.append("</tr><tr><th style='"+th2Class+"'>采购理由</th>");
+        html.append("<td colspan=\"4\" style='border: 1px solid #dfdfdf; font-size: 12px; padding: 10px;'>");
+        List<String> reasons = new ArrayList<String>();
+        String[] arr = goodsToCompare.getProCheckedReason().split(",");
+        for (int i = 0; i < arr.length; i++) {
+        	reasons.add(arr[i]);
+		}
+        for (int i = 0; i < reasonCodes.size(); i++) {
+        	if(reasons.contains(reasonCodes.get(i).getCodeValue())){
+        		html.append("<label><input type=\"radio\" checked=\"checked\"></input>"+reasonCodes.get(i).getCodeText()+"&nbsp;&nbsp;"+"</label>");
+            }else{
+            	html.append("<label></label>");
+            }
+		}
+        
+        html.append("</td>" +
+        		"</tr>");
+        html.append("<tr><th style='"+th2Class+"'>补充说明</th>");
+        if("".equals(goodsToCompare.getSupCheckedID())||goodsToCompare.getSupCheckedID()==null){
+        	html.append("<td colspan=\"4\" style='border: 1px solid #dfdfdf; font-size: 12px; padding: 10px;'></td>");
+        }else{
+        	html.append("<td colspan=\"4\" style='border: 1px solid #dfdfdf; font-size: 12px; padding: 10px;'>"+goodsToCompare.getRemark()+"</td>");
+        }
+        
+        html.append("</tr>" +
+        		"</tbody></table>" +
+        		"</div>" +
+        		"</div>" +
+        		"</div>");  
+        html.append("</body></html>");  
+        System.out.println(html.toString());  
+        renderer.setDocumentFromString(html.toString());  
+        // 解决图片的相对路径问题  
+        // renderer.getSharedContext().setBaseURL("file:/F:/teste/html/");  
+        renderer.layout();  
+        renderer.createPDF(os);  
+        os.close();  
+		
+
+	}
+
+}

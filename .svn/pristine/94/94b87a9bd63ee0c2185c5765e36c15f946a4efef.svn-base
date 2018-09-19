@@ -1,0 +1,150 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_return.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierUtil.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierOrderReturn.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <jsp:include page="../header.jsp" />
+  
+  
+  <div id="contents">
+    <div class="inner">
+    	
+    	<jsp:include page="../menu.jsp" />
+      <div id="matter_section">
+      	<h2>退货管理</h2>
+      	<div class="search_area section">
+      	<form id="queryForm" method="post">
+          <div class="search_list clearfix">
+            <dl class="clearfix">
+              <dt>退货日期</dt>
+              <dd>
+                <ul class="clearfix">
+                  <li>
+                    <div class="input-group">
+                      <input type="text" class="form-control special_input">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                  </li>
+                  <li>至</li>
+                  <li class="last">
+                    <div class="input-group">
+                      <input type="text" class="form-control special_input">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>退货单号</dt>
+              <dd>
+                <input type="text" class="form-control" name="refoundId" value="${orderQuery.refoundId}"/>
+              </dd>
+            </dl>
+            <dl class="last clearfix">
+              <dt>采购单位</dt>
+              <dd>
+                <input type="text" class="form-control" name="companyname" value="${orderQuery.companyname}"/>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>订单编号</dt>
+              <dd>
+                <input type="text" class="form-control" name="orderId" value="${orderQuery.orderId}"/>
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>退货状态</dt>
+              <dd>
+                <select class="form-control" name="refoundStatus" id="refoundStatus">
+                  <option value="">全部</option>
+                  <c:forEach var="ordersStatus" items="${ordersStatusList}" varStatus="status">
+				      <option value="${ordersStatus.codevalue}" <c:if test="${ordersStatus.codevalue == orderQuery.refoundStatus}"> selected="selected" </c:if>>${ordersStatus.codetext}</option>
+				  </c:forEach>
+                </select>
+              </dd>
+            </dl>
+          </div>
+          <div class="btn_list">
+            <ul>
+              <li><button type="button" class="btn btn-default red" onclick="query('${pageContext.request.contextPath}/supplier/return')">查询</button></li>
+              <li><button type="button" class="btn btn-default gray" onclick="clearForm(this.form)">清空</button></li>
+            </ul>
+          </div>
+          </form>
+        <!--.search_area--></div>
+      	<div class="search_result">
+          <div class="state_list">
+            <ul>
+              <li <c:if test="${orderQuery.refoundStatus == ''}"> class="active" </c:if>><a href="javascript:void(0)" onclick="queryFast('${pageContext.request.contextPath}/supplier/return','')">全部</a></li>
+              <li <c:if test="${orderQuery.refoundStatus == '0'}"> class="active" </c:if>><a href="javascript:void(0)" onclick="queryFast('${pageContext.request.contextPath}/supplier/return','0')">待确认</a></li>
+              <li <c:if test="${orderQuery.refoundStatus == '3'}"> class="active" </c:if>><a href="javascript:void(0)" onclick="queryFast('${pageContext.request.contextPath}/supplier/return','3')">待收货</a></li>
+            </ul>
+          </div>
+          <table border="0">
+            <tr>
+              <th width="100">退货单号</th>
+              <th width="100">订单编号</th>
+              <th>采购单位</th>
+              <th width="70">退货数量</th>
+              <th width="70">金额(元)</th>
+              <th width="140">退货日期</th>
+              <th width="70">退货状态</th>
+              <th width="140" class="last">操作</th>
+            </tr>
+            <c:forEach var="returnOrder" items="${ordersList}" varStatus="status">
+	            <tr>
+	              <td>${returnOrder.refoundId}</td>
+	              <td>${returnOrder.orderId}</td>
+	              <td class="company">${returnOrder.companyname}</td>
+	              <td>${returnOrder.refoundAmount}</td>
+	              <td class="price">${returnOrder.refoundPrice}</td>
+	              <td>${returnOrder.refoundDate}</td>
+	              <td>${returnOrder.refoundStatusName}</td>
+	              <c:if test="${returnOrder.refoundStatus == '0'}"> <td><a href="javascript:void(0)" onclick="openConfirmPage('${returnOrder.refoundStatus}','${pageContext.request.contextPath}/supplier/return/returnConfirmPage/${returnOrder.refoundId}')">审核</a> <a href="javascript:void(0)" onclick="openDetailed('${pageContext.request.contextPath}/supplier/return/returnDetailedPage/${returnOrder.refoundId}')">查看详情</a></td> </c:if>
+	              <c:if test="${returnOrder.refoundStatus == '3'}"> <td><a href="javascript:void(0)" onclick="confirmDeliveryStatus('${pageContext.request.contextPath}/supplier/return/returnDelivery','${returnOrder.refoundStatus}','${returnOrder.refoundId}')">确认收货</a><a href="javascript:void(0)" onclick="openDetailed('${pageContext.request.contextPath}/supplier/return/returnDetailedPage/${returnOrder.refoundId}')">查看详情</a></td> </c:if>
+	              <c:if test="${returnOrder.refoundStatus != '0' and returnOrder.refoundStatus != '3'}"> <td><a href="javascript:void(0)" onclick="openDetailed('${pageContext.request.contextPath}/supplier/return/returnDetailedPage/${returnOrder.refoundId}')">查看详情</a></td> </c:if>
+	            </tr>
+            </c:forEach>
+          </table>
+        <!--.search_result--></div>
+      	<div class="page">
+          <ul class="pagination">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li class="active"><a href="#">3</a></li>
+            <li>...</li>
+            <li><a href="#">99</a></li>
+            <li><a href="#">100</a></li>
+            <li><a href="#">&raquo;</a></li>
+          </ul>
+        </div>
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

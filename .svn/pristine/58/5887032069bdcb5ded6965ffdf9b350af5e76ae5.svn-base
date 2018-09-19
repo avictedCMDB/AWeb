@@ -1,0 +1,11 @@
+function search(){
+	document.getElementById("orderForm").action="/AWeb/management/audit/auditorAudit";
+	document.getElementById("orderForm").submit();
+}
+function clearSearchParam(){
+	$("#startTime").val("");
+	$("#endTime").val("");
+	$("#searchGoodsName").val("");
+	$("#searchOrderId").val("");
+	$("#searchSupName").val("");
+}

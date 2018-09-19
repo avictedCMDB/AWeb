@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.BidProjSupplierMapper">
+	<resultMap id="bidProjSupplierMap" type="BidProjSupplier">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="join_type" property="joinType" jdbcType="INTEGER" />
+		<result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+		<result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="audit_user" property="auditUser" jdbcType="VARCHAR" />
+		<result column="fail_reason" property="failReason" jdbcType="VARCHAR" />
+		<result column="bid_num" property="bidNum" jdbcType="VARCHAR" />
+		<result column="trial_threshold" property="trialThreshold" jdbcType="INTEGER" />
+		<result column="real_threshold" property="realThreshold" jdbcType="INTEGER" />
+		<result column="bid_result" property="bidResult" jdbcType="INTEGER" />
+		<result column="trial_current_quota" property="trialCurrentQuota" jdbcType="INTEGER" />
+		<result column="trial_quota_round" property="trialQuotaRound" jdbcType="INTEGER" />
+		<result column="real_current_quota" property="realCurrentQuota" jdbcType="INTEGER" />
+		<result column="real_quota_round" property="realQuotaRound" jdbcType="INTEGER" />
+		<result column="trial_ban" property="trialBan" jdbcType="INTEGER" />
+		<result column="real_ban" property="realBan" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	<select id="querySupplierById" resultMap="bidProjSupplierMap">
+		select *
+		from bid_proj_supplier 
+		where sup_code = #{supCode} and proj_id = #{projId}
+	</select>
+	
+	
+	<insert id="insertProjSupplier">
+		insert into bid_proj_supplier (
+			proj_id, sup_code, join_type, 
+			audit_status, join_time
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{supCode,jdbcType=VARCHAR}, #{joinType,jdbcType=INTEGER},
+			#{auditStatus,jdbcType=INTEGER}, sysdate
+		)
+	</insert>
+	
+	<update id="updateTrialThreshold">
+		update  bid_proj_supplier
+		set		trial_threshold = #{val}
+		where	proj_id = #{projId}
+		and		sup_code = #{supCode}
+	</update>
+	<update id="updateRealThreshold">
+		update  bid_proj_supplier
+		set		real_threshold = #{val}
+		where	proj_id = #{projId}
+		and		sup_code = #{supCode}
+	</update>
+	
+	<update id="updateTrialQuota">
+		update	bid_proj_supplier
+		set		trial_current_quota = #{quota}
+		,		trial_quota_round = #{round}
+		where	proj_id = #{projId}
+		and		sup_code = #{supCode}
+	</update>
+	
+	<update id="updateRealQuota">
+		update	bid_proj_supplier
+		set		real_current_quota = #{quota}
+		,		real_quota_round = #{round}
+		where	proj_id = #{projId}
+		and		sup_code = #{supCode}
+	</update>
+</mapper>

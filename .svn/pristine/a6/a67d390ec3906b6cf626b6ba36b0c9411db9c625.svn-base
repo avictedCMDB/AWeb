@@ -1,0 +1,13 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Supplier;
+
+@Repository
+public interface SupplierMapper {
+    public List<Supplier> querySupplierList();
+    public void updateSupplierToken(Supplier supplier);
+}

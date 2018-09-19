@@ -1,0 +1,26 @@
+package com.avic.market.models;
+
+public class CategoryRelation {
+    private int supId;
+    private int supCatId;
+    private int sysCatId;
+    public int getSupId() {
+        return supId;
+    }
+    public void setSupId(int supId) {
+        this.supId = supId;
+    }
+    public int getSupCatId() {
+        return supCatId;
+    }
+    public void setSupCatId(int supCatId) {
+        this.supCatId = supCatId;
+    }
+    public int getSysCatId() {
+        return sysCatId;
+    }
+    public void setSysCatId(int sysCatId) {
+        this.sysCatId = sysCatId;
+    }
+    
+}

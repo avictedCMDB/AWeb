@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/supervise_user.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div id="vat_info">
+  <div class="inner">
+    <div class="add_title clearfix">角色分配<a href="#"><i class="fa fa-close"></i></a></div>
+    <div class="main_inner">
+      <div class="up_area clearfix">
+        <dl class="clearfix date_list">
+          <dt>角色名称：</dt>
+          <dd>
+            <ul class="clearfix company">
+              <li><input class="form-control" type="text"></li>
+              <li class="btn_search"><button class="btn btn-default blue">确定</button></li>
+            </ul>
+          </dd>
+        </dl>
+        <table class="company_list">
+            <tr>
+                <th width="40"></th>
+                <th>角色名称</th>
+                <th width="200" class="last">是否可用</th>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>exhtml</td>
+                <td class="last">是</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>exhtml</td>
+                <td class="last">是</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>exhtml</td>
+                <td class="last">是</td>
+            </tr>
+        </table>    
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

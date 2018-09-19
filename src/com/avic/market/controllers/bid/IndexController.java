@@ -1,0 +1,148 @@
+package com.avic.market.controllers.bid;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.market.services.AddressService;
+import com.avic.market.services.BidProjectService;
+import com.avic.market.services.CodeListService;
+import com.avic.market.services.CompanyInfoService;
+
+@Controller("BidIndexController")
+@RequestMapping("/bid/index")
+public class IndexController {
+    protected static final Log logger = LogFactory.getLog(IndexController.class);
+
+    @Autowired
+    AddressService addressService;
+
+    @Autowired
+    CompanyInfoService companyInfoService;
+
+    @Autowired
+    BidProjectService bidProjectService;
+
+    @Autowired
+    CodeListService codeListService;
+
+    @RequestMapping("")
+    public String index(@RequestParam(value = "q", defaultValue = "") String q, Map<String, Object> map) {
+        logger.info("µç×Ó¾º¼Û");
+
+        map.put("comps", companyInfoService.getCompanyList());
+        map.put("provs", addressService.getSupArea(1, 0));
+        map.put("cats", codeListService.getCodeListByType("BID_CAT"));
+
+        map.put("recomms", bidProjectService.getRecommProject());
+        map.put("exps", bidProjectService.getExpiringProject());
+        map.put("q", q);
+
+        return "bid/index";
+    }
+    
+
+    @RequestMapping("/query/proj")
+    @ResponseBody
+    public ResultObject queryProj(@RequestParam(value = "projName", defaultValue = "") String projName,
+            @RequestParam(value = "addrProv", defaultValue = "") String addrProv,
+            @RequestParam(value = "companyId", defaultValue = "") String companyId,
+            @RequestParam(value = "bidCat", defaultValue = "") String bidCat, 
+            @RequestParam(value = "order", defaultValue = "1") int order,
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        
+        int size = 7;
+
+        int total = bidProjectService.getProjectCount(projName, addrProv, companyId, bidCat);
+
+        int pages = (int) Math.ceil((double) total / size);
+
+        if (page > pages) {
+            page = pages;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (total > 0) {
+            map.put("data", bidProjectService.getProjectList(projName, addrProv, companyId, bidCat, order, page, size));
+        }
+        map.put("pages", pages);
+        map.put("total", total);
+        
+        
+        
+        return new ResultObject(ResultObject.OK, map);
+    }
+    
+
+    @RequestMapping("/query/notice")
+    @ResponseBody
+    public ResultObject queryNotice(@RequestParam(value = "projName", defaultValue = "") String projName,
+            @RequestParam(value = "addrProv", defaultValue = "") String addrProv,
+            @RequestParam(value = "companyId", defaultValue = "") String companyId,
+            @RequestParam(value = "bidCat", defaultValue = "") String bidCat, 
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        
+        int size = 14;
+
+        int total = bidProjectService.getNoticeCount(projName, addrProv, companyId, bidCat);
+
+        int pages = (int) Math.ceil((double) total / size);
+
+        if (page > pages) {
+            page = pages;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (total > 0) {
+            map.put("data", bidProjectService.getNoticeList(projName, addrProv, companyId, bidCat, page, size));
+        }
+        map.put("pages", pages);
+        map.put("total", total);
+        
+        
+        
+        return new ResultObject(ResultObject.OK, map);
+    }
+    
+
+    @RequestMapping("/query/result")
+    @ResponseBody
+    public ResultObject queryResult(@RequestParam(value = "projName", defaultValue = "") String projName,
+            @RequestParam(value = "addrProv", defaultValue = "") String addrProv,
+            @RequestParam(value = "companyId", defaultValue = "") String companyId,
+            @RequestParam(value = "bidCat", defaultValue = "") String bidCat, 
+            @RequestParam(value = "projStatus", defaultValue = "7") int projStatus, 
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        
+        int size = 14;
+
+        int total = bidProjectService.getResultCount(projName, addrProv, companyId, bidCat, projStatus);
+
+        int pages = (int) Math.ceil((double) total / size);
+
+        if (page > pages) {
+            page = pages;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (total > 0) {
+            map.put("data", bidProjectService.getResultList(projName, addrProv, companyId, bidCat, projStatus, page, size));
+        }
+        map.put("pages", pages);
+        map.put("total", total);
+        
+        
+        
+        return new ResultObject(ResultObject.OK, map);
+    }
+    
+    
+}

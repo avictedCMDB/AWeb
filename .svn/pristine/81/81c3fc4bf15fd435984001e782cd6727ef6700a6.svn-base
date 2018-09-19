@@ -1,0 +1,18 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.SupInfo;
+
+public interface SupInfoService {
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public List<SupInfo> querySupInfos();
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public List<SupInfo> querySupInfosBySupType(SupInfo supInfo);
+}

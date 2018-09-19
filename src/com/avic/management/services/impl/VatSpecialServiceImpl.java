@@ -1,0 +1,57 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.mappers.VatSpecialMapper;
+import com.avic.management.models.VatSpecial;
+import com.avic.management.services.VatSpecialService;
+
+@Service
+public class VatSpecialServiceImpl implements VatSpecialService {
+    protected static final Log logger = LogFactory.getLog(VatSpecialServiceImpl.class);
+
+    @Autowired
+    VatSpecialMapper vatSpecialMapper;
+
+	@Override
+	public VatSpecial queryVatSpecial(VatSpecial vatSpecial) {
+		return vatSpecialMapper.queryVatSpecial(vatSpecial);
+	}
+
+	@Override
+	public String queryVatIndex() {
+		return vatSpecialMapper.queryVatIndex();
+	}
+
+	@Override
+	public void addVat(VatSpecial vatSpecial) {
+		vatSpecialMapper.addVat(vatSpecial);
+	}
+
+	@Override
+	public void updateVat(VatSpecial vatSpecial) {
+		vatSpecialMapper.updateVat(vatSpecial);
+	}
+
+	@Override
+	public void deleteVat(VatSpecial vatSpecial) {
+		vatSpecialMapper.deleteVat(vatSpecial);
+	}
+
+	@Override
+	public String queryVatStatus(VatSpecial vatSpecial) {
+		return vatSpecialMapper.queryVatStatus(vatSpecial);
+	}
+
+	@Override
+	public void updateVatAuditStatus(VatSpecial vatSpecial) {
+		vatSpecialMapper.updateVatAuditStatus(vatSpecial);
+	}
+
+
+}

@@ -1,0 +1,117 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="新增发票" name="title"/>
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/supervise_invoice.css" rel="stylesheet">
+<script type="text/javascript">
+$(function () {
+	$("#invoiceFlag1").click(function () {
+		$("#icp").hide();
+		$("#invoiceContent").val("");
+	});
+	$("#invoiceFlag2").click(function () {
+		$("#icp").show();
+	});
+	$("#submit_btn").click(function () {
+		var invoiceCompany = $.trim($("#invoiceCompany").val());
+		var invoiceNum = $.trim($("#invoiceNum").val());
+		var invoiceFlag = 1;
+		
+		if ($("#invoiceFlag2").get(0).checked) {
+			invoiceFlag = 2;
+		}
+
+		var invoiceContent = $.trim($("#invoiceContent").val());
+		var expressName = $.trim($("#expressName").val());
+		var expressCode = $.trim($("#expressCode").val());
+		
+		if (invoiceCompany == '') {
+			alert("请填写付款单位名称");
+			return false;
+		}
+		if (invoiceNum == '') {
+			alert("请填写税务登记号");
+			return false;
+		}
+		if (invoiceFlag == 2 && invoiceContent == '') {
+			alert("请填写发票内容");
+			return false;
+		}
+		if (expressName == '') {
+			alert("请填写快递公司");
+			return false;
+		}
+		if (expressCode == '') {
+			alert("请填写快递单号");
+			return false;
+		}
+		
+		async('${pageContext.request.contextPath}/supervise/invoice/add/submit', {
+			orderId:'${invoice.orderId}',
+			invoiceCompany:invoiceCompany, 
+			invoiceNum:invoiceNum, 
+			invoiceFlag:invoiceFlag,
+			invoiceContent:invoiceContent,
+			expressName:expressName,
+			expressCode:expressCode
+		}, function (msg) {
+			alert("开票完成");
+			window.location.href="${referer}";
+		});
+		
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <jsp:include page="../header.jsp" />
+  
+  <div id="contents">
+    <div class="inner details">
+      <h2>新增发票</h2>
+      <div class="add_details">
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>付款单位名称: </dt>
+          <dd><input type="text" class="form-control" value="${invoice.invoiceCompany }" id="invoiceCompany"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>税务登记号：</dt>
+          <dd><input type="text" class="form-control" value="${invoice.invoiceNum }" id="invoiceNum"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>发票内容：</dt>
+          <dd>
+            <p><input type="radio" name="invoiceFlag" id="invoiceFlag1" value="1" <c:if test="${invoice.invoiceFlag == 1}">checked="checked"</c:if>>明细
+            <input type="radio" name="invoiceFlag" id="invoiceFlag2" value="2" <c:if test="${invoice.invoiceFlag == 2}">checked="checked"</c:if>>自定义</p>
+            <p id="icp" <c:if test="${invoice.invoiceFlag != 2}">style="display:none;"</c:if>><input type="text" class="form-control" value="${invoice.invoiceContent }" id="invoiceContent"></p>
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>快递公司</dt>
+          <dd><input type="text" class="form-control" value="${invoice.expressName }" id="expressName"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>快递单号</dt>
+          <dd><input type="text" class="form-control" value="${invoice.expressCode }" id="expressCode"></dd>
+        </dl>
+        <div class="btn_list">
+          <ul>
+            <li><button type="button" class="btn btn-default red" id="submit_btn">提交</button></li>
+            <li><button type="button" class="btn btn-default gray" onclick="history.go(-1);">关闭</button></li>
+          </ul>
+        </div>
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+<jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

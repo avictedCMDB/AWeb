@@ -1,0 +1,3 @@
+function cancle(){
+	window.close();
+}

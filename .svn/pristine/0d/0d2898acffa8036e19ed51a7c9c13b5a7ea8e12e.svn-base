@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.PayFlowMapper">
+	<resultMap id="payFlowResultMap" type="PayFlow">
+		<id column="pay_flow" property="payFlow" jdbcType="VARCHAR" /> 
+		<result column="order_id" property="orderId" jdbcType="VARCHAR" />
+		<result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+		<result column="req_param" property="reqParam" jdbcType="VARCHAR" />
+		<result column="res_param" property="resParam" jdbcType="VARCHAR" />
+		<result column="pay_type" property="payType" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="complete_time" property="completeTime" jdbcType="DATE" />
+		<result column="pay_amount" property="payAmount" jdbcType="DOUBLE" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="proc_status" property="procStatus" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<insert id="insertPayFlow">
+		insert into t_pay_flow (pay_flow, order_id, pay_status, req_param, pay_type, create_time, pay_amount, remark, pay_gate, proc_status)
+		values (#{payFlow}, #{orderId}, 0, #{reqParam}, #{payType}, sysdate, #{payAmount}, #{remark,jdbcType=VARCHAR}, #{payGate,jdbcType=VARCHAR}, 0)
+	</insert>
+	<select id="queryPayFlow" resultMap="payFlowResultMap">
+		select * from t_pay_flow where pay_flow = #{payFlow}
+	</select>
+	<update id="updatePayFlow">
+		update t_pay_flow
+		   set pay_status = #{payStatus},
+		       complete_time = sysdate,
+		       <if test="resParam != null and resParam != ''">
+		       res_param = #{resParam},
+		       </if>
+		       <if test="remark != null and remark != ''">
+		       remark = #{remark},
+		       </if>
+		       proc_status = #{procStatus}
+		 where pay_flow = #{payFlow}
+	</update>
+	<select id="queryOrderPayFlow" resultMap="payFlowResultMap">
+		select * from t_pay_flow where order_id = #{orderId} and pay_status = 1 and proc_status = 1
+	</select>
+</mapper>

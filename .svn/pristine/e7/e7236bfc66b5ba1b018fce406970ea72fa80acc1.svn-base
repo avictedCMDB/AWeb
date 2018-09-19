@@ -1,0 +1,108 @@
+package com.avic.management.models;
+
+import java.io.Serializable;
+
+public class ProductCompare implements Serializable{
+	private static final long serialVersionUID = -4924624311155595695L;
+	private String supOneID; 		    //比对供应商1ID
+	private String supGoodsOneID; 		//比对商品1ID
+	private String supTwoID; 		 	//比对供应商2ID
+	private String supGoodsTwoID; 		//比对商品2ID
+	private String supThreeID; 		 	//比对供应商3ID
+	private String supGoodsThreeID; 	//比对商品3ID
+	private String supFourID; 		 	//比对供应商4ID
+	private String supGoodsFourID; 		//比对商品4ID
+	
+	private String compareID; 		 		//比对ID
+	private String supCheckedID; 			//比对后别选中的商品平台编号
+	private String supGoodsCheckedID; 		//比对后别选中的商品编号
+	private String ProCheckedReason; 		//选中原因
+	private String createDate;
+	private String updateDate;
+	
+	public String getSupOneID() {
+		return supOneID;
+	}
+	public void setSupOneID(String supOneID) {
+		this.supOneID = supOneID;
+	}
+	public String getSupGoodsOneID() {
+		return supGoodsOneID;
+	}
+	public void setSupGoodsOneID(String supGoodsOneID) {
+		this.supGoodsOneID = supGoodsOneID;
+	}
+	public String getSupTwoID() {
+		return supTwoID;
+	}
+	public void setSupTwoID(String supTwoID) {
+		this.supTwoID = supTwoID;
+	}
+	public String getSupGoodsTwoID() {
+		return supGoodsTwoID;
+	}
+	public void setSupGoodsTwoID(String supGoodsTwoID) {
+		this.supGoodsTwoID = supGoodsTwoID;
+	}
+	public String getSupThreeID() {
+		return supThreeID;
+	}
+	public void setSupThreeID(String supThreeID) {
+		this.supThreeID = supThreeID;
+	}
+	public String getSupGoodsThreeID() {
+		return supGoodsThreeID;
+	}
+	public void setSupGoodsThreeID(String supGoodsThreeID) {
+		this.supGoodsThreeID = supGoodsThreeID;
+	}
+	public String getSupFourID() {
+		return supFourID;
+	}
+	public void setSupFourID(String supFourID) {
+		this.supFourID = supFourID;
+	}
+	public String getSupGoodsFourID() {
+		return supGoodsFourID;
+	}
+	public void setSupGoodsFourID(String supGoodsFourID) {
+		this.supGoodsFourID = supGoodsFourID;
+	}
+	public String getCompareID() {
+		return compareID;
+	}
+	public void setCompareID(String compareID) {
+		this.compareID = compareID;
+	}
+	public String getSupCheckedID() {
+		return supCheckedID;
+	}
+	public void setSupCheckedID(String supCheckedID) {
+		this.supCheckedID = supCheckedID;
+	}
+	public String getSupGoodsCheckedID() {
+		return supGoodsCheckedID;
+	}
+	public void setSupGoodsCheckedID(String supGoodsCheckedID) {
+		this.supGoodsCheckedID = supGoodsCheckedID;
+	}
+	public String getProCheckedReason() {
+		return ProCheckedReason;
+	}
+	public void setProCheckedReason(String proCheckedReason) {
+		ProCheckedReason = proCheckedReason;
+	}
+	public String getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+	public String getUpdateDate() {
+		return updateDate;
+	}
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+	
+}

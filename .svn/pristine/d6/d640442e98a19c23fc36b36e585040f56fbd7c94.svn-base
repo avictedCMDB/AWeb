@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierContractMapper">
+
+	<resultMap type="com.avic.supplier.models.SupplierContract" id="SupplierContractMap">
+		<result column="PROJ_ID" 		property="projId" 			jdbcType="VARCHAR"/>
+		<result column="SUP_CODE" 		property="supCode" 			jdbcType="VARCHAR"/>
+		<result column="FILE_ID" 		property="fileId"	 		jdbcType="VARCHAR"/>
+		<result column="FILE_NAME"	 	property="fileName" 		jdbcType="VARCHAR"/>
+		<result column="FILE_PATH" 		property="filePath" 		jdbcType="VARCHAR"/>
+		<result column="UPLOAD_TIME" 	property="uploadTime" 		jdbcType="VARCHAR"/>
+		<result column="FILE_VERSION"	property="fileVersion"	 	jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="selectContractFile" resultMap="SupplierContractMap">
+		SELECT 
+			A.*
+		FROM BID_CONTRACT_FILE A
+		WHERE A.PROJ_ID = #{projId}
+		AND A.SUP_CODE = #{supCode}
+	</select>
+
+	<select id="selectMaxVersion" resultType="java.lang.Integer">
+		SELECT nvl(max(file_version), 0)
+		FROM BID_CONTRACT_FILE A
+		WHERE A.PROJ_ID = #{projId}
+		AND A.SUP_CODE = #{supCode}
+	</select>
+	
+	<insert id="insertContract">
+		INSERT INTO BID_CONTRACT_FILE (PROJ_ID, SUP_CODE, FILE_ID, FILE_NAME, FILE_PATH, UPLOAD_TIME, FILE_VERSION)
+		VALUES (#{projId,jdbcType=VARCHAR}, #{supCode,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},
+		#{filePath,jdbcType=VARCHAR}, #{uploadTime,jdbcType=TIMESTAMP}, #{fileVersion,jdbcType=INTEGER})
+	</insert>
+
+	<delete id="deleteContractByProjIdAndSupCode">
+		DELETE FROM BID_CONTRACT_FILE WHERE PROJ_ID = #{projId} AND SUP_CODE = #{supCode}
+	</delete>
+	<select id="selectContractFileById" resultMap="SupplierContractMap">
+		SELECT 
+			A.*
+		FROM BID_CONTRACT_FILE A
+		WHERE A.PROJ_ID = #{projId}
+		AND A.SUP_CODE = #{supCode}
+		AND A.FILE_ID = #{fileId}
+	</select>
+</mapper>

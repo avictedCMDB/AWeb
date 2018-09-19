@@ -1,0 +1,76 @@
+package com.avic.common.beans;
+
+import java.io.Serializable;
+
+public class GoodsToCampare implements Serializable{
+	private static final long serialVersionUID = -4924624311155595695L;
+	private String supOneID; 		    //比对供应商1ID
+	private String supGoodsOneID; 		//比对商品1ID
+	private String supTwoID; 		 	//比对供应商2ID
+	private String supGoodsTwoID; 		//比对商品2ID
+	private String supThreeID; 		 	//比对供应商3ID
+	private String supGoodsThreeID; 	//比对商品3ID
+	private String supFourID; 		 	//比对供应商4ID
+	private String supGoodsFourID; 		//比对商品4ID
+	
+	private String returnUrl; 		 //转发的url
+	
+	
+	public String getReturnUrl() {
+		return returnUrl;
+	}
+	public void setReturnUrl(String returnUrl) {
+		this.returnUrl = returnUrl;
+	}
+	public String getSupOneID() {
+		return supOneID;
+	}
+	public void setSupOneID(String supOneID) {
+		this.supOneID = supOneID;
+	}
+	public String getSupGoodsOneID() {
+		return supGoodsOneID;
+	}
+	public void setSupGoodsOneID(String supGoodsOneID) {
+		this.supGoodsOneID = supGoodsOneID;
+	}
+	public String getSupTwoID() {
+		return supTwoID;
+	}
+	public void setSupTwoID(String supTwoID) {
+		this.supTwoID = supTwoID;
+	}
+	public String getSupGoodsTwoID() {
+		return supGoodsTwoID;
+	}
+	public void setSupGoodsTwoID(String supGoodsTwoID) {
+		this.supGoodsTwoID = supGoodsTwoID;
+	}
+	public String getSupThreeID() {
+		return supThreeID;
+	}
+	public void setSupThreeID(String supThreeID) {
+		this.supThreeID = supThreeID;
+	}
+	public String getSupGoodsThreeID() {
+		return supGoodsThreeID;
+	}
+	public void setSupGoodsThreeID(String supGoodsThreeID) {
+		this.supGoodsThreeID = supGoodsThreeID;
+	}
+	public String getSupFourID() {
+		return supFourID;
+	}
+	public void setSupFourID(String supFourID) {
+		this.supFourID = supFourID;
+	}
+	public String getSupGoodsFourID() {
+		return supGoodsFourID;
+	}
+	public void setSupGoodsFourID(String supGoodsFourID) {
+		this.supGoodsFourID = supGoodsFourID;
+	}
+	
+	
+	
+}

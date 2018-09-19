@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SysCompanyHisMapper">
+	<resultMap id="companyHisMap" type="com.avic.management.models.SysCompanyHis">
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" /> 
+		<result column="company_name_en" property="companyNameEN" jdbcType="VARCHAR" />
+		<result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+		<result column="reg_addr_country" property="regAddrCountry" jdbcType="VARCHAR" />
+		<result column="reg_addr_province" property="regAddrProvince" jdbcType="VARCHAR" />
+		<result column="reg_addr_city" property="regAddrCity" jdbcType="VARCHAR" />
+		<result column="organization_code" property="organizationCode" jdbcType="VARCHAR" />
+		<result column="licence_code" property="licenceCode" jdbcType="VARCHAR" />
+		<result column="tax_code" property="taxCode" jdbcType="VARCHAR" />
+		<result column="economic_type" property="economicType" jdbcType="VARCHAR" />
+		<result column="corporation_name" property="corporationName" jdbcType="VARCHAR" />
+		<result column="reg_fund" property="regFund" jdbcType="VARCHAR" />
+		<result column="reg_currency_type" property="regCurrencyType" jdbcType="VARCHAR" />
+		<result column="reg_fund" property="regFund" jdbcType="VARCHAR" />
+		<result column="responsible_name" property="responsibleName" jdbcType="VARCHAR" />
+		<result column="responsible_tel" property="responsibleTel" jdbcType="VARCHAR" />
+		<result column="main_product" property="mainProduct" jdbcType="VARCHAR" />
+		<result column="link_addr" property="linkAddr" jdbcType="VARCHAR" />
+		<result column="link_post_code" property="linkPostCode" jdbcType="VARCHAR" />
+		<result column="employees" property="employees" jdbcType="VARCHAR" />
+		<result column="technical_staff_num" property="technicalStaffNum" jdbcType="VARCHAR" />
+		<result column="responsible_fax" property="responsibleFax" jdbcType="VARCHAR" />
+		<result column="responsible_email" property="responsibleEmail" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryCompanyHisBySupId" resultMap="companyHisMap">
+			select * 
+			  from sys_company_his
+			 where sup_id = #{supId}
+	</select>
+	
+</mapper>

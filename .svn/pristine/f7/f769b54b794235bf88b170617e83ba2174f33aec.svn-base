@@ -1,0 +1,97 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航采购网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_return.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierOrderExchange.js"></script>
+</head>
+
+<body>
+<div class="return_pro inner">
+  <h2>确认换货单</h2>
+  <div class="main_list search_result">
+    <div class="inner_main">
+    <form id="exchangeStatusForm" method="post">
+      <h3>换货商品明细</h3>
+      <table class="details">
+        <tr>
+          <th width="20">序号</th>
+          <th colspan="2">商品信息</th>
+          <th width="70">单价(元)</th>
+          <th width="70">退货数量</th>
+          <th width="70">总金额(元)</th>
+          <th width="120">退货原因</th>
+        </tr>
+        <c:forEach var="supplierExchange" items="${supplierExchangeList}" varStatus="status">
+          <tr>
+	          <td>${supplierExchange.rn}</td>
+	          <td width="77" class="right_none"><p class="img_pro"><a href="#"><img src="${supplierExchange.imagePath}" width="44px" height="44px"/></a></p></td>
+	          <td class="left_none"><a href="#">${supplierExchange.goodsName}</a></td>
+	          <td class="price"><fmt:formatNumber value="${supplierExchange.agreePrice}" pattern="#0.00#"/></td>
+	          <td>${supplierExchange.exchangeNum}</td>
+	          <td class="price"><fmt:formatNumber value="${supplierExchange.sumChangePrice}" pattern="#0.00#"/></td>
+	          <td>${supplierExchange.exchangeReason}</td>
+          </tr>
+        </c:forEach>
+      </table>
+      <h3>审核信息</h3>
+      <dl class="dl-horizontal">
+        <dt>审核结果：</dt>
+        <dd>
+          <label class="checkbox-inline">
+            <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="1" checked/>同意
+          </label>
+          <label class="checkbox-inline">
+            <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="2"/>不同意
+          </label>
+        </dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>审核意见：</dt>
+        <dd>
+          <textarea class="form-control" name="supCheckInfo" id="supCheckInfo"></textarea>
+        </dd>
+      </dl>
+     <!-- <h3>收货地址</h3>
+      <dl class="dl-horizontal">
+        <dt>默认地址：</dt>
+        <dd>
+          <c:forEach var="supplierAddress" items="${supplierAddressList}" varStatus="status">
+          	<div class="radio">
+	            <label>
+	              <input type="radio" name="optionsRadios" id="optionsRadios2" value="${supplierAddress.supAddressId}" <c:if test="${supplierAddress.ifDefault == '1'}"> checked </c:if>/>
+	              ${supplierAddress.supName} ${supplierAddress.supAreaLevelOne} ${supplierAddress.supAreaLevelTwo} ${supplierAddress.supAreaLevelThree} ${supplierAddress.supAddressDetail} ${supplierAddress.supTel} 
+	            </label>
+          	</div>
+          </c:forEach>
+        </dd>
+      </dl>
+       --> 
+      </form>
+    </div>
+  </div>
+
+  <div class="btn_area">
+    <ul>
+      <li><button type="button" class="btn btn-default red" onclick="updateExchangeStatus('${pageContext.request.contextPath}/supplier/exchange/exchangeConfirm','${exchangeId}')">提交</button></li>
+      <li><button type="button" class="btn btn-default gray" onclick="window.close()">取消</button></li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

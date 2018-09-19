@@ -1,0 +1,76 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_goods_info.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+</head>
+
+<body>
+<div class="return_pro inner">
+  <h2>商品价格</h2>
+  <div class="add_details">
+    <div class="info_mian">
+      <label>商品编号：</label>
+      <span>10132743</span>
+      <label>商品名称 ：</label>
+      <span>益而高 Eagle 手握式订书机 828L （混色） </span>
+    </div>
+    <div class="info_mian">
+      <label>当前商品目录下的最高进销差率为(%)：</label>
+      <span>0.00</span>
+      <label>计算公式：</label>
+      <span>进销差率 =（销售价格-进货价格）/进货价格。 </span>
+    </div>
+    <div class="info_mian">
+      <label>当前商品目录下的最低优惠率为(%)：</label>
+      <span>0.00</span>
+      <label>计算公式：</label>
+      <span>优惠率 =（市场价格-销售价格）/市场价格。</span>
+    </div>
+    <h3>匹配价格</h3>
+    <table>
+      <tr>
+        <th>SKU编码</th>
+        <th>SKU描述</th>
+        <th>销售价格</th>
+        <th>市场价格</th>
+        <th>优惠率(%)</th>
+        <th>进货价格 </th>
+        <th>进销差率(%)</th>
+      </tr>
+      <tr>
+        <td>1h1069</td>
+        <td></td>
+        <td><input class="form-control" /></td>
+        <td><input class="form-control" /></td>
+        <td><input class="form-control" /></td>
+        <td><input class="form-control" /></td>
+        <td><input class="form-control" /></td>
+      </tr>
+    </table>
+    
+    <div class="btn_area">
+    <ul>
+      <li><button type="button" class="btn btn-default red">保存</button></li>
+      <li><button type="button" class="btn btn-default gray">返回</button></li>
+    </ul>
+  </div>
+  </div>
+
+</div>
+</body>
+</html>

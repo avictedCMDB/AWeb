@@ -1,0 +1,160 @@
+function query(action){
+	
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+	
+}
+function queryFast(action,status){
+	$("#orderStatus").val(status);
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+}
+function doSend(atcion,orderId){
+	if(confirm("是否确认发货?")){
+		$.ajax({
+
+		     type: 'POST',
+
+		     url: atcion,
+
+			    data : {
+				'orderId' : orderId
+			} ,
+
+		    success: function (data){
+		    	window.location.href=window.location.href;
+		    } ,
+
+		    dataType: 'json',
+		    
+		    cache:false,
+		});
+	}
+}
+function passStatus(atcion,orderId,returnAction){
+	var supGoodsId = '';
+	var goodsPrice = '';
+	var buyNum = '';
+	var orderAmount = 0;
+	var supplierReviewRemark = $('#supplierReviewRemark').val();
+	$("input:hidden[name='supGoodsId']").each(
+			function(){
+				if (supGoodsId == '') {
+					supGoodsId = this.value;
+				}else {
+					supGoodsId = supGoodsId + ','+this.value;
+				}
+	});
+	$("input:text[name='goodsPrice']").each(
+			function(){
+				if (goodsPrice == '') {
+					goodsPrice = this.value;
+				}else {
+					goodsPrice = goodsPrice + ','+this.value;
+				}
+	});
+	$("input:text[name='buyNum']").each(
+			function(){
+				if (buyNum == '') {
+					buyNum = this.value;
+				}else {
+					buyNum = buyNum + ','+this.value;
+				}
+	});
+	$("input:text[name='orderAmount']").each(
+			function(){
+				orderAmount = parseInt(orderAmount) + this.value;
+	});
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: atcion,
+
+		    data : {
+			'orderId' : orderId,
+			'supplierReviewRemark' : supplierReviewRemark,
+			'supGoodsId' : supGoodsId,
+			'goodsPrice' : goodsPrice,
+			'buyNum' : buyNum,
+			'orderAmount' : orderAmount
+		} ,
+
+	    success: function (data){
+	    	window.location.href=returnAction;
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+function returnStatus(atcion,orderId,returnAction){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: atcion,
+
+		    data : {
+			'orderId' : orderId,
+			'supplierReviewRemark' : supplierReviewRemark
+		} ,
+
+	    success: function (data){
+	    	window.location.href=returnAction;
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+function addNum(status,index){
+	var id = "";
+	if (status == "1") {
+		id = "price";
+	}else if (status == "2") {
+		id = "num";
+	}
+	id = id+index;
+	$('#'+id).val(parseInt($('#'+id).val())+1);
+	$('#sumPrice'+index).val(parseInt($('#price'+index).val())*$('#num'+index).val());
+	
+}
+function minusNum(status,index){
+	var id = "";
+	if (status == "1") {
+		id = "price";
+	}else if (status == "2") {
+		id = "num";
+	}
+	id = id+index;
+	if ($('#'+id).val() > 1) {
+		$('#'+id).val(parseInt($('#'+id).val()) - 1);
+	}else {
+		alert('购买数量或单价不能为0！');
+		return;
+	}
+	$('#sumPrice'+index).val(parseInt($('#price'+index).val())*$('#num'+index).val());
+}
+function checkNum(status,index){
+	var id = "";
+	if (status == "1") {
+		id = "price";
+	}else if (status == "2") {
+		id = "num";
+	}
+	id = id+index;
+	if(isNaN($("#"+id).val())){
+		alert('请输入正确人数字！');
+		$("#"+id).focus();
+		return;
+	}
+	if($("#"+id).val()<= 0){
+		alert('购买数量或单价不能为0！');
+		$("#"+id).focus();
+		return;
+	}
+	$('#sumPrice'+index).val(parseInt($('#price'+index).val())*$('#num'+index).val());
+}

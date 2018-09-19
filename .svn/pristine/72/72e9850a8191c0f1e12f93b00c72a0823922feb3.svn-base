@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area dl dt {
+	width: 75px;
+}
+#matter_section .search_area dl dd {
+	width: 155px;
+}
+#matter_section .special_input {
+	width: 125px;
+}
+#matter_section .search_area dl {
+	margin-right: 20px;
+}
+.radio-inline, .checkbox-inline {
+	padding-left: 0;
+}
+.btn_list {
+	text-align: center;
+	margin-top: 10px;
+
+}
+.btn_list ul {
+	display: inline-block;
+}
+.btn_list ul li {
+	float: left;
+	margin: 10px;
+}
+.search_result {
+	text-align: center;
+}
+#uploadFile2,
+#uploadFile3{
+    margin-right: 10px;
+    width: 65px;
+}

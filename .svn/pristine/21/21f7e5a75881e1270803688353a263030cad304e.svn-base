@@ -1,0 +1,51 @@
+package com.avic.management.models;
+
+import java.io.Serializable;
+
+public class SupInfo implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private String supID;			//供应商ID
+	private String supName;			//供应商名
+	private String authUser;		//用户名
+	private String authPass;		//用户密码
+	private String companyCode;		//企业code
+	private String supType;
+	public String getSupID() {
+		return supID;
+	}
+	public void setSupID(String supID) {
+		this.supID = supID;
+	}
+	public String getSupName() {
+		return supName;
+	}
+	public void setSupName(String supName) {
+		this.supName = supName;
+	}
+	public String getAuthUser() {
+		return authUser;
+	}
+	public void setAuthUser(String authUser) {
+		this.authUser = authUser;
+	}
+	public String getAuthPass() {
+		return authPass;
+	}
+	public void setAuthPass(String authPass) {
+		this.authPass = authPass;
+	}
+	public String getCompanyCode() {
+		return companyCode;
+	}
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+	public String getSupType() {
+		return supType;
+	}
+	public void setSupType(String supType) {
+		this.supType = supType;
+	}
+	
+	
+}

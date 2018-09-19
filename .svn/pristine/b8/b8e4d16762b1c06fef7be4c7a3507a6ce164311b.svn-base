@@ -1,0 +1,388 @@
+package com.avic.supplier.controllers;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.shortMessage.ShortMessageUtils;
+import com.avic.common.utils.ConfigHolder;
+import com.avic.market.cpi.exceptions.NoSuchSupplierException;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.supplier.models.SupplierGoodsInfo;
+import com.avic.supplier.models.SupplierImageInfo;
+import com.avic.supplier.models.SupplierOffStandRequire;
+import com.avic.supplier.models.SupplierQuoteInfo;
+import com.avic.supplier.services.SupplierGoodsInfoService;
+import com.avic.supplier.services.SupplierOffStandRequireService;
+import com.avic.supplier.services.SupplierOrderService;
+import com.avic.supplier.utils.ReadExcel;
+
+@Controller
+@RequestMapping("/offStandRequire")
+public class SupplierOffStandRequireController {
+	
+	protected static final Log logger = LogFactory
+	.getLog(SupplierOffStandRequireController.class);
+	
+	@Autowired
+	SupplierOrderService supplierOrderService;
+	
+	@Autowired
+	SupplierOffStandRequireService supplierOffStandRequireService;
+	
+	@Autowired
+	SupplierGoodsInfoService supplierGoodsInfoService;
+	
+	
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOffStandRequire") SupplierOffStandRequire supplierOffStandRequire,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		supplierOffStandRequire.setSupId(supId);
+		List<SupplierOffStandRequire> supplierOffStandRequireList = supplierOffStandRequireService.querySupplierOffStandRequiret(supplierOffStandRequire);
+		//图片信息
+		for (int i = 0; i < supplierOffStandRequireList.size(); i++) {
+			SupplierOffStandRequire item = supplierOffStandRequireList.get(i);
+			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(item.getId(),"8");
+			supplierOffStandRequireList.get(i).setImageList(images);
+		}
+		map.put("supplierOffStandRequireList", supplierOffStandRequireList);
+		//分页信息
+        String page = String.valueOf(supplierOffStandRequire.getPage());
+        int total = supplierOffStandRequireService.querySupplierOffStandRequiretCount(supplierOffStandRequire);
+        int pages = (int) Math.ceil((double) total / supplierOffStandRequire.getPageSize());
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/offStandRequire?"
+        		+ "&goodsDescNew="+URLEncoder.encode((supplierOffStandRequire.getGoodsDescNew() == null ?"":supplierOffStandRequire.getGoodsDescNew()),"GBK")
+        		+ "&status="+(supplierOffStandRequire.getStatus() == null ?"":supplierOffStandRequire.getStatus())
+        		+ "&createDateStar="+(supplierOffStandRequire.getCreateDateStar() == null ?"":supplierOffStandRequire.getCreateDateStar())
+        		+ "&createDateEnd="+(supplierOffStandRequire.getCreateDateEnd() == null ?"":supplierOffStandRequire.getCreateDateEnd())
+                + "&page=%PAGE%");
+		map.put("supplierOffStandRequire", supplierOffStandRequire);
+		return "order/supplier_nonstandard";
+	}
+	/**
+	 * 查询详细页面
+	 * @param map
+	 * @param id
+	 * @param httpSession
+	 * @param request
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@RequestMapping("/queryDetailed/{id}")
+	public String queryDetailed(Map<String, Object> map,@PathVariable("id") String id,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		// 类型 1为提供  2为查看
+		String type =request.getParameter("type");
+		SupplierOffStandRequire supplierOffStandRequire = new SupplierOffStandRequire();
+		supplierOffStandRequire.setSupId(supId);
+		supplierOffStandRequire.setId(id);
+		List<SupplierOffStandRequire> supplierOffStandRequireList = supplierOffStandRequireService.querySupplierOffStandRequiret(supplierOffStandRequire);
+		//图片信息
+		for (int i = 0; i < supplierOffStandRequireList.size(); i++) {
+			SupplierOffStandRequire item = supplierOffStandRequireList.get(i);
+			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(item.getId(),"8");
+			supplierOffStandRequireList.get(i).setImageList(images);
+		}
+		
+		map.put("type", type);
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierOffStandRequireService.querySupplierGoodsInfoList(id,supId);
+		if (supplierGoodsInfoList.size()!= 0) {
+			supplierOffStandRequireList.get(0).setQuotePath(supplierGoodsInfoList.get(0).getQuoteAttachmentPath());
+			supplierOffStandRequireList.get(0).setFileName(supplierGoodsInfoList.get(0).getFileName());
+			String postfix = supplierGoodsInfoList.get(0).getQuoteAttachmentPath().substring(supplierGoodsInfoList.get(0).getQuoteAttachmentPath().lastIndexOf("."),supplierGoodsInfoList.get(0).getQuoteAttachmentPath().length());
+			if (postfix.toUpperCase().equals(".BMP") ||
+					postfix.toUpperCase().equals(".JPG") ||
+					postfix.toUpperCase().equals(".JPEG") ||
+					postfix.toUpperCase().equals(".PNG") ||
+					postfix.toUpperCase().equals(".GIF") ) {
+				map.put("isPicture", "0");
+			}else {
+				map.put("isPicture", "1");
+			}
+		}
+		map.put("supplierOffStandRequire", supplierOffStandRequireList.get(0));
+		map.put("supplierGoodInfoList",supplierGoodsInfoList);
+		return "order/supplier_nonstandard_check";
+	}
+	
+	/**
+	 * 文件上传
+	 * @param map
+	 * @param httpSession
+	 * @param supplierGoodsInfo
+	 * @param uploadFiles
+	 * @return
+	 * @throws NoSuchSupplierException
+	 * @throws ServiceExecutionFailedException
+	 * @throws IOException
+	 */
+	@RequestMapping("/uploadGoods")
+	public Object uploadFile(Map<String, Object> map,HttpSession httpSession,HttpServletRequest request,
+			@ModelAttribute("supplierOffStandRequire") SupplierOffStandRequire supplierOffStandRequire,
+			 @RequestParam("uploadFile") MultipartFile uploadFiles)
+			throws NoSuchSupplierException, ServiceExecutionFailedException, IOException {
+		map.put("ok", "0");
+		String filePath = "";
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		if (uploadFiles.isEmpty()) {
+			map.put("ok", "1");
+			map.put("msg", "上传的文件为空文件，请检查商品后重新上传！");
+		}else {
+			String excelVersion = "";
+			String old = uploadFiles.getOriginalFilename();
+			String postfix = old.substring(old.lastIndexOf("."),old.length());
+			//上传
+			String savePath = request.getSession().getServletContext().getRealPath(ConfigHolder.getInstance().getConfig("supplier_picture"));
+			savePath = savePath + File.separator+supplierOffStandRequire.getId();
+			saveFile(savePath, old, uploadFiles);
+			filePath = savePath+File.separator+old;
+			if (".xlsx".equals(postfix)) {
+				excelVersion="2007";
+			}else if (".xls".equals(postfix)) {
+				excelVersion="2003";
+			}
+			List<List<String>> supplierGoodsInfos = null;
+            try {
+            	supplierGoodsInfos= ReadExcel.readExcelFile(uploadFiles.getInputStream(),excelVersion);
+			} catch (Exception e) {
+				map.put("ok", "2");
+				map.put("msg", "上传的文件解析失败，请使用指定的模板文件！");
+			}
+			if (supplierGoodsInfos.size() == 0) {
+				map.put("ok", "1");
+				map.put("msg", "上传的文件为空文件，请检查文件后重新上传！");
+			}else {
+				// 数据插入
+				Map<String, Object> reultMap = supplierOffStandRequireService.uploadData(supplierGoodsInfos,request.getContextPath()+"/static/img/img-profession.jpg");
+				if (reultMap == null ) {
+					map.put("ok", "2");
+					map.put("msg", "上传的文件解析失败，请使用指定的模板文件！");
+				}else {
+					map.put("ok", "3");
+					map.put("msg", "上传成功！");
+					map.put("count", reultMap.get("count"));
+					map.put("sussCount", reultMap.get("sussCount"));
+					map.put("errCount", reultMap.get("errCount"));
+					map.put("errMsg", reultMap.get("errMsg"));
+					map.put("supplierGoodInfoList",reultMap.get("supplierGoodInfoList"));
+				}
+			}
+		}
+		//页面查询
+		// 类型 1为提供  2为查看
+		String type =request.getParameter("type");
+		supplierOffStandRequire.setSupId(supId);
+		List<SupplierOffStandRequire> supplierOffStandRequireList = supplierOffStandRequireService.querySupplierOffStandRequiret(supplierOffStandRequire);
+		//图片信息
+		for (int i = 0; i < supplierOffStandRequireList.size(); i++) {
+			SupplierOffStandRequire item = supplierOffStandRequireList.get(i);
+			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(item.getId(),"8");
+			supplierOffStandRequireList.get(i).setImageList(images);
+		}
+		supplierOffStandRequireList.get(0).setFilePath(filePath);
+		supplierOffStandRequireList.get(0).setQuotePath(supplierOffStandRequire.getQuotePath());
+		supplierOffStandRequireList.get(0).setFileName(supplierOffStandRequire.getFileName());
+		if (supplierOffStandRequire.getQuotePath() !=null && !"".equals(supplierOffStandRequire.getQuotePath())) {
+			String postfix = supplierOffStandRequireList.get(0).getQuotePath().substring(supplierOffStandRequireList.get(0).getQuotePath().lastIndexOf("."),supplierOffStandRequireList.get(0).getQuotePath().length());
+			if (postfix.toUpperCase().equals(".BMP") ||
+					postfix.toUpperCase().equals(".JPG") ||
+					postfix.toUpperCase().equals(".JPEG") ||
+					postfix.toUpperCase().equals(".PNG") ||
+					postfix.toUpperCase().equals(".GIF") ) {
+				map.put("isPicture", "0");
+			}else {
+				map.put("isPicture", "1");
+			}
+		}
+		
+		map.put("supplierOffStandRequire", supplierOffStandRequireList.get(0));
+		map.put("type", type);
+		return "order/supplier_nonstandard_check";
+	}
+	/**
+	 * 修改状态
+	 * @param map
+	 * @param id
+	 * @param httpSession
+	 * @param request
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("/updateStatus")
+	@ResponseBody
+	public Object updateStatus(@RequestParam("id") String id,
+			@RequestParam("filePath") String filePath,
+			@RequestParam("sendFilePath") String sendFilePath,
+			@RequestParam("fileName") String fileName,
+			HttpSession httpSession,HttpServletRequest request) throws Exception {
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		InputStream is = new FileInputStream(filePath);
+		String excelVersion = "";
+		String postfix = filePath.substring(filePath.lastIndexOf("."),filePath.length());
+		if (".xlsx".equals(postfix)) {
+			excelVersion="2007";
+		}else if (".xls".equals(postfix)) {
+			excelVersion="2003";
+		}
+		List<List<String>> supplierGoodsInfos= ReadExcel.readExcelFile(is,excelVersion);
+		supplierOffStandRequireService.insertQuote(supplierGoodsInfos,id, sendFilePath,supId,request.getContextPath()+"/static/img/img-profession.jpg",fileName);
+		//發送短信
+		SupplierOffStandRequire supplierOffStandRequire = supplierOffStandRequireService.querySendOffPer(id);
+		String smsContent = supplierOffStandRequire.getUsernamecn()+
+		",您好 需求单"+"（"+supplierOffStandRequire.getGoodsDescNew()+"）"+ "已提供报价，请注意查看"+"("+httpSession.getAttribute(SessionKeys.LOGIN_SUP_USER).toString()+")。";
+		if (supplierOffStandRequire.getContactNum() == null) {
+			return "1";
+		}
+		ShortMessageUtils.sendSMS(new String[]{supplierOffStandRequire.getContactNum()}, smsContent);
+		//		Map<String, String> reultMap = supplierGoodsInfoService.uploadData(supplierGoodsInfos,supId,request.getContextPath()+"/static/img/img-profession.jpg");
+//		String goodsNames=reultMap.get("goodsNames");
+//		String goodsModels=reultMap.get("goodsModels");
+//		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService.querySupplierGoodsIds(goodsNames, goodsModels, supId);
+//		String goodsIds = "";
+//		for (int i = 0; i < supplierGoodsInfoList.size(); i++) {
+//			goodsIds = goodsIds + "," + supplierGoodsInfoList.get(i).getSupGoodsId();
+//		}
+//		goodsIds =goodsIds.substring(1,goodsIds.length());
+//		sendFilePath = ","+supId+":"+sendFilePath;
+//		supplierOffStandRequireService.updateStatus(id, goodsIds,supId,sendFilePath);
+		return "1";
+	}
+	/**
+	 * 合同上传
+	 * @param map
+	 * @param httpSession
+	 * @param supplierGoodsInfo
+	 * @param uploadFiles
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("/uploadContract")
+	public Object uploadContract(Map<String, Object> map,HttpSession httpSession,HttpServletRequest request,
+			@ModelAttribute("SupplierOffStandRequire") SupplierOffStandRequire supplierOffStandRequire,
+			 @RequestParam("uploadFileContract") MultipartFile uploadFiles)
+			throws Exception {
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		String fileName = uploadFiles.getOriginalFilename();
+		String oldFileName = uploadFiles.getOriginalFilename();
+		String postfix = fileName.substring(fileName.lastIndexOf("."),fileName.length());
+		fileName = String.valueOf(System.currentTimeMillis()) + postfix.toLowerCase();
+		// 上传地址
+		String rootPath = ConfigHolder.getInstance().getConfig("supplier_contract");
+		//新增图片地址
+//		String newFileName = String.valueOf(System.currentTimeMillis()) + postfix;
+		String savePath = request.getSession().getServletContext().getRealPath(ConfigHolder.getInstance().getConfig("supplier_contract"));
+		String file = String.valueOf(System.currentTimeMillis());
+		savePath = savePath + "/"+file;
+		saveFile(savePath, fileName, uploadFiles);
+		//页面查询
+		// 类型 1为提供  2为查看
+		String type =request.getParameter("type");
+		supplierOffStandRequire.setSupId(supId);
+		List<SupplierOffStandRequire> supplierOffStandRequireList = supplierOffStandRequireService.querySupplierOffStandRequiret(supplierOffStandRequire);
+		//图片信息
+		for (int i = 0; i < supplierOffStandRequireList.size(); i++) {
+			SupplierOffStandRequire item = supplierOffStandRequireList.get(i);
+			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(item.getId(),"8");
+			supplierOffStandRequireList.get(i).setImageList(images);
+		}
+		//商品回显
+		String filePath = supplierOffStandRequire.getFilePath();
+		if (!(filePath == null) && !"".equals(filePath)) {
+			InputStream is = new FileInputStream(filePath);
+			String postfix1 = filePath.substring(filePath.lastIndexOf("."),filePath.length());
+			String excelVersion = "";
+			if (".xlsx".equals(postfix1)) {
+				excelVersion="2007";
+			}else if (".xls".equals(postfix1)) {
+				excelVersion="2003";
+			}
+			List<List<String>> supplierGoodsInfos= ReadExcel.readExcelFile(is,excelVersion);
+			Map<String, Object> reultMap = supplierOffStandRequireService.uploadData(supplierGoodsInfos,request.getContextPath()+"/static/img/img-profession.jpg");
+			map.put("ok", "3");
+			map.put("msg", "上传成功！");
+			map.put("count", reultMap.get("count"));
+			map.put("sussCount", reultMap.get("sussCount"));
+			map.put("errCount", reultMap.get("errCount"));
+			map.put("errMsg", reultMap.get("errMsg"));
+			map.put("supplierGoodInfoList",reultMap.get("supplierGoodInfoList"));
+			supplierOffStandRequireList.get(0).setFilePath(filePath);
+		}else {
+			map.put("ok", "4");
+		}
+		supplierOffStandRequire.setSupId(supId);
+		supplierOffStandRequireList.get(0).setQuotePath(rootPath +"/"+file+  "/" + fileName);
+		supplierOffStandRequireList.get(0).setFileName(oldFileName);
+		if (postfix.toUpperCase().equals(".BMP") ||
+				postfix.toUpperCase().equals(".JPG") ||
+				postfix.toUpperCase().equals(".JPEG") ||
+				postfix.toUpperCase().equals(".PNG") ||
+				postfix.toUpperCase().equals(".GIF") ) {
+			map.put("isPicture", "0");
+		}else {
+			map.put("isPicture", "1");
+		}
+		map.put("supplierOffStandRequire", supplierOffStandRequireList.get(0));
+		map.put("type", type);
+		return "order/supplier_nonstandard_check";
+	}
+	 /**
+     * 
+     * 功能描述   保存图片
+     * 
+     * @author ：xiaoyu 创建日期 ：2014年2月12日 下午7:37:45
+     * 
+     * @param newFileName
+     *            上传照片文件名
+     * @param filedata
+     *           文件数据
+     * 
+     *            修改历史 ：(修改人，修改时间，修改原因/内容)
+     */
+    private void saveFile(String saveFilePath ,String newFileName, MultipartFile filedata) {
+        // TODO Auto-generated method stub
+        // 根据配置文件获取服务器图片存放路径
+
+        /* 构建文件目录 */
+        File fileDir = new File(saveFilePath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(saveFilePath +File.separator+ newFileName);
+            // 写入文件
+            out.write(filedata.getBytes());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}

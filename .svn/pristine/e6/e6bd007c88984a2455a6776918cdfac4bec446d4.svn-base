@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>登录|中航采购网</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<link href="${pageContext.request.contextPath}/static/css/login.css" rel="stylesheet">
+<script type="text/javascript">
+$(function () {
+	$("#login_btn").click(function () {
+		var name = $("#f_name").val();
+		var pass = $("#f_pass").val();
+		
+		if (name == '') {
+			alert("请输入用户名");
+			return;
+		}
+		
+		if (pass == '') {
+			alert("请输入密码");
+			return;
+		}
+		
+		$("#login_form").submit();
+	});
+
+	<c:if test="${error != null}">
+	alert("${error}");
+	</c:if>
+});
+
+
+function name_key_down(event) {
+	if (event.keyCode == 13) {
+		$("#f_pass").focus();
+	}
+}
+function pass_key_down(event) {
+	if (event.keyCode == 13) {
+		$("#login_btn").trigger("click");
+	}
+}
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_login">
+    <div class="inner">
+      <h1>
+        <img src="${pageContext.request.contextPath}/static/img/index_top/img-logo.png" alt="中航招标网" style="cursor:pointer;" onclick="window.location.href='${pageContext.request.contextPath}/';"/>
+      </h1>
+    </div>
+  </div>
+  <div id="contents">
+    <div class="inner clearfix">
+      <div class="img_left"><img src="${pageContext.request.contextPath}/static/img/login/bg-login.png" /></div>
+      <div class="login_box">
+        <h2><img src="${pageContext.request.contextPath}/static/img/login/title-login_gly.png" alt="用户登录" /></h2>
+        <div class="login_inner">
+          <div class="inner_bottom">
+			<form action="${pageContext.request.contextPath}/supervise/login/submit" method="post" id="login_form">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-user"></i></span> <input name="f_name" id="f_name" type="text" class="form-control" onkeydown="name_key_down(event)">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-lock" style="margin-left:2px;"></i></span> <input name="f_pass" id="f_pass" type="password" class="form-control" onkeydown="pass_key_down(event)">
+				</div>
+                <div class="forget clearfix"><p><a href="${pageContext.request.contextPath}/market/register/findPassword?userType=3">忘记密码？</a><a class="register" href="${pageContext.request.contextPath}/market/register">立即注册</a></p></div>
+				<div class="btn_area">
+					<button type="button" class="btn btn_login" id="login_btn">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+				</div>
+			</form>
+		</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

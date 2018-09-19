@@ -1,0 +1,316 @@
+package com.avic.management.controllers;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.AuditImageInfo;
+import com.avic.management.models.Cart;
+import com.avic.management.models.OffStandardRequire;
+import com.avic.management.models.SpecialGoodsBean;
+import com.avic.management.models.SupGoods;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.CartService;
+import com.avic.management.services.ImageInfoService;
+import com.avic.management.services.OffStandardRequireService;
+import com.avic.management.services.SpecialGoodsService;
+import com.avic.management.services.SupGoodsService;
+import com.avic.management.services.SupInfoService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/specialGoods")
+@Transactional
+public class SpecialGoodsController {
+    protected static final Log logger = LogFactory.getLog(SpecialGoodsController.class);
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    SpecialGoodsService specialGoodsService;
+    @Autowired
+    SupInfoService supInfoService;
+    @Autowired
+    OffStandardRequireService offStandardRequireService;
+    @Autowired
+    CartService cartService; 
+    @Autowired
+    SupGoodsService supGoodsService;
+    @Autowired
+    ImageInfoService imageInfoService;
+    
+    @RequestMapping("")
+    public String index(HttpSession httpSession,Map<String, Object> map) {
+        logger.info("非标商品管理");
+        User user = null;
+        String isShowBtn1 = "0";
+        try {
+            user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+            SpecialGoodsBean sgBean = new SpecialGoodsBean();
+            sgBean.setCompany_id(user.getCompanyId());
+            int supCount = specialGoodsService.getRelationShipSupCount(sgBean);
+            if(supCount>0){
+            	isShowBtn1 = "1";
+            }
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        map.put("isShowBtn1", isShowBtn1);
+        return "profession_special_goods";
+    }
+    
+    @RequestMapping("/supSelect")
+    public String supSelectDoInit(HttpServletRequest request) {
+        logger.info("非标商品管理-选择供应商跳转");
+        String sup_type = request.getParameter("o");//1:合作供应商;2:平台其他供应商; 
+        request.setAttribute("sup_type",sup_type);
+        return "management_sup_select";
+    }
+    
+    @RequestMapping("/supSelectData")
+    @ResponseBody
+    public Object supSelectDoInitData(HttpServletRequest request,HttpSession httpSession,
+    		@RequestParam("sup_name")String sup_name) {
+    	logger.info("非标商品管理-选择供应商获取列表");
+    	
+    	User user = null;
+        try {
+            user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        
+        String sup_type = request.getParameter("o");//1:合作供应商;2:平台其他供应商;
+    	
+    	SpecialGoodsBean sgBean = new SpecialGoodsBean();
+        sgBean.setSup_type(sup_type);
+        sgBean.setCompany_id(user.getCompanyId());
+        sgBean.setSup_name(sup_name);
+    	
+//      获取供应商列表
+    	List<SpecialGoodsBean> supList = specialGoodsService.supSelectDoInitData(sgBean);
+    	if (supList == null) {
+    		throw new PageNotFoundException();
+    	}
+    	
+    	return supList;
+    }
+    
+    @RequestMapping(value = "/doSave", method ={RequestMethod.POST})
+    @ResponseBody
+    public Object doSave(HttpSession httpSession,
+    		@RequestParam("goods_desc_new")String goods_desc_new,
+    		@RequestParam("sup_id")String sup_id,
+    		@RequestParam("imgCount")String imgCount,
+    		@RequestParam("imgPaths")String imgPaths)
+            throws Exception{
+    	User user = null;
+    	try {
+			user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        
+        String user_id = user.getUserId();
+    	String result = "ok";
+    	Map<String, String> map = new HashMap<String, String>();
+    	Map<String, String> paramMap = new HashMap<String, String>();
+    	paramMap.put("goods_desc_new", java.net.URLDecoder.decode(goods_desc_new , "UTF-8"));
+    	paramMap.put("sup_id", sup_id);
+    	paramMap.put("user_id", user_id);
+    	paramMap.put("imgCount", imgCount);
+    	paramMap.put("imgPaths", imgPaths);
+        result = specialGoodsService.doSaveInTables(paramMap);
+        map.put("result", result);
+        return map;
+    }
+    
+    @RequestMapping("/offStandardRequirePage")
+    public String queryOffStandardRequire(HttpServletRequest req,@ModelAttribute("offStandardRequire")OffStandardRequire offStandardRequire,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("非标商品列表");
+        User user = null;
+        try {
+            user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        
+        String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        //查询供应商列表
+        List<SupInfo> supInfos = new ArrayList<SupInfo>();
+        SupInfo supInfo = new SupInfo();
+        supInfo.setSupType("1");
+        supInfos = supInfoService.querySupInfosBySupType(supInfo);
+        offStandardRequire.setUserID(user.getUserId());
+        //查询数量
+        int total = offStandardRequireService.queryOffStandardRequiresCount(offStandardRequire);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        offStandardRequire.setPage(pageNum);
+        offStandardRequire.setPageSize(PAGE_SIZE);
+        List<OffStandardRequire> offStandardRequires = new ArrayList<OffStandardRequire>();
+        offStandardRequires = offStandardRequireService.queryOffStandardRequires(offStandardRequire);
+        for (OffStandardRequire osr : offStandardRequires) {
+        	//查询商品列表
+        	List<AuditImageInfo> auditImageInfos = new ArrayList<AuditImageInfo>();
+			AuditImageInfo auditImageInfo = new AuditImageInfo();
+			auditImageInfo.setBusinessID(osr.getID());
+			auditImageInfo.setBusinessType("8");
+			auditImageInfos = imageInfoService.queryImages(auditImageInfo);
+			osr.setAuditImageInfos(auditImageInfos);
+			//查询供应商列表
+			String[] supIDS = osr.getSupID().split(",");
+			OffStandardRequire o = new OffStandardRequire();
+			o.setSupIDS(Arrays.asList(supIDS));
+			List<SupInfo> supInfoList = new ArrayList<SupInfo>();
+			supInfoList = offStandardRequireService.querySupInfosBySupIDS(o);
+			osr.setSupInfos(supInfoList);
+		}
+        map.put("supInfos", supInfos);
+        map.put("offStandardRequire", offStandardRequire);
+        map.put("offStandardRequires", offStandardRequires);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","management/specialGoods/offStandardRequirePage?startTime=" + URLEncoder.encode(offStandardRequire.getGoodsDescNew()==null?"":offStandardRequire.getGoodsDescNew(), "GBK") 
+								+ "&endTime=" + URLEncoder.encode(offStandardRequire.getSupID()==null?"":offStandardRequire.getSupID(), "GBK")
+			                    + "&searchOrderId=" + URLEncoder.encode(offStandardRequire.getStatus()==null?"":offStandardRequire.getStatus(), "GBK")+ "&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "management_special";
+    }
+    
+    
+    @RequestMapping("/specialCheck")
+    public String specialCheck(HttpServletRequest req,@RequestParam("goodsID")String goodsID,@RequestParam("quotePath")String quotePath,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("非标商品列表");
+        User user = null;
+        try {
+            user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        String[] gIDs = goodsID.split(",");
+        List<String> goodIDs = new ArrayList<String>();
+        goodIDs = Arrays.asList(gIDs);
+        SupGoods supGoods = new SupGoods();
+        supGoods.setGoodsIDS(goodIDs);
+        //查询商品
+        Map<String, String> supQuotePaths = new HashMap<String, String>();
+        String[] quotePaths = quotePath.split(",");
+        for (int i = 0; i < quotePaths.length; i++) {
+			String[] keyAndPath = quotePaths[i].split(":");
+			supQuotePaths.put(keyAndPath[0], keyAndPath[1]);
+		}
+        List<SupGoods> supGoodsList = new ArrayList<SupGoods>();
+        supGoodsList = supGoodsService.queryGoodsList(supGoods);
+        List<SupGoods> supList = new ArrayList<SupGoods>();
+        supList = supGoodsService.queryGoodsSupList(supGoods);
+        for (SupGoods s : supList) {
+			s.setPath(supQuotePaths.get(s.getSupID()));
+			
+			String fullFileName = supQuotePaths.get(s.getSupID());
+	        int index = fullFileName.lastIndexOf("/");
+	        String fileName = fullFileName.substring(index+1);
+	        s.setFileName(fileName);
+		}
+        map.put("supGoods", supGoodsList);
+        map.put("sups", supList);
+        map.put("supGoodsID", goodsID);
+        return "management_special_check";
+    }
+    
+    
+    
+    @RequestMapping("/addCart")
+    @ResponseBody
+    public Object addCart(HttpServletRequest req,@RequestParam("specialGoodsParams") String specialGoodsParams,HttpSession httpSession) {
+        logger.info("非标准商品添加到购物车");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		String[] specialParams = specialGoodsParams.split("#");
+		for (int i = 0; i < specialParams.length; i++) {
+			String[] params = specialParams[i].split(",");
+			Cart cart = new Cart();
+			cart.setUserID(user.getUserId());
+			cart.setSupID(params[0]);
+			cart.setSupGoodsID(params[1]);
+			cart.setBuyNum(params[2]);
+			int count = cartService.queryCatCount(cart);
+			if(count>0){
+				cartService.updateCart(cart);
+			}else{
+				//添加到购物车
+				cartService.addCart(cart);
+			}
+		}
+		
+		
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("status", "success");
+		return map;
+    }
+    
+    
+    //下载报价单附件
+    @RequestMapping("downloadSpecial")    
+    public ResponseEntity<byte[]> download(@RequestParam("specialPath")String specialPath,HttpServletRequest request) throws IOException {    
+        String path = request.getSession().getServletContext().getRealPath("/")+specialPath;  
+        String downLoadFileName = specialPath.substring(specialPath.lastIndexOf("/")+1);
+        File file=new File(path);  
+        HttpHeaders headers = new HttpHeaders();    
+        String fileName=new String(downLoadFileName.getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题  
+        headers.setContentDispositionFormData("attachment", fileName);   
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);   
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);    
+    }
+}

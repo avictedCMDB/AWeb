@@ -1,0 +1,301 @@
+/*---step---*/
+#step ul li {
+	float: left;
+}
+#step {
+	text-align: center;
+	margin-top: 10px;
+	position: relative;
+}
+#step .line {
+	border-bottom: 6px solid #e1e5ee;
+    height: 1px;
+    left: 257px;
+    position: absolute;
+    top: 20px;
+    z-index: 0;
+    width: 400px;
+}
+#step ul {
+	display: inline-block;
+	z-index: 9999;
+	position: relative;
+}
+#step ul.image_list li {
+	width: 200px;
+	text-align: center;
+}
+
+#step ul.image_list li a {
+	background: url(../img/management/bg_step_new.png) center top no-repeat;
+	display: block;
+}
+#step ul.image_list li a span.text {
+	display: block;
+	font-size: 14px;
+}
+#step ul.image_list li a:hover span.text {
+	color: #666;
+
+}
+#step ul.image_list li a span.num {
+	font-size: 28px;
+	color: #0089d1;
+	margin-bottom: 10px;
+	display: block;
+}
+#step ul.image_list li.selected a {
+	background: url(../img/management/bg_step_on_new.png) center top no-repeat;
+}
+#step ul.image_list li.selected a span.text {
+	color: #0089d1;
+}
+#step ul.image_list li.selected a span.num {
+	color: #fff;
+}
+.section_inner h2 {
+	text-align: left;
+	border: none;
+	border-left: 4px solid #0089d1;
+	line-height: 10px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+.section_inner h2 span {
+	font-size: 14px;
+}
+.section_inner .title {
+	border-bottom: 1px #ccc dashed;
+}
+.section_inner dl {
+	width: 445px;
+	float: left;
+	margin: 0 15px 20px;
+	overflow: hidden;
+}
+.section_inner dl.role {
+	width: 920px;
+}
+.section_inner dl.role dd {
+	width: 790px;
+}
+.section_inner dl.tel_area dd {
+	width: 315px;
+}
+.section_inner dl dt {
+	width: 120px;
+	margin-right: 10px;
+	float: left;
+	line-height: 32px;
+	text-align: right;
+}
+.section_inner dl dd {
+	width: 315px;
+	float: left;
+	position: relative;
+}
+.section_inner dl dd span.remind {
+	position: absolute;
+	bottom: -18px;
+	left: 0;
+	font-size: 12px;
+}
+.section_inner dl dd span.remind_tel {
+	position: absolute;
+	bottom: 8px;
+	right: -340px;
+	font-size: 12px;
+}
+.red {
+	color: #ff4200;
+}
+.input_area {
+	margin-top: 15px;
+}
+.province {
+	width: 150px;
+	margin-right: 10px;
+	display: inline-block;
+}
+.city {
+	width: 150px;
+	display: inline-block;
+}
+input[type="radio"], input[type="checkbox"] {
+	margin-top: 2px;
+}
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+	margin-left: -15px;
+}
+.radio-inline + .radio-inline, .checkbox-inline + .checkbox-inline {
+	margin-left: 0;
+}
+label.checkbox-inline {
+	padding-top: 8px;
+	padding-left: 16px;
+}
+.role_list ul li {
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+.role_list ul li a {
+	display: block;
+	width: 120px;
+	padding: 5px 0;
+	text-align: center;
+	border: 1px solid #0089d1;
+	color: 
+}
+.role_list ul li.active a,
+.role_list ul li a:hover {
+	background: #0089d1;
+	color: #fff;
+	border: 1px solid #0089d1;
+}
+.tel_num  {
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 4px 0 0 4px;
+	padding: 0 10px;
+	border-right: none;
+}
+.tel_num label {
+	font-weight: 100;
+	padding-top: 5px;
+}
+.dropdown-menu {
+	height: 200px;
+	overflow-y:scroll;
+}
+.section_inner input.form-control {
+	padding: 0 5px;
+	height: 32px;
+}
+.btn_area {
+	text-align: center;
+}
+.btn_area button {
+	display: inline-block;
+	height: 32px;
+	margin: 0 5px;
+}
+#matter_section {
+	padding-bottom: 30px;
+}
+/*第二步*/
+.attention02 {
+	background-color: #f4f4f4;
+	padding: 20px;
+	margin-top: 20px;
+}
+.section_step dl {
+	width: 920px;
+}
+.section_step dl dt {
+	width: 150px;
+	margin-right: 15px;
+}
+.section_step dl dd {
+	width: 500px;
+}
+.section_step label.checkbox-inline {
+	padding-top: 8px;
+	padding-right: 10px;
+	padding-left: 0;
+}
+.section_step .form-control {
+	display: inline-block;
+}
+.money_input {
+	width: 100px;
+	display: inline-block;
+}
+.unit {
+	width: 100px;
+	display: inline-block;
+}
+.nothing {
+	width: 120px;
+	display: inline-block;
+	padding-left: 20px;
+}
+.up_button {
+	display: inline-block;
+}
+.up_button a {
+    background: #0089d1;
+	color: #fff;
+	border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    text-decoration: none;
+    text-indent: 0;
+}
+.up_button input {
+	font-size: 100px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.diplay_area {
+	line-height: 32px;
+	display: inline-block;
+}
+.diplay_area span {
+	background: url(../img/cIprocess.png) left top no-repeat;
+	padding-left: 20px;
+}
+.diplay_area a {
+	margin-left: 20px;
+	color: #0089d1;
+}
+.diplay_area a:hover {
+	color: #ff4200;
+}
+.paper {
+	border-bottom: 1px #ccc dashed;
+	margin-bottom: 20px;
+}
+.paper_last {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+.remind_title {
+	text-align: center;
+	margin-top: 100px;
+}
+.remind_title2 {
+	margin-bottom: 30px;
+	margin-top: 50px;
+}
+.remind_title .txt_title {
+	font-size: 20px;
+}
+.remind_title a {
+	color: #0089d1;
+}
+.remind_title a:hover {
+	color: #ff4200;
+}
+.gray {
+	background: #666;
+	border: none;
+	color: #fff;
+	height: 32px;
+	padding: 0 20px;
+	line-height: 32px;
+}
+.blue {
+	padding: 0 20px;
+	height: 32px;
+	line-height: 32px;
+}

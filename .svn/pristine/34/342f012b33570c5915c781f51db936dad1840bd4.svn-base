@@ -1,0 +1,202 @@
+package com.avic.market.controllers;
+
+import java.rmi.RemoteException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.SmsContents;
+import com.avic.common.shortMessage.ShortMessageUtils;
+import com.avic.common.utils.MD5;
+import com.avic.market.models.CompanyInfo;
+import com.avic.market.models.SupInfo;
+import com.avic.market.models.SupUsers;
+import com.avic.market.models.Users;
+import com.avic.market.services.RegisterService;
+
+
+@Controller
+@Transactional
+@RequestMapping("/register")
+public class RegisterController {
+	
+	@Autowired
+	RegisterService registerService;
+	
+    /**
+     * 页面初始化方法
+     * @param map
+     * @return
+     */
+    @RequestMapping("")
+    public String index(Map<String, Object> map,HttpSession httpSession) {
+    	return "register/register";
+    }
+    
+    /**
+     * 页面初始化方法
+     * @param map
+     * @return
+     */
+    @RequestMapping("insert")
+    @ResponseBody
+    public String insert(@RequestParam("insertType") String insertType,
+    		@RequestParam("user") String user,
+    		@RequestParam("password") String password,
+    		@RequestParam("companyName") String companyName,
+    		@RequestParam("companyDetail") String companyDetail,
+    		@RequestParam("name") String name,
+    		@RequestParam("poster") String poster,
+    		@RequestParam("tel") String tel,
+    		@RequestParam("code") String code,
+    		HttpSession httpSession) {
+    	//密码加密
+    	password = MD5.getMessageDigest(password.getBytes());
+    	CompanyInfo companyInfo = new CompanyInfo();
+    	companyInfo.setCompanyDetail(companyDetail);
+    	companyInfo.setCompanyType("1");
+    	companyInfo.setCompanyName(companyName);
+    	companyInfo.setParentCompanyId("system");
+    	companyInfo.setContactEmail(poster);
+    	companyInfo.setContactPerson(name);
+    	companyInfo.setContactIphone(tel);
+    	
+    	//判断手机验证码 
+    	String verificationCode = httpSession.getAttribute("verificationCode").toString();
+    	if (!code.equals(verificationCode)) {
+    		// 验证码错误
+			return "1";
+		}
+    	Date verificationTime = (Date) httpSession.getAttribute("verificationTime");
+    	if ((new Date()).getTime() - verificationTime.getTime() > 60000) {
+    		//验证码已失效
+			return "4";
+		}
+    	//判断企业是否存在
+    	int companyCount = registerService.checkExCompanyInfo(companyInfo);
+    	if (companyCount != 0) {
+    		// 企业已存在
+			return "2";
+		}
+    	// 插入供应商
+    	if ("1".equals(insertType)) {
+    		SupUsers supUsers = new SupUsers();
+    		supUsers.setSupName(user);
+    		//判断用户是否存在
+    		int supCount = registerService.checkExSup(supUsers);
+			if (supCount != 0) {
+				// 用户名已存在
+				return "3";
+			}
+			String companyIndex = registerService.queryRegisterIndex();
+			companyInfo.setId(companyIndex);
+			companyInfo.setCompanyCode(companyIndex);
+			//插入企业
+			registerService.insertCompanyInfo(companyInfo);
+			// 设置供应商
+			String supIndex = registerService.querySupIndex();
+			SupInfo supInfo = new SupInfo();
+			supInfo.setSupId(supIndex);
+			supInfo.setSupCode(supIndex);
+			supInfo.setSupName(companyName);
+			supInfo.setCompanyCode(companyIndex);
+			//插入供应商信息
+			registerService.insertSupInfo(supInfo);
+			//设置供应商账户信息
+			supUsers.setSupPassword(password);
+			supUsers.setSupId(supIndex);
+			supUsers.setSupEnabled("0");
+			supUsers.setContactNum(tel);
+			supUsers.setSupRegName(name);
+			supUsers.setSupRegIphone(tel);
+			supUsers.setSupRegEmail(poster);
+			//插入供应商账户信息
+			registerService.insertSupUser(supUsers);
+    		//插入采购人
+		}else {
+			Users users = new Users();
+			users.setUserName(user);
+    		//判断用户是否存在
+    		int supCount = registerService.checkExUser(users);
+			if (supCount != 0) {
+				// 用户名已存在
+				return "3";
+			}
+			String companyIndex = registerService.queryRegisterIndex();
+			companyInfo.setId(companyIndex);
+			companyInfo.setCompanyCode(companyIndex);
+			//插入企业
+			registerService.insertCompanyInfo(companyInfo);
+			//设置采购人
+			String userIndex = registerService.queryRegisterIndex();
+			users.setPassword(password);
+			users.setEnabled("0");
+			users.setUserId(userIndex);
+			users.setCompanyId(companyIndex);
+			users.setCompanyName(companyName);
+			users.setContactNum(tel);
+			users.setContactPerson(name);
+			users.setEmail(poster);
+			registerService.insertUsers(users);
+		}
+    	
+    	return "0";
+    }
+    /**
+     * 页面初始化方法
+     * @param map
+     * @return
+     * @throws RemoteException 
+     */
+    @RequestMapping("sendVerificationCode")
+    @ResponseBody
+    public String sendVerificationCode(@RequestParam(value="insertType",required=false) String insertType,
+    		@RequestParam(value="user",required=false) String user,
+    		@RequestParam(value="password",required=false) String password,
+    		@RequestParam(value="companyName",required=false) String companyName,
+    		@RequestParam(value="companyDetail",required=false) String companyDetail,
+    		@RequestParam(value="name",required=false) String name,
+    		@RequestParam(value="poster",required=false) String poster,
+    		@RequestParam("tel") String tel,
+    		@RequestParam(value="code",required=false) String code,
+    		HttpSession httpSession) throws RemoteException{
+    	//判断手机是否被注册
+    	CompanyInfo companyInfo = new CompanyInfo();
+    	companyInfo.setContactIphone(tel);
+    	int telCount = registerService.checkIphone(companyInfo);
+    	if (telCount !=0) {
+			return "1";
+		}
+    	//发送手机验证码
+    	String fourRandom = getFourRandom();
+    	String[] contactNums = tel.split(",");
+    	String msg = SmsContents.SMS_VERIFICATION_CODE.replace("{projName}", fourRandom);
+    	ShortMessageUtils.sendSMS(contactNums, msg.toString());
+    	httpSession.setAttribute("verificationCode", fourRandom);
+    	httpSession.setAttribute("verificationTime", new Date());
+    	return "0";
+    }
+    /**
+     * 产生4位随机数(0000-9999)
+     * @return 4位随机数
+     */
+    public String getFourRandom(){
+        Random random = new Random();
+        String fourRandom = random.nextInt(10000) + "";
+        int randLength = fourRandom.length();
+        if(randLength<4){
+          for(int i=1; i<=4-randLength; i++)
+              fourRandom = "0" + fourRandom  ;
+      }
+        return fourRandom;
+    }
+}

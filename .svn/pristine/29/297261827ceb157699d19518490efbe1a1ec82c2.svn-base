@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+#matter_section .search_area dl dt {
+	width: 110px;
+}
+#matter_section .search_area dl dd {
+	width: 320px;
+}
+#matter_section .special_input {
+	width: 125px;
+}
+.search_result table tr.company td {
+	border: none;
+	font-weight: bold;
+	text-align: left;
+}

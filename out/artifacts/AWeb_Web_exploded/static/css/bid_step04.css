@@ -1,0 +1,9 @@
+#matter_section .list_inner {
+	padding-bottom: 30px;
+}
+#step04 .form-group label.title {
+	width: 150px;
+}
+#step04 .form-group.special_group01 .input_area {
+	width: 700px;
+}

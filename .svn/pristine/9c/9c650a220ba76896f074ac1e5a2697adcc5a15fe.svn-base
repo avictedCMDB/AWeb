@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+    	<div id="side_navi">
+
+    		<dl>
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'settle')}">
+    			<dt class="tlt_merchandise">结算管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'settle-effective')}">
+    					<li <c:if test="${param.menu == 'settle-effective'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/settle/effective/list"><span class="fa fa-caret-right"></span>结算管理</a></li>
+    					</c:if>
+    					
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'settle-pending')}">
+                        <li <c:if test="${param.menu == 'settle-pending'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/settle/pending/list"><span class="fa fa-caret-right"></span>待结算管理</a></li>
+                        </c:if>
+                    </ul>
+    			</dd>
+    		</c:if>
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'trade')}">
+    			<dt class="tlt_transaction">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'order')}">
+    					<li <c:if test="${param.menu == 'order'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/order/list"><span class="fa fa-caret-right"></span>订单管理</a></li>
+    					</c:if>
+    					
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'compare')}">
+    					<li <c:if test="${param.menu == 'compare'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/compare"><span class="fa fa-caret-right"></span>商品比对管理</a></li>
+    					</c:if>
+    					    				    
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'suppliser')}">
+    				    <li <c:if test="${param.menu == 'contract'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/contract"><span class="fa fa-caret-right"></span>合同管理</a></li>
+    				    </c:if>
+    				</ul>
+    			</dd>
+    		</c:if>
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'refund-manage')}">
+    			<dt class="tlt_reeturns ">退款管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'refund')}">
+                        <li <c:if test="${param.menu == 'refund'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/refund/list"><span class="fa fa-caret-right"></span>退货退款</a></li>
+                        </c:if>
+    				</ul>
+    			</dd>
+    		</c:if>
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'invoice-manage')}">
+                <dt class="tlt_information">发票管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'invoice')}">
+    				    <li <c:if test="${param.menu == 'invoice'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/invoice/list"><span class="fa fa-caret-right"></span>采购方发票管理</a></li>
+    				    </c:if>
+    				    
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'valueAddedInvoice')}">
+    				    <li <c:if test="${param.menu == 'valueAddedInvoice'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/invoice/valueAddedList"><span class="fa fa-caret-right"></span>增值税发票审核</a></li>
+    				    </c:if>
+    				</ul>
+    			</dd>
+    		</c:if>
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'business-manage')}">
+                <dt class="tlt_information">业务中心<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'brand')}">
+    				    <li <c:if test="${param.menu == 'brand'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/brand"><span class="fa fa-caret-right"></span>品牌推荐</a></li>
+    				    </c:if>
+    				    
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'suppliser')}">
+    				    <li <c:if test="${param.menu == 'suppliser'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/supplierReommend"><span class="fa fa-caret-right"></span>供应商推荐</a></li>
+    				    </c:if>
+    				</ul>
+    			</dd>
+    		</c:if>    		
+    		<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'stat')}">
+    			 <dt class="tlt_information">统计分析<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'supCount')}">
+    				    <li <c:if test="${param.menu == 'supCount'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/count/supIndex"><span class="fa fa-caret-right"></span>供应商统计分析</a></li>
+    				    </c:if>
+    				    
+    					<c:if test="${fn:contains(sessionScope.login_supervise_menu, 'companyCount')}">
+    				    <li <c:if test="${param.menu == 'companyCount'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/count/companyIndex"><span class="fa fa-caret-right"></span>采购单位统计分析</a></li>
+    				    </c:if>
+    				</ul>
+    			</dd>
+    		</c:if>
+    		</dl>
+    		<!--#side_navi-->
+    	</div>

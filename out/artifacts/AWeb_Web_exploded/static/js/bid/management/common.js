@@ -1,0 +1,200 @@
+
+var paging = function (obj, pages, page, callback) {
+	$(obj).empty();
+	if (pages > 0) {
+		var mli = function (html, p) {
+			var li = $("<li>");
+			if (html == page) {
+				li.addClass("active");
+			}
+
+			var link = $("<a>");
+			link.attr("href", "javascript:;");
+			link.html(html);
+			link.attr("data-page", p);
+			link.click(callback);
+			li.append(link);
+			
+			return li;
+		}
+		
+		var ul = $("<ul>");
+		ul.addClass("pagination");
+		if (page > 1) {
+			// <li><a href="${pageContext.request.contextPath}/${fn:escapeXml(fn:replace(pageAction, '%PAGE%', page - 1))}">&laquo;</a></li>
+			
+			ul.append(mli("&laquo;", page - 1));
+		}
+		
+		var min = page - 3;
+		var max = page + 3;
+		if (min < 1) {
+			min = 1;
+		}
+		if (max > pages) {
+			max = pages;
+		}
+		
+		if (min > 1) {
+			ul.append(mli("1", 1));
+		}
+		
+		if (min > 2) {
+			ul.append("<li>...</li>");
+		}
+		
+		for (var i = min; i <= max; i++) {
+			ul.append(mli(i, i));
+		}
+		
+		if (max < pages - 1) {
+			ul.append("<li>...</li>");
+		}
+		
+		if (max < pages) {
+			ul.append(mli(pages, pages));
+		}
+		
+		if (page < pages) {
+			ul.append(mli("&raquo;", page - 0 + 1));
+		}
+		
+		$(obj).append(ul);
+	}
+}
+
+var async = function (url, param, callback, failed, skipCheck) {
+	if (!skipCheck) {
+		if (loading) return;
+		loading = true;
+	}
+	$.ajax({
+		url:url,
+		type:"POST",
+		data:param,
+		dataType:"json",
+		success:function (msg) {
+			if (!skipCheck) {
+			loading = false;
+			}
+			if (msg.hasOwnProperty('status')) {
+				if (msg.status === 0) {
+					if (callback) {
+						callback(msg);
+					}
+				} else {
+					if (failed) {
+						failed(msg);
+					} else {
+						alert(msg.result);
+					}
+				}
+			} else {
+				this.error();
+			}
+		},
+		error:function () {
+			if (!skipCheck) {
+			loading = false;
+			}
+			alert("²Ù×÷Ê§°Ü£¬ÇëÖØÊÔ");
+		}
+	});
+}
+
+var loading = false;
+
+
+$(function () {
+
+	(function($) {
+		  // copy from jquery.js
+		var r20 = /%20/g,
+			rbracket = /\[\]$/,
+			rCRLF = /\r?\n/g,
+			rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
+			rsubmittable = /^(?:input|select|textarea|keygen)/i;
+
+		  $.extend({
+			  param : function( a, traditional ) {
+		    	var prefix,
+				s = [],
+				add = function( key, value ) {
+
+					// If value is a function, invoke it and return its value
+					value = jQuery.isFunction( value ) ? value() : ( value == null ? "" : value );
+					s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value );
+				};
+
+			// Set traditional to true for jQuery <= 1.3.2 behavior.
+			if ( traditional === undefined ) {
+				traditional = jQuery.ajaxSettings && jQuery.ajaxSettings.traditional;
+			}
+
+			// If an array was passed in, assume that it is an array of form elements.
+			if ( jQuery.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
+
+				// Serialize the form elements
+				jQuery.each( a, function() {
+					add( this.name, this.value );
+				} );
+
+			} else {
+
+				// If traditional, encode the "old" way (the way 1.3.2 or older
+				// did it), otherwise encode params recursively.
+				for ( prefix in a ) {
+					buildParams( prefix, a[ prefix ], traditional, add );
+				}
+			}
+
+			// Return the resulting serialization
+			return s.join( "&" ).replace( r20, "+" );
+			  }
+		  });
+
+		/* private method*/
+				
+		function buildParams( prefix, obj, traditional, add ) {
+			var name;
+		
+			if ( jQuery.isArray( obj ) ) {
+		
+				// Serialize array item.
+				jQuery.each( obj, function( i, v ) {
+					if ( traditional || rbracket.test( prefix ) ) {
+		
+						// Treat each array item as a scalar.
+						add( prefix, v );
+		
+					} else {
+		
+						// Item is non-scalar (array or object), encode its numeric index.
+						buildParams(
+							prefix + "[" + ( typeof v === "object" && v != null ? i : "" ) + "]",
+							v,
+							traditional,
+							add
+						);
+					}
+				} );
+		
+			} else if ( !traditional && jQuery.type( obj ) === "object" ) {
+		
+				// Serialize object item.
+				for ( name in obj ) {
+					buildParams( prefix + "." + name, obj[ name ], traditional, add );
+				}
+		
+			} else {
+		
+				// Serialize scalar item.
+				add( prefix, obj );
+			}
+		}
+	})(jQuery);
+});
+
+var __ = function (s) {
+	return s ? s : "";
+}

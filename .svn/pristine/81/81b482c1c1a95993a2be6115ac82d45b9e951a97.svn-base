@@ -1,0 +1,115 @@
+package com.avic.supplier.models;
+
+import com.avic.supplier.utils.BaseModels;
+
+public class SupplierExchange extends BaseModels{
+	private String orderId; // 订单编号
+
+	private String supName; // 供应商名称
+
+	private String addrName; // 采购联系人姓名
+
+	private String addrPhone; // 采购联系人电话
+
+	private String remark; // 备注
+
+	private String supId; // 供应商编号
+
+	private String supGoodsId; // 商品编号
+
+	private String imagePath; // 商品图片
+
+	private String goodsName; // 商品名称
+
+	private String goodsPrice; // 商品价格
+
+	private String buyNum; // 购买数量
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getSupName() {
+		return supName;
+	}
+
+	public void setSupName(String supName) {
+		this.supName = supName;
+	}
+
+	public String getAddrName() {
+		return addrName;
+	}
+
+	public void setAddrName(String addrName) {
+		this.addrName = addrName;
+	}
+
+	public String getAddrPhone() {
+		return addrPhone;
+	}
+
+	public void setAddrPhone(String addrPhone) {
+		this.addrPhone = addrPhone;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getSupId() {
+		return supId;
+	}
+
+	public void setSupId(String supId) {
+		this.supId = supId;
+	}
+
+	public String getSupGoodsId() {
+		return supGoodsId;
+	}
+
+	public void setSupGoodsId(String supGoodsId) {
+		this.supGoodsId = supGoodsId;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getGoodsPrice() {
+		return goodsPrice;
+	}
+
+	public void setGoodsPrice(String goodsPrice) {
+		this.goodsPrice = goodsPrice;
+	}
+
+	public String getBuyNum() {
+		return buyNum;
+	}
+
+	public void setBuyNum(String buyNum) {
+		this.buyNum = buyNum;
+	}
+}

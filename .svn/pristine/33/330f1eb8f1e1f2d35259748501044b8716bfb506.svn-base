@@ -1,0 +1,463 @@
+package com.avic.market.cpi.adapters;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.avic.common.utils.MD5;
+import com.avic.market.cpi.ServiceAdapter;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.market.cpi.exceptions.TokenInvalidException;
+import com.avic.market.models.Goods;
+import com.avic.market.models.GoodsImage;
+import com.avic.market.models.Price;
+import com.avic.market.models.SupArea;
+import com.avic.market.models.SupCategory;
+
+public class ColipuServiceAdapter extends ServiceAdapter {
+    protected static final Log logger = LogFactory.getLog(ColipuServiceAdapter.class);
+
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public void init() {
+        logger.info("晨光科力普接口初始化 ...");
+        super.init();
+        httpHeaders.add(new BasicHeader("Content-Type", "application/json; charset=utf-8"));
+        httpHeaders.add(new BasicHeader("Accept", "application/json"));
+
+    }
+
+    @Override
+    public void fetchToken() throws ServiceExecutionFailedException {
+        logger.info("晨光科力普-获取AccessToken");
+
+        Map<String, String> param = new HashMap<String, String>();
+        String ts = df.format(new Date());
+        param.put("Timestamp", ts);
+        param.put("UserName", supplier.getAuthUser());
+        param.put("Password", supplier.getAuthPass());
+        param.put("Sign", MD5.getMessageDigest((supplier.getAuthUser() + supplier.getAuthPass() + ts + supplier.getAuthPass()).getBytes()));
+
+        Map<String, Object> result;
+        try {
+            result = execute("/api/auth2/access_token", param);
+            supplier.setAccessToken((String) result.get("access_token"));
+            supplier.setAccessExpire(df.parse((String) result.get("expires_at")));
+        } catch (Exception e) {
+            logger.error("晨光科力普-AccessToken获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+
+    }
+
+    @Override
+    public void refreshToken() throws ServiceExecutionFailedException {
+        fetchToken();
+    }
+
+    @Override
+    public List<SupCategory> fetchCategory() throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取分类");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+
+        List<SupCategory> list = new ArrayList<SupCategory>();
+        SupCategory cat = null;
+        Map<String, Object> result;
+        List<Map<String, Object>> cats;
+        try {
+            result = execute("/api/product/get_pools", param);
+            cats = (List<Map<String, Object>>) result.get("result");
+            if (cats == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Map<String, Object> i : cats) {
+                cat = new SupCategory();
+                cat.setSupCatId(Integer.parseInt((String) i.get("id")));
+                //cat.setSupCatName(new String(String.valueOf(i.get("name")).getBytes("GBK"), "GBK"));
+                cat.setSupCatName((String) i.get("name"));
+                cat.setSupId(supplier.getSupId());
+                list.add(cat);
+            }
+            logger.info("晨光科力普-分类获取成功，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-分类获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchCity(int prov) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取城市 [" + prov + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("id", String.valueOf(prov));
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = execute("/api/area/cities", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(2);
+                area.setSupParentArea(prov);
+                list.add(area);
+            }
+            logger.info("晨光科力普-城市获取成功 [" + prov + "]，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-城市获取失败 [" + prov + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchCountry(int city) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取区县 [" + city + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("id", String.valueOf(city));
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = execute("/api/area/getCounty", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(3);
+                area.setSupParentArea(city);
+                list.add(area);
+            }
+            logger.info("晨光科力普-区县获取成功 [" + city + "]，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-区县获取失败 [" + city + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchProvince() throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取省份");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = execute("/api/area/provinces", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(1);
+                area.setSupParentArea(0);
+                list.add(area);
+            }
+            logger.info("晨光科力普-省份获取成功，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-省份获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchTown(int town) throws ServiceExecutionFailedException, TokenInvalidException {
+        // 晨光无四级区域
+        return new ArrayList<SupArea>();
+    }
+
+    @Override
+    public List<String> fetchSku(int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取SKU [" + cat + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("catalog_id", String.valueOf(cat));
+
+        List<String> list;
+
+        Map<String, Object> result;
+
+        try {
+            result = execute("/api/product/skus", param);
+            list = (List<String>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            logger.info("晨光科力普-SKU获取成功，[" + cat + "] 数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-SKU获取失败[" + cat + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public Goods fetchGoods(String sku, int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("晨光科力普-获取商品信息 [" + sku + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("sku", sku);
+
+        Map<String, String> data;
+
+        Map<String, Object> result;
+        
+        Goods goods = null;
+
+        try {
+            result = execute("/api/product/detail", param);
+            data = (Map<String, String>) result.get("result");
+            if (data == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            goods = new Goods();
+            goods.setBrandName(data.get("brand_name"));
+            goods.setGoodsCode(data.get("upc"));
+            goods.setGoodsDesc(data.get("introduction"));
+            goods.setGoodsModel(data.get("model"));
+            goods.setGoodsName(data.get("name"));
+            goods.setGoodsParam(data.get("param"));
+            goods.setGoodsService(data.get("service"));
+            goods.setGoodsStatus(Integer.parseInt(data.get("state")));
+            goods.setGoodsUnit(data.get("unit"));
+            goods.setGoodsUrl(data.get("url"));
+            goods.setGoodsWare(data.get("ware"));
+            goods.setGoodsWeight(data.get("weight"));
+            goods.setImagePath(data.get("image_path"));
+            goods.setProductArea(data.get("product_area"));
+            goods.setSupCatId(cat);
+            goods.setSupGoodsId(sku);
+            goods.setSupId(supplier.getSupId());
+
+            logger.info("晨光科力普-商品信息获取成功，[" + sku + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-商品信息获取失败[" + sku + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return goods;
+    }
+    
+    @Override
+    public Map<String, Price> fetchPrice(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        
+        StringBuffer strBuf = new StringBuffer();
+        for (String i : skus) {
+            strBuf.append(i + ",");
+        }
+        
+        String skuString = strBuf.substring(0, strBuf.length() - 1);
+        logger.info("晨光科力普-获取价格 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("sku", skuString);
+        param.put("area", "0_0_0");
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        Map<String, Price> map = new HashMap<String, Price>();
+        Price price = null;
+        try {
+            result = execute("/api/product/prices", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                price = new Price();
+                price.setAgreePrice((Double)i.get("price"));
+                price.setCountPrice((Double)i.get("price"));
+                price.setSalePrice((Double)i.get("mall_price"));
+                map.put((String)i.get("sku"), price);
+            }
+
+            logger.info("晨光科力普-价格获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-价格获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return map;
+    }
+
+    @Override
+    public List<GoodsImage> fetchGoodsImage(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        
+        StringBuffer strBuf = new StringBuffer();
+        for (String i : skus) {
+            strBuf.append(i + ",");
+        }
+        
+        String skuString = strBuf.substring(0, strBuf.length() - 1);
+        logger.info("晨光科力普-获取商品图片 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("sku", skuString);
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        List<GoodsImage> images = new ArrayList<GoodsImage>();
+        GoodsImage gi = null;
+        String sku = null;
+        List<Map<String, Object>> imageData = null;
+        try {
+            result = execute("/api/product/images", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                sku = (String)i.get("sku");
+                imageData = (List<Map<String, Object>>)i.get("images");
+                
+                if (imageData != null) {
+                    for (Map<String, Object> j : imageData) {
+                        gi = new GoodsImage();
+                        gi.setSupId(supplier.getSupId());
+                        gi.setSupGoodsId(sku);
+                        gi.setImagePath((String)j.get("path"));
+                        gi.setShowOrder((Integer)j.get("order"));
+                        images.add(gi);
+                    }
+                }
+            }
+
+            logger.info("晨光科力普-商品图片获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-商品图片获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return images;
+    }
+    
+    private Map<String, Object> execute(String api, Object param) throws Exception, TokenInvalidException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        String body = null;
+        try {
+            body = mapper.writeValueAsString(param);
+        } catch (Exception e1) {
+            // ignore
+        }
+        HttpUriRequest req = buildRequest(api, new StringEntity(body, "UTF-8"));
+        logger.debug("晨光科力普-接口调用[" + api + "] 参数 : " + body);
+        String content = null;
+        int code = 0;
+        try {
+            response = client.execute(req);
+            code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new Exception("晨光科力普-接口返回HTTP状态异常 [" + code + "]");
+            }
+
+            entity = response.getEntity();
+
+            content = EntityUtils.toString(entity, "GBK");
+
+            Map<String, Object> result = (Map<String, Object>) mapper.readValue(content, Map.class);
+            EntityUtils.consume(entity);
+
+            logger.debug("晨光科力普-接口调用成功 [" + api + "] 返回 : " + content);
+
+            if ("true".equals(String.valueOf(result.get("success"))) || (result.get("result") != null && result.get("result") instanceof Map)) {
+                return result;
+            } else {
+                // 暂时认为返回失败就是失效
+                throw new TokenInvalidException("晨光科力普-接口返回数据为失败 : " + result.get("desc"));
+            }
+
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("晨光科力普-接口调用失败 [" + api + "]", e);
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+}

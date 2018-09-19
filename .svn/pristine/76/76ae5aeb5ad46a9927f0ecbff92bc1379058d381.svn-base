@@ -1,0 +1,25 @@
+$(document).ready(function(){
+	$('#sul > li').click(function(){
+    	$(this).addClass('active').siblings().removeClass('active');
+    	var s_val = $(this).children().html();
+    	if(s_val=='全部'){
+    		$('#order_status').val('99');
+    	}else if(s_val=='待审核'){
+    		$('#order_status').val('1');
+    	}else if(s_val=='待收货'){
+    		$('#order_status').val('3');
+    	}else{
+    		$('#order_status').val('6');
+    	}
+	});
+});
+
+function doInit(){
+	document.getElementById("searchForm").action="/AWeb/management/order";
+	document.getElementById("searchForm").submit();
+}
+
+function getOrderStatus(){
+	$('#order_status').val($('#order_status1').val());
+	$('#sul > li:first').addClass('active').siblings().removeClass('active')
+}

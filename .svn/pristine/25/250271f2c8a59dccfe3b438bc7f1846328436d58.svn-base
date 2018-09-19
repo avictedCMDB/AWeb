@@ -1,0 +1,14 @@
+function search(){
+	var path = $("#path").val();
+	document.getElementById("searchForm").action=path+"/supervise/contract";
+	document.getElementById("searchForm").submit();
+}
+
+function makeClear(){
+	$("#sup_name").val('');
+	$("#order_id").val('');
+	$("#contract_name").val('');
+	$("#begin_date").val('');
+	$("#end_date").val('');
+	$("#order_status1").val(-1);
+}

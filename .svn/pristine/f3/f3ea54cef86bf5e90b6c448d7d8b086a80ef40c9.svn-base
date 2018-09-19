@@ -1,0 +1,381 @@
+package com.avic.supplier.controllers;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.utils.MoneyUtil;
+import com.avic.supplier.models.BidContract;
+import com.avic.supplier.models.ProjSubject;
+import com.avic.supplier.models.ProjSupplier;
+import com.avic.supplier.models.SupplierContract;
+import com.avic.supplier.models.SupplierProject;
+import com.avic.supplier.services.CompanyInfoService;
+import com.avic.supplier.services.SupplierContractService;
+import com.avic.supplier.services.SupplierProjectService;
+import com.avic.supplier.services.SupplierSupUserService;
+
+@Controller
+@RequestMapping("/contract")
+public class SupplierContractController {
+    private static final int PAGE_SIZE = 10;
+    private Log logger = LogFactory.getLog(SupplierContractController.class);
+    
+    @Autowired
+    SupplierProjectService supplierProjectService;
+    
+    @Autowired
+    SupplierContractService supplierContractService;
+    
+    
+    @Autowired
+    SupplierSupUserService supplierSupUserService;
+    
+    @Autowired
+    CompanyInfoService companyInfoService;
+    
+    @RequestMapping("")
+    public String index(Model model,
+            String projId,
+            String projName,
+            String feeStatus,
+            String contractStatus,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            HttpSession session) throws UnsupportedEncodingException {
+        logger.debug("项目管理-合同管理");
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        
+        //page
+        int total = supplierProjectService.selectProjectContractCount(supCode, projId, projName, feeStatus, contractStatus);
+        int pages = (int) Math.ceil((double)total / PAGE_SIZE);
+        //data
+        List<ProjSupplier> data = new ArrayList<ProjSupplier>();
+        if (total > 0) {
+            data = supplierProjectService.selectProjectContract(supCode, projId, projName, feeStatus, contractStatus, page, PAGE_SIZE);
+        }
+        
+        model.addAttribute("pageAction", "supplier/contract?"
+                + "projId=" + (projId == null ? "" : URLEncoder.encode(projId, "GBK")) 
+                + "&projName=" + (projName == null ? "" : URLEncoder.encode(projName, "GBK"))
+                + "&feeStatus=" + (feeStatus == null ? "" : feeStatus)
+                + "&feeStatus=" + (contractStatus == null ? "" : contractStatus)
+                + "&page=%PAGE%");
+        model.addAttribute("projId", projId);
+        model.addAttribute("projName", projName);
+        model.addAttribute("feeStatus", feeStatus);
+        model.addAttribute("contractStatus", contractStatus);
+        model.addAttribute("data", data);
+
+        model.addAttribute("page", page);
+        model.addAttribute("pages", pages);
+        
+        return "project/supplier_contract_list";
+    }
+    
+
+    @RequestMapping("/download_template")
+    public void downloadTemplate(String projId, HttpServletRequest reqeust, HttpServletResponse response) throws UnsupportedEncodingException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("multipart/form-data");
+        SupplierProject p = supplierProjectService.selectProjectByProjId(projId);
+        String fileName = reqeust.getSession().getServletContext().getRealPath("/") + p.getContractTpl();
+        response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode("合同模板." + p.getContractTpl().split("[.]")[1], "UTF-8"));
+        try {
+            File file = new File(fileName);
+            InputStream inputStream = new FileInputStream(file);
+            OutputStream os = response.getOutputStream();
+            byte[] b = new byte[1024];
+            int length;
+            while ((length = inputStream.read(b)) > 0) {
+                os.write(b, 0, length);
+            }
+            inputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @RequestMapping("/upload")
+    public String upload(Model model, String projId, HttpSession session) {
+        logger.debug("项目管理-上传合同");
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        ProjSupplier projSupplier = supplierProjectService.selectProjSupplierBySupCode(projId, supCode);
+        
+        if (projSupplier == null || projSupplier.getProjStatus() != 5 || projSupplier.getBidResult() != 1) {
+            return null;
+        }
+
+        BidContract contract = supplierContractService.selectContract(projId, supCode);
+
+        model.addAttribute("contract", contract);
+        
+        try {
+            model.addAttribute("aparam", new ObjectMapper().readValue(contract.getaParam(), Map.class));
+            if (!StringUtils.isEmpty(contract.getbParam())) {
+                model.addAttribute("bparam", new ObjectMapper().readValue(contract.getbParam(), Map.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<ProjSubject> subs = supplierProjectService.selectProjSubject(projId);
+        
+
+        StringBuffer strbuf = new StringBuffer();
+        for (ProjSubject i : subs) {
+            strbuf.append(i.getSubjectName()).append(",");
+        }
+
+        model.addAttribute("subs", strbuf.substring(0, strbuf.length() - 1));
+        
+        model.addAttribute("sup", projSupplier);
+        model.addAttribute("user", supplierSupUserService.queryUserById(projSupplier.getUserId()));
+        model.addAttribute("comp", companyInfoService.queryCompanyInfoByCode(projSupplier.getSupCode()));
+        
+        model.addAttribute("mtrs", supplierProjectService.queryListByProj(projId));
+        
+
+        model.addAttribute("total", MoneyUtil.digitUppercase(projSupplier.getRealCurrentQuota()));
+
+        
+        return "project/supplier_contract_input";
+    }
+    
+
+    @RequestMapping("/detail")
+    public String detail(Model model, String projId, HttpSession session) {
+        logger.debug("项目管理-浏览合同");
+        
+        viewContract(model, projId, session);
+        return "project/supplier_contract_detail";
+    }
+
+    @RequestMapping("/word")
+    public String word(Model model, String projId, HttpSession session) {
+        logger.debug("项目管理-导出word");
+        viewContract(model, projId, session);
+        
+
+        try {
+            model.addAttribute("word", java.net.URLEncoder.encode("采购合同", "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "project/contract_word";
+    }
+    
+    private void viewContract(Model model, String projId, HttpSession session) {
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        ProjSupplier projSupplier = supplierProjectService.selectProjSupplierBySupCode(projId, supCode);
+        
+        if (projSupplier == null || projSupplier.getBidResult() != 1) {
+            throw new IllegalArgumentException();
+        }
+
+        BidContract contract = supplierContractService.selectContract(projId, supCode);
+
+        model.addAttribute("contract", contract);
+        
+        try {
+            model.addAttribute("aparam", new ObjectMapper().readValue(contract.getaParam(), Map.class));
+            if (!StringUtils.isEmpty(contract.getbParam())) {
+                model.addAttribute("bparam", new ObjectMapper().readValue(contract.getbParam(), Map.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<ProjSubject> subs = supplierProjectService.selectProjSubject(projId);
+        
+
+        StringBuffer strbuf = new StringBuffer();
+        for (ProjSubject i : subs) {
+            strbuf.append(i.getSubjectName()).append(",");
+        }
+
+        model.addAttribute("subs", strbuf.substring(0, strbuf.length() - 1));
+        
+        model.addAttribute("sup", projSupplier);
+        model.addAttribute("user", supplierSupUserService.queryUserById(projSupplier.getUserId()));
+        
+        model.addAttribute("mtrs", supplierProjectService.queryListByProj(projId));
+        
+
+        model.addAttribute("total", MoneyUtil.digitUppercase(projSupplier.getRealCurrentQuota()));
+        
+
+    }
+    
+
+    @RequestMapping("/upload_file")
+    public String uploadFile(@RequestParam(value = "lefile") MultipartFile file, @RequestParam("projId")String projId, HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        
+        if (file.isEmpty()) {
+            map.put("result", "-1");
+            map.put("fail", "请上传文件");
+        } else {
+            String ym = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            String path = "/upload/bid/" + ym + "/";
+            String orgFileName = file.getOriginalFilename();
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+          String ext = "";
+          if (orgFileName.indexOf(".") > 0) {
+              ext = orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
+          }
+          String fileName = uuid + "." + ext;
+
+          File targetFile = new File(req.getSession().getServletContext().getRealPath("/") + path, fileName);
+          if (!targetFile.exists()) {
+              targetFile.mkdirs();
+          }
+
+          try {
+              file.transferTo(targetFile);
+              map.put("result", "1");
+              Map<String, String> data = new HashMap<String, String>();
+              data.put("fileName", orgFileName);
+              data.put("filePath", path + "/" + fileName);
+              data.put("fileId", "HT" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+              data.put("fileVersion", String.valueOf(supplierContractService.selectMaxVersion(projId, supCode) + 1));
+              data.put("uploadTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+              map.put("data", new ObjectMapper().writeValueAsString(data));
+          } catch (Exception e) {
+              map.put("result", "0");
+              map.put("fail", "写入文件失败");
+          }
+//            String ext = "";
+//            if (orgFileName.indexOf(".") > 0) {
+//                ext = orgFileName.substring(orgFileName.lastIndexOf(".") + 1);
+//            }
+//
+//            if (checkTypes(DOCS, ext)) {
+//                String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+//                String fileName = uuid + "." + ext;
+//
+//                File targetFile = new File(req.getSession().getServletContext().getRealPath("/") + path, fileName);
+//                if (!targetFile.exists()) {
+//                    targetFile.mkdirs();
+//                }
+//
+//                try {
+//                    file.transferTo(targetFile);
+//                    map.put("result", "1");
+//                    Map<String, String> data = new HashMap<String, String>();
+//                    data.put("fileName", orgFileName);
+//                    data.put("filePath", path + "/" + fileName);
+//                    data.put("fileId", "HT" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+//                    data.put("fileVersion", String.valueOf(supplierContractService.selectMaxVersion(projId, supCode) + 1));
+//                    data.put("uploadTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//                    map.put("data", new ObjectMapper().writeValueAsString(data));
+//                } catch (Exception e) {
+//                    map.put("result", "0");
+//                    map.put("fail", "写入文件失败");
+//                }
+//            } else {
+//                map.put("result", "0");
+//                map.put("fail", "不支持文件类型【" + ext + "】");
+//            }
+        }
+
+        return "project/upload_callback";
+    }
+
+    private static final String[] DOCS = new String[] { "pdf", "jpg", "jpeg" };
+
+    private boolean checkTypes(String[] types, String ext) {
+        for (String i : types) {
+            if (i.equals(ext)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    
+    @RequestMapping("/upload_submit")
+    @ResponseBody
+    public ResultObject uploadSubmit(BidContract contract, HttpSession session) throws ParseException {
+
+        logger.debug("项目管理-上传合同提交");
+
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        ProjSupplier projSupplier = supplierProjectService.selectProjSupplierBySupCode(contract.getProjId(), supCode);
+        
+        if (projSupplier == null || projSupplier.getProjStatus() != 5 || projSupplier.getBidResult() != 1) {
+            return new ResultObject(ResultObject.FAIL, "非法操作");
+        }
+        
+        if (projSupplier.getContractStatus() != 5 && projSupplier.getContractStatus() != 4) {
+            return new ResultObject(ResultObject.FAIL, "非法操作");
+        }
+        
+        contract.setSupCode(supCode);
+        
+        supplierContractService.updateContract(contract);
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+
+    
+
+    @RequestMapping("/download_contract")
+    public void downloadContract(String projId, String fileId, HttpServletRequest reqeust, HttpServletResponse response, HttpSession session) throws UnsupportedEncodingException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("multipart/form-data");
+        String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+        SupplierContract c = supplierContractService.selectContractFileById(projId, supCode, fileId);
+        String fileName = reqeust.getSession().getServletContext().getRealPath("/") + c.getFilePath();
+        response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(c.getFileName(), "UTF-8"));
+        try {
+            File file = new File(fileName);
+            InputStream inputStream = new FileInputStream(file);
+            OutputStream os = response.getOutputStream();
+            byte[] b = new byte[1024];
+            int length;
+            while ((length = inputStream.read(b)) > 0) {
+                os.write(b, 0, length);
+            }
+            inputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

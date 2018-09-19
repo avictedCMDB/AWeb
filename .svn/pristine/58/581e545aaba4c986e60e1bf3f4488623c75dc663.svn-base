@@ -1,0 +1,167 @@
+package com.avic.supervise.models;
+
+public class Invoice {
+    private String orderId;
+    private double orderAmount;
+    private int goodsNum;
+    private String invoiceCompany;
+    private String invoiceStatus;
+    private String expressName;
+    private String expressCode;
+    private String invoiceNum;
+    private int invoiceFlag;
+    private String invoiceContent;
+    private int invoiceType;
+    private int refunding;
+    private String companyId;
+    private String companyName;
+    private String vatReceiveName;
+    private String vatReceiveTel;
+    private int vatReceiveProv;
+    private int vatReceiveCity;
+    private int vatReceiveDist;
+    private String vatReceiveDetail;
+    private String invoiceReceiveDetail;
+    private String userId;
+    
+    public String getCompanyName() {
+        return companyName;
+    }
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    
+    public String getInvoiceReceiveDetail() {
+        return invoiceReceiveDetail;
+    }
+    
+    public void setInvoiceReceiveDetail(String invoiceReceiveDetail) {
+        this.invoiceReceiveDetail = invoiceReceiveDetail;
+    }
+    
+    public int getVatReceiveProv() {
+        return vatReceiveProv;
+    }
+    public void setVatReceiveProv(int vatReceiveProv) {
+        this.vatReceiveProv = vatReceiveProv;
+    }
+    public int getVatReceiveCity() {
+        return vatReceiveCity;
+    }
+    public void setVatReceiveCity(int vatReceiveCity) {
+        this.vatReceiveCity = vatReceiveCity;
+    }
+    public int getVatReceiveDist() {
+        return vatReceiveDist;
+    }
+    public void setVatReceiveDist(int vatReceiveDist) {
+        this.vatReceiveDist = vatReceiveDist;
+    }
+    public String getVatReceiveName() {
+        return vatReceiveName;
+    }
+    public void setVatReceiveName(String vatReceiveName) {
+        this.vatReceiveName = vatReceiveName;
+    }
+    public String getVatReceiveTel() {
+        return vatReceiveTel;
+    }
+    public void setVatReceiveTel(String vatReceiveTel) {
+        this.vatReceiveTel = vatReceiveTel;
+    }
+    public String getVatReceiveDetail() {
+        return vatReceiveDetail;
+    }
+    public void setVatReceiveDetail(String vatReceiveDetail) {
+        this.vatReceiveDetail = vatReceiveDetail;
+    }
+    public String getCompanyId() {
+        return companyId;
+    }
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+    
+    public int getRefunding() {
+        return refunding;
+    }
+    public void setRefunding(int refunding) {
+        this.refunding = refunding;
+    }
+    
+    public int getInvoiceType() {
+        return invoiceType;
+    }
+    public void setInvoiceType(int invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+    
+    public String getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+    public double getOrderAmount() {
+        return orderAmount;
+    }
+    public void setOrderAmount(double orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+    public int getGoodsNum() {
+        return goodsNum;
+    }
+    public void setGoodsNum(int goodsNum) {
+        this.goodsNum = goodsNum;
+    }
+    public String getInvoiceCompany() {
+        return invoiceCompany;
+    }
+    public void setInvoiceCompany(String invoiceCompany) {
+        this.invoiceCompany = invoiceCompany;
+    }
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
+    public String getInvoiceNum() {
+        return invoiceNum;
+    }
+    public void setInvoiceNum(String invoiceNum) {
+        this.invoiceNum = invoiceNum;
+    }
+    public int getInvoiceFlag() {
+        return invoiceFlag;
+    }
+    public void setInvoiceFlag(int invoiceFlag) {
+        this.invoiceFlag = invoiceFlag;
+    }
+    public String getInvoiceContent() {
+        return invoiceContent;
+    }
+    public void setInvoiceContent(String invoiceContent) {
+        this.invoiceContent = invoiceContent;
+    }
+    public String getExpressName() {
+        return expressName;
+    }
+    public void setExpressName(String expressName) {
+        this.expressName = expressName;
+    }
+    public String getExpressCode() {
+        return expressCode;
+    }
+    public void setExpressCode(String expressCode) {
+        this.expressCode = expressCode;
+    }
+    
+    
+}

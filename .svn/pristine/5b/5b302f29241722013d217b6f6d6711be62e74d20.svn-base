@@ -1,0 +1,276 @@
+package com.avic.market.controllers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.common.exceptions.ServiceException;
+import com.avic.common.utils.Permission;
+import com.avic.market.cpi.CpiService;
+import com.avic.market.models.Address;
+import com.avic.market.models.CartItem;
+import com.avic.market.services.AddressService;
+import com.avic.market.services.CartService;
+import com.avic.market.services.GoodsService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+    protected static final Log logger = LogFactory.getLog(CartController.class);
+    
+    @Autowired
+    CartService cartService;
+    
+    @Autowired
+    AddressService addressService;
+    
+    @Autowired
+    CpiService cpiService;
+    
+    @Autowired
+    GoodsService goodsService;
+    
+    
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResultObject add(HttpServletRequest req, HttpSession session) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        // 数量
+        String num = req.getParameter("num");
+        logger.info("添加购物车Controller-sid["+sid+"], gid["+gid+"], num["+num+"]");
+        
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid) || !StringUtils.isNumeric(num)) {
+            logger.error("添加购物车Controller-参数无效-sid["+sid+"], gid["+gid+"], num["+num+"]");
+            return new ResultObject(ResultObject.FAIL, "参数无效");
+        }
+        
+        /*
+        if (!cartService.checkGoodsCompare(user.getUserId(), Integer.parseInt(sid), gid)) {
+            return new ResultObject(ResultObject.FAIL, "商品未对比，请先进行对比再加入购物车。");
+        }
+        */
+        
+        CartItem item = new CartItem();
+        item.setBuyNum(Integer.parseInt(num));
+        item.setSupGoodsId(gid);
+        item.setSupId(Integer.parseInt(sid));
+        item.setUserId(user.getUserId());
+        
+        try {
+            cartService.addToCart(item);
+            int cartNum = cartService.countGoodsNum(user.getUserId());
+            session.setAttribute(SessionKeys.CART_NUM, cartNum);
+            return new ResultObject(ResultObject.OK, cartNum);
+        } catch (ServiceException e) {
+            return new ResultObject(ResultObject.FAIL, "添加购物车失败");
+        }
+    }
+    
+    @RequestMapping("list")
+    public String list(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        logger.info("购物车列表");
+        
+        List<CartItem> list = cartService.getCartGoodsList(user.getUserId());
+        
+        if (list != null && list.size() > 0) {
+            // <supId, skus>
+            Map<Integer, List<String>> supSku = new HashMap<Integer, List<String>>();
+            for (CartItem i : list) {
+                if (i.getSupType() == 1) {
+                    continue;
+                }
+                List<String> skus = supSku.get(i.getSupId());
+                
+                if (skus == null) {
+                    skus = new ArrayList<String>();
+                    supSku.put(i.getSupId(), skus);
+                }
+                
+                skus.add(i.getSupGoodsId());
+            }
+
+            logger.info("购物车列表-获取库存");
+            Map<String, Integer> stocks = new HashMap<String, Integer>();
+            for (Entry<Integer, List<String>> i : supSku.entrySet()) {
+                Address addr = addressService.getDefaultAddress(user.getUserId(), i.getKey());
+                List<String> area = null;
+                if (addr != null) {
+                    area = new ArrayList<String>();
+                    area.add(addr.getAreaLevelOne());
+                    area.add(addr.getAreaLevelTwo());
+                    area.add(addr.getAreaLevelThree());
+                    if (!StringUtils.isEmpty(addr.getAreaLevelFour())) {
+                        area.add(addr.getAreaLevelFour());
+                    }
+                }
+                try {
+                    Map<String, Integer> s = cpiService.getGoodsStock(i.getKey(), i.getValue(), null, area);
+                    for (Entry<String, Integer> j : s.entrySet()) {
+                        stocks.put(i.getKey() + "#" + j.getKey(), j.getValue());
+                    }
+                } catch (Exception e) {
+                    logger.info("购物车列表-获取库存失败,供应商["+i.getKey()+"]", e);
+                }
+            }
+            
+            for (CartItem i : list) {
+                if (i.getSupType() == 1) {
+                    double ep = goodsService.getEnquiryPrice(user.getUserId(), String.valueOf(i.getSupId()), i.getSupGoodsId());
+                    if (ep > 0) {
+                        i.setAgreePrice(ep);
+                    }
+                    i.setStock(99999);
+                    continue;
+                }
+                Integer ii = stocks.get(i.getSupId() + "#" + i.getSupGoodsId());
+                i.setStock(ii == null ? 0 : ii);
+            }
+        }
+        
+        map.put("list", list);
+        
+        return "order/cart";
+    }
+
+
+    @RequestMapping("clear")
+    public String clear(HttpSession session, Map<String, Object> map) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        logger.info("清空购物车");
+        
+        cartService.clearCart(user.getUserId());
+        
+        session.setAttribute(SessionKeys.CART_NUM, 0);
+
+        return "redirect:/market/cart/list";
+    }
+
+
+    @RequestMapping("del")
+    @ResponseBody
+    public ResultObject del(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        // 编号：sid#gid^sid#gid ...
+        String ids = req.getParameter("ids");
+        logger.info("删除购物车Controller-ids["+ids+"]");
+        
+        if (StringUtils.isEmpty(ids)) {
+            logger.error("删除购物车Controller-参数无效-ids["+ids+"]");
+            return new ResultObject(ResultObject.FAIL, "参数无效");
+        }
+
+        String[] sep = ids.split("\\^");
+        
+        List<CartItem> items = new ArrayList<CartItem>();
+        for (String s : sep) {
+            CartItem i = new CartItem();
+            String[] seg = s.split("#", 2);
+            if (seg.length != 2 || !StringUtils.isNumeric(seg[0])) {
+                logger.error("删除购物车Controller-参数无效-ids["+ids+"]");
+                return new ResultObject(ResultObject.FAIL, "参数无效");
+            }
+            
+            i.setSupId(Integer.parseInt(seg[0]));
+            i.setSupGoodsId(seg[1]);
+            i.setUserId(user.getUserId());
+            items.add(i);
+        }
+        
+        cartService.deleteCartGoods(items);
+
+        int cartNum = cartService.countGoodsNum(user.getUserId());
+        session.setAttribute(SessionKeys.CART_NUM, cartNum);
+        return new ResultObject(ResultObject.OK, cartNum);
+    }
+    
+
+    @RequestMapping("num")
+    @ResponseBody
+    public ResultObject num(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        // 数量
+        String num = req.getParameter("num");
+        // 数量总数
+        String all = req.getParameter("all");
+        logger.info("更新购物车商品数量Controller-sid["+sid+"], gid["+gid+"], num["+num+"], all["+all+"]");
+        
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid) || !StringUtils.isNumeric(num) || !StringUtils.isNumeric(all)) {
+            logger.error("更新购物车商品数量Controller-参数无效-sid["+sid+"], gid["+gid+"], num["+num+"]");
+            return new ResultObject(ResultObject.FAIL, "参数无效");
+        }
+
+        CartItem item = new CartItem();
+        item.setBuyNum(Integer.parseInt(num));
+        item.setSupGoodsId(gid);
+        item.setSupId(Integer.parseInt(sid));
+        item.setUserId(user.getUserId());
+        
+        try {
+            cartService.updateCartNum(item);
+            //int cartNum = cartService.countGoodsNum(user.getUserId());
+            session.setAttribute(SessionKeys.CART_NUM, Integer.parseInt(all));
+            return new ResultObject(ResultObject.OK, "");
+        } catch (ServiceException e) {
+            return new ResultObject(ResultObject.FAIL, "更新购物车商品失败");
+        }
+        
+    }
+    
+
+    @RequestMapping("/store")
+    public String store(HttpServletRequest req, HttpSession session) {
+        User user = Permission.check(session, UserRole.BUY, UserRole.CLIENT);
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        // 对比编号
+        String cid = req.getParameter("compareID");
+        logger.info("对比后添加购物车Controller-sid["+sid+"], gid["+gid+"], cid["+cid+"]");
+        
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid)) {
+            logger.error("对比后添加购物车Controller-参数无效-sid["+sid+"], gid["+gid+"], cid["+cid+"]");
+            throw new PageNotFoundException();
+        }
+        
+        CartItem item = new CartItem();
+        item.setBuyNum(1);
+        item.setSupGoodsId(gid);
+        item.setSupId(Integer.parseInt(sid));
+        item.setUserId(user.getUserId());
+        item.setCompareId(cid);
+        
+        cartService.addToCart(item);
+        int cartNum = cartService.countGoodsNum(user.getUserId());
+        session.setAttribute(SessionKeys.CART_NUM, cartNum);
+        session.removeAttribute(SessionKeys.MARKET_COMPARE);
+        return "redirect:/market/cart/list";
+    }
+}

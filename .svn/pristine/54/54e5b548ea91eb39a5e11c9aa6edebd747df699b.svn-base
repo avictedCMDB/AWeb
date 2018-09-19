@@ -1,0 +1,128 @@
+$(document).ready(function(){
+	//全选事件
+	$('#allchecked').click(function(){
+		var allcheck = $("#allchecked").is(':checked');
+		$('input[name="subCheckbox"]').prop('checked',allcheck);
+		getTotalText();
+	});
+});
+
+function gotoSelectGoodsPage(path,order_id){
+	var url = path+'/management/orderExchange/orderSelect?o='+order_id;
+	var result = window.showModalDialog(url,window,'dialogWidth:1200px;dialogHeight:600px;status:no;');
+
+	if(result!=null && result!='' && result!=undefined){
+		var url=path+"/management/orderRefound/orderSelectMain?order_id="+$('#order_id').val()+"&sup_goods_id="+result;
+        $.getJSON(url,function (dataJson) {
+            var strHtml = getSelectedGoodsHtml(dataJson,path);
+            $("tr[id^='tr_']").each(function(){
+            	this.remove();
+			});
+			$('#btn_tr').after(strHtml);
+			
+			$('#allchecked').click();
+        });
+	}
+}
+
+function getSelectedGoodsHtml(dataJson,path){
+	var strArr = new Array();
+	if(dataJson!=null && dataJson!="" && dataJson !=undefined){
+		$(dataJson).each(function () {
+			var goodsDetailUrl = path+"/market/goods/show?sid="+this.sup_id+"&gid="+this.sup_goods_id;
+			strArr.push("<tr id='tr_"+this.sup_goods_id+"'>");
+				strArr.push("<td class='left_line'><input type='checkbox' name='subCheckbox' onclick='getTotalText()' value='"+this.sup_goods_id+"'></td>");
+				strArr.push("<td width='77'><p class='img_pro'><a href='javascript:void(0)' onclick=\"openWindow('"+goodsDetailUrl+"')\"><img style='height: 55px;width: 55px;' src='"+this.image_path+"'/></a></p></td>");
+				strArr.push("<td class='link_area'><a href='javascript:void(0)' onclick=\"openWindow('"+goodsDetailUrl+"')\">"+this.goods_name+"</a></td>");
+				strArr.push("<td>"+this.buy_num_show+"</td>");
+				strArr.push("<td id='totalNum_"+this.sup_goods_id+"'>"+this.buy_num+"</td>");
+				strArr.push("<td id='singlePrice_"+this.sup_goods_id+"' class='price'>"+this.goods_price+"</td>");
+				strArr.push("<td>");
+					strArr.push("<div class='input-group input-group-num'>");
+					strArr.push("<input id='num_"+this.sup_goods_id+"' class='form-control' type='text' max='10' min='1' value='0' onchange=\"changeNum('"+this.sup_goods_id+"')\">");
+					strArr.push("</div>");
+				strArr.push("</td>");
+				strArr.push("<td id='price_"+this.sup_goods_id+"' class='price'>0</td>");
+				strArr.push("<td><input id='reason_"+this.sup_goods_id+"' maxlength='256' class='form-control' type='text'></td>");
+				strArr.push("<td class='right_line'>");
+					strArr.push("<a href='javascript:void(0);' onclick=\"removeGoods('"+this.sup_goods_id+"');\">删除</a>");
+				strArr.push("</td>");
+			strArr.push("</tr>");
+	    });
+	    return strArr.join("");
+    }else{
+    	return "";
+    }
+}
+
+function changeNum(sup_goods_id){
+	var num = $("#num_"+sup_goods_id).val();
+	if(num==null || num=="" || num==undefined || num<0){
+		$("#num_"+sup_goods_id).val('0');
+	}else{
+		var totalNum = $('#totalNum_'+sup_goods_id).html();
+		if(Number(totalNum)<Number(num)){//超过可换货总数时，值设置为0
+			$("#num_"+sup_goods_id).val('0');
+		}
+		var totalPrice = $('#singlePrice_'+sup_goods_id).html() * $('#num_'+sup_goods_id).val();
+		$('#price_'+sup_goods_id).html(totalPrice);
+	}
+	getTotalText();
+}
+
+function removeGoods(sup_goods_id){
+	$('#tr_'+sup_goods_id).remove();
+	getTotalText();
+}
+
+//计算换货总数量、总金额
+function getTotalText(){
+	var checkObj = $('input:checkbox[name=subCheckbox]:checked');
+	var refound_amount = 0;
+	var refound_price = 0;
+	checkObj.each(function(i){
+		var goodsId = $(this).val();
+		refound_amount += Number($('#num_'+goodsId).val());
+		refound_price += Number($('#price_'+goodsId).html());//浮点型
+	});
+	$('#hhzsl').html(refound_amount);
+	$('#hhzje').html(refound_price);
+}
+
+function doSave(path){
+	var customerArray = new Array();
+	var checkObj = $('input:checkbox[name=subCheckbox]:checked');
+	checkObj.each(function(i){
+		var goodsId = $(this).val();
+		customerArray.push({sup_goods_id: goodsId, buy_num: $("#num_"+goodsId).val(), refound_reason: $("#reason_"+goodsId).val()});
+	});
+	
+	if(checkObj.length==0 || $('#hhzsl').html()=='0'){
+		alert('请先选择退货商品并填写退货数量，再提交。');
+		return;
+	}
+	
+	$.ajax({
+	    url: path+"/management/orderRefound/doSave?remark="+$('#remark').val()
+	    	+"&order_id="+$('#order_id').val()+"&sup_id="+$('#sup_id').val()
+	    	+"&refound_amount="+$('#hhzsl').html()+"&refound_price="+$('#hhzje').html(),
+	    type: "POST",
+	    contentType : 'application/json;charset=gbk', //设置请求头信息
+	    dataType:"json",
+	    data: JSON.stringify(customerArray),    //将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+	    success: function(data){
+	    	if(data.result=='ok'){
+	    		window.location.href=path+"/management/order";
+	    	}else{
+	    		alert('系统忙，请稍后再试。');
+	    	}
+	    },
+	    error: function(res){
+            alert('系统忙，请稍后再试。');
+        }
+	});
+}
+
+function openWindow(path){
+	window.open(path);
+}

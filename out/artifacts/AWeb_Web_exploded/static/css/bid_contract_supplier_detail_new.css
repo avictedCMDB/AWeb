@@ -1,0 +1,150 @@
+@charset "utf-8";
+/* CSS Document */
+#contents .inner h2 {
+	font-size: 18px;
+	line-height: 27px;
+	color: #0091dc;
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 1px solid #dfdfdf;
+	padding-bottom: 10px;
+}
+#header {
+    margin-bottom: 30px;
+    padding-top: 30px;
+}
+#header .logo {
+	margin-top: 10px;
+}
+#matter_section h3 {
+	font-size: 14px;
+	line-height: 25px;
+	font-weight: bold;	
+}
+p.code {
+	text-align: right;
+}
+.summary {
+	margin-top: 10px;
+}
+#matter_section span input {
+	width: 250px;
+	display: inline-block;
+	border: none;
+	box-shadow: none;
+	border-bottom: 1px solid #000;
+	border-radius: 0;
+	padding: 0;
+	padding-left: 5px;
+	height: auto;
+}
+#matter_section span.project input {
+	width: 150px;
+}
+#matter_section span.pay input {
+	width: 600px;
+}
+#matter_section span.pay02 input {
+	width: 560px;
+}
+#matter_section span.name_input input {
+	width: 265px;
+}
+#matter_section span.rate input {
+	width: 50px;
+}
+.summary {
+	background: #f6f4f5;
+    border: 1px solid #dfdfdf;
+    padding: 15px;
+}
+#matter_section .summary p {
+	text-indent: 30px;
+}
+#matter_section .summary p input {
+	background-color: #f6f4f5;
+}
+.add_inner table {
+	width: 100%;
+	margin-top: 10px;
+	
+}
+.list_notice .notice_inner {
+	padding: 5px 0 0 35px;
+}
+#matter_section p {
+	font-size: 14px;
+	line-height: 25px;
+}
+#matter_section p.none-indent {
+	text-indent: 0;
+}
+.attention {
+	margin-bottom: 20px;
+}
+
+
+
+
+#matter_section h3 {
+	font-size: 16px;
+	line-height: 25px;
+	font-weight: bold;	
+}
+
+#matter_section .list_inner {
+	padding: 10px 30px;
+}
+.list_notice {
+	padding: 0 30px 0px;
+	margin-top: 20px;
+}
+.list_notice h3 {
+	font-weight: bold;
+	font-size: 15px;
+	vertical-align: middle;
+	margin: 0;
+	line-height: 25px;
+	color: #0089d1;
+}
+.list_notice h3 img {
+	margin-right: 5px;
+	margin-top: -5px;
+	display: inline-block;
+}
+
+.signo {
+	padding: 30px 60px;
+}
+.signo dl {
+	width: 400px;
+	float: left;
+	margin-right: 10px;
+	font-size: 14px;
+}
+.signo dl dt {
+	font-size: 14px;
+	float: left;
+	width: 150px;
+}
+.signo03 dl dt {
+	width: 50px;
+}
+.signo02 {
+	margin-top: 20px;
+}
+.signo02 dl dd {
+	width: 200px;
+	float: left;
+}
+.signo01{
+	margin-top: 20px;
+}
+#matter_section p {
+	margin-bottom: 0;
+	font-size: 13px;
+	line-height: 28px;
+}
+#matter_section h4 {
+	margin-bottom: 10px;
+}

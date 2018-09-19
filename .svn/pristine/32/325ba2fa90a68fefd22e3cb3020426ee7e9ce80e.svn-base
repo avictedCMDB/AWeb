@@ -1,0 +1,93 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.management.mappers.OrderRefoundMapper;
+import com.avic.management.models.OrderRefoundBean;
+import com.avic.management.services.OrderRefoundService;
+
+@Service
+public class OrderRefoundServiceImpl implements OrderRefoundService {
+    protected static final Log logger = LogFactory.getLog(OrderRefoundServiceImpl.class);
+
+    @Autowired
+    OrderRefoundMapper orderRefoundMapper;
+
+	@Override
+	public OrderRefoundBean getOrderDetail(String order_id) {
+		return orderRefoundMapper.getOrderDetail(order_id);
+	}
+
+	@Override
+	public List<OrderRefoundBean> orderSelectDoInit(OrderRefoundBean oeBean) {
+		return orderRefoundMapper.orderSelectDoInit(oeBean);
+	}
+
+	@Override
+	public List<OrderRefoundBean> orderSelectMainDoInit(OrderRefoundBean oeBean) {
+		return orderRefoundMapper.orderSelectMainDoInit(oeBean);
+	}
+
+	@Override
+	@Transactional
+	public String doSaveInTables(List<OrderRefoundBean> oeBeanList, 
+			Map<String, String> paramMap) throws ServiceException {
+		OrderRefoundBean oeBean = new OrderRefoundBean();
+		String sup_goods_ids = "";
+		String result = "ok";
+		try {
+			//1.更新订单表状态为申请换货
+			oeBean.setOrder_id(paramMap.get("order_id"));
+			orderRefoundMapper.updateT_ORDER(oeBean);
+			//2.插入换货主表
+			String refound_id = (orderRefoundMapper.getRefoundId()).getRefound_id();
+			oeBean.setRefound_id(refound_id);
+			oeBean.setSup_id(paramMap.get("sup_id"));
+			oeBean.setRemark(paramMap.get("remark"));
+			oeBean.setRefound_amount(paramMap.get("refound_amount"));
+			oeBean.setRefound_price(paramMap.get("refound_price"));
+			oeBean.setUser_id(paramMap.get("user_id"));
+			orderRefoundMapper.InsertT_ORDER_REFOUND(oeBean);
+			//3.插入换货商品表记录
+			for(int i=0;i<oeBeanList.size();i++){
+				OrderRefoundBean tmpBean = (OrderRefoundBean) oeBeanList.get(i);
+				tmpBean.setOrder_id(paramMap.get("order_id"));
+				tmpBean.setSup_id(paramMap.get("sup_id"));
+				tmpBean.setRefound_id(refound_id);
+				orderRefoundMapper.InsertT_REFOUND_GOODS(tmpBean);
+				
+				if(i==0){
+					sup_goods_ids = tmpBean.getSup_goods_id();
+				}else{
+					sup_goods_ids += "," + tmpBean.getSup_goods_id();
+				}
+			}
+			//4.更新订单快照表商品的退货状态
+			oeBean.setSup_goods_id(sup_goods_ids);
+			orderRefoundMapper.updateT_ORDER_SNAPSHOT(oeBean);
+			
+//			5.插入附件图片表(如果上传了图片)
+			int imgCount = NumberUtils.toInt(paramMap.get("imgCount"));
+			if(imgCount>0){
+				String[] imgPaths = paramMap.get("imgPaths").split(",");
+				for(int i=0;i<imgCount;i++){
+					oeBean.setUrl(imgPaths[i]);
+					orderRefoundMapper.InsertT_IMAGE_INFO(oeBean);
+				}
+			}
+		} catch (Exception e) {
+			result="error";
+			throw new ServiceException(e);
+		}
+		return result;
+	}
+}

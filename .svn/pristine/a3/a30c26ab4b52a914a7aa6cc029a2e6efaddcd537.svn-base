@@ -1,0 +1,694 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="生成订单" name="title"/>
+	</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/order.css" rel="stylesheet">
+<style>
+#address_content li.active div.add_details,
+#invoice_ul li.active div.add_details {
+	background: url(${pageContext.request.contextPath}/static/img/order/icon_on.png) left top no-repeat;
+}
+#address_content li div.selected_icon,
+#invoice_ul li div.selected_icon {
+	display:none;
+}
+
+#address_content li.active div.selected_icon,
+#invoice_ul li.active div.selected_icon  {
+	display:block;
+}
+</style>
+<script type="text/javascript">
+$(function () {
+	$(".express-type").click(function () {
+		$(".express-type.active").removeClass("active");
+		$(this).addClass("active");
+		
+		$("#express_type").val($(this).attr("data-express-type"));
+	});
+	$(".invoice-type").click(function () {
+		$(".invoice-type.active").removeClass("active");
+		$(this).addClass("active");
+		
+		$("#invoice_type").val($(this).attr("data-invoice-type"));
+	});
+	$(".invoice-content").click(function () {
+		$(".invoice-content.active").removeClass("active");
+		$(this).addClass("active");
+		
+		if ($(this).attr("data-invoice-content-type") == 2) {
+			$("#invoice_custom").show();
+		} else {
+			$("#invoice_custom").hide();
+		}
+		
+		$("#invoice_flag").val($(this).attr("data-invoice-content-type"));
+	});
+	
+	$("#new_address").click(function () {
+		if ($("#address_input").css("display") == "none") {
+			$("#address_input").show();
+		} else {
+			$("#address_input").hide();
+		}
+	});
+	$("#new_invoice").click(function () {
+		if ($("#invoice_input").css("display") == "none") {
+			$("#invoice_input").show();
+		} else {
+			$("#invoice_input").hide();
+		}
+	});
+	
+	
+	$("#area_prov").change(function () {
+		var area = $(this).val();
+		
+		if (area == "") {
+			$("#area_city").html("<option value=''>市</option>");
+		} else {
+			$("#area_city").html("<option value=''>加载中...</option>");
+		}
+
+		$("#area_city").trigger("change");
+		
+		if (area != "") {
+			async('${pageContext.request.contextPath}/market/order/area', {supId:${supId}, parent:area}, function (msg) {
+				var result = msg.result;
+				$("#area_city").html("<option value=''>市</option>");
+				for (var i = 0; i < result.length; i++) {
+					$("#area_city").append("<option value='"+result[i].supAreaId+"'>"+result[i].supAreaName+"</option>");
+				}
+			}, function () {
+				$("#area_city").html("<option value=''>加载失败</option>");
+			});
+		}
+		
+	});
+	
+	$("#area_city").change(function () {
+		var area = $(this).val();
+		
+		if (area == "") {
+			$("#area_dist").html("<option value=''>区县</option>");
+		} else {
+			$("#area_dist").html("<option value=''>加载中...</option>");
+		}
+
+		$("#area_dist").trigger("change");
+		
+		if (area != "") {
+			async('${pageContext.request.contextPath}/market/order/area', {supId:${supId}, parent:area}, function (msg) {
+				var result = msg.result;
+				$("#area_dist").html("<option value=''>区县</option>");
+				for (var i = 0; i < result.length; i++) {
+					$("#area_dist").append("<option value='"+result[i].supAreaId+"'>"+result[i].supAreaName+"</option>");
+				}
+			}, function () {
+				$("#area_dist").html("<option value=''>加载失败</option>");
+			});
+		}
+		
+	});
+	
+
+	$("#area_dist").change(function () {
+		
+		if ($("#area_town").size() == 0) return;
+		var area = $(this).val();
+		
+		if (area == "") {
+			$("#area_town").html("<option value=''>区县</option>");
+		} else {
+			$("#area_town").html("<option value=''>加载中...</option>");
+		}
+
+		
+		if (area != "") {
+			async('${pageContext.request.contextPath}/market/order/area', {supId:${supId}, parent:area}, function (msg) {
+				var result = msg.result;
+				$("#area_town").html("<option value=''>乡镇</option>");
+				for (var i = 0; i < result.length; i++) {
+					$("#area_town").append("<option value='"+result[i].supAreaId+"'>"+result[i].supAreaName+"</option>");
+				}
+			}, function () {
+				$("#area_town").html("<option value=''>加载失败</option>");
+			});
+		}
+		
+	});
+	
+	$("#address_btn").click(function () {
+		var prov = $("#area_prov").val();
+		var city = $("#area_city").val();
+		var dist = $("#area_dist").val();
+		var town = $("#area_town").val();
+		var detail = $.trim($("#address_detail").val());
+		var zip = $.trim($("#zip_code").val());
+		var name = $.trim($("#address_name").val());
+		var phone = $.trim($("#address_phone").val());
+		var tel = $.trim($("#address_tel").val());
+		var email = $.trim($("#address_email").val());
+		var supId = ${supId};
+		
+		var provName = $("#area_prov option:selected").text();
+		var cityName = $("#area_city option:selected").text();
+		var distName = $("#area_dist option:selected").text();
+		var townName = $("#area_town option:selected").text();
+		
+		
+		if (($("#area_town").children().size() > 1 && town == "") || dist == "") {
+			alert("请选择所在地区");
+			return;
+		}
+		if (town == "") {
+			townName = "";
+		}
+		
+		if (detail == "") {
+			alert("请输入详细地址");
+			return;
+		}
+		
+		if (name == "") {
+			alert("请输入收货人姓名");
+			return;
+		}
+		
+		if (zip != "" && !/^\d+$/.test(zip)) {
+			alert("请输入正确的邮政编码");
+			return;
+		}
+		
+		if (phone == "" && tel == "") {
+			alert("手机号码和电话号码至少输入一个");
+			return;
+		}
+		
+		if (phone != "" && !/^\d+$/.test(phone)) {
+			alert("请输入正确的手机号码");
+			return;
+		}
+		
+		if (tel != "" && !/^\d+$/.test(tel)) {
+			alert("请输入正确的电话号码");
+			return;
+		}
+		
+		if (email == "") {
+			alert("请输入邮箱");
+			return;
+		} else if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
+			alert("请输入正确的邮箱地址");
+			return;
+		}
+		
+		
+		async('${pageContext.request.contextPath}/market/order/address', {prov:prov, city:city, dist:dist, town:town, detail:detail, name:name, zip:zip, phone:phone, tel:tel, email:email, supId:supId}, function (msg) {
+			
+          
+          var li = $("<li>");
+          li.attr("data-prov", prov);
+          li.attr("data-city", city);
+          li.attr("data-dist", dist);
+          li.attr("data-town", town);
+          li.attr("data-prov-name", provName);
+          li.attr("data-city-name", cityName);
+          li.attr("data-dist-name", distName);
+          li.attr("data-town-name", townName);
+          li.attr("data-detail", detail);
+          li.attr("data-name", name);
+          li.attr("data-zip", zip);
+          li.attr("data-phone", phone);
+          li.attr("data-tel", tel);
+          li.attr("data-email", email);
+          var add_details = $("<div>");
+          add_details.addClass("add_details");
+          li.append(add_details);
+          var add_name = $("<div>");
+          add_name.addClass("add_name");
+          add_details.append(add_name);
+          var cus_name = $("<p>");
+          cus_name.addClass("cus_name");
+          add_name.append(cus_name);
+		  cus_name.html('<span class="prov">'+provName+'</span><span class="city">'+cityName+'</span><span>（</span><span class="name">'+name+'</span><span> 收）</span>');
+			
+		  var address = $("<div>");
+		  address.addClass("address");
+		  add_details.append(address);
+		  address.html('<p><span class="dist">'+distName+'</span><span class="town">'+townName+'</span><span class="street">'+detail+'</span><span class="phone">'+(phone == "" ? tel : phone)+'</span><span class="last"> </span></p>');
+		  
+		  var selected_icon = $("<div>");
+		  selected_icon.addClass("selected_icon");
+		  add_details.append(selected_icon);
+		  selected_icon.html('<img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" />');
+		  
+		  li.click(addressClick);
+		  
+		  $("#address_content").append(li);
+		  
+		  $("#address_form").get(0).reset();
+		
+		  li.trigger("click");
+			
+		});
+
+	});
+	
+	
+	$("#invoice_save").click(function () {
+		var flag = $(".invoice-content.active").attr("data-invoice-content-type");
+		var content = $.trim($("#invoice_content_input").val());
+		var company = $.trim($("#company_name").val());
+		var num = $.trim($("#invoice_num_input").val());
+		
+		if (flag == 2 && content == "") {
+			alert("请输入发票内容");
+			return;
+		}
+		
+		if (company == "") {
+			alert("请输入付款单位名称");
+			return;
+		}
+		
+		
+		if (num != "" && !/^\d+$/.test(num)) {
+			alert("请输入正确的税务登记号");
+			return;
+		}
+		
+		if (flag == 1) {
+			content = "";
+		}
+
+		async('${pageContext.request.contextPath}/market/order/invoice', {flag:flag, content:content, company:company, num:num}, function (msg) {
+			
+          var li = $("<li>");
+          li.attr("data-flag", flag);
+          li.attr("data-content", content);
+          li.attr("data-company", company);
+          li.attr("data-num", num);
+          var add_details = $("<div>");
+          add_details.addClass("add_details");
+          li.append(add_details);
+          
+          
+          var add_name = $("<div>");
+          add_name.addClass("name");
+          add_details.append(add_name);
+          var cus_name = $("<p>");
+          cus_name.addClass("cus_name");
+          add_name.append(cus_name);
+		  cus_name.html('<span class="company">付款单位名称</span>');
+			
+		  var address = $("<div>");
+		  address.addClass("address");
+		  add_details.append(address);
+		  address.append('<p><span class="dist">'+company+'</span></p>');
+		  address.append('<p class="cus_name"><span class="company">税务登记号</span><span>'+num+'</span></p>');
+		  
+		  var selected_icon = $("<div>");
+		  selected_icon.addClass("selected_icon");
+		  add_details.append(selected_icon);
+		  selected_icon.html('<img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" />');
+		  
+		  li.click(invoiceClick);
+		  
+		  $("#invoice_ul").append(li);
+		  
+		  $("#invoice_form").get(0).reset();
+		
+		  li.trigger("click");
+			
+		});
+		
+	});
+	
+	$("#submit_btn").click(function () {
+		if (!addressCheck) {
+			alert("配送到当前地址的库存不足，请切换其他地址或选择其他商品下单");
+			return;
+		}
+		
+		if ($("#addr_dist").val() == "" || $("#addr_detail").val() == "" || $("#addr_name").val() == "") {
+			alert("请选择地址");
+			return;
+		}
+		
+		if ($("#invoice_company").val() == "") {
+			alert("请选择发票");
+			return;
+		}
+		
+		if ($.trim($("#decide_reason").val()) == "") {
+			alert("请填写决策理由");
+			return;
+		}
+		
+		if ($("#decide_reason").val().length > 200) {
+			alert("决策理由最多200字");
+			return;
+		}
+		
+		$("#submit_form").submit();
+	});
+	
+	$("#address_content li").click(addressClick);
+	
+	if ($("#address_content").children().size() == 0) {
+		$("#address_input").show();
+	} else {
+		$("#address_content").children().eq(0).trigger("click");
+	}
+	
+
+	$("#invoice_ul li").click(invoiceClick);
+
+	if ($("#invoice_ul").children().size() == 0) {
+		$("#invoice_input").show();
+	} else {
+		$("#invoice_ul").children().eq(0).trigger("click");
+	}
+	
+	var total = 0;
+	$(".goods-price").each(function () {
+		total += parseFloat($(this).text());
+	});
+	
+	$("#total_price").text(total.toFixed(2));
+});
+
+var addressCheck = true;
+
+var addressClick = function () {
+	
+	if ($(this).hasClass("active")) {
+		return;
+	}
+
+	$("#address_content li.active").removeClass("active");
+	$(this).addClass("active");
+	
+	var prov = $(this).attr("data-prov");
+	var city = $(this).attr("data-city");
+	var dist = $(this).attr("data-dist");
+	var town = $(this).attr("data-town");
+	var provName = $(this).attr("data-prov-name");
+	var cityName = $(this).attr("data-city-name");
+	var distName = $(this).attr("data-dist-name");
+	var townName = $(this).attr("data-town-name");
+	var detail = $(this).attr("data-detail");
+	var zip = $(this).attr("data-zip");
+	var name = $(this).attr("data-name");
+	var phone = $(this).attr("data-phone");
+	var tel = $(this).attr("data-tel");
+	var email = $(this).attr("data-email");
+
+	var supId = ${supId};
+
+
+	addressCheck = false;
+	async('${pageContext.request.contextPath}/market/order/check', {prov:prov, city:city, dist:dist, town:town, goods:$("#ids_hidden").val(), supId:supId}, function (msg) {
+		addressCheck = true;
+	});
+
+	$("#address_all").html('<span>寄送至：</span>' + provName + " " + cityName + " " + distName + " " + (townName == "" ? "" : townName + " ") + " " + detail);
+	$("#address_contact").html('<span>收货人：</span>' + name + " " + (phone == "" ? tel : phone));
+	
+	
+	$("#addr_prov").val(prov);
+	$("#addr_city").val(city);
+	$("#addr_dist").val(dist);
+	$("#addr_town").val(town);
+	$("#addr_detail").val(detail);
+	$("#addr_name").val(name);
+	$("#addr_zip").val(zip);
+	$("#addr_phone").val(phone);
+	$("#addr_tel").val(tel);
+	$("#addr_email").val(email);
+	$("#addr_all").val(provName + " " + cityName + " " + distName + " " + (townName == "" ? "" : townName + " ") + " " + detail);
+}
+
+
+var invoiceClick = function () {
+	if ($(this).hasClass("active")) {
+		return;
+	}
+
+	$("#invoice_ul li.active").removeClass("active");
+	$(this).addClass("active");
+
+	var flag = $(this).attr("data-flag");
+	var content = $(this).attr("data-content");
+	var company = $(this).attr("data-company");
+	var num = $(this).attr("data-num");
+	
+	$("#invoice_content_input_" + flag).trigger("click");
+	$("#invoice_content_input").val(content);
+	
+	$("#invoice_flag").val(flag);
+	$("#invoice_content").val(content);
+	$("#invoice_company").val(company);
+	$("#invoice_num").val(num);
+	
+
+}
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+  <div id="nav_area">
+    <div class="inner clearfix">
+				<jsp:include page="../categorys.jsp" />
+    </div>
+    <!--#nav_area--></div>
+  <div id="contents">
+    <div class="inner">
+      <div class="breadcrumb clearfix">
+        <ul>
+          <li><a href="${pageContext.request.contextPath}">首页</a><span>&gt;</span></li>
+          <li>生成订单</li>
+        </ul>
+        <!--.breadcrumb--> 
+      </div>
+      <div id="order_details">
+        <div class="section_main pro_info">
+          <h2>商品信息</h2>
+          <table>
+            <tr>
+              <th colspan="2">商品名称</th>
+              <th width="200">单价（元）</th>
+              <th width="200">数量（个）</th>
+              <th width="200">总价（元）</th>
+            </tr>
+            <c:forEach var="item" items="${goods}">
+            <tr>
+              <td class="left_align" width="77">
+                <p class="img_pro"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}"><img width="60px" height="60px" alt="" src="${item.imagePath}"></a></p>
+              </td>
+              <td class="left_align"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}">${fn:escapeXml(item.goodsName)}</a></td>
+              <td><fmt:formatNumber value="${item.agreePrice}" pattern="#0.00#"></fmt:formatNumber></td>
+              <td>
+                ${item.buyNum }
+              </td>
+              <td class="goods-price"><fmt:formatNumber value="${item.agreePrice * item.buyNum}" pattern="#0.00#"></fmt:formatNumber></td>
+            </tr>
+            </c:forEach>
+          </table>
+        </div>
+        <div class="info_list section_main">
+          <h2>地址信息</h2>
+          <div class="icon_action">
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">配送要求</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="express-type active" data-express="1"><a href="javascript:void(0);">物流配送</a></li>
+                  <li class="express-type" data-express="2"><a href="javascript:void(0);">上门自取</a></li>
+                </ul>
+              </dd>
+            </dl>
+            <ul class="list-inline" id="address_content">
+            <c:forEach varStatus="sta" var="item" items="${address}">
+              <li data-prov="${item.areaLevelOne}" data-city="${item.areaLevelTwo}" data-email="${item.email}" data-dist="${item.areaLevelThree}" data-town="${item.areaLevelFour}" data-prov-name="${item.areaLevelOneName}" data-city-name="${item.areaLevelTwoName}" data-dist-name="${item.areaLevelThreeName}" data-town-name="${item.areaLevelFourName }" data-detail="${fn:escapeXml(item.addressDetail) }" data-name="${fn:escapeXml(item.name) }" data-zip="${item.zipCode }" data-phone="${item.phone }" data-tel="${item.tel }">
+                <div class="add_details">
+                  <div class="add_name">
+                    <p class="cus_name"><span class="prov">${item.areaLevelOneName}</span><span class="city">${item.areaLevelTwoName}</span><span>（</span><span class="name">${item.name}</span><span> 收）</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">${item.areaLevelThreeName}</span><span class="town">${item.areaLevelFourName}</span><span class="street">${fn:escapeXml(item.addressDetail)}</span><span class="phone">${item.phone == '' ? item.tel : item.phone}</span><span class="last"> </span></p>
+                  </div>
+                  <div class="selected_icon" ><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+            </c:forEach>
+            </ul>
+            <div class="add_address">
+              <div class="btn_add"><a href="javascript:void(0);" id="new_address">新增收货地址</a></div>
+              <form id="address_form" action="">
+              <dl class="dl-horizontal" style="display:none;" id="address_input">
+                <dt><span class="red">*</span>所在地区：</dt>
+                <dd class="clearfix">
+                  <select class="form-control city" id="area_prov">
+                    <option value="">省份</option>
+                    <c:forEach varStatus="sta" var="item" items="${prov}">
+                    <option value="${item.supAreaId}">${item.supAreaName}</option>
+                    </c:forEach>
+                  </select>
+                  <select class="form-control city" id="area_city">
+                    <option value="">市</option>
+                  </select>
+                  <select class="form-control" id="area_dist">
+                    <option value="">县区</option>
+                  </select>
+                  <c:if test="${supId == 2}">
+                  <select class="form-control" id="area_town">
+                    <option value="">乡镇</option>
+                  </select>
+                  </c:if>
+                </dd>
+                <dt><span class="red">*</span>详细地址：</dt>
+                <dd><input class="form-control" id="address_detail"/></dd>
+                <dt><span class="red">*</span>邮政编码：</dt>
+                <dd><input class="form-control" id="zip_code"/></dd>
+                <dt><span class="red">*</span>收货人姓名：</dt>
+                <dd><input class="form-control" id="address_name"/></dd>
+                <dt>手机号码：</dt>
+                <dd><input class="form-control" id="address_phone"/></dd>
+                <dt>电话号码：</dt>
+                <dd><input class="form-control" id="address_tel"/></dd>
+                <dt><span class="red">*</span>邮箱：</dt>
+                <dd><input class="form-control" id="address_email"/></dd>
+                <dt></dt>
+                <dd><button type="button" class="btn btn-default add_btn" id="address_btn">添加</button></dd>
+              </dl>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="info_list section_main">
+          <h2>发票信息</h2>
+          <div class="icon_action">
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">发票类型</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="invoice-type active" data-invoice-type="1"><a href="javascript:void(0);">普通发票</a></li>
+                  <li class="invoice-type" data-invoice-type="2"><a href="javascript:void(0);">增值税发票</a></li>
+                </ul>
+              </dd>
+            </dl>
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">发票内容</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="invoice-content active" data-invoice-content-type="1" id="invoice_content_input_1"><a href="javascript:void(0);">明细</a></li>
+                  <!-- <li class="invoice-content" data-invoice-content-type="2" id="invoice_content_input_2"><a href="javascript:void(0);">自定义</a></li> -->
+                  <li style="display:none;" id="invoice_custom"><input class="form-control" id="invoice_content_input" /><span class="red">*</span></li>
+                </ul>
+              </dd>
+            </dl>
+            <ul class="list-inline" id="invoice_ul">
+            <c:forEach varStatus="sta" var="item" items="${invoice}">
+              <li data-flag="${item.invoiceFlag}" data-content="${item.invoiceContent}" data-company="${item.companyName}" data-num="${item.invoiceNum }">
+                <div class="add_details">
+                  <div class="name">
+                    <p class="cus_name"><span class="company">付款单位名称</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">${fn:escapeXml(item.companyName)}</span></p>
+                    <p class="cus_name"><span class="company">税务登记号</span><span>${item.invoiceNum}</span></p>
+                  </div>
+                  <div class="selected_icon"><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+              </c:forEach>
+            </ul>
+            <div class="add_address">
+              <div class="btn_add"><a href="javascript:void(0);" id="new_invoice">新增发票模板</a></div>
+              <form id="invoice_form" action="">
+              <dl class="dl-horizontal" style="display:none;" id="invoice_input">
+                <dt><span class="red">*</span>付款单位名称：</dt>
+                <dd><input class="form-control" id="company_name" /></dd>
+                <dt>税务登记号：</dt>
+                <dd><input class="form-control" id="invoice_num_input"/></dd>
+                <dt></dt>
+                <dd><button type="button" class="btn btn-default add_btn" id="invoice_save">保存</button></dd>
+              </dl>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="info_list section_main">
+        
+  <form action="${pageContext.request.contextPath}/market/order/submit" method="post" id="submit_form">
+        <input type="hidden" id="ids_hidden" name="ids" value="${ids}"/>
+        <input type="hidden" id="express_type" name="express_type" value="1"/>
+        <input type="hidden" id="addr_prov" name="addr_prov" value=""/>
+        <input type="hidden" id="addr_city" name="addr_city" value=""/>
+        <input type="hidden" id="addr_dist" name="addr_dist" value=""/>
+        <input type="hidden" id="addr_town" name="addr_town" value=""/>
+        <input type="hidden" id="addr_detail" name="addr_detail" value=""/>
+        <input type="hidden" id="addr_name" name="addr_name" value=""/>
+        <input type="hidden" id="addr_zip" name="addr_zip" value=""/>
+        <input type="hidden" id="addr_phone" name="addr_phone" value=""/>
+        <input type="hidden" id="addr_tel" name="addr_tel" value=""/>
+        <input type="hidden" id="addr_email" name="addr_email" value=""/>
+        <input type="hidden" id="addr_all" name="addr_all" value=""/>
+        <input type="hidden" id="invoice_type" name="invoice_type" value="1"/>
+        <input type="hidden" id="invoice_flag" name="invoice_flag" value=""/>
+        <input type="hidden" id="invoice_content" name="invoice_content" value=""/>
+        <input type="hidden" id="invoice_company" name="invoice_company" value=""/>
+        <input type="hidden" id="invoice_num" name="invoice_num" value=""/>
+          <h2>其他信息</h2>
+          <dl class="dl-horizontal reason">
+            <dt><span class="red">*</span>决策理由：</dt>
+            <dd><textarea class="form-control" rows="3" id="decide_reason" name="decide_reason"></textarea><span>限200字 </span></dd>
+          </dl>
+  </form>
+        </div>
+        <div class="section_main clearfix price_area">
+          <div class="gather_box">
+            <div class="gather_inner">
+              <p>
+                <span>实付款：</span>
+                <span class="symbol">￥</span>
+                <span class="price" id="total_price">0.00</span>
+               </p>
+               <p id="address_all">
+                 <span>寄送至：</span>
+               </p>
+               <p id="address_contact">
+                 <span>收货人：</span>
+               </p>
+             </div>
+           </div>
+        </div>
+        <div class="btn_list">
+          <ul class="list-inline">
+            <li><button type="button" class="btn btn-default add_btn" onclick="window.location.href='${pageContext.request.contextPath}/market/cart/list';">返回购物车</button></li>
+            <li><button type="button" class="btn btn-default add_btn" id="submit_btn">提交订单</button></li>
+          </ul>
+        </div>
+      <!--.order_details--></div>
+      
+      
+      
+      <!--.inner--> 
+    </div>
+    <!--#contents--> 
+  </div>
+	<jsp:include page="../footer.jsp" />
+  <!--.page-wrapper--> 
+</div>
+</body>
+</html>

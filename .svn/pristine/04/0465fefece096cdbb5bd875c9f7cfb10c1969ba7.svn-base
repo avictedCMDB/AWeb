@@ -1,0 +1,12 @@
+package com.avic.market.mappers;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Address;
+
+@Repository
+public interface AddressMapper {
+    public Address queryDefaultAddress(@Param("userId") String userId, @Param("supId") String supId);
+    public Address queryUserAddress(@Param("userId") String userId, @Param("supId") String supId);
+}

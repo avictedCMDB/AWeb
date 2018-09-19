@@ -1,0 +1,15 @@
+package com.avic.management.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.ProductCompare;
+
+@Repository
+public interface ProductCompareMapper {
+	/**
+	 * 查询比对信息
+	 * @return 
+	 */
+	public ProductCompare queryProductCompare(ProductCompare productCompare);
+	
+}

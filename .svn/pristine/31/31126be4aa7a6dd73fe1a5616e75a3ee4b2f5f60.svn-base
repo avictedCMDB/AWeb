@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysCategory" type="com.avic.market.models.SysCategory" />
+		<typeAlias alias="SupCategory" type="com.avic.market.models.SupCategory" />
+		<typeAlias alias="CategoryRelation" type="com.avic.market.models.CategoryRelation" />
+		<typeAlias alias="Supplier" type="com.avic.market.models.Supplier" />
+		<typeAlias alias="Goods" type="com.avic.market.models.Goods" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/market/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SupplierMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/GoodsMapper.xml" />
+	</mappers>
+</configuration>
+
+

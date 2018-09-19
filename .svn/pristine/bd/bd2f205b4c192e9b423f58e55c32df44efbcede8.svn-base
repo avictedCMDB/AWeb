@@ -1,0 +1,8 @@
+package com.avic.market.services;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.models.Address;
+
+public interface AddressService {
+    public Address getDefaultAddress(String userId, int supId) throws ServiceException;
+}

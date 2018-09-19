@@ -1,0 +1,9 @@
+package com.avic.supplier.utils;
+
+public class CodeConstants {
+	// 是默认
+	public static final String IS_DEFAULT = "1";
+	// 不是默认
+	public static final String NO_DEFAULT = "0";
+
+}

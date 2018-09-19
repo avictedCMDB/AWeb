@@ -1,0 +1,206 @@
+package com.avic.market.cpi.adapters;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.avic.common.utils.MD5;
+import com.avic.market.cpi.ServiceAdapter;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.market.cpi.exceptions.TokenInvalidException;
+import com.avic.market.models.Goods;
+import com.avic.market.models.GoodsImage;
+import com.avic.market.models.Order;
+import com.avic.market.models.Price;
+import com.avic.market.models.SupArea;
+import com.avic.market.models.SupCategory;
+
+public class SuningServiceAdapter extends ServiceAdapter {
+    protected static final Log logger = LogFactory.getLog(SuningServiceAdapter.class);
+
+    @Override
+    public void fetchToken() throws ServiceExecutionFailedException {
+        logger.info("苏宁-获取AccessToken");
+
+        Map<String, String> param = new HashMap<String, String>();
+
+        param.put("appKey", supplier.getAuthUser());
+        param.put("appSecret", supplier.getAuthPass());
+        
+        Map<String, Object> result;
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.HOUR_OF_DAY, 11);
+        try {
+            result = execute("/GEBaseInfoMgmt_GCMS/getAccessToken", param);
+            supplier.setAccessToken((String) result.get("accessToken"));
+            supplier.setAccessExpire(c.getTime());
+        } catch (Exception e) {
+            logger.error("苏宁-AccessToken获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+
+    }
+
+    @Override
+    public void refreshToken() throws ServiceExecutionFailedException {
+       fetchToken();
+
+    }
+
+    @Override
+    public List<SupCategory> fetchCategory() throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchProvince() throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchCity(int prov) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchCountry(int city) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchTown(int town) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> fetchSku(int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Goods fetchGoods(String sku, int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, Price> fetchPrice(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public List<GoodsImage> fetchGoodsImage(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public Map<String, Integer> fetchStock(List<String> skus, List<String> area) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public Map<String, Integer> fetchStatus(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public String orderSubmit(Order order) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public void orderCancel(String orderId, String supOrderId) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void orderConfirm(String orderId, String supOrderId) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private Map<String, Object> execute(String api, Map<String, String> param) throws Exception, TokenInvalidException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        String body = null;
+
+        param.put("v", "1.0");
+        try {
+            body = mapper.writeValueAsString(param);
+        } catch (Exception e1) {
+            // ignore
+        }
+
+        BasicNameValuePair nv = new BasicNameValuePair("data", body);
+        List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
+        list.add(nv);
+        
+        HttpUriRequest req = buildRequest(api, new UrlEncodedFormEntity(list));
+        logger.debug("苏宁-接口调用[" + api + "] 参数 : " + body);
+        String content = null;
+        int code = 0;
+        try {
+            response = client.execute(req);
+            code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new Exception("苏宁-接口返回HTTP状态异常 [" + code + "]");
+            }
+
+            entity = response.getEntity();
+
+            content = EntityUtils.toString(entity);
+
+            Map<String, Object> result = (Map<String, Object>) mapper.readValue(content, Map.class);
+            EntityUtils.consume(entity);
+
+            logger.debug("苏宁-接口调用成功 [" + api + "] 返回 : " + content);
+
+            if ("true".equals(String.valueOf(result.get("isSuccess")))) {
+                return result;
+            } else {
+                // 暂时认为返回失败就是失效
+                throw new TokenInvalidException("苏宁-接口返回数据为失败 : " + result.get("returnMsg"));
+            }
+
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("苏宁-接口调用失败 [" + api + "]", e);
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
+}

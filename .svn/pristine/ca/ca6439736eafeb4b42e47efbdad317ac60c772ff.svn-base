@@ -1,0 +1,22 @@
+function addAddress(){
+	alert('insert');
+}
+function updateAddress(){
+	alert('update');
+}
+function queryOnlyAddress(){
+	alert('lookUp');
+}
+function deleteAddress(){
+	alert('delete');
+}
+function queryAddress(){
+	alert('pageQuery');
+}
+function checkAll(){
+	if($("#checkAll").is(':checked') == true){
+		$(":checkbox").prop("checked",true);
+	}else{
+		$(":checkbox").removeAttr("checked");
+	}
+}

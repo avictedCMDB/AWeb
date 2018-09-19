@@ -1,0 +1,85 @@
+@charset "utf-8";
+/* CSS Document */
+#contents .inner {
+	width: 800px;
+	margin: 0 auto;
+	padding: 0;
+	border:5px solid #dfdfdf;
+	border-radius: 5px;
+}
+#matter_section {
+	width: 790px;
+}
+#matter_section h2 {
+	font-size: 16px;
+	line-height: 27px;
+	color: #fff;
+	background: #0091dc;
+	text-align: center;
+	font-weight: bold;
+	margin-bottom: 15px;
+	margin-top: 0;
+	padding: 2px 0 3px 0;
+}
+#matter_section h2 span {
+	font-size: 12px;}
+
+#matter_section .article {
+	padding: 0 20px;
+}
+#matter_section .article p.txt {
+	text-indent: 30px;
+	line-height: 23px;
+	background: #eee;
+	padding: 10px;
+}
+#matter_section .article p.txt span {
+	border-bottom: 1px solid #000;
+	font-weight: bold;
+}
+
+#matter_section .result_area h3 {
+	background: url(../img/bid/icon-circle.gif) left center no-repeat;
+	font-size: 14px;
+	padding-left: 20px;
+	font-weight: bold;
+	margin-top: 0;
+}
+#matter_section .result_area {
+	margin-top: 20px;
+}
+
+#matter_section .result_area dl.special{
+	width: 700px;
+}
+#matter_section .result_area dl.special dd {
+	width: 500px;
+}
+#matter_section .result_area dl{
+	width: 350px;
+	float: left;
+	margin-bottom: 15px;
+	padding-left: 5px;
+}
+#matter_section .result_area dl dt {
+	float: left;
+	padding-left: 15px;
+	text-align: left;
+}
+#matter_section .result_area dl dd {
+	float: left;
+	width: 150px;
+}
+#matter_section .img_seal {
+	text-align: right;
+	padding-right: 40px;
+}
+#matter_section .img_seal img {
+	display: inline-block;
+}
+
+
+.submit_btn ul li {
+	margin:20px 5px;
+}
+

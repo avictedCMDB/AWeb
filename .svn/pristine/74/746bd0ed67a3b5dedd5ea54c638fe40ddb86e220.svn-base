@@ -1,0 +1,55 @@
+package com.avic.supplier.services.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierOrderMapper;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.services.SupplierOrderService;
+@Service
+public class SupplierOrderServiceImpl implements SupplierOrderService {
+
+	@Autowired
+    SupplierOrderMapper supplierOrderMapper;
+	
+	@Override
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder) {
+		List<SupplierOrder> orderList= supplierOrderMapper.queryOrderList(supplierOrder);
+		List<SupplierOrder> resultList = new ArrayList<SupplierOrder>();
+		if (orderList.isEmpty()) {
+			resultList = orderList;
+		}else {
+			// order去重复
+			Map<String, String> orderIdMap = new HashMap<String, String>();
+			for (int i = 0; i < orderList.size(); i++) {
+				orderIdMap.put(orderList.get(i).getOrderId(), "");
+			}
+			// 重新组织数据
+			for (String orderId : orderIdMap.keySet()) {
+				SupplierOrder order = new SupplierOrder();
+				order.setSubOrderList(new ArrayList<SupplierOrder>());
+				for (int j = 0; j < orderList.size(); j++) {
+					if (orderId.equals(orderList.get(j).getOrderId())) {
+						order.setOrderId(orderList.get(j).getOrderId());
+						order.setOrderAmount(orderList.get(j).getOrderAmount());
+						order.setSupName(orderList.get(j).getSupName());
+						order.setOrderTime(orderList.get(j).getOrderTime());
+						order.getSubOrderList().add(orderList.get(j));
+					}
+				}
+				order.setSubCount(order.getSubOrderList().size());
+				resultList.add(order);
+			}
+		}
+		return resultList;
+	}
+	@Override
+	public List<SupplierOrder> queryOrderStatusList() {
+		return supplierOrderMapper.queryOrderStatusList();
+	}
+}

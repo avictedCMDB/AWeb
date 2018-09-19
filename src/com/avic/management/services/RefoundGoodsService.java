@@ -1,0 +1,10 @@
+package com.avic.management.services;
+
+import com.avic.management.models.RefoundGoods;
+
+public interface RefoundGoodsService {
+	/**
+	 * …æ≥˝ÕÀªı…Ã∆∑
+	 */
+	public void delRefoundGoods(RefoundGoods refoundGoods);
+}

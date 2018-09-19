@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.SettleMapper">
+
+	<resultMap id="settleDataResultMap" type="SettleData">
+		<id column="busi_id" property="busiId" jdbcType="VARCHAR" /> 
+		<result column="busi_type" property="busiType" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="settle_amount" property="settleAmount" jdbcType="DOUBLE" />
+		<result column="settle_status" property="settleStatus" jdbcType="INTEGER" />
+		<result column="total_num" property="totalNum" jdbcType="INTEGER" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="settle_time" property="settleTime" jdbcType="DATE" />
+		<result column="settle_operator" property="settleOperator" jdbcType="VARCHAR" />
+		<result column="settle_id" property="settleId" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="settleRecordResultMap" type="SettleRecord">
+		<id column="settle_id" property="settleId" jdbcType="VARCHAR" /> 
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="order_num" property="orderNum" jdbcType="INTEGER" />
+		<result column="goods_num" property="goodsNum" jdbcType="INTEGER" />
+		<result column="settle_amount" property="settleAmount" jdbcType="DOUBLE" />
+		<result column="settle_status" property="settleStatus" jdbcType="INTEGER" />
+		<result column="date_start" property="dateStart" jdbcType="VARCHAR" />
+		<result column="date_end" property="dateEnd" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="create_operator" property="createOperator" jdbcType="VARCHAR" />
+		<result column="complete_time" property="completeTime" jdbcType="DATE" />
+		<result column="complete_operator" property="completeOperator" jdbcType="VARCHAR" />
+	</resultMap>
+	
+
+	<insert id="insertSettleData">
+		insert into t_settle_data (busi_id, busi_type, create_time, company_name, total_num, settle_amount, settle_status, sup_id)
+		values (
+			#{busiId,jdbcType=VARCHAR}, #{busiType,jdbcType=INTEGER}, sysdate, #{companyName,jdbcType=VARCHAR},
+			#{totalNum,jdbcType=INTEGER}, #{settleAmount,jdbcType=DOUBLE}, 0, #{supId,jdbcType=INTEGER})
+	</insert>
+	
+	<select id="querySettleDataList" resultMap="settleDataResultMap">
+	select * from (
+		select rownum rn, a.* 
+		  from t_settle_data a
+		 where settle_status = 0
+		   and sup_id = #{supId}
+		   and create_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   and create_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   <if test="companyName != null and companyName != ''">
+		   and company_name like '%'||#{companyName}||'%'
+		   </if>
+		   ) x
+		   where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="querySettleDataCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_settle_data
+		 where settle_status = 0
+		   and sup_id = #{supId}
+		   and create_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   and create_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   <if test="companyName != null and companyName != ''">
+		   and company_name like '%'||#{companyName}||'%'
+		   </if>
+	</select>
+	
+	
+	<select id="querySettleIndex" resultType="java.lang.String">
+	select to_char(sysdate, 'yyyyMMddHH24miss') || lpad(settle_index.nextval, 6, '0') from dual 
+	</select>
+	
+	<update id="updateSettleStatus">
+		update t_settle_data
+		   set settle_status = 1
+		     , settle_id = #{settleId}
+		     , settle_operator = #{operator}
+		     , settle_time = sysdate
+		 where settle_status = 0
+		   and sup_id = #{supId}
+		   and create_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   and create_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   <if test="companyName != null and companyName != ''">
+		   and company_name like '%'||#{companyName}||'%'
+		   </if>
+	</update>
+	
+	<select id="querySettleDataStat" resultMap="settleRecordResultMap">
+		select count(1) order_num, sum(total_num) goods_num, sum(case when busi_type = 1 then settle_amount else -settle_amount end) settle_amount
+		  from t_settle_data
+		 where settle_id = #{settleId}
+	</select>
+	
+	<insert id="insertSettleRecord">
+		insert into t_settle_record (settle_id, sup_id, order_num, goods_num, settle_amount, date_start, date_end, settle_status, create_time, create_operator)
+		values (
+			#{settleId,jdbcType=VARCHAR},
+			#{supId,jdbcType=INTEGER},
+			#{orderNum,jdbcType=INTEGER},
+			#{goodsNum,jdbcType=INTEGER},
+			#{settleAmount,jdbcType=DOUBLE},
+			#{dateStart,jdbcType=VARCHAR},
+			#{dateEnd,jdbcType=VARCHAR},
+			1,
+			sysdate,
+			#{createOperator,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="querySettleRecordList" resultMap="settleRecordResultMap">
+	select * from (
+		select rownum rn, a.* 
+		  from t_settle_record a
+		 where 1=1
+		 
+		   <if test="settleStatus > 0">
+		   and settle_status = #{settleStatus}
+		   </if>
+		   <if test="supId > 0">
+		   and sup_id = #{supId}
+		   </if>
+		   <if test="timeStart != null and timeStart != ''">
+		   and create_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="timeEnd != null and timeEnd != ''">
+		   and create_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="settleId != null and settleId != ''">
+		   and settle_id like '%'||#{settleId}||'%'
+		   </if>
+		   ) x
+		   where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="querySettleRecordCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_settle_record a
+		 where 1=1
+		 
+		   <if test="settleStatus > 0">
+		   and settle_status = #{settleStatus}
+		   </if>
+		   <if test="supId > 0">
+		   and sup_id = #{supId}
+		   </if>
+		   <if test="timeStart != null and timeStart != ''">
+		   and create_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="timeEnd != null and timeEnd != ''">
+		   and create_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		   </if>
+		   <if test="settleId != null and settleId != ''">
+		   and settle_id like '%'||#{settleId}||'%'
+		   </if>
+	</select>
+	
+	<select id="querySettleRecordDetail" resultMap="settleRecordResultMap">
+	select * from t_settle_record where settle_id = #{settleId}
+	</select>
+	
+	<select id="querySettleRecordData" resultMap="settleDataResultMap">
+	select * from t_settle_data where settle_id = #{settleId}
+	</select>
+	
+	<update id="updateSettleRecordStatus">
+		update t_settle_record
+		   set settle_status = 2
+		     , complete_time = sysdate
+		     , complete_operator = #{operator}
+		 where settle_id in
+		 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+	</update>
+	<update id="updateSettleRecordDataStatus">
+		update t_settle_data
+		   set settle_status = 2
+		 where settle_id in
+		 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+	</update>
+</mapper>

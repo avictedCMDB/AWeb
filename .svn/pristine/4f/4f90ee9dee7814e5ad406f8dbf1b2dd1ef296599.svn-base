@@ -1,0 +1,97 @@
+function query(action){
+	
+	document.getElementById("supplierGoodsInfoQueryForm").action=action;
+	document.getElementById("supplierGoodsInfoQueryForm").submit();
+	
+}
+function deleteGoods(action,goodsStatus){
+	if (goodsStatus == 1) {
+		alert('已上架的商品不能删除，请先下架后再尝试！');
+		return;
+	}
+	if(confirm("是否删除该条记录？")){
+		window.location.href = action;
+	}
+}
+function queryAreaSub(action){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: action ,
+
+	    data: {'parentId':$('#area').val()} ,
+
+	    success: function (data){
+	    	var num = 0;
+	    	$(data).each(function () {
+	    		if (num == 0) {
+	    			$("#areaSub").html("");
+	    			$("#areaLast").html("");
+	    			$("#spanStore").html("");
+	    			$("#areaSub").append($("<option/>").text('请选择').attr("value",''));
+				}
+	    		num++;
+	        	$("#areaSub").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+	            
+	        });
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+function queryAreaSubTo(action){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: action ,
+
+	    data: {'parentId':$('#areaSub').val()} ,
+
+	    success: function (data){
+	    	var num = 0;
+	    	$(data).each(function () {
+	    		if (num == 0) {
+	    			$("#areaLast").html("");
+	    			$("#spanStore").html("");
+	    			$("#areaLast").append($("<option/>").text('请选择').attr("value",''));
+				}
+	    		num++;
+	        	$("#areaLast").append($("<option/>").text(this.supAreaName).attr("value",this.supAreaID));
+	            
+	        });
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+function queryStoreNum(action){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: action ,
+
+		    data : {
+			'area' : $('#area').val(),
+			'areaSub' : $('#areaSub').val(),
+			'areaLast' : $('#areaLast').val(),
+			'supGoodsId' : $('#supGoodsId').val()
+		} ,
+
+	    success: function (data){
+	    	for(var key in data){
+	    		$("#spanStore").html(data[key]);
+	    	}
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}

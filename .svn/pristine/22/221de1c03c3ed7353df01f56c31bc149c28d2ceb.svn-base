@@ -1,0 +1,186 @@
+@charset "utf-8";
+/* CSS Document */
+.order_section:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+.search_result table {
+	width: 100%;
+	margin-top: 0;
+}
+.search_result table tr th {
+	border: none;
+	border-right: none;
+	line-height: 37px;
+}
+.search_result table tr td {
+	text-align: center;
+  vertical-align: middle;
+  border-right: none;  
+  border-left: none;  
+}
+.search_result table tr.company td {
+  border: medium none;
+  font-weight: bold;
+  text-align: left;
+}
+.search_result table tr td.pro_name {
+  text-align: left;
+}
+.img_pro {
+	border:1px solid #dfdfdf;
+	margin-bottom: 0;
+}
+.search_result table tr td.right_line {
+	border-right: 1px solid #dfdfdf;
+}
+.search_result table tr td.left_line {
+	border-left: 1px solid #dfdfdf;
+	text-align: left;
+}
+.search_result table tr td.link_area {
+	text-align: left;
+	color: #4798ed;
+}
+.search_result table tr td.icon_area {
+	text-align: left;
+}
+.search_result table tr td a {
+	word-break: break-all;	
+	color: #0089cf;
+}
+.search_result table tr td a:hover {
+	color: #db433d;
+}
+.search_result table tr td.icon_area .btn {	
+	width: 70px;
+	height: 24px;
+	line-height: 24px;
+	font-size: 12px;
+	padding: 0;
+	border: none;
+}
+.red {
+	background: #db433d;
+	color: #fff;
+}
+.price {
+	color: #db433d;
+}
+.addrss_section {
+	margin-bottom: 20px;
+}
+.icon_action span {
+	width: 100px;
+	margin: 0 10px 0 0;
+	display: inline-block;
+	padding: 0 10px;
+	color: #fff;
+	text-align: center;
+	line-height: 24px;
+}
+.icon_action span.icon_need {
+	background: #666666;
+}
+.icon_action span.icon_self {
+	background: #dadada;
+}
+.icon_action span.icon_logist {	
+	background: url(../img/management/bg-icon_logist.gif) no-repeat bottom right;
+	border: 1px solid #dc563b;
+	color: #dc563b;
+	line-height: 22px;
+}
+.infor_top {
+	width: 237px;
+	background: url(../img/management/bg-infor_top.gif) no-repeat top left;
+	padding-top: 9px;
+	margin-top: 10px;	
+}
+.infor_bottom {
+	background: url(../img/management/bg-infor_bottom.gif) no-repeat bottom left;
+	padding-bottom: 4px;	
+}
+.infor_area {
+	background: url(../img/management/bg-infor_area.gif) repeat-y top left;
+	padding: 5px 15px 15px;	
+	position: relative;
+}
+.infor_area p {
+	word-break: break-all;
+  word-wrap: break-word;
+}
+.infor_area p.cus_name {
+	border-bottom: 1px solid #dadada;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+}
+.infor_area p span {
+	padding: 0 15px 0 10px;
+}
+.infor_area span.icon_addr {
+	position:  absolute;
+	bottom: -4px;
+	right: 1px;
+}
+.infor_area dl dt {
+	font-weight: bold;
+	margin: 0 0 7px;
+}
+.infor_area dl dd {
+	margin: 0 0 7px;
+}
+.other_area {
+	background: #f6f4f5;
+	padding: 10px;
+	margin-bottom: 20px;
+	line-height: 1.6;
+	border: 1px solid #dfdfdf;
+}
+.gather_box {
+	float: right;
+	width: 422px;
+	border: 1px solid #ff5500;
+}
+.gather_inner {
+	border: 3px solid #fff1e8;
+	padding: 10px 10px 5px 10px;
+	text-align: right;
+}
+.gather_inner p {
+	margin-bottom: 6px;
+}
+.gather_inner span {
+	font-weight: bold;
+	padding-right: 5px;
+	line-height: 1.2;
+}
+.gather_inner span.symbol {
+	font-size: 28px;
+	color: #979b9a;
+}
+.gather_inner span.price {
+	font-size: 28px;
+	color: #ff5601;
+}
+.order_section .btn_area {
+	width: 100%;
+	margin: 10px 0 30px;
+	text-align: center;
+	clear: both;
+}
+.order_section .btn {
+	height: 32px;
+	line-height: 32px;
+	font-size: 16px;
+	padding: 0 30px;
+	border: none;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+

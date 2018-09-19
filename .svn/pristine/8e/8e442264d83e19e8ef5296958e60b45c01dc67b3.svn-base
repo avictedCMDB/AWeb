@@ -1,0 +1,175 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.SessionKeys;
+import com.avic.supplier.models.SupplierProject;
+import com.avic.supplier.services.SupplierProjectService;
+
+@Controller
+@RequestMapping("/project")
+public class SupplierProjectController {
+
+	private static final int PAGE_SIZE = 10;
+	@Autowired
+	private SupplierProjectService supplierProjectService;
+	private Log logger = LogFactory.getLog(SupplierProjectController.class);
+	
+	@RequestMapping("public")
+	public String publicProject (
+			Model model,
+			String projType,
+			String auditStatus,
+			String compName,
+			String projId,
+			String startTime, 
+			String endTime,
+			@RequestParam(value = "page", defaultValue = "1") int page
+			) throws UnsupportedEncodingException {
+		logger.debug("项目管理-最新公开的项目");
+		
+		//page
+		int total = supplierProjectService.selectProjectCount(projType, auditStatus, compName, projId, startTime, endTime, "public");
+		int pages = (int) Math.ceil((double)total / PAGE_SIZE);
+		//data
+		List<SupplierProject> data = new ArrayList<SupplierProject>();
+		if (total > 0) {
+			data = supplierProjectService.selectProject(projType, auditStatus, compName, projId, startTime, endTime, page, "public");
+		}
+		
+		model.addAttribute("pageAction", "supplier/project/public?"
+				+ "projType=" + (projType == null ? "" : projType) 
+				+ "&auditStatus=" + (auditStatus == null ? "" : auditStatus)
+				+ "&compName=" + (compName == null ? "" : URLEncoder.encode(compName, "GBK"))
+				+ "&projId=" + (projId == null ? "" : URLEncoder.encode(projId, "GBK"))
+				+ "&startTime=" + (startTime == null ? "" : startTime)
+				+ "&endTime=" + (endTime == null ? "" : endTime)
+				+ "&page=%PAGE%");
+		model.addAttribute("projType", projType);
+		model.addAttribute("auditStatus", auditStatus);
+		model.addAttribute("compName", compName);
+		model.addAttribute("projId", projId);
+		model.addAttribute("startTime", startTime);
+		model.addAttribute("endTime", endTime);
+		model.addAttribute("data", data);
+		model.addAttribute("page", page);
+		model.addAttribute("pages", pages);
+		return "project/supplier_project_public";
+	}
+	@RequestMapping("underway")
+	public String projectUnderway (
+			Model model,
+			String projType,
+			String projStatus,
+			String compName,
+			String projId,
+			String startTime, 
+			String endTime,
+			@RequestParam(value = "page", defaultValue = "1")int page) throws UnsupportedEncodingException {
+		//page
+		int total = supplierProjectService.selectProjectCount(projType, projStatus, compName, projId, startTime, endTime, "underway");
+		int pages = (int) Math.ceil((double)total / PAGE_SIZE);
+		//data
+		List<SupplierProject> data = new ArrayList<SupplierProject>();
+		if (total > 0) {
+			data = supplierProjectService.selectProject(projType, projStatus, compName, projId, startTime, endTime, page, "underway");
+		}
+		
+		model.addAttribute("pageAction", "supplier/project/underway?"
+				+ "projType=" + (projType == null ? "" : projType) 
+				+ "&projStatus=" + (projStatus == null ? "" : projStatus)
+				+ "&compName=" + (compName == null ? "" : URLEncoder.encode(compName, "GBK"))
+				+ "&projId=" + (projId == null ? "" : URLEncoder.encode(projId, "GBK"))
+				+ "&startTime=" + (startTime == null ? "" : startTime)
+				+ "&endTime=" + (endTime == null ? "" : endTime)
+				+ "&page=%PAGE%");
+		model.addAttribute("projType", projType);
+		model.addAttribute("projStatus", projStatus);
+		model.addAttribute("compName", compName);
+		model.addAttribute("projId", projId);
+		model.addAttribute("startTime", startTime);
+		model.addAttribute("endTime", endTime);
+		model.addAttribute("data", data);
+		model.addAttribute("page", page);
+		model.addAttribute("pages", pages);
+		return "project/supplier_project_underway";
+	}
+	@RequestMapping("over")
+	public String projectOver (
+			Model model,
+			String projType,
+			String projStatus,
+			String compName,
+			String projId,
+			String startTime, 
+			String endTime,
+			@RequestParam(value = "page", defaultValue = "1")int page) throws UnsupportedEncodingException {
+		//page
+		int total = supplierProjectService.selectProjectCount(projType, projStatus, compName, projId, startTime, endTime, "over");
+		int pages = (int) Math.ceil((double)total / PAGE_SIZE);
+		//data
+		List<SupplierProject> data = new ArrayList<SupplierProject>();
+		if (total > 0) {
+			data = supplierProjectService.selectProject(projType, projStatus, compName, projId, startTime, endTime, page, "over");
+		}
+		
+		model.addAttribute("pageAction", "supplier/project/over?"
+				+ "projType=" + (projType == null ? "" : projType) 
+				+ "&projStatus=" + (projStatus == null ? "" : projStatus)
+				+ "&compName=" + (compName == null ? "" : URLEncoder.encode(compName, "GBK"))
+				+ "&projId=" + (projId == null ? "" : URLEncoder.encode(projId, "GBK"))
+				+ "&startTime=" + (startTime == null ? "" : startTime)
+				+ "&endTime=" + (endTime == null ? "" : endTime)
+				+ "&page=%PAGE%");
+		model.addAttribute("projType", projType);
+		model.addAttribute("projStatus", projStatus);
+		model.addAttribute("compName", compName);
+		model.addAttribute("projId", projId);
+		model.addAttribute("startTime", startTime);
+		model.addAttribute("endTime", endTime);
+		model.addAttribute("data", data);
+		model.addAttribute("page", page);
+		model.addAttribute("pages", pages);
+		return "project/supplier_project_over";
+	}
+	
+	@RequestMapping("join_project")
+	@ResponseBody
+	public ResultObject joinProject(HttpSession session, String projId) {
+		String supCode = (String) session.getAttribute(SessionKeys.SUP_CODE);
+		String supType = (String) session.getAttribute(SessionKeys.SUP_TYPE);
+		if (!"2".equals(supType)) {
+			return new ResultObject(ResultObject.FAIL, "报名失败！");
+		}
+		SupplierProject p = supplierProjectService.selectProjectByProjIdAndSupCode(projId, supCode);
+		if (p != null) {
+			return new ResultObject(ResultObject.FAIL, "重复报名！");
+		}
+		p = supplierProjectService.selectProjectByProjId(projId);
+		if (p.getProjType() == 1) {
+			return new ResultObject(ResultObject.FAIL, "您没有被邀请!");
+		}
+		if (p.getProjStatus() != 2 || new Date().after(p.getJoinEndTime())) {
+			return new ResultObject(ResultObject.FAIL, "报名已截至！");
+		}
+		supplierProjectService.insertBidProjSupplierByProjIdWithSupId(projId, supCode);;
+		return new ResultObject(ResultObject.OK, "您已报名成功，请耐心等待审核结果！");
+	}
+	
+}

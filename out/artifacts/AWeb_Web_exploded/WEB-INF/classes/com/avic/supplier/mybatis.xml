@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SupCategory" type="com.avic.supplier.models.SupCategory" />
+		<typeAlias alias="SupplierAddress" type="com.avic.supplier.models.SupplierAddress" />
+		<typeAlias alias="SupplierExpress" type="com.avic.supplier.models.SupplierExpress" />
+		<typeAlias alias="SupplierGoodsInfo" type="com.avic.supplier.models.SupplierGoodsInfo" />
+		<typeAlias alias="SupArea" type="com.avic.supplier.models.SupArea" />
+		<typeAlias alias="SupplierUser" type="com.avic.supplier.models.SupplierUser" />
+		<typeAlias alias="SupplierOrder" type="com.avic.supplier.models.SupplierOrder" />
+		<typeAlias alias="SupplierExchange" type="com.avic.supplier.models.SupplierExchange" />
+		<typeAlias alias="SupplierReturn" type="com.avic.supplier.models.SupplierReturn" />
+		<typeAlias alias="SupplierStatement" type="com.avic.supplier.models.SupplierStatement" />
+		<typeAlias alias="Supplier" type="com.avic.supplier.models.Supplier" />
+		<typeAlias alias="Order" type="com.avic.supplier.models.Order" />
+		<typeAlias alias="OrderSnapshot" type="com.avic.supplier.models.OrderSnapshot" />
+		<typeAlias alias="SupplierInfoExt" type="com.avic.supplier.models.SupplierInfoExt" />
+		<typeAlias alias="SupplierGoodsEnquiry" type="com.avic.supplier.models.SupplierGoodsEnquiry" />
+		<typeAlias alias="SupplierOrderContract" type="com.avic.supplier.models.SupplierOrderContract" />
+		<typeAlias alias="SupplierOffStandRequire" type="com.avic.supplier.models.SupplierOffStandRequire" />
+		<typeAlias alias="SupplierQuoteInfo" type="com.avic.supplier.models.SupplierQuoteInfo" />
+		<typeAlias alias="companyMyInfo" type="com.avic.supplier.models.CompanyMyInfo" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/supplier/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierAddressMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierExpressMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierGoodsInfoMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupAreaMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierUserMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierOrderMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierExchangeMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierReturnMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierStatementMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/OrderMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplerInfoExtMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierGoodsEnquiryMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierOffStandRequireMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierProjectMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierContractMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/BidContractMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/CompanyInfoMapper.xml"/>
+		<mapper resource="com/avic/supplier/mappers/mybatis/CompanyMyInfoMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/CodeListMapper.xml" />
+	</mappers>
+</configuration>
+
+

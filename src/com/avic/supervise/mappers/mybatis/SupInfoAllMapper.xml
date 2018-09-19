@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.SupInfoAllMapper">
+	<resultMap id="supInfoAllMap" type="com.avic.supervise.models.SupInfoAll">
+		<id column="SUP_ID" property="supID" jdbcType="VARCHAR" /> 
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="SUP_CODE" property="supCode" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="addSupInfoAll" parameterType="com.avic.supervise.models.SupInfoAll">
+		INSERT INTO T_SUP_INFO
+					(
+						SUP_ID,
+						SUP_NAME,
+						SUP_CODE,
+						COMPANY_CODE,
+						CONTACT_PERSON,
+						CONTACT_NUM,
+						EMAIL
+					)
+			VALUES
+					(
+						#{supID,jdbcType=VARCHAR},
+						#{supName,jdbcType=VARCHAR},
+						#{supCode,jdbcType=VARCHAR},
+						#{companyCode,jdbcType=VARCHAR},
+						#{contactPerson,jdbcType=VARCHAR},
+						#{contactNum,jdbcType=VARCHAR},
+						#{email,jdbcType=VARCHAR}
+					)
+	</insert>
+	
+	<update id="updateSupInfoAll" parameterType="com.avic.supervise.models.SupInfoAll">
+		UPDATE T_SUP_INFO
+   		   SET SUP_NAME = #{supName,jdbcType=VARCHAR},
+			   CONTACT_PERSON = #{contactPerson,jdbcType=VARCHAR},
+			   CONTACT_NUM = #{contactNum,jdbcType=VARCHAR},
+			   EMAIL = #{email,jdbcType=VARCHAR}
+         WHERE COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="querySupInfoAllIndex" resultType="java.lang.String">
+		select MAX(SUP_ID) +1 from T_SUP_INFO
+	</select>
+</mapper>

@@ -1,0 +1,158 @@
+package com.avic.supplier.controllers;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.supplier.models.SupplierGoodsInfo;
+import com.avic.supplier.services.SupplierGoodsInfoService;
+
+@Controller
+@RequestMapping("/goodsInfo")
+public class SupplierGoodsInfoController {
+    protected static final Log logger = LogFactory.getLog(SupplierGoodsInfoController.class);
+    
+    @Autowired
+    SupplierGoodsInfoService supplierGoodsInfoService;
+    /**
+     * 页面初始化方法
+     * @param map
+     * @return
+     */
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("快递公司管理信息");
+        //TODO 供应商Id 取得不详
+        String supId = "1";
+        SupplierGoodsInfo supplierGoodInfo = new SupplierGoodsInfo();
+        supplierGoodInfo.setSupId(supId);
+        supplierGoodInfo.setDeleteFlag("0");
+        List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService.querySupplierGoodsInfoList(supplierGoodInfo);
+        map.put("supplierGoodsInfoList", supplierGoodsInfoList);
+        List<SupplierGoodsInfo> bankNameList = supplierGoodsInfoService.querySupplierGoodsInfoBrandNameList(supplierGoodInfo);
+        map.put("bankNameList", bankNameList);
+        return "goods/supplier_goods_info";
+    }
+    
+    /**
+     * 页面查询
+     * @param map
+     * @return
+     */
+    @RequestMapping("/query")
+    public String query(Map<String, Object> map,@ModelAttribute("supplierGoodsInfo") SupplierGoodsInfo supplierGoodsInfo) {
+        logger.info("快递公司管理信息");
+        //TODO 供应商Id 取得不详
+        String supId = "1";
+        supplierGoodsInfo.setSupId(supId);
+        supplierGoodsInfo.setDeleteFlag("0");
+        List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService.querySupplierGoodsInfoList(supplierGoodsInfo);
+        map.put("supplierGoodsInfoList", supplierGoodsInfoList);
+        List<SupplierGoodsInfo> bankNameList = supplierGoodsInfoService.querySupplierGoodsInfoBrandNameList(supplierGoodsInfo);
+        map.put("bankNameList", bankNameList);
+        map.put("queryParam", supplierGoodsInfo);
+        return "goods/supplier_goods_info";
+    }
+    
+    /**
+     * 查询价格
+     * @param map
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping("/queryPrice/{supGoodsId}")
+    public String queryPrice(Map<String, Object> map,@PathVariable("supGoodsId")String supGoodsId) {
+        logger.info("查询金额");
+        //TODO 供应商Id 取得不详
+        String supId = "1";
+        SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+        supplierGoodsInfo.setSupId(supId);
+        supplierGoodsInfo.setDeleteFlag("0");
+        supplierGoodsInfo.setSupGoodsId(supGoodsId);
+        List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService.querySupplierGoodsInfoList(supplierGoodsInfo);
+        map.put("supplierGoodsPrice", supplierGoodsInfoList.get(0));
+        return "goods/supplier_goods_info_price";
+    }
+    /**
+     * 查询存库
+     * @param map
+     * @return
+     */
+    @RequestMapping("/queryStore/{supGoodsId}")
+    public String queryStore(Map<String, Object> map,@PathVariable("supGoodsId")String supGoodsId) {
+        logger.info("查询库存");
+        String supId = "1";
+        SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+        supplierGoodsInfo.setSupId(supId);
+        supplierGoodsInfo.setSupId(supGoodsId);
+        supplierGoodsInfo.setDeleteFlag("0");
+//        supplierGoodsInfoService.queryStore(supplierGoodsInfo);
+        return "goods/supplier_goods_info_store";
+    }
+    /**
+     * 删除转入回收站
+     * @param map
+     * @return
+     */
+    @RequestMapping("/updateDeleteFlag/{supGoodsId}")
+    public String updateDeleteFlag(Map<String, Object> map,@PathVariable("supGoodsId")String supGoodsId) {
+        logger.info("删除转入回收站");
+        String supId = "1";
+        SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+        supplierGoodsInfo.setSupId(supId);
+        supplierGoodsInfo.setSupGoodsId(supGoodsId);
+        supplierGoodsInfo.setDeleteFlag("1");
+        supplierGoodsInfoService.updateDeleteFlag(supplierGoodsInfo);
+        return "redirect:/supplier/goodsInfo";
+    }
+//    /**
+//     * 新增地区保存
+//     * @param map
+//     * @param addressID
+//     * @return
+//     */
+//    @RequestMapping("/insert")
+//    public String insertSupplierAddress(@ModelAttribute("supplierExpress") SupplierExpress supplierExpress) {
+//        logger.info("新增地区保存");
+//        // 添加供应商
+//        //TODO 供应商Id 取得不详
+//        String supId = "1";
+//        supplierExpress.setSupId(supId);
+//        supplierExpressService.insertSupplierExpress(supplierExpress);
+//        return "redirect:/supplier/express";
+//    }
+//    /**
+//     * 修改地区保存
+//     * @param map
+//     * @param addressID
+//     * @return
+//     */
+//    @RequestMapping("/update")
+//    public String updateSupplierAddress(@ModelAttribute("supplierExpress") SupplierExpress supplierExpress) {
+//        logger.info("修改地区");
+//      //TODO 供应商Id 取得不详
+//        String supId = "1";
+//        supplierExpress.setSupId(supId);
+//        supplierExpressService.updateSupplierExpress(supplierExpress);
+//        return "redirect:/supplier/express";
+//    }
+//    /**
+//     * 返回方法
+//     * @param map
+//     * @param addressID
+//     * @return
+//     */
+//    @RequestMapping("/back")
+//    public String backSupplierAddress(Map<String, Object> map) {
+//        logger.info("返回地区");
+//        return "redirect:/supplier/express";
+//    }
+    
+}

@@ -1,0 +1,18 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Goods;
+
+@Repository
+public interface GoodsMapper {
+    public void deleteSupCatGoods(@Param("supId") int supId, @Param("poolId") int poolId);
+    public void batchInsertSupGoods(@Param("list") List<Goods> list);
+    public void insertSupGoods(Goods goods);
+    public List<Goods> queryGoodsList(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("brand") String brand, @Param("keyword") String keyword, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd, @Param("order") int order, @Param("start") int start, @Param("end") int end);
+    public int queryGoodsCount(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("brand") String brand, @Param("keyword") String keyword, @Param("priceStart") int priceStart, @Param("priceEnd") int priceEnd);
+    public List<String> queryGoodsBrand(@Param("catStart") int catStart, @Param("catEnd") int catEnd, @Param("keyword") String keyword);
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierExpressMapper">
+	<resultMap id="supplierExpressMap" type="com.avic.supplier.models.SupplierExpress">
+		<result column="express_id" property="expressId" jdbcType="VARCHAR" />
+		<result column="express_code" property="expressCode" jdbcType="VARCHAR" />
+		<result column="express_name" property="expressName" jdbcType="VARCHAR" />
+		<result column="if_default" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="querySupplierExpressList" resultMap="supplierExpressMap">
+		select R.* 
+		from (select express_id,express_code,express_name,if_default,sup_id,rownum rn from t_sup_express_info
+			 where  sup_id = #{supId}) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="querySupplierExpressListCount" resultType="java.lang.Integer">
+		select count(1) from t_sup_express_info
+			 where  sup_id = #{supId}
+	</select>
+ 	<select id="querySupplierExpress" resultMap="supplierExpressMap">
+		select express_id,express_code,express_name,if_default,sup_id,rownum rn from t_sup_express_info
+			 where  EXPRESS_ID = #{expressId}
+	</select>
+	<delete id="deleteSupplierExpress"  parameterType="com.avic.supplier.models.SupplierExpress">
+		DELETE  FROM t_sup_express_info TMA
+      		   WHERE TMA.express_id = #{expressId,jdbcType=VARCHAR}
+	</delete>
+		<update id="updateSupplierExpress" parameterType="com.avic.supplier.models.SupplierExpress">
+		update t_sup_express_info TMA
+		   set if_default= #{ifDefault,jdbcType=VARCHAR}
+		   <if test="expressCode != null and expressCode != ''">
+                , express_code=#{expressCode,jdbcType=VARCHAR}
+           </if>
+           <if test="expressName != null and expressName != ''">
+                , express_name=#{expressName,jdbcType=VARCHAR}
+           </if>
+		 where 
+		 <if test="expressId != null and expressId != ''">
+                TMA.EXPRESS_ID = #{expressId,jdbcType=VARCHAR}
+         </if>
+         <if test="supId != null and supId != ''">
+                TMA.sup_id = #{supId,jdbcType=INTEGER}
+         </if>
+		 
+	</update>
+	<select id="querySupplierIndex" resultType="java.lang.String">
+		select to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(supplier_index.nextval,6,'0'),'','0') from dual
+	</select>
+	<insert id="insertSupplierExpress" parameterType="com.avic.supplier.models.SupplierExpress">
+		 insert into t_sup_express_info (express_id,express_code,express_name,if_default,sup_id)
+		 values (
+				#{expressId,jdbcType=VARCHAR},
+				#{expressCode,jdbcType=VARCHAR},
+				#{expressName,jdbcType=VARCHAR},
+				#{ifDefault,jdbcType=VARCHAR},
+				#{supId,jdbcType=INTEGER}
+				
+				) 
+	</insert>
+</mapper>

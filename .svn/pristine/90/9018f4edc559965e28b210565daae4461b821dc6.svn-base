@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.ContractMapper">
+	<resultMap id="contractMap" type="com.avic.supervise.models.Contract">
+	</resultMap>
+
+	<!-- 查询合同 -->
+	<select id="queryContract" resultMap="contractMap">
+		SELECT T1.CONTRACT_CODE,T1.CONTRACT_NAME,T1.ORDER_ID,T1.CREATE_DATE,T1.SUP_NAME,
+		(CASE WHEN T1.BUY_TYPE=0 THEN '比价' ELSE '直接采购' END) BUY_TYPE,T1.CONTRACT_ATTACHMENT_PATH,
+		T3.CODETEXT AS ORDER_STATUS_NAME,T2.ORDER_STATUS,TO_CHAR(T1.SIGN_DATE,'yyyy-mm-dd') SIGN_DATE 
+		FROM T_ORDER_CONTRACT T1 
+		LEFT OUTER JOIN T_ORDER T2 ON T1.ORDER_ID = T2.ORDER_ID 
+		LEFT OUTER JOIN CODELIST T3 ON T2.ORDER_STATUS = T3.CODEVALUE AND T3.CODELISTTYPE='ORDER_STATUS'
+		WHERE 1=1 
+		<if test="sup_name != null and sup_name != ''">
+		<![CDATA[ AND T1.SUP_NAME LIKE '%' || #{sup_name} || '%' ]]>
+		</if>
+		<if test="order_id != null and order_id != ''">
+		<![CDATA[ AND T1.ORDER_ID LIKE '%' || #{order_id} || '%' ]]>
+		</if>
+		<if test="contract_name != null and contract_name != ''">
+		<![CDATA[ AND T1.CONTRACT_NAME LIKE '%' || #{contract_name} || '%' ]]>
+		</if>
+		<if test="begin_date != null and begin_date != ''">
+		<![CDATA[ AND T1.CREATE_DATE >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="end_date != null and end_date != ''">
+		<![CDATA[ AND T1.CREATE_DATE <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="order_status != null and order_status != '' and order_status != '99'">
+			AND T2.ORDER_STATUS = #{order_status} 
+		</if>
+	  	ORDER BY T1.CREATE_DATE DESC 
+	</select>
+	
+	<select id="queryContractCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Contract">
+		SELECT COUNT(1) 
+		FROM T_ORDER_CONTRACT T1 
+		LEFT OUTER JOIN T_ORDER T2 ON T1.ORDER_ID = T2.ORDER_ID 
+		WHERE 1=1 
+		<if test="sup_name != null and sup_name != ''">
+		<![CDATA[ AND T1.SUP_NAME LIKE '%' || #{sup_name} || '%' ]]>
+		</if>
+		<if test="order_id != null and order_id != ''">
+		<![CDATA[ AND T1.ORDER_ID LIKE '%' || #{order_id} || '%' ]]>
+		</if>
+		<if test="contract_name != null and contract_name != ''">
+		<![CDATA[ AND T1.CONTRACT_NAME LIKE '%' || #{contract_name} || '%' ]]>
+		</if>
+		<if test="begin_date != null and begin_date != ''">
+		<![CDATA[ AND T1.CREATE_DATE >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="end_date != null and end_date != ''">
+		<![CDATA[ AND T1.CREATE_DATE <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="order_status != null and order_status != '' and order_status != '-1'">
+			AND T2.ORDER_STATUS = #{order_status} 
+		</if>
+	</select>
+	
+	<select id="getOrderStatusList" resultMap="contractMap">
+		SELECT T1.CODETEXT ORDER_STATUS_NAME,T1.CODEVALUE ORDER_STATUS FROM CODELIST T1
+		WHERE T1.CODELISTTYPE='ORDER_STATUS'
+		ORDER BY (T1.CODEVALUE+0)
+	</select>
+	
+	<select id="getFilePath" resultType="java.lang.String">
+		SELECT T1.CONTRACT_ATTACHMENT_PATH FROM T_ORDER_CONTRACT T1
+		WHERE T1.CONTRACT_CODE = #{sup_name}
+	</select>
+</mapper>

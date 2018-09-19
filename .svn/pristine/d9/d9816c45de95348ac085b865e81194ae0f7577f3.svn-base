@@ -1,0 +1,30 @@
+function queryEnquiry(action){
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+}
+
+function updateEnquiryStatus(action,id){
+	if(confirm("ÊÇ·ñÈ·ÈÏ¾Ü¾ø£¡")){
+//		$.ajax({
+//
+//		     type: 'POST',
+//
+//		     url: action ,
+//
+//			    data : {
+//				'exchangeStatus' : exchangeStatus,
+//				'supplierAddressId' : '',
+//				'supCheckInfo' : '',
+//				'exchangeId' : exchangeId
+//			} ,
+//
+//		    success: function (data){
+//		    	window.location.href=window.location.href;
+//		    } ,
+//
+//		    dataType: 'json',
+//		    
+//		    cache:false,
+//		});
+	}
+}

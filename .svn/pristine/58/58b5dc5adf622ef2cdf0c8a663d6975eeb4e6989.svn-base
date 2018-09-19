@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ManagementPartnerMapper">
+	<resultMap id="partnerMap" type="com.avic.management.models.EnterpriseSupMapping">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_ID" property="companyId" jdbcType="VARCHAR" />
+		<result column="SUP_INFO_ID" property="supInfoId" jdbcType="VARCHAR" />
+		<result column="IF_BUILDING" property="ifBuilding" jdbcType="VARCHAR" />
+		<result column="JOIN_DATE" property="joinDate" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="SUP_DATE" property="supDate" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<insert id="insertPartener" parameterType="com.avic.management.models.EnterpriseSupMapping">
+		INSERT INTO T_ENTERPRISE_SUP_MAPPING
+            (
+              ID,
+              COMPANY_ID,
+              SUP_INFO_ID
+            )
+     VALUES
+            (
+	             COMPANY_MAPPING_INDEX.Nextval,
+	             #{companyId,jdbcType=VARCHAR},
+	             #{supInfoId,jdbcType=VARCHAR}
+	          )
+	</insert>
+	
+	<select id="queryEnterpriseSupMappingList" resultMap="partnerMap" parameterType="com.avic.management.models.EnterpriseSupMapping">
+			 select * from (select * from (
+			 	SELECT rownum rn, t.*,s.sup_name,s.ENTER_DATE SUP_DATE,s.CONTACT_PERSON,s.CONTACT_NUM
+			  from T_ENTERPRISE_SUP_MAPPING t, T_SUP_INFO s
+			 where t.sup_info_id = s.sup_id
+			 and   t.company_id = #{companyId,jdbcType=VARCHAR}
+			 	<if test="supName != null and supName != ''">
+				<![CDATA[ AND S.SUP_NAME LIKE '%' || #{supName} || '%' ]]>
+				</if>
+				<if test="contactPerson != null and contactPerson != ''">
+				<![CDATA[ AND S.CONTACT_PERSON LIKE '%' || #{contactPerson} || '%' ]]>
+				</if>
+				<if test="contactNum != null and contactNum != ''">
+				<![CDATA[ AND S.CONTACT_NUM LIKE '%' || #{contactNum} || '%' ]]>
+				</if>
+				<if test="id != null and id != ''">
+	           		AND T.ID = #{id}
+	       		</if>
+			 ) order by SUP_DATE desc
+	       		) R
+	     WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="queryEnterpriseSupMappingCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.EnterpriseSupMapping">
+			 select count(1)
+			  from T_ENTERPRISE_SUP_MAPPING t, T_SUP_INFO s
+			 where t.sup_info_id = s.sup_id
+			 and   t.company_id = #{companyId,jdbcType=VARCHAR}
+			 <if test="supName != null and supName != ''">
+				<![CDATA[ AND S.SUP_NAME LIKE '%' || #{supName} || '%' ]]>
+				</if>
+				<if test="contactPerson != null and contactPerson != ''">
+				<![CDATA[ AND S.CONTACT_PERSON LIKE '%' || #{contactPerson} || '%' ]]>
+				</if>
+				<if test="contactNum != null and contactNum != ''">
+				<![CDATA[ AND S.CONTACT_NUM LIKE '%' || #{contactNum} || '%' ]]>
+				</if>
+				<if test="id != null and id != ''">
+	           		AND T.ID = #{id}
+	       		</if>
+	</select>
+	<select id="querySupInfo" resultMap="partnerMap" parameterType="com.avic.management.models.EnterpriseSupMapping">
+		select * from (select r.*,rownum rk from (SELECT rownum rn, sup_id sup_info_id, sup_name,s.CONTACT_PERSON,s.CONTACT_NUM
+		  from t_sup_info s,T_COMPANY_INFO x
+		 where s.COMPANY_CODE = x.COMPANY_CODE and x.IF_CHECK = '1' and s.sup_id not in
+		       (select t.sup_info_id from T_ENTERPRISE_SUP_MAPPING t
+		       	WHERE t.company_id = #{companyId,jdbcType=VARCHAR}
+		       	)
+		       	<if test="searchSupName != null and searchSupName != ''">
+				<![CDATA[ AND s.sup_name LIKE '%' || #{searchSupName} || '%' ]]>
+				</if>
+				order by enter_date desc ) R) z
+	     WHERE z.Rk BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="querySupInfoCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.EnterpriseSupMapping">
+		select count(1)
+		  from t_sup_info s,T_COMPANY_INFO x
+		 where s.COMPANY_CODE = x.COMPANY_CODE and x.IF_CHECK = '1' and s.sup_id not in
+		       (select t.sup_info_id from T_ENTERPRISE_SUP_MAPPING t
+		       	WHERE t.company_id = #{companyId,jdbcType=VARCHAR}
+		       	)
+		       	<if test="searchSupName != null and searchSupName != ''">
+				<![CDATA[ AND s.sup_name LIKE '%' || #{searchSupName} || '%' ]]>
+				</if>
+	</select>
+	
+	<update id="updateIfBuilding" parameterType="com.avic.management.models.EnterpriseSupMapping">
+		UPDATE T_ENTERPRISE_SUP_MAPPING 
+		   SET IF_BUILDING = #{ifBuilding,jdbcType=VARCHAR}
+		  WHERE ID =  #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="deleteSupMapping" parameterType="com.avic.management.models.EnterpriseSupMapping">
+		DELETE FROM  T_ENTERPRISE_SUP_MAPPING 
+		  WHERE ID =  #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

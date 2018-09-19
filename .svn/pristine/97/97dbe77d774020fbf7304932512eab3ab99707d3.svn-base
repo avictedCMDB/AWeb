@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.OrderExchangeMapper">
+	<resultMap id="orderExchangeMap" type="com.avic.management.models.OrderExchangeBean">
+	</resultMap>
+	
+	<select id="getOrderDetail" parameterType="String" resultMap="orderExchangeMap">
+	SELECT T1.ORDER_ID,T2.SUP_NAME,T1.ADDR_NAME,T1.ADDR_PHONE 
+	FROM T_ORDER T1 
+	LEFT OUTER JOIN T_SUP_INFO T2 ON T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID = #{order_id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="orderSelectDoInit" parameterType="com.avic.management.models.OrderExchangeBean" resultMap="orderExchangeMap">
+	SELECT T1.ORDER_ID,T1.SUP_ID,T2.SUP_GOODS_ID,T2.IMAGE_PATH,
+	T2.GOODS_NAME,T2.GOODS_PRICE,T2.BUY_NUM FROM T_ORDER T1 
+	LEFT OUTER JOIN T_ORDER_SNAPSHOT T2 ON T1.ORDER_ID=T2.ORDER_ID AND T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID=#{order_id,jdbcType=VARCHAR}
+	<if test="goods_name != null and goods_name != ''">
+		<![CDATA[ AND T2.GOODS_NAME LIKE '%' || #{goods_name} || '%' ]]>
+		</if>
+	</select>
+	
+	<select id="orderSelectMainDoInit" parameterType="com.avic.management.models.OrderExchangeBean" resultMap="orderExchangeMap">
+	SELECT T1.ORDER_ID,T1.SUP_ID,T2.SUP_GOODS_ID,T2.IMAGE_PATH,
+	T2.GOODS_NAME,T2.GOODS_PRICE,T2.BUY_NUM FROM T_ORDER T1 
+	LEFT OUTER JOIN T_ORDER_SNAPSHOT T2 ON T1.ORDER_ID=T2.ORDER_ID AND T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID=#{order_id,jdbcType=VARCHAR}
+		AND T2.SUP_GOODS_ID IN (${sup_goods_id})
+	</select>
+</mapper>

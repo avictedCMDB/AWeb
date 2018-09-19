@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierOffStandRequireMapper">
+	<resultMap id="supplierOffStandRequireMap" type="com.avic.supplier.models.SupplierOffStandRequire">
+		<result column="id" property="id" jdbcType="VARCHAR" /> 
+	</resultMap>
+	<!-- 查询首页统计数量 -->
+	<select id="querySupplierOffStandRequiret" resultMap="supplierOffStandRequireMap" parameterType="com.avic.supplier.models.SupplierOffStandRequire">
+	</select>
+	<select id="querySupplierOffStandRequiretCount" resultType="java.lang.Integer" parameterType="com.avic.supplier.models.SupplierOffStandRequire">
+	</select>
+	
+</mapper>

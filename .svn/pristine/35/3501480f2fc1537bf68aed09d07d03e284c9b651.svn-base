@@ -1,0 +1,37 @@
+package com.avic.supplier.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierProject;
+
+@Repository
+public interface SupplierProjectMapper {
+	
+	public List<SupplierProject> selectProject(
+			@Param("projType")String projType,
+			@Param("auditStatus")String auditStatus,
+			@Param("compName")String compName,
+			@Param("projId")String projId,
+			@Param("startTime")String startTime, 
+			@Param("endTime")String endTime, 
+			@Param("start")int start, 
+			@Param("end")int end,
+			@Param("type")String type);
+	
+
+	public int selectProjectCount(
+			@Param("projType")String projType,
+			@Param("auditStatus")String auditStatus,
+			@Param("compName")String compName,
+			@Param("projId")String projId,
+			@Param("startTime")String startTime, 
+			@Param("endTime")String endTime,
+			@Param("type")String type);
+
+	public void insertBidProjSupplierByProjIdWithSupId(@Param("projId")String projId, @Param("supId")String supId);
+	public SupplierProject selectProjectByProjIdAndSupCode(@Param("projId")String projId, @Param("supCode")String supCode);
+	public SupplierProject selectProjectByProjId(@Param("projId")String projId);
+}

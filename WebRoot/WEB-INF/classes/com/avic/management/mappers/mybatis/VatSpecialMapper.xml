@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.VatSpecialMapper">
+	<resultMap id="vatMap" type="com.avic.management.models.VatSpecial">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="TAXPAYER_CODE" property="taxpayerCode" jdbcType="VARCHAR" />
+		<result column="REGISTER_PATH" property="registerPath" jdbcType="VARCHAR" />
+		<result column="REGISTER_TEL" property="registerTel" jdbcType="VARCHAR" />
+		<result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" />
+		<result column="BANK_ACCOUNT" property="bankAccount" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="URL1" property="url1" jdbcType="VARCHAR" />
+		<result column="URL2" property="url2" jdbcType="VARCHAR" />
+		<result column="URL3" property="url3" jdbcType="VARCHAR" />
+		<result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryVatSpecial" resultMap="vatMap" parameterType="com.avic.management.models.VatSpecial">
+		SELECT TVI.ID,
+		       TVI.COMPANY_NAME,
+		       TVI.TAXPAYER_CODE,
+		       TVI.REGISTER_PATH,
+		       TVI.REGISTER_TEL,
+		       TVI.BANK_NAME,
+		       TVI.BANK_ACCOUNT,
+		       TVI.USER_ID,
+		       TVI.CREATE_DATE,
+		       TVI.AUDIT_STATUS
+		  FROM T_VAT_INFO TVI  
+		 WHERE TVI.USER_ID = #{userID,jdbcType=VARCHAR}
+		 <if test="id!=null and id!=''">
+		 	AND TVI.ID = #{id,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+	<!-- <select id="queryInvoiceByInvoiceID" parameterType="com.avic.management.models.Invoice" resultMap="invoiceMap">
+		SELECT TI.COMPANY_NAME,
+		       TI.INVOICE_NUM,
+		       TI.INVOICE_FLAG,
+		       TI.INVOICE_CONTENT,
+		       TI.IF_DEFAULT,
+		       TI.USER_ID,
+		       TI.INVOICE_ID
+		  FROM T_INVOICE TI
+		 WHERE TI.INVOICE_ID = #{invoiceID,jdbcType=VARCHAR}
+	</select> -->
+	
+	<insert id="addVat" parameterType="com.avic.management.models.VatSpecial">
+		INSERT INTO T_VAT_INFO TVI
+	           (
+	             ID,
+	             COMPANY_NAME,
+	             TAXPAYER_CODE,
+	             REGISTER_PATH,
+	             REGISTER_TEL,
+	             BANK_NAME,
+	             BANK_ACCOUNT,
+	             USER_ID,
+	             CREATE_DATE
+	           )
+	    VALUES
+	           (
+	             #{id,jdbcType=VARCHAR},
+	             #{companyName,jdbcType=VARCHAR},
+	             #{taxpayerCode,jdbcType=VARCHAR},
+	             #{registerPath,jdbcType=VARCHAR},
+	             #{registerTel,jdbcType=VARCHAR},
+	             #{bankName,jdbcType=VARCHAR},
+	             #{bankAccount,jdbcType=VARCHAR},
+	             #{userID,jdbcType=VARCHAR},
+	             sysdate
+	           )
+	</insert>
+	
+	<update id="updateVat" parameterType="com.avic.management.models.VatSpecial">
+		UPDATE T_VAT_INFO
+   		   SET COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+		       TAXPAYER_CODE = #{taxpayerCode,jdbcType=VARCHAR},
+		       REGISTER_PATH = #{registerPath,jdbcType=VARCHAR},
+		       REGISTER_TEL = #{registerTel,jdbcType=VARCHAR},
+		       BANK_NAME = #{bankName,jdbcType=VARCHAR},
+		       BANK_ACCOUNT = #{bankAccount,jdbcType=VARCHAR}
+		       <if test="auditStatus!='' and auditStatus != null">
+		       	 ,AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+		       </if>
+         WHERE ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateVatAuditStatus" parameterType="com.avic.management.models.VatSpecial">
+		UPDATE T_VAT_INFO
+   		   SET AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+         WHERE ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteVat"  parameterType="com.avic.management.models.VatSpecial">
+		DELETE FROM T_VAT_INFO 
+     		  WHERE ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="queryVatStatus" resultType="String" parameterType="com.avic.management.models.VatSpecial">
+		SELECT TVI.AUDIT_STATUS
+		  FROM T_VAT_INFO TVI  
+		 WHERE TVI.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<select id="queryVatIndex" resultType="java.lang.String">
+		select to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(image_index.nextval,6,'0'),'','0') from dual
+	</select>
+</mapper>

@@ -1,0 +1,59 @@
+@charset "utf-8";
+/* CSS Document */
+#table_list table tr i.file {
+	margin-top: 0;
+	
+}
+#brands_price .brands .sl_value li a {
+	border: 1px solid #fff;
+}
+i.file {
+	margin-left: 5px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 8px;
+}
+#brands_price .brands .sl_key {
+	width: 55px;
+}
+#brands_price .brands .sl_value {
+	width: 1080px;
+}
+#brands_price .brands .sl_value li {
+	width: auto;
+}
+#brands_price .brands .special_value {
+	width: 180px;
+	float: left;
+	margin-left: 10px;
+	height: 28px;
+	margin-right: 5px;
+}
+#brands_price .brands .special_ksy {
+	line-height: 28px;
+	
+}
+#brands_price .brands .special_ksy .form-control,
+#brands_price .brands .special_value .form-control {
+	height: 28px;
+	line-height: 28px;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+.brands_last{
+	margin-top: 10px;
+}
+.add_btn {
+	background: #0091dc;
+	color: #fff;
+	height: 28px;
+	border: none;
+	line-height: 28px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+#brands_price .brands .special_value .special_input {
+	width: 75px;
+	display: inline-block; 
+	margin: 0 5px;
+}

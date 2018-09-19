@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.CountMapper">
+	<resultMap id="countMap" type="com.avic.supervise.models.Count">
+		<result column="ORDER_AMOUNT" property="orderAmount" jdbcType="VARCHAR" />
+		<result column="ORDER_TIME" property="orderTime" jdbcType="VARCHAR" /> 
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<select id="queryCountBySupID" resultMap="countMap">
+		SELECT SUM(TOR.ORDER_AMOUNT) AS ORDER_AMOUNT,to_char(TOR.ORDER_TIME,'yyyy-mm-dd') AS ORDER_TIME
+		  FROM T_ORDER TOR
+		 WHERE TOR.SUP_ID = #{supID,jdbcType=VARCHAR}
+		   AND to_char(TOR.ORDER_TIME,'yyyy-mm-dd') &gt; #{startTime,jdbcType=VARCHAR}
+		   AND to_char(TOR.ORDER_TIME,'yyyy-mm-dd') &lt; #{endTime,jdbcType=VARCHAR}
+		   AND TOR.ORDER_ID NOT IN (SELECT TORD.ORDER_ID FROM T_ORDER_REFOUND TORD)
+		GROUP BY TOR.SUP_ID,to_char(TOR.ORDER_TIME,'yyyy-mm-dd')
+	</select>
+	
+	<select id="queryCountByCompanyID" resultMap="countMap">
+		SELECT SUM(TOR.ORDER_AMOUNT) AS ORDER_AMOUNT,to_char(TOR.ORDER_TIME,'yyyy-mm-dd') AS ORDER_TIME
+		  FROM T_ORDER TOR
+		 WHERE TOR.COMPANYID = #{companyID,jdbcType=VARCHAR}
+		   AND to_char(TOR.ORDER_TIME,'yyyy-mm-dd') &gt; #{startTime,jdbcType=VARCHAR}
+		   AND to_char(TOR.ORDER_TIME,'yyyy-mm-dd') &lt; #{endTime,jdbcType=VARCHAR}
+		   AND TOR.ORDER_ID NOT IN (SELECT TORD.ORDER_ID FROM T_ORDER_REFOUND TORD)
+		GROUP BY TOR.SUP_ID,to_char(TOR.ORDER_TIME,'yyyy-mm-dd')
+	</select>
+</mapper>

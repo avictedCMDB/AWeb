@@ -1,0 +1,41 @@
+function removeSupGoods(index){
+	alert(index);
+	if(index==1){
+		$("#supOneID").val("");
+		$("#supGoodsOneID").val("");
+	}else if(index==2){
+		$("#supTwoID").val("");
+		$("#supGoodsTwoID").val("");
+	}else if(index==3){
+		$("#supThreeID").val("");
+		$("#supGoodsThreeID").val("");
+	}else if(index==4){
+		$("#supFourID").val("");
+		$("#supGoodsFourID").val("");
+	}
+	document.getElementById("commitForm").action="/AWeb/management/compare/detail";
+	document.getElementById("commitForm").submit();
+}
+
+//Ìí¼Ó¹ºÎï³µ
+function addCart(){
+	var chooseGoodsIndex = $("input[name='optionsRadiosinline']:checked").val();
+	if(chooseGoodsIndex==1){
+		checkGoodsId = $("#supGoodsOneID").val();
+		checkSupId = $("#supOneID").val(); 
+	}else if(chooseGoodsIndex==2){
+		checkGoodsId = $("#supGoodsTwoID").val();
+		checkSupId = $("#supTwoID").val(); 
+	}else if(chooseGoodsIndex==3){
+		checkGoodsId = $("#supGoodsThreeID").val();
+		checkSupId = $("#supThreeID").val(); 
+	}else if(chooseGoodsIndex==4){
+		checkGoodsId = $("#supGoodsFourID").val();
+		checkSupId = $("#supFourID").val(); 
+	}
+	window.localtion.href = "/AWeb/management/compare/addCart";
+}
+
+function cancle(){
+	window.location.href="/AWeb/"+$("#returnUrl").val();
+}

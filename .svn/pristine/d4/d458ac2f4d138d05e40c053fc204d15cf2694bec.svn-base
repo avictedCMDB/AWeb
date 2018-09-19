@@ -1,0 +1,65 @@
+function addVatSpecialInfo(){
+	$("#vatSpecilDiv").show();
+}
+
+function cancle(){
+	if($("#id").val()!=""){
+		$("#id").val("");
+		$("#companyName").val("");
+		$("#taxpayerCode").val("");
+		$("#registerPath").val("");
+		$("#registerTel").val("");
+		$("#bankName").val("");
+		$("#bankAccount").val("");
+	}
+	$("#vatSpecilDiv").hide();
+}
+
+function addVat(){
+	var path =$("#path").val();
+	if($("#companyName").val()==""){
+		alert("请输入单位名称！");
+		return;
+	}
+	if($("#taxpayerCode").val()==""){
+		alert("请输入纳税人识别码！");
+		return;
+	}
+	if($("#registerPath").val()==""){
+		alert("请输入注册地址！");
+		return;
+	}
+	if($("#registerTel").val()==""){
+		alert("请输入注册电话！");
+		return;
+	}
+	if($("#bankName").val()==""){
+		alert("请输入开户银行！");
+		return;
+	}
+	if($("#bankAccount").val()==""){
+		alert("请输入银行账户！");
+		return;
+	}
+	if($("#id").val()==""){
+		document.getElementById("vatSpecialForm").action=path+"/management/vat/add";
+	}else{
+		document.getElementById("vatSpecialForm").action=path+"/management/vat/update";
+	}
+	document.getElementById("vatSpecialForm").submit();
+}
+
+function delVatSpecialInfo(){
+	window.location.href=path+"/management/vat/del/"+$("#id").val();
+}
+function help(which){
+	if($("#helpDiv"+which).is(":hidden")){
+		$("#helpDiv"+which).show();
+	} else{
+		$("#helpDiv"+which).hide();
+	}
+}
+
+function hideHelp(which){
+	$("#helpDiv"+which).hide();
+}

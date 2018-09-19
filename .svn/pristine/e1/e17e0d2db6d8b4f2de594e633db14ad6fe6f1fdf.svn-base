@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>地址管理|中航招标网</title>
+</head>
+<body>
+<div class="page-wrapper">
+	<div id="side_navi">
+   		<dl>
+   			<dt class="tlt_merchandise">商品比对管理<span class="fa fa-caret-square-o-down"></span></dt>
+   			<dd>
+   				<ul>
+   					<li <c:if test="${param.menu == 'compare'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/compare"><span class="fa fa-caret-right"></span>商品比对管理</a></li>
+   				</ul>
+   			</dd>
+   			<dt class="tlt_information">信息管理<span class="fa fa-caret-square-o-down"></span></dt>
+   			<dd>
+   				<ul>
+   					<li <c:if test="${param.menu == 'address'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/address"><span class="fa fa-caret-right"></span>地址管理</a></li>
+   					<li <c:if test="${param.menu == 'invoice'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/invoice"><span class="fa fa-caret-right"></span>发票管理</a></li>
+   					<li <c:if test="${param.menu == 'vat'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/vat"><span class="fa fa-caret-right"></span>增票资质</a></li>
+   				</ul>
+   			</dd>
+   			<dt class="tlt_transaction">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+   			<dd>
+   				<ul>
+   					<li><a href="${pageContext.request.contextPath}/market/cart/list"><span class="fa fa-caret-right"></span>购物车管理</a></li>
+   					<li <c:if test="${param.menu == 'order'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/order"><span class="fa fa-caret-right"></span>订单管理</a></li>
+   					<li <c:if test="${param.menu == 'enterprise'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/enterprise"><span class="fa fa-caret-right"></span>询价管理</a></li>
+   					<li <c:if test="${param.menu == 'offStandardRequire'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/specialGoods/offStandardRequirePage"><span class="fa fa-caret-right"></span>商品需求管理</a></li>
+   				</ul>
+   			</dd>
+   			<dt class="tlt_reeturns">退换货管理<span class="fa fa-caret-square-o-down"></span></dt>
+   			<dd class="last_child">
+   				<ul>
+   					<li <c:if test="${param.menu == 'exchange'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/exchange"><span class="fa fa-caret-right"></span>换货管理</a></li>
+   					<li <c:if test="${param.menu == 'refound'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/refound"><span class="fa fa-caret-right"></span>退货管理</a></li>
+   				</ul>
+   			</dd>
+   			<dt class="tlt_reeturns">个人中心<span class="fa fa-caret-square-o-down"></span></dt>
+   			<dd class="last_child">
+   				<ul>
+   					<li <c:if test="${param.menu == 'changepwd'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/management/info"><span class="fa fa-caret-right"></span>账户信息</a></li>
+   				</ul>
+   			</dd>
+   		</dl>
+   		<!--#side_navi-->
+   	</div>
+</div><!--.page-wrapper-->
+</body>
+</html>

@@ -1,0 +1,520 @@
+@charset "utf-8";
+/* CSS Document */
+.breadcrumb {
+    padding: 8px 0;
+	margin-bottom: 3px;
+}
+.breadcrumb li {
+	float: left;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+.breadcrumb li span {
+	padding-left: 10px;
+}
+#order_details {
+	padding: 20px 20px 40px;
+	background-color: #fff;
+	font-size: 12px;
+}
+.section_main {
+	margin-bottom: 30px;
+}
+.section_main h2 {
+	border-left: 5px solid #0091dc;
+    color: #0091dc;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-left: 10px;
+	margin-top: 0;
+}
+.section_main h2 a {
+	font-size: 12px;
+	font-weight: 100;
+	margin-left: 10px;
+}
+#order_details table {
+	width: 100%;
+	border: 1px solid #dfdfdf;
+
+}
+#order_details table tr td {
+	padding: 10px;
+}
+#order_details table tr th {
+	background: #dfdfdf none repeat scroll 0 0;
+	border: 1px solid #dfdf;
+    line-height: 32px;
+    text-align: center;
+}
+#order_details table tr td {
+	text-align: center;
+}
+#order_details table tr td a {
+	color:#008ad3;
+}
+#order_details table tr td a:hover {
+	text-decoration: underline;
+}
+#order_details table tr td.left_align {
+	text-align: left;
+}
+#order_details .input-group {
+	width: 50%;
+	margin: 0 auto;
+}
+#order_details .input-group-addon {
+	height: 26px;
+	line-height: 26px;
+	padding: 0 10px;
+	border-radius: 0;
+	border-color: #e5e5e5;
+	width: 5%;
+}
+table tr td .form-control {
+	height: 28px;
+	width: 40%;
+}
+
+#order_details dl {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#order_details dl .form-control {
+	height: 26px;
+	display: inline;
+	width: 600px;
+	border-radius: 0;
+}
+#order_details .icon_action {
+	padding-left: 50px;
+	padding-right: 50px;
+}
+#order_details .icon_action dl dt {
+	width: 100px;
+	color: #fff;
+	text-align: center;
+	line-height: 26px;
+	font-weight: 100;
+}
+#order_details .icon_action dl dd {
+	line-height: 26px;
+}
+#order_details .icon_action dl dd span {
+	margin-right: 10px;
+}
+.list_section ul li a,
+#order_details .icon_action dl dt a {
+	display: block;
+	background: #fff;
+	border: 1px solid #eee;
+	color: #666;
+	line-height: 24px;
+}
+.list_section ul li a:hover,
+.list_section ul li a.active,
+#order_details .icon_action dl dt a:hover, 
+#order_details .icon_action dl dt a.active {
+	background: url(../img/order/icon-select.png) right bottom no-repeat;
+	border: 1px solid #ff4200;
+}
+#order_details .icon_action p.more i {
+	margin-left: 10px;
+}
+.btn-add {
+	margin-left: 10px;
+}
+dl.add_file dd {
+	display: table;
+}
+dl.add_file dd input,
+dl.add_file dd .btn {
+	display: table-cell;
+	vertical-align: top;
+}
+#order_details .icon_action dl.special_list dt {
+	color: #666;
+	font-weight: bold;
+	text-align: right;
+}
+#order_details .icon_action dl.special_list dd input {
+	margin-left: 20px;
+}
+.detail_list ul {
+	padding-left: 162px;
+	margin-top: 20px;
+}
+.detail_list ul li {
+	float: left;
+	margin-right: 20px;
+}
+
+
+#order_details dl dd ul span.red {
+	color: red;
+	margin-left: 10px;
+}
+#order_details dl dd ul li a {
+	width: 100px;
+	background: #666666;
+	color: #fff;
+	text-align: center;
+	line-height: 26px;
+}
+#order_details dl dd ul li a {
+	display: block;
+	background: #fff;
+	border: 2px solid #eee;
+	color: #666;
+	line-height: 24px;
+}
+#order_details dl dd ul li.active a {
+	background: url(../img/order/icon-select.png) right bottom no-repeat;
+	border: 2px solid #ff4200;
+}
+#order_details dl dd ul li a:hover {
+	border: 2px solid #ff4200;
+}
+#order_details dl dd {
+	margin-left: 115px;
+}
+.add_details {
+	width: 237px;
+	height: 106px;
+	background: url(../img/order/icon_off.png) left top no-repeat;
+	padding: 10px 20px;
+	position: relative;
+	margin-top: 10px
+}
+.add_details:hover {
+	background: url(../img/order/icon_on.png) left top no-repeat;
+	cursor: pointer;
+}
+.add_details .add_name {
+	border-bottom: 1px solid #dfdfdf;
+	margin-bottom: 5px;
+}
+.add_details span {
+	margin-right: 5px;
+}
+.add_details span.city {
+	font-weight: bold;
+}
+.selected_icon {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+.btn_add {
+	text-align: right;
+}
+#order_details .add_address  dl{
+	background:#fafafa;
+	margin-top: 10px;
+	padding: 30px;
+}
+#order_details .add_address dl dt {
+	background: none;
+	color: #666;
+	text-align: right;
+	margin-bottom: 5px;
+}
+#order_details .add_address dl dd {
+	margin-bottom: 5px;
+}
+#order_details dl dt span.red {
+	color: #ff4200;
+	margin-right: 10px;
+}
+#order_details .add_address select {
+	float: left;
+	width: 130px;
+	display: inline;
+	margin-right: 10px;
+	height: 26px;
+	padding: 0;
+	font-size: 12px;
+}
+.add_btn {
+	background: #0091dc;
+	color: #fff;
+}
+.company {
+	font-weight: bold;
+}
+#order_details dl.reason {
+	padding-left: 30px;
+}
+#order_details dl.reason .form-control {
+	height: auto;
+}
+#order_details dl.reason dt {
+	background: none;
+	color: #666;
+	text-align: right;
+	margin-bottom: 5px;
+}
+#order_details dl.reason dd span{
+	margin-left: 10px;
+}
+.price_area {
+	border-top: 2px solid #0091dc;
+	padding-top: 20px;
+}
+.gather_box {
+	float: right;
+	width: 422px;
+	border: 1px solid #ff4200;
+}
+.gather_inner {
+	border: 3px solid #fff1e8;
+	padding: 10px 10px 5px 10px;
+	text-align: right;
+}
+.gather_inner p {
+	margin-bottom: 6px;
+}
+.gather_inner span {
+	font-weight: bold;
+	padding-right: 5px;
+	line-height: 1.2;
+}
+.gather_inner span.symbol {
+	font-size: 28px;
+	color: #979b9a;
+}
+.gather_inner span.price {
+	font-size: 28px;
+	color: #ff4200;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+span.num {
+	color: #ff4200;
+}
+span.img {
+	margin-right: 10px;
+}
+p.success {
+	font-size: 14px;
+	line-height: 30px;
+	text-align: center;
+	border-bottom: 1px solid #dfdfdf;
+	padding-bottom: 10px;
+}
+/*新增收货地址*/
+#add_address {
+	width: 762px;
+	height: 542px;
+	border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+	margin: 0 auto;
+}
+#info_invoice .inner,
+#add_address .inner {
+	width: 754px;
+}
+.add_title {
+    background: #0091dc none repeat scroll 0 0;
+	border-left: right;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    height: 27px;
+    line-height: 27px;
+    padding: 0 10px;
+}
+.add_title a {
+	float: right;
+	padding-top: 5px;
+	color: #fff;
+	display: block;
+}
+.main_inner {
+	padding: 30px;
+	font-size: 14px;
+}
+.main_inner label {
+	display: block;
+}
+.main_inner .red {
+	color: #ff4200;
+	margin-right: 5px;
+	font-size: 12px;
+}
+.main_inner .form-control {
+	height: 28px;
+	padding: 0 10px;
+	line-height: 28px;
+}
+.main_inner input {
+	width: 260px;
+	display: inline;
+	margin-right: 10px;
+}
+.main_inner input.detail {
+	width: 450px;
+}
+.main_inner select {
+	width: 200px;
+	display: inline;
+}
+.tel_area {
+	display: table;
+	margin-bottom: 15px;
+}
+.tel_area .form-group {
+	display: table-cell;
+	vertical-align: bottom;
+}
+.tel_area .text {
+	width: 20px;
+}
+.gray {
+	color: #ccc;
+}
+.main_inner a {
+	display: inline-block;
+	padding: 2px 10px;
+	border: 1px solid #ccc;
+	margin-left: 6px;
+	border-radius: 4px;
+	}
+.main_inner a:hover {
+	border: 1px solid #ff4200;
+}
+.btn_list {
+	text-align: center;
+	margin-top: 30px;
+}
+/*支付方式*/
+.list_section ul li {
+	float: left;
+	width: 100px;
+	margin-right: 10px;
+	text-align: center;
+}
+#order_details .list_section ul li a {
+	width: 100px;
+}
+#order_details .icon_action p span {
+	margin-right: 20px;
+}
+#order_details .icon_action p span a {
+	color: #0091dc;
+}
+/*发票*/
+#info_invoice label,
+#add_address label {
+	font-weight: 100;
+}
+#info_invoice .title_list {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 15px;
+}
+#info_invoice .invoice_list {
+	padding-left: 0;
+}
+#info_invoice .invoice_list ul li {
+	margin: 0;
+	margin-right: 10px;
+	margin-bottom: 15px;
+}
+#info_invoice .invoice_list a {
+	margin: 0;
+	width: 100px;
+	border-radius: 0;
+}
+.btn_list ul li {
+	float: left;
+	margin: 0 10px;
+}
+#info_invoice .attention {
+	background: #dbf0fb;
+	border: 1px solid #0091dc;
+	padding: 10px;
+	color: #666;
+}
+#info_invoice .attention a:hover,
+#info_invoice .attention a {
+	border-radius: 0;
+	border: none;
+	margin: 0 5px;
+	padding: 0;
+}
+#info_invoice .attention a:first-child {
+	margin-left: 0;
+}
+#info_invoice .attention a:hover {
+	color: #ff4200;}
+#info_invoice .attention a{
+	color: #0091dc;
+}
+.step_list {
+	background: url(../img/order/bg-list01.jpg) left top no-repeat;
+	margin-top: 15px;
+	line-height: 30px;
+	margin-bottom: 15px;
+}
+.step_list ul li  {
+	float: left;
+	padding: 0 20px;
+	width: 150px;
+	color: #ccc;
+}
+.step_list ul li.active {
+	color: #666;
+}
+.step_list ul li.active:first-child {
+	background: url(../img/order/bg-select01.png) left top no-repeat;
+}
+.step_list ul li.active:last-child {
+	background: url(../img/order/bg-select02.png) left top no-repeat;
+	width: 160px;
+}
+#info_invoice {
+	width: 762px;
+	height: 600px;
+	border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+	margin: 0 auto;
+}
+#info_invoice select {
+	width: 145px;
+	margin-right: 5px;
+}
+#info_invoice .vat_detail .list_section ul li {
+	margin-bottom: 0;
+}
+#info_invoice .btn_list ul li.return a {
+	border-radius: 0;
+	border: none;
+	margin: 10px 5px 0;
+	padding: 0;
+}
+#info_invoice .btn_list ul li.return a {
+	color: #0091dc;
+}
+#info_invoice .btn_list ul li.return a:hover {
+	color: #ff4200;
+}
+.btn.gray {
+    background: #666 none repeat scroll 0 0;
+    border: medium none;
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 12px;
+}
+.btn.gray:hover {
+	background: #ccc;
+	color: #000;
+}

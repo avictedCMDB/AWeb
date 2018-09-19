@@ -1,0 +1,28 @@
+package com.avic.management.filter;
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+public class MenuFilter extends OncePerRequestFilter {
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request,
+			HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		 	HttpSession session = request.getSession();
+		 	String menu = request.getParameter("menuParam");
+		 	if (StringUtils.isNotEmpty(menu)) {
+	            //菜单选中标识放入session中
+	            session.setAttribute("menuParam", menu);
+		 	}
+			filterChain.doFilter(request, response);
+	}
+}

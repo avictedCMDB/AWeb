@@ -1,0 +1,353 @@
+package com.avic.market.cpi.adapters;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.avic.market.cpi.ServiceAdapter;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.market.cpi.exceptions.TokenInvalidException;
+import com.avic.market.models.Goods;
+import com.avic.market.models.Price;
+import com.avic.market.models.SupArea;
+import com.avic.market.models.SupCategory;
+
+public class StaplesServiceAdapter extends ServiceAdapter {
+    protected static final Log logger = LogFactory.getLog(StaplesServiceAdapter.class);
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+
+    public void init() {
+        logger.info("史泰博接口初始化 ...");
+        super.init();
+        httpHeaders.add(new BasicHeader("Content-Type", "application/json; charset=utf-8"));
+        httpHeaders.add(new BasicHeader("Accept", "application/json"));
+
+    }
+    
+    @Override
+    public void fetchToken() throws ServiceExecutionFailedException {
+        if (supplier.getRefreshToken() == null || supplier.getRefreshExpire().after(new Date())) {
+            logger.info("史泰博-Refresh Token无效，重新加载Access Token");
+            Map<String, String> param = new HashMap<String, String>();
+            param.put("grant_type", "authorization_code");
+            param.put("client_id", supplier.getAuthUser());
+            param.put("client_secret", supplier.getAuthPass());
+            param.put("state", "");
+            param.put("scope", "");
+            param.put("redirect_uri", "http://www.xxxx.com");
+            param.put("code", supplier.getAuthCode());
+            Map<String, Object> result;
+            List<Map<String, Object>> data;
+            try {
+                result = execute("/api/access_token", param);
+                data = (List<Map<String, Object>>)result.get("result");
+
+                result = data.get(0);
+                
+                supplier.setAccessToken((String)result.get("access_token"));
+                supplier.setRefreshToken((String)result.get("refresh_token"));
+                supplier.setAccessExpire(df.parse((String)result.get("expires_in")));
+                supplier.setRefreshExpire(df.parse((String)result.get("refresh_token_expires")));
+                
+                logger.info("史泰博-Token加载成功");
+            } catch (Exception e) {
+                logger.error("史泰博-Token加载失败", e);
+                throw new ServiceExecutionFailedException(e);
+            }
+        } else {
+            logger.info("史泰博-Access Token无效，刷新Access Token");
+            Map<String, String> param = new HashMap<String, String>();
+            param.put("refresh_token", supplier.getRefreshToken());
+            param.put("client_id", supplier.getAuthUser());
+            param.put("client_secret", supplier.getAuthPass());
+
+            Map<String, Object> result;
+            List<Map<String, Object>> data;
+            try {
+                result = execute("/api/refresh_token", param);
+                data = (List<Map<String, Object>>)result.get("result");
+
+                result = data.get(0);
+                
+                supplier.setAccessToken((String)result.get("access_token"));
+                supplier.setRefreshToken((String)result.get("refresh_token"));
+                supplier.setAccessExpire(df.parse((String)result.get("expires_in")));
+                supplier.setRefreshExpire(df.parse((String)result.get("refresh_token_expires")));
+                
+                logger.info("史泰博-Access Token加载成功");
+            } catch (Exception e) {
+                logger.error("史泰博-Access Token加载失败", e);
+                throw new ServiceExecutionFailedException(e);
+            }
+        }
+        
+        
+    }
+
+    @Override
+    public void refreshToken() throws ServiceExecutionFailedException {
+        fetchToken();
+    }
+
+    @Override
+    public List<SupCategory> fetchCategory() throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("史泰博-获取分类");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+
+        List<SupCategory> list = new ArrayList<SupCategory>();
+        SupCategory cat = null;
+        Map<String, Object> result;
+        List<Map<String, Object>> cats;
+        try {
+            result = execute("/api/goods/getPageNum", param);
+            cats = (List<Map<String, Object>>) result.get("result");
+            if (cats == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Map<String, Object> i : cats) {
+                cat = new SupCategory();
+                cat.setSupCatId((Integer) i.get("page_num"));
+                cat.setSupCatName((String) i.get("name"));
+                cat.setSupId(supplier.getSupId());
+                list.add(cat);
+            }
+            logger.info("史泰博-分类获取成功，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("史泰博-分类获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchProvince() throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchCity(int prov) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchCountry(int city) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<SupArea> fetchTown(int town) throws ServiceExecutionFailedException, TokenInvalidException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> fetchSku(int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("史泰博-获取SKU [" + cat + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("pageNum", String.valueOf(cat));
+
+        List<String> list = new ArrayList<String>();
+
+        Map<String, Object> result;
+
+        try {
+            result = execute("/api/goods/product/getSku", param);
+            String data = (String) result.get("result");
+            if (data == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (String s : data.split(",")) {
+                list.add(s.trim());
+            }
+
+            logger.info("史泰博-SKU获取成功，[" + cat + "] 数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("史泰博-SKU获取失败[" + cat + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public Goods fetchGoods(String sku, int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("史泰博-获取商品信息 [" + sku + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("sku", sku);
+
+        Map<String, String> data;
+
+        Map<String, Object> result;
+        
+        Goods goods = null;
+
+        try {
+            result = execute("/api/goodsModel/product/getDetail", param);
+            data = (Map<String, String>) result.get("result");
+            if (data == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            goods = new Goods();
+            goods.setBrandName(data.get("brandName"));
+            goods.setGoodsCode(data.get("upc"));
+            goods.setGoodsDesc(data.get("introduction"));
+            goods.setGoodsModel(data.get("goodsModel"));
+            goods.setGoodsName(data.get("name"));
+            goods.setGoodsParam(data.get("param"));
+            goods.setGoodsService(data.get("service"));
+            goods.setGoodsStatus(Integer.parseInt(data.get("state")));
+            goods.setGoodsUnit(data.get("saleUnit"));
+            goods.setGoodsUrl(data.get("url"));
+            goods.setGoodsWare(data.get("wareQD"));
+            goods.setGoodsWeight(data.get("weight"));
+            goods.setImagePath(data.get("imagePath"));
+            goods.setProductArea(data.get("productArea"));
+            goods.setSupCatId(Integer.parseInt(data.get("category")));
+            goods.setSupGoodsId(sku);
+            goods.setSupId(supplier.getSupId());
+
+            logger.info("史泰博-商品信息获取成功，[" + sku + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("史泰博-商品信息获取失败[" + sku + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return goods;
+    }
+
+    @Override
+    public Map<String, Price> fetchPrice(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        
+        StringBuffer strBuf = new StringBuffer();
+        for (String i : skus) {
+            strBuf.append(i + ",");
+        }
+        
+        String skuString = strBuf.substring(0, strBuf.length() - 1);
+        logger.info("史泰博-获取价格 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("token", supplier.getAccessToken());
+        param.put("sku", skuString);
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        Map<String, Price> map = new HashMap<String, Price>();
+        Price price = null;
+        try {
+            result = execute("/api/goods/product/getPrice", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                price = new Price();
+                price.setAgreePrice((Double)i.get("bizPrice"));
+                price.setCountPrice((Double)i.get("bizPrice"));
+                price.setSalePrice((Double)i.get("supplierPrice"));
+                map.put((String)i.get("skuId"), price);
+            }
+
+            logger.info("史泰博-价格获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("史泰博-价格获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return map;
+    }
+
+
+    public Map<String, Object> execute(String api, Map<String, String> param) throws Exception, TokenInvalidException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        
+        param.put("groupCode", supplier.getCompanyCode());
+        param.put("customerCode", supplier.getDeptCode());
+        List<BasicNameValuePair> nv = new ArrayList<BasicNameValuePair>();
+        String url = api + "?";
+        for (Entry<String, String> i: param.entrySet()) {
+            //nv.add(new BasicNameValuePair(i.getKey(), i.getValue()));
+            url = url + i.getKey() + "=" + (i.getValue() == null ? "" : URLEncoder.encode(i.getValue(), "UTF-8")) + "&";
+        }
+
+        HttpUriRequest req = buildRequest(url, null);//new UrlEncodedFormEntity(nv));
+        logger.debug("史泰博-接口调用[" + api + "] 参数 : " + mapper.writeValueAsString(param));
+        String content = null;
+        int code = 0;
+        try {
+            response = client.execute(req);
+            code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new Exception("史泰博-接口返回HTTP状态异常 [" + code + "]");
+            }
+
+            entity = response.getEntity();
+
+            content = EntityUtils.toString(entity);
+
+            Map<String, Object> result = (Map<String, Object>) mapper.readValue(content, Map.class);
+            EntityUtils.consume(entity);
+
+            logger.debug("史泰博-接口调用成功 [" + api + "] 返回 : " + content);
+
+            if ("true".equals(String.valueOf(result.get("success"))) || (result.get("result") != null && (result.get("result") instanceof Map || result.get("result") instanceof List))) {
+                return result;
+            } else {
+                throw new Exception("史泰博-接口返回数据为失败 : " + result.get("resultMessage"));
+            }
+
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("史泰博-接口调用失败 [" + api + "]", e);
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+}

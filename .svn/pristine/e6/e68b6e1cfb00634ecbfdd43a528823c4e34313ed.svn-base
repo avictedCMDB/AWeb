@@ -1,0 +1,199 @@
+.left_inner {
+	width: 200px;
+	display: block;
+	float: left;
+	background: #f6f4f5;
+	padding: 25px 0 15px 15px;
+	border: 1px solid #dfdfdf;
+	overflow:hidden;
+	height: 100%;
+	display:inline;
+	min-height: 555px;
+
+}
+.matter_inner {
+	overflow:hidden;
+	
+}
+.right_inner {
+	width: 725px;
+	padding-left: 20px;
+	float: left;
+	height:auto;
+}
+.left_inner .tree_area {
+	margin-top: 20px;
+}
+.tree{
+	list-style:none;
+	padding-left:0;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-o-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
+}
+.tree>.tree-node .tree{
+	display:block;
+	overflow-y:hidden;
+	height:auto;
+	-webkit-transition:max-height .2s ease-in;
+	-moz-transition:max-height .25s ease-in;
+	-o-transition:max-height .2s ease-in;
+	-ms-transition:max-height .2s ease-in;
+	transition:max-height .2s ease-in;
+}
+ul li.tree-node{
+	float: none;
+	line-height: 0;
+}
+.tree input.node-check{
+	display:none;
+}
+  
+.tree>.tree-node>label{
+	cursor:pointer;
+	margin-bottom: 0;
+	padding: 0;
+	margin: 0;
+}
+.tree .node-content{
+	display:inline-block;
+}
+.tree .node-content>.node-text{
+	font-size:14px;
+	line-height:24px;
+	font-weight: 100;
+}
+.tree .node-content>.node-title {
+	font-weight:bold;
+}
+.tree .node-content>.node-text:hover{
+	color:#ff4200;
+}
+.node-icon{
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	display:inline-block;
+	vertical-align:middle;
+	width:16px;
+	height:28px;
+}
+  
+.node-check:checked+.node-content>.tree{
+	max-height:0;
+}
+.node-check:checked+.node-content>.icon-folder{
+	background-image:url(../img/supervise/allot01.png);
+}
+.node-check:checked+.node-content>.icon-expand{
+	background-image:url(../img/supervise/elbow-end-plus-nl.gif);
+} 
+.icon-expand{
+	background-image:url(../img/supervise/elbow-end-minus-nl.gif);
+	width:16px;
+	height:18px;
+}
+.icon-minus{
+	background-image:url(../img/supervise/elbow-minus.gif);
+}
+.icon-elbow{
+	background-image:url(../img/supervise/elbow.gif);
+}
+.icon-elbow-line{
+	background:url(../img/supervise/elbow-line.gif) repeat-y;
+}
+.icon-elbow-end{
+	background-image:url(../img/supervise/elbow-end.gif);
+}
+.icon-file{
+	background-image:url(../img/supervise/allot02.gif);
+	width:11px;
+	height: 10px;
+}
+.icon-allot{
+	background-image:url(../img/supervise/allot01.png);
+	width:16px;
+	height:16px;
+}
+.search_list dl dd  label.checkbox-inline,search_list dl dd  label {
+	vertical-align:top;
+}
+
+
+#matter_section .search_area dl dt {
+	float: left;
+	line-height: 25px;
+	margin-right: 5px;
+	width: 76px;
+	text-align: right;
+}
+#matter_section .search_area dl dd {
+	float: left;
+	width: 138px;
+}
+#matter_section .search_area dl {
+	float: left;
+	font-size: 12px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+}
+#matter_section .search_area dl.last {
+	margin-right: 0;
+}
+.btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.red {
+	background: #0091dc;
+	color: #fff;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+.search_area {
+	border-bottom: 1px solid #dfdfdf;
+	padding-bottom: 20px;
+}
+.search_result table {
+	width: 100%;
+}
+.search_result table tr td a {
+    color: #4798ed;
+    margin-right: 5px;
+}
+.search_result table tr td {
+	text-align: center;
+}
+.search_result table tr td.left-list {
+	text-align: left;
+}
+.page ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 9px; 
+}
+.form-control {
+    font-size: 12px;
+    padding: 0;
+        padding-left: 0px;
+    padding-left: 6px;
+    height: 28px;
+}
+.pagination {
+	margin-bottom: 0;
+
+}
+#matter_section ul li.tree-node {
+	line-height: 0;
+}

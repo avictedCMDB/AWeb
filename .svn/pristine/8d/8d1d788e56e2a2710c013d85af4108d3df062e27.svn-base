@@ -1,0 +1,205 @@
+package com.avic.market.controllers;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.market.cpi.CpiService;
+import com.avic.market.cpi.exceptions.NoSuchSupplierException;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.market.models.Goods;
+import com.avic.market.models.GoodsImage;
+import com.avic.market.models.Price;
+import com.avic.market.models.SupArea;
+import com.avic.market.models.SupCategory;
+
+@Controller
+@RequestMapping("/test")
+public class TestController {
+    protected static final Log logger = LogFactory.getLog(TestController.class);
+    
+    @Autowired
+    CpiService cpiService;
+    
+    @RequestMapping("")
+    public String index() {
+        return "test/index";
+    }
+    @RequestMapping("/cat/{sup:.*}")
+    public String cat(@PathVariable("sup") String sup, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        List<SupCategory> list = cpiService.getCategory(Integer.parseInt(sup));
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        for (SupCategory i : list) {
+            Map<String, String> a = new HashMap<String, String>();
+            a.put("link", "/market/test/sku/" + sup + "/" + i.getSupCatId());
+            a.put("name", i.getSupCatId() + "\t" + i.getSupCatName());
+            data.add(a);
+        }
+        map.put("list", data);
+        return "test/list";
+    }
+    
+    @RequestMapping("/sync/goods")
+    @ResponseBody
+    public Object syncCat() throws NoSuchSupplierException, ServiceExecutionFailedException {
+        long start = System.currentTimeMillis();
+        cpiService.syncGoods();
+        
+        long end = System.currentTimeMillis();
+        
+        return "用时" + (end - start) / 1000;
+    }
+    @RequestMapping("/area/{func:.*}/{sup:.*}/{area:.*}")
+    public String area(@PathVariable("func") String func, @PathVariable("sup") String sup, @PathVariable("area") String area, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        int supId = Integer.parseInt(sup);
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        if (func.equals("prov")) {
+            List<SupArea> list = cpiService.getProvince(supId);
+            for (SupArea i : list) {
+                Map<String, String> a = new HashMap<String, String>();
+                a.put("link", "/market/test/area/city/" + sup + "/" + i.getSupAreaId());
+                a.put("name", i.getSupAreaName());
+                data.add(a);
+            }
+            map.put("list", data);
+        } else if (func.equals("city")) {
+            List<SupArea> list = cpiService.getCity(supId, Integer.parseInt(area));
+            for (SupArea i : list) {
+                Map<String, String> a = new HashMap<String, String>();
+                a.put("link", "/market/test/area/country/" + sup + "/" + i.getSupAreaId());
+                a.put("name", i.getSupAreaName());
+                data.add(a);
+            }
+            map.put("list", data);
+        } else if (func.equals("country")) {
+            List<SupArea> list = cpiService.getCountry(supId, Integer.parseInt(area));
+            for (SupArea i : list) {
+                Map<String, String> a = new HashMap<String, String>();
+                a.put("link", "/market/test/area/town/" + sup + "/" + i.getSupAreaId());
+                a.put("name", i.getSupAreaName());
+                data.add(a);
+            }
+            map.put("list", data);
+        } else if (func.equals("town")) {
+            List<SupArea> list = cpiService.getTown(supId, Integer.parseInt(area));
+            
+            for (SupArea i : list) {
+                Map<String, String> a = new HashMap<String, String>();
+                a.put("link", "javascript:void(0)");
+                a.put("name", i.getSupAreaName());
+                data.add(a);
+            }
+            map.put("list", data);
+        }
+        return "test/list";
+    }
+
+    @RequestMapping("/sku/{sup:.*}/{cat:.*}")
+    public String sku(@PathVariable("sup") String sup, @PathVariable("cat") String cat, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        
+        List<String> list = cpiService.getSku(Integer.parseInt(sup), Integer.parseInt(cat));
+
+        for (String i : list) {
+            Map<String, String> a = new HashMap<String, String>();
+            a.put("link", "/market/test/prod/" + sup + "/" + i);
+            a.put("name", i);
+            data.add(a);
+        }
+        map.put("list", data);
+        
+        return "test/list";
+    }
+
+    @RequestMapping("/prod/{sup:.*}/{sku:.*}")
+    public String prod(@PathVariable("sup") String sup, @PathVariable("sku") String sku, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        
+        Goods goods = cpiService.getGoodsDetail(Integer.parseInt(sup), sku);
+        ObjectMapper mapper = new ObjectMapper();
+        
+        Map<String, String> m = new HashMap<String, String>();
+        m.put("link", "");
+        try {
+            m.put("name", mapper.writeValueAsString(goods));
+        } catch (JsonGenerationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        data.add(m);
+        
+        m = new HashMap<String, String>();
+        m.put("link", "/market/test/price/" + sup + "/" + sku);
+        m.put("name", "价格");
+        
+        data.add(m);
+        
+        m = new HashMap<String, String>();
+        m.put("link", "/market/test/image/" + sup + "/" + sku);
+        m.put("name", "图片");
+        
+        data.add(m);
+        
+        m = new HashMap<String, String>();
+        m.put("link", "/market/test/stock/" + sup + "/" + sku);
+        m.put("name", "库存");
+        
+        data.add(m);
+        
+        map.put("list", data);
+        
+        return "test/list";
+    }
+
+    @RequestMapping("/price/{sup:.*}/{sku:.*}")
+    @ResponseBody
+    public Object price(@PathVariable("sup") String sup, @PathVariable("sku") String sku, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        
+        Price price = cpiService.getGoodsPrice(Integer.parseInt(sup), sku);
+        
+        return price;
+    }
+
+    @RequestMapping("/image/{sup:.*}/{sku:.*}")
+    @ResponseBody
+    public Object image(@PathVariable("sup") String sup, @PathVariable("sku") String sku, Map<String,Object> map) throws NumberFormatException, NoSuchSupplierException, ServiceExecutionFailedException {
+        
+        List<Map<String, String>> data = new ArrayList<Map<String,String>>();
+        
+        GoodsImage image = cpiService.getGoodsImage(Integer.parseInt(sup), sku);
+        
+        return image;
+    }
+
+    @RequestMapping("login")
+    @ResponseBody
+    public Object login(HttpSession session) {
+        return session.getAttribute("abc");
+    }
+}

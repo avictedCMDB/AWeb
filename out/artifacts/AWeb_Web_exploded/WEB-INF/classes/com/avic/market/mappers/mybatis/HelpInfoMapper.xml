@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.HelpInfoMapper">
+	<resultMap id="helpInfoMap" type="HelpInfo">
+		<result column="id" property="id" jdbcType="VARCHAR" /> 
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="context" property="context" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+		<result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="createDate" property="createDate" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_BUYER" property="helpTypeBuyer" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_SUP" property="helpTypeSup" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryHelpInfoList" parameterType="com.avic.market.models.HelpInfo" resultMap="helpInfoMap">
+		SELECT R.* FROM (
+			select ID, TITLE, CONTEXT, TYPE, FILE_NAME, FILE_PATH, STATUS, CREATE_DATE,HELP_TYPE_BUYER,HELP_TYPE_SUP,rownum rn
+			  from t_help_info
+			 where TYPE = #{type}
+			   and status = '0'
+			   <if test="title != null and title != ''">
+                and title like '%'|| #{title,jdbcType=VARCHAR} || '%'
+          	 </if>
+          	 <if test="id != null and id != ''">
+                and id = #{id,jdbcType=VARCHAR}
+          	 </if>
+          	 <if test="helpTypeBuyer != null and helpTypeBuyer != ''">
+                and HELP_TYPE_BUYER = #{helpTypeBuyer,jdbcType=VARCHAR}
+          	 </if>
+          	 <if test="helpTypeSup != null and helpTypeSup != ''">
+                and HELP_TYPE_SUP = #{helpTypeSup,jdbcType=VARCHAR}
+          	 </if>
+          	 
+		) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	
+	</select>
+	<select id="queryHelpInfoCount"  resultType="java.lang.Integer">
+	select Count(1) from T_HELP_INFO where TYPE = #{type} and status = '0'
+			   <if test="title != null and title != ''">
+                and title like '%'|| #{title,jdbcType=VARCHAR} || '%'
+          	 </if>
+          	           	 <if test="helpTypeBuyer != null and helpTypeBuyer != ''">
+                and HELP_TYPE_BUYER = #{helpTypeBuyer,jdbcType=VARCHAR}
+          	 </if>
+          	 <if test="helpTypeSup != null and helpTypeSup != ''">
+                and HELP_TYPE_SUP = #{helpTypeSup,jdbcType=VARCHAR}
+          	 </if>
+	</select>
+	
+</mapper>

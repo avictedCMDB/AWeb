@@ -1,0 +1,13 @@
+package com.avic.supervise.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.models.Invoice;
+
+public interface InvoiceService {
+    public int getInvoiceCount(String orderId, int supId, String invoiceStatus) throws ServiceException;
+    public List<Invoice> getInvoiceList(String orderId, int supId, String invoiceStatus, int page, int size) throws ServiceException;
+    public Invoice getInvoiceDetail(String orderId) throws ServiceException;
+    public void updateOrderInvoice(Invoice invoice) throws ServiceException;
+}

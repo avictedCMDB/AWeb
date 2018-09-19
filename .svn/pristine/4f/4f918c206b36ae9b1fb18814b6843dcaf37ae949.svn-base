@@ -1,0 +1,33 @@
+package com.avic.management.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.management.models.MarketAddress;
+import com.avic.management.services.MarketAddressService;
+
+@Controller
+@RequestMapping("/address")
+public class MarketAddressController {
+    protected static final Log logger = LogFactory.getLog(MarketAddressController.class);
+    
+    
+    @Autowired
+    MarketAddressService marketAddressService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("地区管理");
+        List<MarketAddress> marketAddresses = new ArrayList<MarketAddress>();
+        marketAddresses = marketAddressService.queryMarketAddressList();
+        map.put("marketAddresses", marketAddresses);
+        return "management_address";
+    }
+}

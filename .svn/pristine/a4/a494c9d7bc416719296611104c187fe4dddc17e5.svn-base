@@ -1,0 +1,68 @@
+package com.avic.supplier.controllers;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.supplier.models.SupplierAddress;
+import com.avic.supplier.services.SupplierAddressService;
+
+@Controller
+@RequestMapping("/address")
+public class SupplierAddressController {
+    protected static final Log logger = LogFactory.getLog(SupplierAddressController.class);
+    
+    @Autowired
+    SupplierAddressService supplierAddressService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("供应商地址库管理信息");
+      //TODO 供应商Id 取得不详
+        String supId = "1";
+        SupplierAddress supplierAddress = new SupplierAddress();
+        supplierAddress.setSupId(supId);
+        List<SupplierAddress> supplierAddressList = supplierAddressService.querySupplierAddressList(supplierAddress);
+        map.put("supplierAddressList", supplierAddressList);
+        return "address/supplier_address";
+    }
+    @RequestMapping("/delete/{supAddressId}")
+    public String deleteAddress(Map<String, Object> map,@PathVariable("supAddressId")String supAddressId) {
+        logger.info("删除地区");
+        supplierAddressService.deleteSupplierAddress(supAddressId);
+        return "redirect:/address";
+    }
+    @RequestMapping("/update/{addressID}")
+    public String updateSupplierAddress(Map<String, Object> map,@PathVariable("addressID")String addressID) {
+        logger.info("修改地区");
+        SupplierAddress supplierAddress = new SupplierAddress();
+        supplierAddressService.updateSupplierAddress(supplierAddress);
+        return "redirect:/address/supplier_address";
+    }
+    /**
+     * 查看供货商信息
+     * @param map
+     * @param addressID
+     * @return
+     */
+    @RequestMapping("/query/{addressID}")
+    public String querySupplierAddress(Map<String, Object> map,@PathVariable("addressID")String addressID) {
+    	logger.info("供应商地址库查看");
+        SupplierAddress supplierAddress = supplierAddressService.querySupplierAddress(addressID);
+        map.put("supplierQueryAddress", supplierAddress);
+        return "address/supplier_address_check";
+    }
+    @RequestMapping("/insert/{addressID}")
+    public String insertSupplierAddress(Map<String, Object> map,@PathVariable("addressID")String addressID) {
+        logger.info("新增地区");
+        SupplierAddress supplierAddress = new SupplierAddress();
+        supplierAddressService.insertSupplierAddress(supplierAddress);
+        return "redirect:/address/supplier_address";
+    }
+}

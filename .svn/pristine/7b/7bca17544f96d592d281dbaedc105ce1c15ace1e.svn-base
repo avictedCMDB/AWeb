@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="gbk"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<a href="${pageContext.request.contextPath}/market/test/cat/1">晨光分类</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/cat/2">史泰博分类</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/cat/4">京东分类</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/cat/20">史泰博测试分类</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/area/prov/1/0">晨光区域</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/area/prov/4/0">京东区域</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/sync/area/4">京东区域同步</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/sync/goods">同步数据</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/txsucc">测试事务成功</a><br/>
+<a href="${pageContext.request.contextPath}/market/test/txfail">测试事务失败</a><br/>

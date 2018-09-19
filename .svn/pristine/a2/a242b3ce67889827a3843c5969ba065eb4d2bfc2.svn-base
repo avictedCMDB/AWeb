@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierMapper">
+	<resultMap id="supplierMap" type="com.avic.supplier.models.Supplier">
+		<result column="CONFIRM_REFOUND_COUNT" property="confirmRefoundCount" jdbcType="VARCHAR" /> 
+		<result column="TAKE_REFOUND_COUNT" property="takeRefoundCount" jdbcType="VARCHAR" />
+		<result column="CONFIRM_EXCHANGE_COUNT" property="confirmExchangeCount" jdbcType="VARCHAR" />
+		<result column="TAKE_EXCHANGE_COUNT" property="takeExchangeCount" jdbcType="VARCHAR" />
+		<result column="SEND_EXCHANGE_COUNT" property="sendExchangeCount" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="STANDARD_COUNT" property="standardCount" jdbcType="VARCHAR" />
+		<result column="SUP_IMAGE" property="supImage" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_COUNT" property="enquiryCount" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询首页统计数量 -->
+	<select id="querySupplierMainCount" resultMap="supplierMap" parameterType="java.lang.String">
+		SELECT 
+	      (SELECT COUNT(*) FROM t_order_refound WHERE REFOUND_STATUS = '0' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS CONFIRM_REFOUND_COUNT,
+	      (SELECT COUNT(*) FROM t_order_refound WHERE REFOUND_STATUS = '3' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS TAKE_REFOUND_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '0' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS CONFIRM_EXCHANGE_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '3' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS TAKE_EXCHANGE_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '4' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS SEND_EXCHANGE_COUNT,
+	      (SELECT COUNT(*) FROM T_ENQUIRY_GOODS WHERE ENQUIRY_STATUS = '0' AND SUP_ID = #{supID,jdbcType=VARCHAR}) AS ENQUIRY_COUNT,
+	      (SELECT COUNT(*) FROM T_OFF_STANDARD_REQUIRE WHERE STATUS = '0' AND SUP_ID in #{supID,jdbcType=VARCHAR}) AS STANDARD_COUNT,
+	      (SELECT SUP_IMAGE FROM T_SUP_INFO_EXT WHERE  SUP_ID = #{supID,jdbcType=VARCHAR}) AS SUP_IMAGE
+ 		FROM DUAL
+	</select>
+	
+</mapper>

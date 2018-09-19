@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.BidProjSubjectMapper">
+	<resultMap id="bidProjSubjectMap" type="BidProjSubject">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="subject_id" property="subjectId" jdbcType="VARCHAR" /> 
+		<result column="subject_name" property="subjectName" jdbcType="VARCHAR" /> 
+		<result column="subject_num" property="subjectNum" jdbcType="INTEGER" />
+		<result column="subject_unit" property="subjectUnit" jdbcType="VARCHAR" /> 
+		<result column="intro" property="intro" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	
+	<select id="querySubjectList" resultMap="bidProjSubjectMap">
+		select * from bid_proj_subject where proj_id = #{projId}
+	</select>
+	
+</mapper>

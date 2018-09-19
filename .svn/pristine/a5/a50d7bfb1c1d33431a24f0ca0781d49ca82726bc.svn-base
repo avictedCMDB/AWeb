@@ -1,0 +1,47 @@
+package com.avic.market.handlers;
+
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.avic.common.exceptions.PageNotFoundException;
+
+
+
+public class ExceptionHandler implements HandlerExceptionResolver {
+    private static final Log logger = LogFactory.getLog(ExceptionHandler.class);
+
+	@Override
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object action, Exception e) {
+		
+	    
+		logger.error(e.getMessage(), e);
+
+		PrintWriter out = null;
+		try {
+		    response.setContentType("text/html; charset=gbk");
+			out = response.getWriter();
+
+	        if (e instanceof PageNotFoundException) {
+	            response.setStatus(404);
+	            out.print("Page not found.");
+	        } else {
+	            out.print(e.getMessage());
+	        }
+		} catch (Exception ex) {
+	        logger.error("Error page exception", e);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+
+		return null;
+	}
+}

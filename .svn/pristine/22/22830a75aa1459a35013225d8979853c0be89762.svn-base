@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.CategoryMapper">
+	<resultMap id="sysCatResultMap" type="SysCategory">
+		<id column="sys_cat_id" property="sysCatId" jdbcType="INTEGER" /> 
+		<result column="sys_cat_name" property="sysCatName" jdbcType="VARCHAR" />
+		<result column="sys_cat_level" property="sysCatLevel" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="INTEGER" />
+		<result column="show_order" property="showOrder" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="supCatResultMap" type="SupCategory">
+		<id column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sup_cat_name" property="supCatName" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="categoryRelationResultMap" type="CategoryRelation">
+		<result column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sys_cat_id" property="sysCatId" jdbcType="INTEGER" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="marketCatResultMap" type="MarketCategory">
+		<id column="market_cat_id" property="marketCatId" jdbcType="VARCHAR" /> 
+		<result column="market_cat_name" property="marketCatName" jdbcType="VARCHAR" />
+		<result column="market_cat_level" property="marketCatLevel" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+		<result column="if_valid" property="ifValid" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryCatList" resultMap="sysCatResultMap">
+		select 	*
+		from 	t_sys_category
+	</select>
+	
+	<delete id="deleteAllSupCat">
+		delete 
+		  from t_sup_category
+		 where sup_id = #{supId}
+	</delete>
+	
+	<insert id="batchInsertSupCat" parameterType="java.util.List">
+		 insert into t_sup_category (sup_id, sup_cat_id, sup_cat_name)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supCatId,jdbcType=INTEGER},
+				#{item.supCatName,jdbcType=VARCHAR}
+			from dual 
+		</foreach>
+	</insert>
+	
+	<select id="querySysCatTree" resultMap="sysCatResultMap">
+		SELECT * FROM T_SYS_CATEGORY 
+		WHERE IF_VALID = 1
+		START WITH PARENT_ID = 0
+		CONNECT BY PRIOR SYS_CAT_ID = PARENT_ID
+	</select>
+	
+	<insert id="insertCatBrand">
+		 insert into t_sup_brand
+		 select sup_id, sup_cat_id, brand_name 
+		 from t_sup_goods 
+		 where brand_name is not null 
+		 group by sup_cat_id, brand_name, sup_id
+
+	</insert>
+	<delete id="deleteCatBrand">
+		delete 
+		  from t_sup_brand
+	</delete>
+	
+	<select id="queryCategoryRelation" resultMap="categoryRelationResultMap">
+		select * 
+		from t_cat_rel 
+	</select>
+	
+	<select id="queryMarketCatList" resultMap="marketCatResultMap">
+		select 	*
+		from 	t_market_category
+		 where if_valid = 0
+	  order by market_cat_id
+	</select>
+</mapper>

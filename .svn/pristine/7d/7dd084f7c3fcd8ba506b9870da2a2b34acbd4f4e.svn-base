@@ -1,0 +1,144 @@
+package com.avic.management.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.Order;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.OrderService;
+import com.avic.management.services.SupInfoService;
+import com.avic.passport.models.User;
+
+/*
+ * 财务
+ */
+@Controller
+@RequestMapping("/finance")
+public class FinanceController {
+    protected static final Log logger = LogFactory.getLog(FinanceController.class);
+    static final int PAGE_SIZE = 10;
+    
+    @RequestMapping("/index")
+    public String index(HttpSession session, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        logger.info("财务管理-首页");
+        map.put("cnt",  orderService.getPaymentOrderCount(user.getCompanyId(), 0, "", 17, ""));
+        return "finance/index";
+    }
+    
+    @RequestMapping("/list")
+    public String list(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        
+        String supId = req.getParameter("supId");
+        String orderId = req.getParameter("orderId");
+        String orderStatus = req.getParameter("orderStatus");
+        String goodsName = req.getParameter("goodsName");
+        String page = req.getParameter("page");
+        
+        if (!StringUtils.isNumeric(supId)) {
+            supId = "0";
+        }
+        
+        if (!"2".equals(orderStatus) && !"9".equals(orderStatus) && !"13".equals(orderStatus) && !"17".equals(orderStatus)) {
+            
+            orderStatus = "0";
+        }
+        
+        int sid = Integer.parseInt(supId);
+        int status = Integer.parseInt(orderStatus);
+        
+
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        
+        logger.info("财务管理-列表");
+        
+        List<SupInfo> si = getSupInfo();
+        int total = orderService.getPaymentOrderCount(user.getCompanyId(), sid, orderId, status, goodsName);
+        
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            List<Order> orders = orderService.getPaymentOrderList(user.getCompanyId(), sid, orderId, status, goodsName, pageNum, PAGE_SIZE);
+            for (Order i : orders) {
+                for (SupInfo s : si) {
+                    if (s.getSupID().equals(i.getSup_id())) {
+                        i.setSup_name(s.getSupName());
+                        break;
+                    }
+                }
+            }
+            map.put("list", orders);
+        }
+        
+        map.put("sups", si);
+        map.put("supId", supId);
+        map.put("orderId", orderId);
+        map.put("orderStatus", orderStatus);
+        map.put("goodsName", goodsName);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        
+        if (goodsName == null) {
+            goodsName = "";
+        }
+
+        try {
+            map.put("pageAction",
+                    "management/finance/list?supId=" + supId + "&orderId=" + orderId + "&goodsName=" + URLEncoder.encode(goodsName, "GBK")
+                            + "&orderStatus=" + orderStatus + "&page=%PAGE%");
+        } catch (UnsupportedEncodingException e) {
+        }
+        
+        return "finance/list";
+    }
+    
+    @Autowired
+    SupInfoService supInfoService;
+    @Autowired
+    OrderService orderService;
+    
+    static List<SupInfo> sups;
+    
+    private List<SupInfo> getSupInfo() {
+        if (sups == null) {
+            sups = supInfoService.querySupInfos();
+        }
+        
+        return sups;
+    }
+}

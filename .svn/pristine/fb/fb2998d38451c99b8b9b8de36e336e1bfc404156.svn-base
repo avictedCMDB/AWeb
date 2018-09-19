@@ -1,0 +1,15 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Goods;
+
+@Repository
+public interface GoodsMapper {
+    public void deleteSupCatGoods(@Param("supId") int supId, @Param("poolId") int poolId);
+    public void batchInsertSupGoods(@Param("list") List<Goods> list);
+    public void insertSupGoods(Goods goods);
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ExchangeMapper">
+	<resultMap id="exchangeMap" type="com.avic.management.models.Exchange">
+		<result column="EXCHANGE_ID" property="exchangeID" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_TIME" property="exchangeTime" jdbcType="VARCHAR" />
+		<result column="SUP_CHECK_DATE" property="supCheckDate" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_STATUS" property="exchangeStatus" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="SUP_SEND_DATA" property="supSendDate" jdbcType="VARCHAR" />
+		<result column="SUP_REVIEW_DATE" property="supReviewDate" jdbcType="VARCHAR" />
+		<result column="BUYER_SEND_DATE" property="buyerSendDate" jdbcType="VARCHAR" />
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" />
+		<result column="BUY_REVIEW_DATE" property="buyReviewDate" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_AMOUNT" property="exchangeAmount" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_PRICE" property="exchangePrice" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_STATUS_NAME" property="exchangeStatusName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryExchange" resultMap="exchangeMap" parameterType="com.avic.management.models.Exchange">
+	SELECT * FROM (
+		SELECT TOE.EXCHANGE_ID,
+		       TOE.SUP_ID,
+		       TOE.EXCHANGE_TIME,
+		       TOE.ORDER_ID,
+		       TOE.EXCHANGE_AMOUNT,
+		       TOE.EXCHANGE_PRICE,
+		       TOE.EXCHANGE_STATUS,
+		       TSI.SUP_NAME,
+		       CL.CODETEXT AS EXCHANGE_STATUS_NAME
+		  FROM T_ORDER_EXCHANGE TOE,T_SUP_INFO TSI,CODELIST CL
+		 WHERE TOE.SUP_ID = TSI.SUP_ID
+		   AND TOE.EXCHANGE_STATUS = CL.CODEVALUE
+		   AND CL.CODETEXT = 'EXCHANGE_STATUS'
+		   AND TOE.USER_ID =  #{userID,jdbcType=VARCHAR}
+		   <if test="startTime != null and startTime != ''">
+			  AND TOE.EXCHANGE_TIME &gt;= #{startTime,jdbcType=VARCHAR}
+			</if>
+			<if test="endTime != null and endTime != ''">
+			  AND TOE.EXCHANGE_TIME &lt;= #{endTime,jdbcType=VARCHAR}
+			</if>
+			<if test="searchExchangeID != null and searchExchangeID != ''">
+			  AND TOE.EXCHANGE_ID LIKE CONCAT('%',CONCAT(#{searchExchangeID,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="searchSupName != null and searchSupName != ''">
+			  AND TSI.SUP_NAME = LIKE CONCAT('%',CONCAT(#{searchSupName,jdbcType=VARCHAR},'%'))
+			 </if>
+			 <if test="searchOrderID != null and searchOrderID != ''">
+			  AND TOE.ORDER_ID LIKE CONCAT('%',CONCAT(#{searchOrderID,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="searchExchangeStatus != null and searchExchangeStatus != ''">
+			  AND TOE.EXCHANGE_STATUS = #{searchExchangeStatus,jdbcType=VARCHAR}
+			</if>
+			ORDER BY TOE.EXCHANGE_TIME DESC) R
+   		<!-- WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER} -->
+	</select>
+	
+</mapper>

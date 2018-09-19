@@ -1,0 +1,221 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area dl dt {
+	width: 115px;
+}
+#matter_section .search_area dl dd {
+	width: 320px;
+}
+#matter_section .special_input {
+	width: 125px;
+}
+.search_result table tr td.company {
+	text-align: left;
+}
+.search_result table tr td.price {
+	color: red;
+	text-align: right;
+}
+
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+.btn_list ul li {
+	float: left;
+	margin: 10px;
+}
+
+#matter_section .state_list {
+	text-align: right;
+}
+/*添加发票*/
+#contents .details {
+    padding-bottom: 60px;
+}
+#info_invoice {
+	width: 730px;
+	margin: 0 auto;
+	border: 1px solid #dfdfdf;
+	margin-top: 25px;
+	
+	font-size: 14px;
+}
+#info_invoice .main_inner {
+	padding: 30px 75px;
+}
+#info_invoice label {
+	float: left;
+    font-weight: 100;
+    padding-right: 15px;
+    width: 110px;
+	padding-top: 0;
+}
+#info_invoice .title_list {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 15px;
+}
+#info_invoice .invoice_list {
+	padding-left: 0;
+}
+#info_invoice .vat_detail label {
+	padding-top: 5px;}
+#info_invoice .invoice_list ul li {
+	margin: 0;
+	margin-right: 10px;
+	float: left;
+}
+#info_invoice .title_list ul li {
+	margin-bottom: 15px;
+}
+#info_invoice .invoice_list a {
+	margin: 0;
+	width: 100px;
+	border-radius: 0;
+	color: #666;
+    display: block;
+    line-height: 24px;
+	text-align: center;
+}
+#info_invoice .invoice_list ul li a:hover, #info_invoice .invoice_list ul li a.active{
+    background: #fff url(../img/order/icon-select.png)  right bottom no-repeat;
+    border: 1px solid #ff4200;
+}
+.list_section ul li a, #order_details .icon_action dl dt a {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #eee;
+    color: #666;
+    display: block;
+    line-height: 24px;
+}
+.main_inner input.detail {
+    width: 450px;
+}
+.main_inner .form-control {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+}
+.main_inner input {
+    display: inline;
+    margin-right: 10px;
+    width: 260px;
+}
+
+#info_invoice span.red {
+	background: none;
+	color: #ff4200;
+}
+
+.btn_list ul li {
+	float: left;
+	margin: 0 10px;
+}
+#info_invoice .attention {
+	background: #dbf0fb;
+	border: 1px solid #0091dc;
+	padding: 10px;
+	color: #666;
+}
+#info_invoice .attention a:hover,
+#info_invoice .attention a {
+	border-radius: 0;
+	border: none;
+	margin: 0 5px;
+	padding: 0;
+}
+#info_invoice .attention a:first-child {
+	margin-left: 0;
+}
+#info_invoice .attention a:hover {
+	color: #ff4200;}
+#info_invoice .attention a{
+	color: #0091dc;
+}
+.step_list {
+	background: url(../img/order/bg-list01.jpg) left top no-repeat;
+	margin-top: 15px;
+	line-height: 30px;
+	margin-bottom: 15px;
+}
+.step_list ul li  {
+	float: left;
+	padding: 0 20px;
+	width: 150px;
+	color: #ccc;
+}
+.step_list ul li.active {
+	color: #666;
+}
+.step_list ul li.active:first-child {
+	background: url(../img/order/bg-select01.png) left top no-repeat;
+}
+.step_list ul li.active:last-child {
+	background: url(../img/order/bg-select02.png) left top no-repeat;
+	width: 160px;
+}
+
+#info_invoice select {
+	width: 145px;
+	margin-right: 5px;
+	float: left;
+}
+#info_invoice .vat_detail .list_section ul li {
+	margin-bottom: 0;
+}
+#info_invoice .btn_list ul li.return {
+	margin-top: 5px;}
+#info_invoice .btn_list ul li.return a {
+	border-radius: 0;
+	border: none;
+	margin: 10px 5px 0;
+	padding: 0;
+}
+#info_invoice .btn_list {
+	text-align: center;
+}
+#info_invoice .btn_list ul li.return a {
+	color: #0091dc;
+}
+#info_invoice .btn_list ul li.return a:hover {
+	color: #ff4200;
+}
+.btn.gray {
+    background: #666 none repeat scroll 0 0;
+    border: medium none;
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 20px;
+}
+.btn.gray:hover {
+	background: #ccc;
+	color: #000;
+}
+#photoCover {
+	margin-left: 50px;
+}
+#order_details dl.reason dd {
+	margin-left: 20px;
+}
+#contents .inner .input-append .btn {
+	margin-top: -3px;
+}
+#contents .inner .input-append .form-control {
+	padding: 0 12px;
+	line-height: 28px;
+}
+.make_table {
+	padding: 30px;
+}
+.make_table table {
+	width: 100%;
+	margin-top: 5px;
+}
+.make_table p.price {
+	margin-bottom: 0;
+	text-align: right;
+	margin-right: 10px;
+}

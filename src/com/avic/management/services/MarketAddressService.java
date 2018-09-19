@@ -1,0 +1,54 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.MarketAddress;
+
+public interface MarketAddressService {
+	/**
+	 * 查询地址列表
+	 * @return 
+	 */
+	public List<MarketAddress> queryMarketAddressList(MarketAddress marketAddress);
+	/**
+	 * 删除地址
+	 * @return 
+	 */
+	public void deleteMarketAddress(String addressID);
+	/**
+	 * 设置默认地址
+	 * @return 
+	 */
+	public void setDefault(MarketAddress marketAddress);
+	/**
+	 * 添加地址
+	 * @return 
+	 */
+	public void addMarketAddress(MarketAddress marketAddress);
+	/**
+	 * 修改地址
+	 * @return 
+	 */
+	public void updateMarketAddress(MarketAddress marketAddress);
+	/**
+	 * 设置默认地址
+	 * @return 
+	 */
+	public void setOtherDefault(MarketAddress marketAddress);
+	/**
+	 * 查询是否有默认地址
+	 * @return 
+	 */
+	public int queryContantDefault();
+	/**
+	 * 根据地址id查询地址信息
+	 * @return 
+	 */
+	public MarketAddress queryMarketAddressByAddressID(MarketAddress marketAddress);
+
+	/**
+	 * 查询地址列表数据数量
+	 * @return 
+	 */
+	public int queryMarketAddressCount(MarketAddress marketAddress);
+}

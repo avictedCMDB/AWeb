@@ -1,0 +1,242 @@
+@charset "utf-8";
+/* CSS Document */
+.breadcrumb {
+    padding: 8px 0;
+	margin-bottom: 3px;
+}
+.breadcrumb li {
+	float: left;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+.breadcrumb li span {
+	padding-left: 10px;
+}
+#order_details {
+	padding: 20px 20px 40px;
+	background-color: #fff;
+	font-size: 12px;
+}
+.section_main {
+	margin-bottom: 30px;
+}
+.section_main h2 {
+	border-left: 5px solid #db433d;
+    color: #db433d;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-left: 10px;
+	margin-top: 0;
+}
+#order_details table {
+	width: 100%;
+	border: 1px solid #dfdfdf;
+
+}
+#order_details table tr td {
+	padding: 10px;
+}
+#order_details table tr th {
+	background: #dfdfdf none repeat scroll 0 0;
+	border: 1px solid #dfdf;
+    line-height: 32px;
+    text-align: center;
+}
+#order_details table tr td {
+	text-align: center;
+}
+#order_details table tr td a {
+	color:#008ad3;
+}
+#order_details table tr td a:hover {
+	text-decoration: underline;
+}
+#order_details table tr td.left_align {
+	text-align: left;
+}
+#order_details .input-group {
+	width: 50%;
+	margin: 0 auto;
+}
+#order_details .input-group-addon {
+	height: 26px;
+	line-height: 26px;
+	padding: 0 10px;
+	border-radius: 0;
+	border-color: #e5e5e5;
+	width: 5%;
+}
+table tr td .form-control {
+	height: 28px;
+	width: 40%;
+}
+
+#order_details dl {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#order_details dl .form-control {
+	height: 26px;
+	display: inline;
+	width: 600px;
+	border-radius: 0;
+}
+#order_details dl dd ul span.red {
+	color: red;
+	margin-left: 10px;
+}
+#order_details dl dd ul li a,
+#order_details dl dt {
+	width: 100px;
+	background: #666666;
+	color: #fff;
+	text-align: center;
+	line-height: 26px;
+}
+#order_details dl dd ul li a {
+	display: block;
+	background: #fff;
+	border: 2px solid #eee;
+	color: #666;
+	line-height: 24px;
+}
+#order_details dl dd ul li.active a {
+	background: url(../img/order/icon-select.png) right bottom no-repeat;
+	border: 2px solid #c72109;
+}
+#order_details dl dd ul li a:hover {
+	border: 2px solid #c72109;
+}
+#order_details dl dd {
+	margin-left: 115px;
+}
+.add_details {
+	width: 237px;
+	height: 106px;
+	background: url(../img/order/icon_off.png) left top no-repeat;
+	padding: 10px 20px;
+	position: relative;
+	margin-top: 10px
+}
+.add_details:hover {
+	background: url(../img/order/icon_on.png) left top no-repeat;
+	cursor: pointer;
+}
+.add_details .add_name {
+	border-bottom: 1px solid #dfdfdf;
+	margin-bottom: 5px;
+}
+.add_details span {
+	margin-right: 5px;
+}
+.add_details span.city {
+	font-weight: bold;
+}
+.selected_icon {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+.btn_add {
+	text-align: right;
+}
+#order_details .add_address  dl{
+	background:#fafafa;
+	margin-top: 10px;
+	padding: 30px;
+}
+#order_details .add_address dl dt {
+	background: none;
+	color: #666;
+	text-align: right;
+	margin-bottom: 5px;
+}
+#order_details .add_address dl dd {
+	margin-bottom: 5px;
+}
+#order_details dl dt span.red {
+	color: red;
+	margin-right: 10px;
+}
+#order_details .add_address select {
+	float: left;
+	width: 130px;
+	display: inline;
+	margin-right: 10px;
+	height: 26px;
+	padding: 0;
+	font-size: 12px;
+}
+.add_btn {
+	background: #db433d;
+	color: #fff;
+}
+.company {
+	font-weight: bold;
+}
+#order_details dl.reason {
+	padding-left: 30px;
+}
+#order_details dl.reason .form-control {
+	height: auto;
+}
+#order_details dl.reason dt {
+	background: none;
+	color: #666;
+	text-align: right;
+	margin-bottom: 5px;
+}
+#order_details dl.reason dd span{
+	margin-left: 10px;
+}
+.price_area {
+	border-top: 2px solid #db433d;
+	padding-top: 20px;
+}
+.gather_box {
+	float: right;
+	width: 422px;
+	border: 1px solid #db433d;
+}
+.gather_inner {
+	border: 3px solid #fff1e8;
+	padding: 10px 10px 5px 10px;
+	text-align: right;
+}
+.gather_inner p {
+	margin-bottom: 6px;
+}
+.gather_inner span {
+	font-weight: bold;
+	padding-right: 5px;
+	line-height: 1.2;
+}
+.gather_inner span.symbol {
+	font-size: 28px;
+	color: #979b9a;
+}
+.gather_inner span.price {
+	font-size: 28px;
+	color: #db433d;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+span.num {
+	color: #db433d;
+}
+span.img {
+	margin-right: 10px;
+}
+p.success {
+	font-size: 14px;
+	line-height: 30px;
+	text-align: center;
+	border-bottom: 1px solid #dfdfdf;
+	padding-bottom: 10px;
+}

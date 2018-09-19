@@ -1,0 +1,186 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<html>
+<jsp:include page="head.jsp">
+	<jsp:param value="分类" name="title"/>
+</jsp:include>
+<body class="search cate">
+    <div id="cate">
+        <div class="header">
+            <i class="iconfont back" onclick="location.href = history.go(-1);">&#xe615;</i>
+            <div class="input">
+                <i class="iconfont">&#xe60b;</i>
+                <input type="text" autocomplete="off" placeholder="路由器" onclick="location.href = '${pageContext.request.contextPath}/market/goods/search';">
+            </div>
+        </div>
+        <div class="left" id="left">
+            <div id="sidebar">
+                <p class="c" v-for="cate in cates" v-on:click="change(cate.no)" v-bind:class="{'active': active == cate.no}">
+                    {{cate.name}}
+                </p>
+            </div>
+        </div>
+        <div class="right" id="right">
+            <div id="cate-list" id="cate-list">
+                <div class="cate-item">
+                    <p class="hd">电脑整机</p>
+                    <div class="content">
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>平板电脑</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cate-item">
+                    <p class="hd">电脑整机</p>
+                    <div class="content">
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>平板电脑</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cate-item">
+                    <p class="hd">电脑整机</p>
+                    <div class="content">
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>平板电脑</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>台式电脑</p>
+                            </div>
+                            <div>
+                                <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                                <p>笔记本电脑</p>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <jsp:include page="./foot.jsp">
+    	<jsp:param value="分类" name="tab"/>
+    </jsp:include>
+<script type="text/javascript">
+    var cate = new Vue({
+        el      : '#cate',
+        data    : {
+            cates   : [
+                {no :   1 ,   name       : '热门推荐'},
+                {no :   2 ,   name       : '办公用品'},
+                {no :   3 ,   name       : '办公设备'},
+                {no :   4 ,   name       : '电脑及配件'},
+                {no :   5 ,   name       : '数码'},
+                {no :   6 ,   name       : '办公家电'},
+                {no :   7 ,   name       : '劳防用品'},
+                {no :   8 ,   name       : '生活用品'},
+                {no :   9 ,   name       : '五金工具'},
+                {no :   10 ,  name       : '热门推荐'},
+                {no :   11 ,  name       : '券商务礼品'},
+            ],
+            active : 4
+        },
+        methods : {
+            change  : function (no) {
+                this.active = no;
+            }
+        }
+    });
+    //left
+    var target = document.getElementById('sidebar');
+    Transform(target);
+    var min = window.innerHeight - 46 - (document.getElementsByClassName('c').length * 47);
+    new AlloyTouch({
+        touch:"#left",
+        target: target,
+        preventDefault:false,
+        min : min > 0 ? 0 : min,
+        max: 0,
+        property: "translateY", 
+        bindSelf: false,
+        initialValue: 0
+    });
+    //right
+    var cate = document.getElementById('cate-list');
+    Transform(cate);
+    var rmin = window.innerHeight - 46 - (document.getElementsByClassName('cate-item').length * 273 - 10) ;
+    new AlloyTouch({
+        touch:'#right',
+        target:cate,
+        preventDefault:false,
+        min:rmin,
+        max:0,
+        property: "translateY",
+        bindSelf: false,
+        initialValue: 0
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+package com.avic.supervise.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.supervise.models.Help;
+
+@Controller
+@RequestMapping("/news")
+public class NewsController {
+	
+	protected static final Log logger = LogFactory.getLog(NewsController.class);
+	
+    /**
+     * 公告页面列表页面
+     */
+    @RequestMapping("")
+    public String index(HttpServletRequest req,Map<String, Object> map, @ModelAttribute("help") Help help, HttpSession httpSession)
+            throws UnsupportedEncodingException {
+    	logger.info("公告页面");
+        return "news/supervise_news_add";
+    }
+
+}

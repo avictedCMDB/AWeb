@@ -1,0 +1,77 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<script type="text/javascript">
+function top_search() {
+	var kw = $("#search_keyword").val();
+	if ($(".search-tab.active").attr("data-type") == 1) {
+		window.location.href = "${pageContext.request.contextPath}/market/goods/prof?q=" + encodeURIComponentGBK(kw);
+	} else {
+		window.location.href = "${pageContext.request.contextPath}/market/goods/search?q=" + encodeURIComponentGBK(kw);
+	}
+}
+	function setCartNum(num) {
+		$("#cart_num").text("(" + num + ")");
+	}
+
+	function top_search_keydown(event) {
+		if (event.keyCode == 13) {
+			top_search();
+		}
+	}
+
+	$(function() {
+		$(".sample a").click(function() {
+			$("#search_keyword").val($(this).text());
+			top_search();
+		});
+		
+		$(".search-tab").click(function () {
+			$(".search-tab.active").removeClass("active");
+			$(this).addClass("active");
+		});
+	});
+</script>
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+       <c:if test="${sessionScope.login_user != null}">
+        <li class="mem_login">欢迎您，${sessionScope.login_user.userNameCN}</li>
+        <li class="mem_login"><a href="${pageContext.request.contextPath}/passport/login/logout">退出</a></li>
+       </c:if>
+        <li><a href="${pageContext.request.contextPath}/passport/redirect"><span class="fa fa-user"></span>采购管理中心</a><span>|</span></li>
+        <c:if test="${sessionScope.login_user == null}">
+        <li><a href="${pageContext.request.contextPath}/passport/login">登录</a><span>|</span></li>
+        </c:if>
+        <li><a href="#">集团用户</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="${pageContext.request.contextPath}/static/img/img-logo.png" alt="中航招标网" style="cursor:pointer;" onclick="window.location.href='${pageContext.request.contextPath}/';"/>
+      </div>
+      <div class="search">
+        <div class="search_cate clearfix">
+          <ul>
+          
+            <li class="search-tab <c:if test="${searchType != 1}">active</c:if>" data-type="0"><a href="javascript:;">电商</a></li>
+            <li class="search-tab <c:if test="${searchType == 1}">active</c:if>" data-type="1"><a href="javascript:;">专业市场</a></li>
+          </ul>
+        </div>
+        <div class="input-group">
+          <input type="text" class="form-control" id="search_keyword" value="${fn:escapeXml(searchKeyword)}" onkeydown="top_search_keydown(event);"><span class="input-group-btn"><button class="btn btn-default" type="button" onclick="top_search();">搜索</button></span>
+        </div>
+        <div class="sample">
+          <a href="#">硒鼓</a><a href="#">路由器</a><a href="#">复印机</a><a href="#">复印纸</a><a href="#">办公用品</a>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button" onclick="window.location.href='${pageContext.request.contextPath}/market/cart/list';"><i class="fa fa-shopping-cart shopping"></i>我的购物车<b style="font-weight:normal;" id="cart_num"><c:if test="${sessionScope.login_user != null}">(${dataCache.cartNum(pageContext.session)})</c:if></b><i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>

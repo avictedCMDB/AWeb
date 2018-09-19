@@ -1,0 +1,143 @@
+#contents {
+	margin-top: 20px;
+	
+}
+#contents .inner {
+	background: #fff;
+	font-size: 14px;
+	width: 794px;
+	height: 1123px;
+	overflow: hidden;
+	margin: 0 auto;
+}
+#contents .inner h2 {
+	font-size: 24px;
+	line-height: 27px;
+	color: #ff4200;
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 1px solid #ff4200;
+	padding-bottom: 10px;
+}
+#contents .inner .article {
+	border-bottom: 2px solid #dfdfdf;
+	padding: 20px;
+	margin-bottom: 60px;
+}
+#contents .inner .article p.txt {
+	text-indent: 30px;
+	line-height: 23px;
+
+	font-size: 14px;
+}
+#contents .inner .article p.txt01 {
+	text-indent: 0;
+}
+#contents .inner .article p.txt span {
+	border-bottom: 1px solid #000;
+	font-weight: bold;
+}
+#contents .inner .info {
+	width: 750px;
+	margin: 30px auto 0;
+}
+#contents .inner .info .txt01 {
+	font-weight: bold;
+}
+#contents .inner .article p.txt02 {
+	margin-left: 60px;
+	margin-top: 30px;
+}
+#contents .inner .article p.right {
+	text-align: right;
+	position: absolute;
+	bottom: 50px;
+	right: 20px;
+}
+/*表格*/
+.table_area{
+	width: 100%;
+	background: #fff;
+	
+}
+.table_area tr td.left {
+	text-align: left;
+}
+.table_area tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 28px;
+	text-align: center;
+	font-size: 12px;
+}
+.table_area tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.table_area tr td {
+	border:1px solid #dfdfdf;
+	padding: 6px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.table_area tr td a {
+    color: #0089d1;
+    margin: 0 2px;
+}
+.table_area tr td a:hover {
+	color: #ff4200;
+}
+.table_area tr td button {
+	height: 20px;
+	line-height: 20px;
+}
+.saler {
+	margin-top: 30px;
+	border-bottom: 1px dotted #dfdfdf;
+}
+.saler p.name {
+	font-size: 16px;
+	color: #ff4200;
+	font-weight: bold;
+}
+.saler .result_area dl.special{
+	width: 700px;
+}
+.saler .result_area dl.special dd {
+	width: 500px;
+}
+.saler .result_area dl{
+	width: 350px;
+	float: left;
+	margin-bottom: 5px;
+	padding-left: 5px;
+}
+.saler .result_area dl dt {
+	float: left;
+	padding-left: 15px;
+	text-align: left;
+}
+.saler .result_area dl dd {
+	float: left;
+	width: 150px;
+}
+.img_seal {
+	text-align: right;
+	margin-top: 30px;
+	position: relative;
+}
+.img_seal img {
+	display: inline-block;
+}
+/*居中对齐按钮*/
+.submit_btn {
+	text-align: center;
+}
+.submit_btn ul {
+	display: inline-block;
+}
+.submit_btn ul li {
+	float: left;
+	margin: 30px 10px 30px;
+}

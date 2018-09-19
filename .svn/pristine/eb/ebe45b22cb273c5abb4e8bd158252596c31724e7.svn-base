@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>	
+	
+	
+	<div class="footer">
+        <a class="item <c:if test='${param.tab == "首页"}'>active</c:if>" href="${pageContext.request.contextPath}/market/index"> 
+            <span class="iconfont">&#xe60d;</span>
+            <span>首页</span>
+        </a>
+        <a class="item <c:if test='${param.tab == "分类"}'>active</c:if>" href="${pageContext.request.contextPath}/market/goods/cate">
+            <span class="iconfont">&#xe601;</span>
+            <span>分类</span>
+        </a>
+        <a class="item <c:if test='${param.tab == "购物车"}'>active</c:if>" href="${pageContext.request.contextPath}/market/index">
+            <span class="iconfont">&#xe726;</span>
+            <span>购物车</span>
+        </a>
+        <a class="item <c:if test='${param.tab == "我的"}'>active</c:if>" href="${pageContext.request.contextPath}/market/index">
+            <span class="iconfont">&#xe6b3;</span>
+            <span>我的</span>
+        </a>
+    </div>

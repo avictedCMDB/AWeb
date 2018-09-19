@@ -1,0 +1,22 @@
+function search(){
+	var path = $("#path").val();
+	document.getElementById("supplierRecommendForm").action=path+"/supervise/supplierReommend";
+	document.getElementById("supplierRecommendForm").submit();
+}
+
+function cancleRecommend(supID){
+	var path = $("#path").val();
+	if(confirm("确定取消推荐？")){
+		window.location.href = path+"/supervise/supplierReommend/cancleRecommend/"+supID;
+	}
+}
+
+function setRecommend(supID){
+	var iWidth=750;                          //弹出窗口的宽度; 
+    var iHeight=350;                         //弹出窗口的高度; 
+	var iTop = (window.screen.availHeight-30-iHeight)/2;       //获得窗口的垂直位置;
+	var iLeft = (window.screen.availWidth-10-iWidth)/2;           //获得窗口的水平位置;
+	var path = $("#path").val();
+	var url = path+"/supervise/supplierReommend/setRecommendPage/"+supID;
+	window.open(url, 'newwindow', 'height='+iHeight+', width='+iWidth+', top='+iTop+', left='+iLeft+', toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no');
+}

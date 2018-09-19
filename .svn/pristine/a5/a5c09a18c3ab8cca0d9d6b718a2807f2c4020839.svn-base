@@ -1,0 +1,548 @@
+package com.avic.supplier.controllers;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.common.shortMessage.ShortMessageUtils;
+import com.avic.common.utils.CommonFileUtils;
+import com.avic.common.utils.ConfigHolder;
+import com.avic.management.services.impl.OrderExchangeServiceImpl;
+import com.avic.market.cpi.exceptions.NoSuchSupplierException;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.supplier.models.Order;
+import com.avic.supplier.models.SupplierGoodsImage;
+import com.avic.supplier.models.SupplierImageInfo;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.models.SupplierOrderContract;
+import com.avic.supplier.models.SupplierQuoteInfo;
+import com.avic.supplier.services.OrderService;
+import com.avic.supplier.services.SupplierAddressService;
+import com.avic.supplier.services.SupplierOrderService;
+
+@Controller
+@RequestMapping("/order")
+public class SupplierOrderController {
+	
+	protected static final Log logger = LogFactory
+			.getLog(SupplierOrderController.class);
+	
+	@Autowired
+	SupplierOrderService supplierOrderService;
+	
+	@Autowired
+    SupplierAddressService supplierAddressService;
+	
+    @Autowired
+    OrderService orderService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOrder") SupplierOrder supplierOrderParam,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+        if (supplierOrderParam.getOrderStatus() == null) {
+        	supplierOrderParam.setOrderStatus("");
+		}
+		//从session获取userid
+        String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+        supplierOrderParam.setSupId(supId);
+        List<SupplierOrder> ordersList = supplierOrderService.queryOrderList(supplierOrderParam);
+        //订单状态初始化结果集
+        List<SupplierOrder> ordersStatusList = supplierOrderService.queryOrderStatusList();
+        request.setAttribute("ordersList", ordersList);//查询结果集
+        request.setAttribute("orderQuery", supplierOrderParam);//查询条件回显
+        request.setAttribute("ordersStatusList", ordersStatusList);//订单状态列表结果集
+        //分页信息
+        String page = String.valueOf(supplierOrderParam.getPage());
+        int total = supplierOrderService.queryOrderListCount(supplierOrderParam);
+
+        int pages = (int) Math.ceil((double) total / supplierOrderParam.getPageSize());
+        
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/order?"
+        		+ "&orderId="+(supplierOrderParam.getOrderId() == null ?"":supplierOrderParam.getOrderId())
+        		+ "&goodsName="+URLEncoder.encode((supplierOrderParam.getGoodsName() == null ?"":supplierOrderParam.getGoodsName()),"GBK")
+        		+ "&companyName="+URLEncoder.encode((supplierOrderParam.getCompanyName() == null ?"":supplierOrderParam.getCompanyName()),"GBK")
+        		+ "&orderTime="+(supplierOrderParam.getOrderTime() == null ?"":supplierOrderParam.getOrderTime())
+        		+ "&orderStatus="+(supplierOrderParam.getOrderStatus() == null ?"":supplierOrderParam.getOrderStatus())
+                + "&page=%PAGE%");
+		return "order/supplier_order";
+	}
+    @RequestMapping("/detail")
+    public String detail(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        // 订单编号
+        String o = req.getParameter("o");
+
+        logger.info("订单详情-o["+o+"]");
+        
+        if (StringUtils.isEmpty(o)) {
+            throw new PageNotFoundException();
+        }
+        
+        Order order = orderService.getOrderDetail(o);
+        
+        if (o == null) {
+            throw new PageNotFoundException();
+        }
+        
+        
+        map.put("order", order);
+        
+        // 查询 报价单
+//        SupplierOrderContract supplierOrderContract = supplierOrderService.queryOrderContract(o);
+        // 查询合同快照
+//        List<SupplierGoodsImage> supplierGoodsImages  = new ArrayList<SupplierGoodsImage>();
+//        if (supplierOrderContract != null) {
+//			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(supplierOrderContract.getContractCode(),"7");
+//			for (int i = 0; i < images.size(); i++) {
+//				SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+//				supplierGoodsImage.setImagePath(images.get(i).getUrl());
+//				supplierGoodsImages.add(supplierGoodsImage);
+//			}
+//		}else {
+//			supplierOrderContract = new SupplierOrderContract();
+//		}
+//        supplierOrderContract.setSupplierGoodsImages(supplierGoodsImages);
+        List<SupplierQuoteInfo> supplierQuoteInfoList = supplierOrderService.queryQuoteInfo(o);
+        map.put("supplierQuoteInfoList", supplierQuoteInfoList);
+//        map.put("supplierOrderContract", supplierOrderContract);
+        
+        return "order/detail";
+    }
+    @RequestMapping("/detailReviewed")
+    public String detailReviewed(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        // 订单编号
+        String o = req.getParameter("o");
+        
+        String authority = req.getParameter("authority");
+
+        logger.info("订单详情-o["+o+"]");
+        
+        if (StringUtils.isEmpty(o)) {
+            throw new PageNotFoundException();
+        }
+        
+        Order order = orderService.getOrderDetail(o);
+        
+        if (o == null) {
+            throw new PageNotFoundException();
+        }
+//        SupplierOrderContract supplierOrderContract = new SupplierOrderContract();
+//        supplierOrderContract.setContractCode(contractCode);
+//        map.put("supplierOrderContract", supplierOrderContract);
+        List<SupplierQuoteInfo> supplierQuoteInfoList = supplierOrderService.queryQuoteInfo(o);
+        if (supplierQuoteInfoList.size() != 0 ) {
+			map.put("fileName", "1");
+		}else {
+			map.put("fileName", "");
+		}
+        map.put("supplierQuoteInfoList", supplierQuoteInfoList);
+        map.put("order", order);
+        map.put("authority", authority);
+        
+        return "order/supplier_order_review";
+    }
+	/**
+	 * 合同上传
+	 * @param map
+	 * @param httpSession
+	 * @param supplierGoodsInfo
+	 * @param uploadFiles
+	 * @return
+	 * @throws NoSuchSupplierException
+	 * @throws ServiceExecutionFailedException
+	 * @throws IOException
+	 */
+	@RequestMapping("/uploadContract")
+	public Object uploadContract(Map<String, Object> map,HttpSession httpSession,HttpServletRequest request,
+			@ModelAttribute("SupplierQuoteInfo") SupplierQuoteInfo supplierQuoteInfo,
+			 @RequestParam("uploadFileContract") MultipartFile uploadFiles)
+			throws NoSuchSupplierException, ServiceExecutionFailedException, IOException {
+		String fileName = uploadFiles.getOriginalFilename();
+//		String fileName = picture.substring(picture.lastIndexOf("/"),picture.length());
+		String postfix = fileName.substring(fileName.lastIndexOf("."),fileName.length());
+		// 上传地址
+		String rootPath = ConfigHolder.getInstance().getConfig("supplier_contract");
+		//新增图片地址
+		String newFileName = String.valueOf(System.currentTimeMillis()) + postfix;
+		String savePath = request.getSession().getServletContext().getRealPath(ConfigHolder.getInstance().getConfig("supplier_contract"));
+		savePath = savePath + "/"+supplierQuoteInfo.getOrderId();
+		saveFile(savePath, newFileName, uploadFiles);
+		supplierQuoteInfo.setQuoteAttachmentPath(rootPath +"/"+supplierQuoteInfo.getOrderId()+  "/" + newFileName);
+		// 商品回显
+		Order order = orderService.getOrderDetail(supplierQuoteInfo.getOrderId());
+		map.put("order", order);
+//		//快照回显
+//		List<SupplierGoodsImage> supplierGoodsImages = new ArrayList<SupplierGoodsImage>();
+//		if (supplierOrderContract.getPictures() != null && !"".equals(supplierOrderContract.getPictures())) {
+//			String pritures[] = supplierOrderContract.getPictures().split(",");
+//			for (int i = 0; i < pritures.length; i++) {
+//				SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+//				supplierGoodsImage.setImagePath(pritures[i]);
+//				supplierGoodsImages.add(supplierGoodsImage);
+//			}
+//		}
+//		supplierOrderContract.setSupplierGoodsImages(supplierGoodsImages);
+		List<SupplierQuoteInfo> supplierQuoteInfoList = new ArrayList<SupplierQuoteInfo>();
+		supplierQuoteInfoList.add(supplierQuoteInfo);
+		map.put("supplierQuoteInfoList", supplierQuoteInfoList);
+		map.put("supplierQuoteInfo", supplierQuoteInfo);
+		map.put("ok", "1");
+		map.put("fileName", fileName);
+		map.put("filePath", rootPath +"/"+supplierQuoteInfo.getOrderId()+  "/" + newFileName);
+		return "order/supplier_order_review";
+	}
+	/**
+	 * 合同快照
+	 * @param map
+	 * @param httpSession
+	 * @param supplierGoodsInfo
+	 * @param uploadFiles
+	 * @return
+	 * @throws NoSuchSupplierException
+	 * @throws ServiceExecutionFailedException
+	 * @throws IOException
+	 */
+	@RequestMapping("/uploadPicture")
+	public Object uploadPicture(Map<String, Object> map,HttpSession httpSession,HttpServletRequest request,
+			@ModelAttribute("SupplierOrderContract") SupplierOrderContract supplierOrderContract,
+			 @RequestParam("uploadPicture") MultipartFile uploadFiles)
+			throws NoSuchSupplierException, ServiceExecutionFailedException, IOException {
+		String picture = uploadFiles.getOriginalFilename();
+		String postfix = picture.substring(picture.lastIndexOf("."),picture.length());
+		// 上传地址
+		String rootPath = ConfigHolder.getInstance().getConfig("supplier_contract");
+		//新增图片地址
+		String newFileName = String.valueOf(System.currentTimeMillis()) + postfix;
+		String savePath = request.getSession().getServletContext().getRealPath(ConfigHolder.getInstance().getConfig("supplier_contract"));
+		saveFile(savePath, newFileName, uploadFiles);
+//		supplierOrderContract.setContractAttachmentPath(rootPath +  "/" + newFileName);
+		List<SupplierGoodsImage> supplierGoodsImages = new ArrayList<SupplierGoodsImage>();
+		if (supplierOrderContract.getPictures() != null && !"".equals(supplierOrderContract.getPictures())) {
+			String pritures[] = supplierOrderContract.getPictures().split(",");
+			for (int i = 0; i < pritures.length; i++) {
+				SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+				supplierGoodsImage.setImagePath(pritures[i]);
+				supplierGoodsImages.add(supplierGoodsImage);
+			}
+			supplierOrderContract.setPictures(supplierOrderContract.getPictures() + ","+rootPath +  "/" + newFileName);
+		}else {
+			supplierOrderContract.setPictures(rootPath +  "/" + newFileName);
+		}
+		SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+		supplierGoodsImage.setImagePath(rootPath +  "/" + newFileName);
+		supplierGoodsImages.add(supplierGoodsImage);
+		supplierOrderContract.setSupplierGoodsImages(supplierGoodsImages);
+		// 回显
+		Order order = orderService.getOrderDetail(supplierOrderContract.getOrderId());
+		map.put("order", order);
+		map.put("supplierOrderContract", supplierOrderContract);
+		map.put("ok", "1");
+		return "order/supplier_order_review";
+	}
+	/**
+	 * 合同快照删除
+	 * @param map
+	 * @param httpSession
+	 * @param supplierGoodsInfo
+	 * @param uploadFiles
+	 * @return
+	 * @throws NoSuchSupplierException
+	 * @throws ServiceExecutionFailedException
+	 * @throws IOException
+	 */
+	@RequestMapping("/deletePicture")
+	public Object deletePicture(Map<String, Object> map,HttpSession httpSession,HttpServletRequest request,
+			@ModelAttribute("SupplierOrderContract") SupplierOrderContract supplierOrderContract)
+			throws NoSuchSupplierException, ServiceExecutionFailedException, IOException {
+		String deleteUrl = request.getParameter("deleteUrl");
+		//快照回显
+		String newPrcture = "";
+		List<SupplierGoodsImage> supplierGoodsImages = new ArrayList<SupplierGoodsImage>();
+		if (supplierOrderContract.getPictures() != null && !"".equals(supplierOrderContract.getPictures())) {
+			String pritures[] = supplierOrderContract.getPictures().split(",");
+			for (int i = 0; i < pritures.length; i++) {
+				if (deleteUrl.equals(pritures[i])) {
+					continue;
+				}
+				newPrcture = newPrcture + ","+pritures[i];
+				SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+				supplierGoodsImage.setImagePath(pritures[i]);
+				supplierGoodsImages.add(supplierGoodsImage);
+			}
+		}
+		if (!"".equals(newPrcture)) {
+			newPrcture = newPrcture.substring(1,newPrcture.length());
+		}
+		supplierOrderContract.setPictures(newPrcture);
+		supplierOrderContract.setSupplierGoodsImages(supplierGoodsImages);
+		// 回显
+		Order order = orderService.getOrderDetail(supplierOrderContract.getOrderId());
+		map.put("order", order);
+		map.put("supplierOrderContract", supplierOrderContract);
+		return "order/supplier_order_review";
+	}
+	/**
+	 * 上传合同下载
+	 * @param reqeust
+	 * @param response
+	 * @throws UnsupportedEncodingException
+	 */
+	@RequestMapping("/downloadContract")  
+    public void downloadFile(HttpServletRequest reqeust,HttpServletResponse response) throws UnsupportedEncodingException{  
+        response.setCharacterEncoding("utf-8");  
+        response.setContentType("multipart/form-data");  
+        String fileName = reqeust.getParameter("downFile");
+        System.err.println(fileName);
+        String filePath = reqeust.getSession().getServletContext().getRealPath(fileName);
+        fileName = fileName.substring(fileName.lastIndexOf("/")+1,fileName.length());
+        response.setHeader("Content-Disposition", "attachment;fileName="+java.net.URLEncoder.encode(fileName, "UTF-8"));  
+        try {
+            File file=new File(filePath);  
+//            System.out.println(file.getAbsolutePath());
+            InputStream inputStream=new FileInputStream(file);  
+            OutputStream os=response.getOutputStream();  
+            byte[] b=new byte[1024];  
+            int length;  
+            while((length=inputStream.read(b))>0){  
+                os.write(b,0,length);  
+            }  
+            inputStream.close();  
+        } catch (FileNotFoundException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }
+	
+	/**
+	 * 传统供应商发货
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/doSend")
+	@ResponseBody
+	public Object doSend(@RequestParam("orderId") String orderId,@RequestParam("supExpressName") String supExpressName,
+			@RequestParam("supExpressCode") String supExpressCode,
+			HttpSession httpSession) {
+		//更新订单状态
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+		supplierOrder.setOrderStatus("5");
+		supplierOrder.setSupExpressName(supExpressName);
+		supplierOrder.setSupExpressCode(supExpressCode);
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		return "0";
+	}
+	/**
+	 * 传统供应商发货
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/doSendPage/{orderId}")
+	public Object doSendPage(Map<String, Object> map,@PathVariable("orderId") String orderId,
+			HttpSession httpSession) {
+		map.put("orderId", orderId);
+		return "order/supplier_goods_send";
+	}
+	/**
+	 * 传统供应商审核成功
+	 * 
+	 * @param map
+	 * @return
+	 * @throws IOException 
+	 */
+	@RequestMapping("/passStatus")
+	@ResponseBody
+	public Object passStatus(@RequestParam("orderId") String orderId,
+			@RequestParam("sendPersonFax") String sendPersonFax,
+			@RequestParam("quoteAttachmentPath") String quoteAttachmentPath,
+			@RequestParam("fileName") String fileName,
+//			@RequestParam("orderAmount") String orderAmount,
+//			@RequestParam("authority") String authority,
+			@RequestParam("companyname") String companyname,
+			@RequestParam("contactPerson") String contactPerson,
+			@RequestParam("contactNum") String contactNum,
+			@RequestParam("contactFax") String contactFax,
+			@RequestParam("sendPerson") String sendPerson,
+			@RequestParam("sendPersonTel") String sendPersonTel,
+			@RequestParam("quoteDate") String quoteDate,
+			HttpSession httpSession) throws IOException {
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+//		if ("ROLE_2C".equals(authority)) {
+//			supplierOrder.setOrderStatus("15");
+//		}else {
+//			supplierOrder.setOrderStatus("1");
+//		}
+		supplierOrder.setOrderStatus("21");
+//		supplierOrder.setOrderAmount(orderAmount);
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		SupplierQuoteInfo supplierQuoteInfo = new SupplierQuoteInfo();
+		String index = supplierAddressService.querySupplierIndex();
+		supplierQuoteInfo.setId(index);
+		supplierQuoteInfo.setOrderId(orderId);
+		supplierQuoteInfo.setSupId(supId);
+		supplierQuoteInfo.setQuoteDate(quoteDate.trim());
+		supplierQuoteInfo.setBuyCompany(companyname);
+		supplierQuoteInfo.setQuoteAttachmentPath(quoteAttachmentPath);
+		supplierQuoteInfo.setSendPerson(sendPerson);
+		supplierQuoteInfo.setSendPersonFax(sendPersonFax);
+		supplierQuoteInfo.setSendPersonTel(sendPersonTel);
+		supplierQuoteInfo.setContactFax(contactFax);
+		supplierQuoteInfo.setContactName(contactPerson);
+		supplierQuoteInfo.setContactTel(contactNum);
+		supplierQuoteInfo.setFileName(fileName);
+		supplierOrderService.updataQuoteInfo(supplierQuoteInfo);
+		
+		//更新快照表价格
+//		String[] supGoodsIds = supGoodsId.split(",");
+//		String[] buyNums = buyNum.split(",");
+//		String[] goodsPrices = goodsPrice.split(",");
+//		for (int i = 0; i < supGoodsIds.length; i++) {
+//			supplierOrder.setSupGoodsId(supGoodsIds[i]);
+//			supplierOrder.setBuyNum(buyNums[i]);
+//			supplierOrder.setGoodsPrice(goodsPrices[i]);
+//			supplierOrderService.updataOrderPrice(supplierOrder);
+//		}
+//		// 更新合同信息
+//		if ("1".equals(radioValue)) {
+//			// 供应商名称
+//			String supName = httpSession.getAttribute(SessionKeys.SUP_USERNAMECN).toString();
+//			// 合同信息
+//			SupplierOrderContract supplierOrderContract = new SupplierOrderContract();
+//			supplierOrderContract.setContractCode(contractCode);
+//			supplierOrderContract.setContractName(contractName);
+//			supplierOrderContract.setContractPrice(contractPrice);
+//			supplierOrderContract.setContractAttachmentPath(contractAttachmentPath);
+//			supplierOrderContract.setSupName(supName);
+//			supplierOrderContract.setSignDate(signDate);
+//			supplierOrderContract.setOrderId(orderId);
+//			supplierOrderService.insertContract(supplierOrderContract);
+//			// 合同快照信息
+//			String picturesImgs[] = pictures.split(",");
+//			for (int i = 0; i < picturesImgs.length; i++) {
+//				SupplierImageInfo supplierImageInfo = new SupplierImageInfo();
+//				supplierImageInfo.setId(supplierAddressService.querySupplierIndex());
+//				supplierImageInfo.setBusinessId(contractCode);
+//				supplierImageInfo.setBusinessType("7");
+//				supplierImageInfo.setUrl(picturesImgs[i]);
+//				supplierOrderService.insertImageInfo(supplierImageInfo);
+//			}
+//			
+//		}
+		sendShortMessage("suppass1", "suppass2", orderId);
+		return "0";
+	}
+	/**
+	 * 传统供应商审核拒绝
+	 * 
+	 * @param map
+	 * @return
+	 * @throws IOException 
+	 */
+	@RequestMapping("/returnStatus")
+	@ResponseBody
+	public Object returnStatus(@RequestParam("orderId") String orderId,
+			@RequestParam("supplierReviewRemark") String supplierReviewRemark,
+			HttpSession httpSession) throws IOException {
+		SupplierOrder supplierOrder = new SupplierOrder();
+		supplierOrder.setOrderId(orderId);
+		supplierOrder.setOrderStatus("19");
+		supplierOrder.setSupplierReviewRemark(supplierReviewRemark);
+		supplierOrderService.updataOrderStatus(supplierOrder);
+		sendShortMessage("supreject1", "supreject2", orderId);
+		return "0";
+	}
+	/**
+	 * 发送短信 
+	 * @throws IOException 
+	 */
+	private void sendShortMessage(String key1,String key2,String orderId) throws IOException{
+		String path = OrderExchangeServiceImpl.class.getResource("/").getPath();
+		String websiteURL = (path.replace("/build/classes", "").replace("%20"," ").replace("classes/", "") + "message.properties");
+		StringBuffer msg = new StringBuffer();
+		String subMsg1 = CommonFileUtils.getMsg(websiteURL,key1);
+		String subMsg2 = CommonFileUtils.getMsg(websiteURL,key2);
+		msg.append(subMsg1).append(orderId).append(subMsg2);
+		// 获取采购人联系方式
+		String contactNum = supplierOrderService.queryContactNum(orderId);
+		logger.info("类别："+key2+"发送短信号码："+contactNum);
+		if (contactNum == null) {
+			return;
+		}
+		String[] contactNums = contactNum.split(",");
+		ShortMessageUtils.sendSMS(contactNums, msg.toString());
+	}
+	 /**
+     * 
+     * 功能描述   保存图片
+     * 
+     * @author ：xiaoyu 创建日期 ：2014年2月12日 下午7:37:45
+     * 
+     * @param newFileName
+     *            上传照片文件名
+     * @param filedata
+     *           文件数据
+     * 
+     *            修改历史 ：(修改人，修改时间，修改原因/内容)
+     */
+    private void saveFile(String saveFilePath ,String newFileName, MultipartFile filedata) {
+        // TODO Auto-generated method stub
+        // 根据配置文件获取服务器图片存放路径
+
+        /* 构建文件目录 */
+        File fileDir = new File(saveFilePath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(saveFilePath +File.separator+ newFileName);
+            // 写入文件
+            out.write(filedata.getBytes());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

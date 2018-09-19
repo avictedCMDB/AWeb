@@ -1,0 +1,25 @@
+
+
+function cancle(){
+	window.location.href = "/AWeb/management/invoice";
+}
+
+function chooseInvoiceFlg(){
+	var flg = $('input[name="invoiceFlag"]:checked').val();
+	if(flg==1){
+		$("#invoiceContentP").show();
+	}else{
+		$("#invoiceContentP").hide();
+	}
+}
+
+function saveInvoice(type){
+	if(type==1){
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/add";
+		document.getElementById("editInvoiceForm").submit();
+	}else{
+		var updInvoiceID = $("#updInvoiceID").val();
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/update/"+updInvoiceID;
+		document.getElementById("editInvoiceForm").submit();
+	}
+}

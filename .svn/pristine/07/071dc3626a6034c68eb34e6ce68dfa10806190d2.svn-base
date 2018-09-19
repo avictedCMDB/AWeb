@@ -1,0 +1,22 @@
+package com.avic.supplier.services.impl;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.services.SupplierOrderService;
+
+public class SupplierOrderServiceImpl implements SupplierOrderService {
+
+	@Override
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SupplierOrder> queryOrderStatusList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

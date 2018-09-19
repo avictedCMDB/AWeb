@@ -1,0 +1,38 @@
+#step02 .special_group01 {
+	width: 890px;
+
+}
+#step02 .form-group span {
+	line-height: 28px;
+}
+#step02 .form-group .input_area{
+	width: 790px;
+}
+#step02 .form-group .input_area label {
+	float: left;
+}
+#step02 .form-group .radio_input {
+	display: inline-block;
+}
+#step02 .form-group .input_area_special {
+    width: 90px;
+}
+#step02 .input-group .form-control {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-left: 5px;
+}
+#step02 .input-group span {
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+/*弹出框*/
+#step02 .modal-body .form-group .col-sm-10 .checkbox-inline{
+	padding-left: 20px;
+	padding-top: 5px;
+}
+#step02 .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+	margin-top: 2px;
+}

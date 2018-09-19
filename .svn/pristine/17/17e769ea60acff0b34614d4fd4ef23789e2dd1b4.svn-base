@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ExchangeMapper">
+	<resultMap id="exchangeMap" type="com.avic.management.models.Exchange">
+		<result column="EXCHANGE_ID" property="exchangeID" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_TIME" property="exchangeTime" jdbcType="VARCHAR" />
+		<result column="SUP_CHECK_DATE" property="supCheckDate" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_STATUS" property="exchangeStatus" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="SUP_SEND_DATA" property="supSendDate" jdbcType="VARCHAR" />
+		<result column="SUP_REVIEW_DATE" property="supReviewDate" jdbcType="VARCHAR" />
+		<result column="BUYER_SEND_DATE" property="buyerSendDate" jdbcType="VARCHAR" />
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" />
+		<result column="BUY_REVIEW_DATE" property="buyReviewDate" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_AMOUNT" property="exchangeAmount" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_PRICE" property="exchangePrice" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_STATUS_NAME" property="exchangeStatusName" jdbcType="VARCHAR" />
+		<result column="COMPANYNAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="ADDR_NAME" property="addrName" jdbcType="VARCHAR" />
+		<result column="ADDR_PHONE" property="addrPhone" jdbcType="VARCHAR" />
+		<result column="AREA_ONE" property="areaOne" jdbcType="VARCHAR" />
+		<result column="AREA_TWO" property="areaTwo" jdbcType="VARCHAR" />
+		<result column="AREA_THREE" property="areaThree" jdbcType="VARCHAR" />
+		<result column="SUP_ADDRESS_DETAIL" property="supAddressDetail" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="orderSnapshotMap" type="com.avic.management.models.OrderSnapshot">
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR" /> 
+		<result column="SUP_GOODS_ID" property="supGoodsId" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR" />
+		<result column="BUY_NUM" property="buyNum" jdbcType="INTEGER" />
+		<result column="REFUND_STATUS" property="refundStatus" jdbcType="INTEGER" />
+		<result column="EXCHANGE_REASON" property="exchangeReason" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryExchange" resultMap="exchangeMap" parameterType="com.avic.management.models.Exchange">
+	SELECT * FROM (
+		SELECT TOE.EXCHANGE_ID,
+		       TOE.SUP_ID,
+		       TO_CHAR(TOE.EXCHANGE_TIME,'yyyy-MM-dd') AS EXCHANGE_TIME,
+		       TOE.ORDER_ID,
+		       TOE.EXCHANGE_AMOUNT,
+		       TOE.EXCHANGE_PRICE,
+		       TOE.EXCHANGE_STATUS,
+		       TSI.SUP_NAME,
+		       CL.CODETEXT AS EXCHANGE_STATUS_NAME
+		  FROM T_ORDER_EXCHANGE TOE,T_SUP_INFO TSI,CODELIST CL
+		 WHERE TOE.SUP_ID = TSI.SUP_ID
+		   AND TOE.EXCHANGE_STATUS = CL.CODEVALUE
+		   AND CL.Codelisttype = 'EXCHANGE_STATUS'
+		   AND TOE.USER_ID =  #{userID,jdbcType=VARCHAR}
+		   <if test="startTime != null and startTime != ''">
+			  AND TO_CHAR(TOE.EXCHANGE_TIME,'yyyy-MM-dd') &gt;= #{startTime,jdbcType=VARCHAR}
+			</if>
+			<if test="endTime != null and endTime != ''">
+			  AND TO_CHAR(TOE.EXCHANGE_TIME, 'yyyy-MM-dd') &lt;= #{endTime,jdbcType=VARCHAR}
+			</if>
+			<if test="searchExchangeID != null and searchExchangeID != ''">
+			  AND TOE.EXCHANGE_ID LIKE CONCAT('%',CONCAT(#{searchExchangeID,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="searchSupName != null and searchSupName != ''">
+			  AND TSI.SUP_NAME = LIKE CONCAT('%',CONCAT(#{searchSupName,jdbcType=VARCHAR},'%'))
+			 </if>
+			 <if test="searchOrderID != null and searchOrderID != ''">
+			  AND TOE.ORDER_ID LIKE CONCAT('%',CONCAT(#{searchOrderID,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="searchExchangeStatus != null and searchExchangeStatus != ''">
+			  AND TOE.EXCHANGE_STATUS = #{searchExchangeStatus,jdbcType=VARCHAR}
+			</if>
+			ORDER BY TOE.EXCHANGE_TIME DESC) R
+   		<!-- WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER} -->
+	</select>
+	
+	<update id="updateOrderExchangeStatus" parameterType="com.avic.management.models.Exchange">
+		UPDATE T_ORDER_EXCHANGE TOE
+		   SET TOE.EXCHANGE_STATUS = #{exchangeStatus,jdbcType=VARCHAR},
+		       TOE.BUY_REVIEW_DATE = SYSDATE
+		 WHERE TOE.EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="queryOrderExchangeReceiptCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.Exchange">
+		SELECT COUNT(*) 
+	      FROM T_ORDER_EXCHANGE
+	     WHERE EXCHANGE_STATUS = '4'
+	       AND ORDER_ID = (SELECT ORDER_ID FROM T_ORDER_EXCHANGE WHERE EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR})
+	</select>
+	
+	<update id="updateOrderStatusByExchangeID" parameterType="com.avic.management.models.Exchange">
+		UPDATE T_ORDER 
+		   SET ORDER_STATUS = #{orderStatus,jdbcType=INTEGER}
+		 WHERE ORDER_ID = (SELECT ORDER_ID FROM T_ORDER_EXCHANGE WHERE EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR})
+	</update>
+	
+	<select id="queryExchangeByID" resultMap="exchangeMap" parameterType="com.avic.management.models.Exchange">
+		SELECT TOE.EXCHANGE_ID,
+	           TOE.ORDER_ID,
+	           TOE.REMARK,
+	           TOE.EXCHANGE_AMOUNT,
+	           URS.COMPANYNAME,
+	           TOR.ADDR_NAME,
+	           TOR.ADDR_PHONE,
+               (SELECT (SELECT TSA1.SUP_AREA_NAME FROM T_SUP_AREA TSA1 WHERE TSA1.SUP_AREA_ID = TSADD1.SUP_AREA_LEVEL_ONE) FROM T_SUP_ADDRESS TSADD1) AS AREA_ONE,
+               (SELECT (SELECT TSA2.SUP_AREA_NAME FROM T_SUP_AREA TSA2 WHERE TSA2.SUP_AREA_ID = TSADD2.SUP_AREA_LEVEL_ONE) FROM T_SUP_ADDRESS TSADD2) AS AREA_TWO,
+               (SELECT (SELECT TSA3.SUP_AREA_NAME FROM T_SUP_AREA TSA3 WHERE TSA3.SUP_AREA_ID = TSADD3.SUP_AREA_LEVEL_ONE) FROM T_SUP_ADDRESS TSADD3) AS AREA_THREE,
+               TSA.SUP_ADDRESS_DETAIL,
+               TSI.SUP_NAME
+	      FROM T_ORDER_EXCHANGE TOE
+     LEFT JOIN USERS URS
+	        ON TOE.USER_ID = URS.USERID
+     LEFT JOIN T_ORDER TOR
+	        ON TOE.ORDER_ID = TOR.ORDER_ID
+     LEFT JOIN T_SUP_ADDRESS TSA
+            ON TOE.SUP_ADDRESS_ID = TSA.SUP_ADDRESS_ID
+     LEFT JOIN T_SUP_INFO TSI
+            ON TOE.SUP_ID = TSI.SUP_ID
+         WHERE TOE.EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryOrderSnapshotsByOrderID" resultMap="orderSnapshotMap" parameterType="com.avic.management.models.OrderSnapshot">
+		    SELECT TOS.ORDER_ID,
+		           TOS.SUP_GOODS_ID,
+		           TOS.GOODS_NAME,
+		           TOS.GOODS_PRICE,
+		           TOS.IMAGE_PATH,
+		           TOS.BUY_NUM,
+		           TOS.REFUND_STATUS,
+		           TEG.EXCHANGE_REASON
+		      FROM T_ORDER_SNAPSHOT TOS,T_EXCHANGE_GOODS TEG     
+		     WHERE TOS.SUP_GOODS_ID = TEG.SUP_GOODS_ID 
+		       AND TEG.EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR}
+		       AND TOS.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateOrderExchangeExpressInfo" parameterType="com.avic.management.models.Exchange">
+		UPDATE T_ORDER_EXCHANGE TOE
+		   SET TOE.EXCHANGE_EXPRESS_NAME = #{exchangeExpressName,jdbcType=VARCHAR},
+		       TOE.EXCHANGE_EXPRESS_CODE = #{exchangeExpressCode,jdbcType=VARCHAR},
+		       BUYER_SEND_DATE = SYSDATE
+		 WHERE TOE.EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR}
+	</update>
+</mapper>

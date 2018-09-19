@@ -1,0 +1,80 @@
+package com.avic.market.models;
+
+import java.util.Date;
+
+public class BidSupplierQuota {
+    String projId;
+    String supCode;
+    int quotaRound;
+    String bidNum;
+    int quotaNum;
+    Date quotaTime;
+    int quotaType;
+    int timeoutFlag;
+    String quotaNumString;
+    String quotaIp;
+    
+    
+    public String getQuotaIp() {
+        return quotaIp;
+    }
+    public void setQuotaIp(String quotaIp) {
+        this.quotaIp = quotaIp;
+    }
+    public String getQuotaNumString() {
+        return quotaNumString;
+    }
+    public void setQuotaNumString(String quotaNumString) {
+        this.quotaNumString = quotaNumString;
+    }
+    public int getTimeoutFlag() {
+        return timeoutFlag;
+    }
+    public void setTimeoutFlag(int timeoutFlag) {
+        this.timeoutFlag = timeoutFlag;
+    }
+    public String getProjId() {
+        return projId;
+    }
+    public void setProjId(String projId) {
+        this.projId = projId;
+    }
+    public String getSupCode() {
+        return supCode;
+    }
+    public void setSupCode(String supCode) {
+        this.supCode = supCode;
+    }
+    public String getBidNum() {
+        return bidNum;
+    }
+    public void setBidNum(String bidNum) {
+        this.bidNum = bidNum;
+    }
+    public int getQuotaNum() {
+        return quotaNum;
+    }
+    public void setQuotaNum(int quotaNum) {
+        this.quotaNum = quotaNum;
+    }
+    public Date getQuotaTime() {
+        return quotaTime;
+    }
+    public void setQuotaTime(Date quotaTime) {
+        this.quotaTime = quotaTime;
+    }
+    public int getQuotaRound() {
+        return quotaRound;
+    }
+    public void setQuotaRound(int quotaRound) {
+        this.quotaRound = quotaRound;
+    }
+    public int getQuotaType() {
+        return quotaType;
+    }
+    public void setQuotaType(int quotaType) {
+        this.quotaType = quotaType;
+    }
+    
+    
+}

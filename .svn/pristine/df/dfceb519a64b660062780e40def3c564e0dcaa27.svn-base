@@ -1,0 +1,76 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.Order;
+import com.avic.management.models.OrderSnapshot;
+import com.avic.management.models.QuoteSnapshot;
+
+@Repository
+public interface OrderMapper {
+	/**
+	 * 查询订单信息
+	 */
+	public List<Order> queryOrders(Order order);
+	
+	/**
+	 * 导出订单信息
+	 */
+	public List<Order> queryOrdersAllData(Order order);
+	
+	/**
+	 * 查询订单数量
+	 */
+	public int queryOrdersListCount(Order order);
+	
+	/**
+	 * 获取订单状态列表
+	 */
+	public List<Order> getOrderStatusList();
+	
+	/**
+	 * 确认收货
+	 */
+	public void doReceived(String order_id);
+	
+	/**
+	 * 取消订单
+	 */
+	public void orderCancel(String order_id);
+	
+	/**
+	 * 删除订单表数据
+	 */
+	public void deleteT_ORDER(String order_id);
+	
+	/**
+	 * 删除订单快照表数据
+	 */
+	public void deleteT_ORDER_SNAPSHOT(String order_id);
+	
+	/**
+	 * 查询报价单商品列表
+	 */
+	public List<QuoteSnapshot> queryQuoteSnapshot(QuoteSnapshot quoteSnapshot);
+	
+	/**
+	 * 根据订单ID查询订单信息
+	 */
+	public Order queryOrderInfoByOrderId(Order order);
+	
+	// ===========================================================================
+	//                         财务支付管理使用
+    // ===========================================================================
+	public int queryPaymentOrderCount(@Param("companyId") String companyId, @Param("supId") int supId, @Param("orderId") String orderId, @Param("orderStatus") int orderStatus, @Param("goodsName") String goodsName);
+    public List<Order> queryPaymentOrderList(@Param("companyId") String companyId, @Param("supId") int supId, @Param("orderId") String orderId, @Param("orderStatus") int orderStatus, @Param("goodsName") String goodsName, @Param("start") int start, @Param("end") int end);
+    public List<OrderSnapshot> queryPaymentOrderSnapshot(@Param("list") List<String> orderIds);
+    public Order queryOrderById(@Param("orderId") String orderId);
+    public void updateOrderPayStatus(@Param("orderId") String orderId);
+    public void updateOrderStatus(@Param("orderId") String orderId, @Param("status") int status);
+    public int queryGoodsSum(@Param("orderId") String orderId);
+    public String queryUserCompanyName(@Param("userId") String userId);
+    public String queryUserContactNum(@Param("userId") String userId);
+}

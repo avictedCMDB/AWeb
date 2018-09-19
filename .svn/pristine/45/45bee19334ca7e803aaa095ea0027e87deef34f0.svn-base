@@ -1,0 +1,109 @@
+package com.avic.supervise.controllers;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.supervise.models.Contract;
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.ContractService;
+
+@Controller
+@RequestMapping("/contract")
+public class ContractController {
+    protected static final Log logger = LogFactory.getLog(ContractController.class);
+    
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    ContractService contractService;
+    
+    @SuppressWarnings("unused")
+	@RequestMapping("")
+    public String index(@ModelAttribute("contract") Contract contract,
+    		HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) throws UnsupportedEncodingException {
+        logger.info("合同管理");
+        /*try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}*/
+        //查询数量
+        int total = contractService.queryContractCount(contract);
+
+        String page = String.valueOf(contract.getPage());
+
+        int pages = (int) Math.ceil((double) total / contract.getPageSize());
+//      订单状态初始化结果集
+        
+        List<Contract>  contractList = contractService.queryContract(contract);
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("contracts", contractList);
+        map.put("searchContract", contract);
+        map.put("pageAction","supervise/contract?" 
+        		+ "&contract_code="+URLEncoder.encode((contract.getContract_code() == null ?"":contract.getContract_code()),"GBK")
+        		+ "&busi_id="+URLEncoder.encode((contract.getBusi_id() == null ?"":contract.getBusi_id()),"GBK")
+        		+ "&busi_type="+(contract.getBusi_type() == null ?"":contract.getBusi_type())
+        		+ "&begin_date="+(contract.getBegin_date() == null ?"":contract.getBegin_date())
+        		+ "&end_date="+(contract.getEnd_date() == null ?"":contract.getEnd_date())
+        		+ "&page=%PAGE%");
+        return "/business/contract/supervise_contract";
+    }
+    
+    @RequestMapping("/doDownload")
+    public void doDownload(HttpServletRequest request,HttpServletResponse response,
+    		Map<String, Object> map,HttpSession httpSession) throws IOException {
+    	logger.info("合同管理");
+    	
+    	String contract_code = request.getParameter("contract_code");
+    	
+    	String filePath = contractService.getFilePath(contract_code);
+    	String fileName = "";
+    	if(filePath!=null && !"".equals(filePath) && filePath.length()>0){
+    		fileName = filePath.substring(filePath.lastIndexOf("/")+1);
+    	}
+    	
+    	if(fileName!=null && !"".equals(fileName) && fileName.indexOf(".")>0){
+			//设置文件MIME类型
+			response.setContentType(httpSession.getServletContext().getMimeType(fileName));
+			//设置Content-Disposition
+			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			//读取目标文件，通过response将目标文件写到客户端
+			//获取目标文件的绝对路径
+			String fullFileName = httpSession.getServletContext().getRealPath(filePath);
+			//System.out.println(fullFileName);
+			//读取文件
+			InputStream in = new FileInputStream(fullFileName);
+			OutputStream out = response.getOutputStream();
+	//		写文件
+			int b;
+			while((b=in.read())!= -1){
+				out.write(b);
+			}
+			in.close();
+			out.close();
+    	}
+    }
+}

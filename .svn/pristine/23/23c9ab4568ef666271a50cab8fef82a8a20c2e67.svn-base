@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.AddressMapper">
+	<resultMap id="addressResultMap" type="Address">
+		<id column="address_id" property="addressId" jdbcType="VARCHAR" /> 
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="area_level_one" property="areaLevelOne" jdbcType="VARCHAR" />
+		<result column="area_level_one_name" property="areaLevelOneName" jdbcType="VARCHAR" />
+		<result column="area_level_two" property="areaLevelTwo" jdbcType="VARCHAR" />
+		<result column="area_level_two_name" property="areaLevelTwoName" jdbcType="VARCHAR" />
+		<result column="area_level_three" property="areaLevelThree" jdbcType="VARCHAR" />
+		<result column="area_level_three_name" property="areaLevelThreeName" jdbcType="VARCHAR" />
+		<result column="area_level_four" property="areaLevelFour" jdbcType="VARCHAR" />
+		<result column="area_level_four_name" property="areaLevelFourName" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="VARCHAR" />
+		<result column="tel" property="tel" jdbcType="VARCHAR" />
+		<result column="address_detail" property="addressDetail" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="zipcode" property="zipCode" jdbcType="VARCHAR" />
+		<result column="alias_name" property="alias" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="if_default" property="ifDefault" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="areaResultMap" type="SupArea">
+		<id column="sup_area_id" property="supAreaId" jdbcType="VARCHAR" /> 
+		<id column="sup_id" property="supId" jdbcType="INTEGER" /> 
+		<result column="sup_area_name" property="supAreaName" jdbcType="VARCHAR" />
+		<result column="sup_area_level" property="supAreaLevel" jdbcType="INTEGER" />
+		<result column="sup_parent_area" property="supParentArea" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryDefaultAddress" resultMap="addressResultMap">
+		select *
+		  from t_market_address
+		 where if_default = '1'
+		   and user_id = #{userId}
+		   and sup_id = #{supId}
+	</select>
+	
+	<select id="queryUserAddress" resultMap="addressResultMap">
+		select a.*,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_one) = b.sup_area_id and b.sup_id = a.sup_id) area_level_one_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_two) = b.sup_area_id and b.sup_id = a.sup_id) area_level_two_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_three) = b.sup_area_id and b.sup_id = a.sup_id) area_level_three_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_four) = b.sup_area_id and b.sup_id = a.sup_id) area_level_four_name
+		  from t_market_address a
+		 where a.user_id = #{userId}
+		   and a.sup_id = #{supId}
+	  order by a.if_default desc
+	</select>
+	
+	<select id="queryProfUserAddress" resultMap="addressResultMap">
+		select a.*,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_one) = b.sup_area_id and b.sup_id = 1) area_level_one_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_two) = b.sup_area_id and b.sup_id = 1) area_level_two_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_three) = b.sup_area_id and b.sup_id = 1) area_level_three_name,
+			   (select sup_area_name from t_sup_area b where to_number(a.area_level_four) = b.sup_area_id and b.sup_id = 1) area_level_four_name
+		  from t_market_address a
+		 where a.user_id = #{userId}
+		   and a.sup_id = #{supId}
+	  order by a.if_default desc
+	</select>
+	
+	<select id="querySupArea" resultMap="areaResultMap">
+		select *
+		  from t_sup_area
+		 where sup_parent_area = #{parent}
+		   and sup_id = #{supId}
+	</select>
+	
+	<select id="queryDefaultAddressCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_market_address
+		 where user_id = #{userId}
+		   and sup_id = #{supId}
+		   and if_default = '1'
+	</select>
+	
+	
+	<select id="queryAddressIndex" resultType="java.lang.String">
+	select to_char(sysdate, 'yyyyMMddHH24miss') || lpad(common_index.nextval, 6, '0') from dual 
+	</select>
+	
+	<insert id="insertAddress">
+		insert into t_market_address (
+			address_id, 
+			name, 
+			area_level_one, 
+			area_level_two, 
+			area_level_three, 
+			area_level_four, 
+			sup_id, 
+			tel, 
+			address_detail, 
+			phone, 
+			zipcode, 
+			user_id, 
+			email,
+			alias_name,
+			if_default)
+		values (
+			#{addressId},
+			#{name,jdbcType=VARCHAR},
+			#{areaLevelOne,jdbcType=VARCHAR},
+			#{areaLevelTwo,jdbcType=VARCHAR},
+			#{areaLevelThree,jdbcType=VARCHAR},
+			#{areaLevelFour,jdbcType=VARCHAR},
+			#{supId,jdbcType=VARCHAR},
+			#{tel,jdbcType=VARCHAR},
+			#{addressDetail,jdbcType=VARCHAR},
+			#{phone,jdbcType=VARCHAR},
+			#{zipCode,jdbcType=VARCHAR},
+			#{userId,jdbcType=VARCHAR},
+			#{email,jdbcType=VARCHAR},
+			#{alias,jdbcType=VARCHAR},
+			#{ifDefault,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateAddress">
+		update t_market_address
+		   set name = #{name,jdbcType=VARCHAR}
+		     , area_level_one = #{areaLevelOne,jdbcType=VARCHAR}
+		     , area_level_two = #{areaLevelTwo,jdbcType=VARCHAR}
+		     , area_level_three = #{areaLevelThree,jdbcType=VARCHAR}
+		     , area_level_four = #{areaLevelFour,jdbcType=VARCHAR}
+		     , tel = #{tel,jdbcType=VARCHAR}
+		     , address_detail = #{addressDetail,jdbcType=VARCHAR}
+		     , phone = #{phone,jdbcType=VARCHAR}
+		     , zipcode = #{zipCode,jdbcType=VARCHAR}
+		     , email = #{email,jdbcType=VARCHAR}
+		     , alias_name = #{alias,jdbcType=VARCHAR}
+		 where address_id = #{addressId}
+	</update>
+	
+	
+	<insert id="batchInsertArea" parameterType="java.util.List">
+		 insert into t_sup_area (sup_area_id, sup_area_name, sup_area_level, sup_parent_area, sup_id)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.supAreaId,jdbcType=INTEGER},
+				#{item.supAreaName,jdbcType=VARCHAR},
+				#{item.supAreaLevel,jdbcType=INTEGER},
+				#{item.supParentArea,jdbcType=INTEGER},
+				#{item.supId,jdbcType=INTEGER}
+			from dual 
+		</foreach>
+	</insert>
+	<delete id="deleteSupArea">
+		delete from t_sup_area where sup_id = #{supId}
+	</delete>
+</mapper>

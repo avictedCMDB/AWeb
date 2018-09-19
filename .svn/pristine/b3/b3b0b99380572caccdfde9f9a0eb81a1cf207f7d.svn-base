@@ -1,0 +1,116 @@
+package com.avic.supplier.services.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierGoodsInfoMapper;
+import com.avic.supplier.mappers.SupplierOffStandRequireMapper;
+import com.avic.supplier.models.SupplierGoodsInfo;
+import com.avic.supplier.models.SupplierOffStandRequire;
+import com.avic.supplier.services.SupplierOffStandRequireService;
+
+@Service
+public class SupplierOffStandRequireServiceImpl implements SupplierOffStandRequireService{
+	@Autowired
+	SupplierOffStandRequireMapper supplierOffStandRequireMapper;
+	
+	@Autowired
+	SupplierGoodsInfoMapper supplierGoodsInfoMapper;
+
+	@Override
+	public List<SupplierOffStandRequire> querySupplierOffStandRequiret(
+			SupplierOffStandRequire supplierOffStandRequire) {
+		return supplierOffStandRequireMapper.querySupplierOffStandRequiret(supplierOffStandRequire);
+	}
+
+	@Override
+	public Integer querySupplierOffStandRequiretCount(
+			SupplierOffStandRequire supplierOffStandRequire) {
+		return supplierOffStandRequireMapper.querySupplierOffStandRequiretCount(supplierOffStandRequire);
+	}
+
+	@Override
+	public Map<String, Object> uploadData(List<List<String>> supplierGoodInfos) {
+		if (supplierGoodInfos == null) {
+			return null;
+		}
+		int count = supplierGoodInfos.size();
+		int errCount = 0;
+		int sussCount = 0;
+		String errMsg = "";
+		List<SupplierGoodsInfo> supplierGoodInfoList = new ArrayList<SupplierGoodsInfo>();
+		for (int i = 0; i < supplierGoodInfos.size(); i++) {
+			SupplierGoodsInfo supplierGoodInfo = new SupplierGoodsInfo();
+			List<String> execlData = supplierGoodInfos.get(i);
+			supplierGoodInfo.setGoodsStatus("1");
+			// 系统分类 暂无使用
+			String systemType = execlData.get(0);
+			String levelOne = execlData.get(1);
+			String levelTwo = execlData.get(2);
+			String marketCatId="";
+			if ("非标准件".equals(systemType)) {
+				marketCatId = this.supplierGoodsInfoMapper.queryGoodsCatId(systemType,levelOne, levelTwo);
+			}else {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2)+"行 【系统分类信息不为非标准件】";
+				continue;
+			}
+			if (marketCatId == null || "".equals(marketCatId)) {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2)+"行 【分类信息不存在】";
+				continue;
+			}else {
+				supplierGoodInfo.setMarketCatId(marketCatId);
+			}
+			if (execlData.get(3) == null || "".equals(execlData.get(3))) {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2)+"行 【商品名称不存在】";
+				continue;
+			}
+			supplierGoodInfo.setGoodsName(execlData.get(3));
+			supplierGoodInfo.setGoodsDesc(execlData.get(8));
+			supplierGoodInfo.setGoodsParam(execlData.get(9));
+			supplierGoodInfo.setBrandName(execlData.get(4));
+			if (execlData.get(5) == null || "".equals(execlData.get(5))) {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2)+"行 【规格型号不存在】";
+				continue;
+			}
+			supplierGoodInfo.setGoodsModel(execlData.get(5));
+			supplierGoodInfo.setGoodsStuff(execlData.get(6));
+			supplierGoodInfo.setGoodsWeight(execlData.get(10));
+			supplierGoodInfo.setProductArea(execlData.get(11));
+			supplierGoodInfo.setGoodsCode(execlData.get(12));
+			supplierGoodInfo.setGoodsWare(execlData.get(13));
+			supplierGoodInfo.setGoodsUnit(execlData.get(14));
+			supplierGoodInfo.setCountPrice(execlData.get(7));
+			supplierGoodInfo.setSalePrice(execlData.get(7));
+			supplierGoodInfo.setAgreePrice(execlData.get(7));
+			supplierGoodInfo.setGoodsService(execlData.get(15));
+			sussCount++;
+			supplierGoodInfoList.add(supplierGoodInfo);
+		}
+		Map<String, Object> reultMap = new HashMap<String, Object>();
+		reultMap.put("count", String.valueOf(count));
+		reultMap.put("sussCount", String.valueOf(sussCount));
+		reultMap.put("errCount", String.valueOf(errCount));
+		String reultMsg = "导入总条数："+count +"  成功条数："+sussCount + "  失败条数："+errCount +"<br/>";
+		if (!"".equals(errMsg)) {
+			errMsg = errMsg.substring(1,errMsg.length());
+			reultMsg = reultMsg + "错误行数："+errMsg;
+		}
+		reultMap.put("errMsg",errMsg);
+		reultMap.put("supplierGoodInfoList",supplierGoodInfoList);
+		return reultMap;
+	}
+
+	@Override
+	public void updateStatus(String id, String goodsIds) {
+		supplierOffStandRequireMapper.updateStatus(id, goodsIds);
+	}
+}

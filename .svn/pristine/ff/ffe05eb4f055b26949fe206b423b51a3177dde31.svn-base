@@ -1,0 +1,101 @@
+package com.avic.management.controllers.bid;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.CodeList;
+import com.avic.management.services.BidProjectService;
+import com.avic.management.services.CodeListService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/bid/project")
+public class ProjectController {
+    protected static final Log logger = LogFactory.getLog(PublishController.class);
+    
+
+    @Autowired
+    CodeListService codeListService;
+    
+    @Autowired
+    BidProjectService bidProjectService;
+    
+
+    @RequestMapping("")
+    public String index(HttpSession sess, Map<String, Object> map) {
+        logger.info("我的项目");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+        CodeList param = new CodeList();
+        param.setCodeListType("BID_CAT");
+
+        List<CodeList> cats = codeListService.queryCodes(param);
+
+        map.put("cats", cats);
+
+        return "bid/project";
+    }
+    
+
+    static final int PAGE_SIZE = 10;
+
+
+    @RequestMapping("/query")
+    @ResponseBody
+    public ResultObject query(@RequestParam(value="projId", defaultValue="") String projId,
+            @RequestParam(value="projName", defaultValue="") String projName,
+            @RequestParam(value="bidCat", defaultValue="") String bidCat,
+            @RequestParam(value="createTime", defaultValue="") String createTime,
+            @RequestParam(value="projStatus", defaultValue="") String projStatus,
+            @RequestParam(value="page", defaultValue="1") int page) {
+        
+        List<String> status = new ArrayList<String>();
+        
+        if ("1".equals(projStatus)) {
+            status.add("2");
+            status.add("3");
+        } else if ("2".equals(projStatus)) {
+            status.add("1");
+        } else {
+            status.add("4");
+        }
+
+        int total = bidProjectService.queryProjectCount(projId, projName, bidCat, createTime, status);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (page > pages) {
+            page = pages;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (total > 0) {
+            map.put("data", bidProjectService.queryProjectList(projId, projName, bidCat, createTime, status, page, PAGE_SIZE));
+        }
+        map.put("pages", pages);
+        return new ResultObject(ResultObject.OK, map);
+    }
+}

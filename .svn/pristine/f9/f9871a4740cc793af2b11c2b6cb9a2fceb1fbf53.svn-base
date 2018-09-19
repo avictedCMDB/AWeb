@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.OffStandardRequireMapper">
+	<resultMap id="offStandardRequireMap" type="com.avic.market.models.OffStandardRequire">
+		<result column="ID" property="ID" jdbcType="VARCHAR" /> 
+		<result column="GOODS_DESC_NEW" property="goodsDescNew" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="GOODS_URL" property="goodsURL" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="IS_RELEASE" property="isRelease" jdbcType="VARCHAR" />
+		<result column="CLOSE_DATE" property="closeDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="queryLastestRequires" resultMap="offStandardRequireMap">
+		select x.* from (
+		   SELECT row_number() over (order by a.create_date desc) rn, a.*
+		     FROM T_OFF_STANDARD_REQUIRE a where a.status != '3' and a.CLOSE_DATE &gt;= sysdate
+		) x where rn &lt;= #{num}
+	</select>
+</mapper>

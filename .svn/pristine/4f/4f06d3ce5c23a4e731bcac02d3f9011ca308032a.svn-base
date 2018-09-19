@@ -1,0 +1,162 @@
+$(document).ready(function(){
+	$('#sul > li').click(function(){
+    	$(this).addClass('active').siblings().removeClass('active');
+    	var s_val = $(this).children().html();
+    	if(s_val=='全部'){
+    		$('#order_status').val('99');
+    	}else if(s_val=='待审核'){
+    		$('#order_status').val('1');
+    	}else if(s_val=='待收货'){
+    		$('#order_status').val('2');
+    	}else{
+    		$('#order_status').val('6');
+    	}
+    	clrVal();//tab页查询前先请所有查询条件
+    	doInit($('#path').val());
+	});
+});
+
+function doInit(path){
+	document.getElementById("searchForm").action=path+"/management/order";
+	document.getElementById("searchForm").submit();
+}
+
+function getOrderStatus(){
+	var order_status1 = $('#order_status1').val();
+	$('#order_status').val(order_status1);
+	if(order_status1=='99' || order_status1=='1' || order_status1=='6'){
+		$('#li'+order_status1).addClass('active').siblings().removeClass('active');
+	}else if(order_status1=='2'){
+		$('#li3').addClass('active').siblings().removeClass('active');
+	}else{
+		$("#li99").removeClass('active').siblings().removeClass('active');
+	}
+}
+
+function exchangeGoods(path,order_id){
+	window.location.href=path+'/management/orderExchange?o='+order_id;;
+}
+
+function refoundGoods(path,order_id){
+	window.location.href=path+'/management/orderRefound?o='+order_id;
+}
+
+function doReceived(path,order_id){
+	var result =confirm("请确认是否收到货?");
+	if(result ==true){
+		$.ajax({
+		    url: path+'/management/order/doReceived?o='+order_id,
+		    type: "POST",
+		    contentType : 'application/json;charset=gbk', //设置请求头信息
+		    dataType:"json",
+		    success: function(data){
+		    	if(data.result=='ok'){
+		    		$('#status_'+order_id).html('订单完成');
+		    		//显示退货、换货按钮
+		    		var strArr = new Array();
+		    		strArr.push("<a href='javascript:void(0);' onclick=\"refoundGoods('"+path+"','"+order_id+"')\">退货</a>");
+		    		strArr.push("<a href='javascript:void(0);' onclick=\"exchangeGoods('"+path+"','"+order_id+"')\">换货</a>");
+		    		var btnsHTML = strArr.join("");
+		    		$('#dc_'+order_id).before(btnsHTML);
+		    		$('#wl_'+order_id).remove();
+		    		$('#dc_'+order_id).remove();
+		    	}else{
+		    		alert('系统忙，请稍后再试。');
+		    	}
+		    },
+		    error: function(res){
+	            alert('系统忙，请稍后再试。');
+	        }
+		});
+	}
+}
+
+function clrVal(){
+	$("#sup_name").val('');
+	$("#order_id").val('');
+	$("#goods_name").val('');
+	$("#order_time").val('');
+	$("#order_status1").val('99');
+	
+}
+
+function clrAllVal(){
+	clrVal();
+	$("#order_status").val('99');
+	$("#li99").addClass('active').siblings().removeClass('active');
+}
+
+function openWindow(path){
+	window.open(path);
+}
+//TODO
+function wuLiuShow(order_id,sup_id,supOrderId){
+	var path = $("#path").val();
+	if($("#cpiDiv").length==0||$("#cpiDiv").is(":hidden")){
+		$("#cpiDiv").remove();
+		$.ajax({
+		    url: path+'/management/ordercpi?orderID='+order_id+"&supID="+sup_id+"&supOrderId="+supOrderId,
+		    type: "POST",
+		    contentType : 'application/json;charset=gbk', //设置请求头信息
+		    dataType:"json",
+		    success: function(data){
+		    	var span = $("#wl_"+order_id);
+		    	var cpiDiv = $("<div id='cpiDiv' class='delivery_info'>" +
+		    						"<div class='arrow_top'><img src='"+path+"/static/img/management/icon-up.png'></div>" +
+		    				  "<div class='close'><i class='fa fa-close'></i></div><div class='title'>物流配送</div></div>");
+		    	var cpiUL = $("<ul id='cpiUL'></ul>");
+		    	$(data).each(function (i) {
+		    		var cpiLI;
+		    		if(i==0){
+		    			cpiLI = $("<li>" +
+		    						"<p>"+this.operate_time+"</p>" +
+		    						"<p>"+this.content+"</p>" +
+		    					"</li>");
+		    		}else{
+		    			cpiLI = $("<li class='old'>" +
+	    						"<p>"+this.operate_time+"</p>" +
+	    						"<p>"+this.content+"</p>" +
+	    					"</li>");
+		    		}
+		    		cpiLI.appendTo(cpiUL);
+	            });
+		    	
+		    	cpiUL.appendTo(cpiDiv);
+		    	cpiDiv.appendTo(span);
+		    },
+		    error: function(res){
+	            alert('系统忙，请稍后再试。');
+	        }
+		});
+	}else{
+		$("#cpiDiv").hide();
+	}
+}
+
+function orderCancel(order_id,sup_id,supOrderId){
+	var path = $("#path").val();
+	var result =confirm("您确定要取消订单吗？");
+	if(result ==true){
+		$.ajax({
+		    url: path+'/management/order/orderCancel?orderID='+order_id+"&supID="+sup_id+"&supOrderId="+supOrderId,
+		    type: "POST",
+		    contentType : 'application/json;charset=gbk', //设置请求头信息
+		    dataType:"json",
+		    success: function(data){
+		    	if(data.result=='ok'){
+		    		$('#status_'+order_id).html('取消订单');
+		    		$('#cancelBtn_'+order_id).remove();
+		    	}else{
+		    		alert('系统忙，请稍后再试。');
+		    	}
+		    },
+		    error: function(res){
+	            alert('系统忙，请稍后再试。');
+	        }
+		});
+	}
+}
+
+function wuLiuHide(prefix,wlid){
+	$('#cpiDiv').hide();
+}

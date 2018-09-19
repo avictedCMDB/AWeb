@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.CompanyMapper">
+	<resultMap id="companyMap" type="com.avic.supervise.models.Company">
+		<result column="COMPANYID" property="companyID" jdbcType="VARCHAR" /> 
+		<result column="COMPANYNAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+		<result column="ID" property="companyMappingID" jdbcType="VARCHAR" />
+		<result column="SUP_INFO_ID" property="supID" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询合作采购单位 -->
+	<select id="queryCooperateCompany" resultMap="companyMap" parameterType="com.avic.supervise.models.Company">
+           SELECT DISTINCT U.COMPANYID,
+                 U.COMPANYNAME,
+                 U.CONTACT_NUM,
+                 TESM.ID
+            FROM USERS U, AUTHORITIES A ,T_ENTERPRISE_SUP_MAPPING TESM
+           WHERE U.COMPANYID = TESM.COMPANY_ID  
+             AND U.USERID = A.USERID
+             AND（a.AUTHORITY = 'ROLE_2C'
+                    or a.AUTHORITY = 'ROLE_BUY'）
+		     AND TESM.SUP_INFO_ID = #{supID,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询所有无合作的采购单位 -->
+	<select id="queryNoCooperateCompany" resultMap="companyMap" parameterType="com.avic.supervise.models.Company">
+			 SELECT R.* FROM(
+			         SELECT UT.*,ROWNUM AS RN 
+			           FROM(
+			               SELECT DISTINCT
+	                              U.COMPANYID,
+	                              U.COMPANYNAME,
+	                              U.CONTACT_NUM
+	                   FROM USERS U,authorities a
+	                        WHERE u.USERID = a.USERID
+	                              and (a.AUTHORITY  = 'ROLE_2C' or a.AUTHORITY  = 'ROLE_BUY')
+	                              and U.COMPANYID NOT IN (
+	                                                   SELECT TESM.COMPANY_ID
+	                                                     FROM T_ENTERPRISE_SUP_MAPPING TESM where SUP_INFO_ID = #{supID,jdbcType=VARCHAR}
+	                                                 )
+	                                                 
+			                 <if test="companyName != null and companyName != ''">
+				     		  	 AND U.COMPANYNAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+				     		 </if>
+			          ) UT
+			 ) R
+	</select>
+	
+	<!-- 查询供应商信息 -->
+	<select id="getCompanyCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Company">
+		 	 SELECT COUNT(1)
+	           FROM(
+	                SELECT DISTINCT
+	                              U.COMPANYID,
+	                              U.COMPANYNAME,
+	                              U.CONTACT_NUM
+	                   FROM USERS U
+	                        WHERE U.COMPANYID NOT IN (
+	                                                   SELECT TESM.COMPANY_ID
+	                                                     FROM T_ENTERPRISE_SUP_MAPPING TESM
+	                                                 )
+	                 <if test="companyName != null and companyName != ''">
+				     	AND U.COMPANYNAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+				     </if>
+	          ) UT
+	</select>
+	
+	<!-- 添加合作采购单位 -->
+	<insert id="addCompanyMapping" parameterType="com.avic.supervise.models.Company">
+		INSERT INTO T_ENTERPRISE_SUP_MAPPING
+		            (
+		              ID,
+		              COMPANY_ID,
+		              SUP_INFO_ID
+		            )
+		     VALUES
+		            (
+		           	 COMPANY_MAPPING_INDEX.NEXTVAL,
+		             #{companyID,jdbcType=VARCHAR},
+		             #{supID,jdbcType=VARCHAR}
+		           )
+	</insert>
+	
+	<delete id="delCommpanyMapping" parameterType="com.avic.supervise.models.Company">
+		DELETE FROM T_ENTERPRISE_SUP_MAPPING
+      	WHERE ID = #{companyMappingID,jdbcType=VARCHAR}
+	</delete>
+</mapper>

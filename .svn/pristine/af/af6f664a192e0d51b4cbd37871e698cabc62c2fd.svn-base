@@ -1,0 +1,53 @@
+package com.avic.supplier.services.impl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.utils.MD5;
+import com.avic.supervise.models.User;
+import com.avic.supplier.mappers.SupplierUserMapper;
+import com.avic.supplier.models.SupplierUser;
+import com.avic.supplier.services.SupplierSupUserService;
+@Service
+public class SupplierSupUserServiceImpl implements SupplierSupUserService{
+	
+	protected static final Log logger = LogFactory.getLog(SupplierSupUserServiceImpl.class);
+	
+	@Autowired
+	SupplierUserMapper supUserMapper;
+
+	@Override
+	public SupplierUser queryLoginUser(SupplierUser supplierUser) {
+		String passWord = supplierUser.getSupPassword();
+		
+		SupplierUser user = supUserMapper.queryLoginUser(supplierUser);
+        
+        if (user == null) {
+        	user = new SupplierUser();
+            user.setErrorMsg("供应商平台无此账户，请确认账号是否正确。");
+            return user;
+        }
+        if(!user.getSupPassword().equalsIgnoreCase(MD5.getMessageDigest(passWord.getBytes()))){
+        	user = new SupplierUser();
+        	user.setErrorMsg("密码错误。");
+        }
+    	return user;
+	}
+
+	@Override
+	public void updateSupPassWord(String password, String supId) {
+		supUserMapper.updateSupPassWord(password, supId);
+	}
+	
+	@Override
+	public SupplierUser queryUserById(String userId) {
+	    return supUserMapper.queryUserById(userId);
+	}
+	
+	@Override
+	public SupplierUser queryCompUser(String code) {
+	    return supUserMapper.queryCompUser(code);
+	}
+}

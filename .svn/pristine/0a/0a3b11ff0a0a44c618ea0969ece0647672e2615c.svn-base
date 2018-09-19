@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.GoodsMapper">
+	<resultMap id="goodsResultMap" type="Goods">
+		<id column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+		<result column="goods_model" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="goods_weight" property="goodsWeight" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="product_area" property="productArea" jdbcType="VARCHAR" />
+		<result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="goods_unit" property="goodsUnit" jdbcType="VARCHAR" />
+		<result column="goods_service" property="goodsService" jdbcType="CLOB" />
+		<result column="goods_desc" property="goodsDesc" jdbcType="CLOB" />
+		<result column="goods_param" property="goodsParam" jdbcType="CLOB" />
+		<result column="goods_ware" property="goodsWare" jdbcType="CLOB" />
+		<result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+		<result column="sale_price" property="salePrice" jdbcType="DOUBLE" />
+		<result column="count_price" property="countPrice" jdbcType="DOUBLE" />
+		<result column="agree_price" property="agreePrice" jdbcType="DOUBLE" />
+		<result column="pool_id" property="poolId" jdbcType="INTEGER" />
+		<result column="sys_cat_id" property="sysCatId" jdbcType="INTEGER" />
+		<result column="sale_num" property="saleNum" jdbcType="INTEGER" />
+		<result column="business_price" property="businessPrice" jdbcType="DOUBLE" />
+	</resultMap>
+	<resultMap id="tradeRecordResultMap" type="TradeRecord">
+		<result column="username" property="userName" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="order_time" property="orderTime" jdbcType="DATE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+	</resultMap>
+	
+
+	<delete id="deleteSupCatGoods">
+		delete 
+		  from t_sup_goods
+		 where sup_id = #{supId}
+		   and pool_id = #{poolId}
+	</delete>
+	
+	<insert id="batchInsertSupGoods" parameterType="java.util.List">
+		 insert into t_sup_goods (
+		 	sup_cat_id, sup_id, sup_goods_id, goods_url, goods_model, goods_weight, image_path, 
+		 	brand_name, goods_name, product_area, goods_code, goods_unit, goods_service, goods_desc, 
+		 	goods_param, goods_ware, goods_status, sale_price, count_price, agree_price, pool_id, business_price)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.supCatId,jdbcType=INTEGER},
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supGoodsId,jdbcType=VARCHAR},
+				#{item.goodsUrl,jdbcType=VARCHAR},
+				#{item.goodsModel,jdbcType=VARCHAR},
+				#{item.goodsWeight,jdbcType=VARCHAR},
+				#{item.imagePath,jdbcType=VARCHAR},
+				#{item.brandName,jdbcType=VARCHAR},
+				#{item.goodsName,jdbcType=VARCHAR},
+				#{item.productArea,jdbcType=VARCHAR},
+				#{item.goodsCode,jdbcType=VARCHAR},
+				#{item.goodsUnit,jdbcType=VARCHAR},
+				#{item.goodsService,jdbcType=CLOB},
+				#{item.goodsDesc,jdbcType=CLOB},
+				#{item.goodsParam,jdbcType=CLOB},
+				#{item.goodsWare,jdbcType=CLOB},
+				#{item.goodsStatus,jdbcType=INTEGER},
+				#{item.salePrice,jdbcType=DOUBLE},
+				#{item.countPrice,jdbcType=DOUBLE},
+				#{item.agreePrice,jdbcType=DOUBLE},
+				#{item.poolId,jdbcType=INTEGER},
+				#{item.businessPrice,jdbcType=DOUBLE}
+			from dual 
+		</foreach>
+	</insert>
+	
+	<insert id="insertSupGoods" parameterType="Goods">
+		 insert into t_sup_goods (
+		 	sup_cat_id, sup_id, sup_goods_id, goods_url, goods_model, goods_weight, image_path, 
+		 	brand_name, goods_name, product_area, goods_code, goods_unit, goods_service, goods_desc, 
+		 	goods_param, goods_ware, goods_status, sale_price, count_price, agree_price, pool_id, business_price)
+		 values (
+				#{supCatId,jdbcType=INTEGER},
+				#{supId,jdbcType=INTEGER},
+				#{supGoodsId,jdbcType=VARCHAR},
+				#{goodsUrl,jdbcType=VARCHAR},
+				#{goodsModel,jdbcType=VARCHAR},
+				#{goodsWeight,jdbcType=VARCHAR},
+				#{imagePath,jdbcType=VARCHAR},
+				#{brandName,jdbcType=VARCHAR},
+				#{goodsName,jdbcType=VARCHAR},
+				#{productArea,jdbcType=VARCHAR},
+				#{goodsCode,jdbcType=VARCHAR},
+				#{goodsUnit,jdbcType=VARCHAR},
+				#{goodsService,jdbcType=CLOB},
+				#{goodsDesc,jdbcType=CLOB},
+				#{goodsParam,jdbcType=CLOB},
+				#{goodsWare,jdbcType=CLOB},
+				#{goodsStatus,jdbcType=INTEGER},
+				#{salePrice,jdbcType=DOUBLE},
+				#{countPrice,jdbcType=DOUBLE},
+				#{agreePrice,jdbcType=DOUBLE},
+				#{poolId,jdbcType=INTEGER},
+				#{businessPrice,jdbcType=DOUBLE}
+			)
+	</insert>
+	
+	
+	<select id="queryGoodsCount" resultType="java.lang.Integer">
+			select count(1) 
+			from t_sup_goods a 
+			
+			join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 0
+
+			where a.goods_status = 1
+			<if test="sup > 0">
+			and a.sup_id = #{sup}
+			</if>
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name like '%'||#{brand}||'%'
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+	</select>
+	
+	<select id="queryGoodsList" resultMap="goodsResultMap">
+		select * from (
+			select 
+			
+			<if test="order > 0">
+			row_number() over (order by a.agree_price desc) rn, 
+			</if>
+			<if test="order != 1">
+			rownum rn,
+			</if>
+			a.*, b.sale_num 
+			from t_sup_goods a 
+			left join t_goods_extra b 
+			on a.sup_id = b.sup_id 
+			and a.sup_goods_id = b.sup_goods_id
+			
+			join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 0
+
+			where a.goods_status = 1
+			<if test="sup > 0">
+			and a.sup_id = #{sup}
+			</if>
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name like '%'||#{brand}||'%'
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+			) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="queryHotGoods" resultMap="goodsResultMap">
+		select * from (
+			select row_number() over (order by nvl(b.sale_num, 0) desc) rn, a.*, nvl(b.sale_num, 0) sale_num 
+			from t_sup_goods a 
+			left join t_goods_extra b 
+			on a.sup_id = b.sup_id 
+			and a.sup_goods_id = b.sup_goods_id
+			
+			join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+
+			where a.goods_status = 1
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			) x
+		where x.rn &lt;= #{size}
+	</select>
+	
+	
+	<select id="queryProfGoodsCount" resultType="java.lang.Integer">
+			select count(1) 
+			from t_sup_goods a 
+
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 1
+
+			where a.goods_status = 1
+			<if test="sup > 0">
+			and a.sup_id = #{sup}
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name = #{brand}
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+	</select>
+	
+	<select id="queryProfGoodsList" resultMap="goodsResultMap">
+		select * from (
+			select 
+			
+			<if test="order > 0">
+			row_number() over (order by a.agree_price desc) rn, 
+			</if>
+			<if test="order != 1">
+			rownum rn,
+			</if>
+			a.*, b.sale_num 
+			from t_sup_goods a 
+			left join t_goods_extra b 
+			on a.sup_id = b.sup_id 
+			and a.sup_goods_id = b.sup_goods_id
+
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 1
+
+			where a.goods_status = 1
+			<if test="sup > 0">
+			and a.sup_id = #{sup}
+			</if>
+			<if test="brand != null and brand != ''">
+			and a.brand_name = #{brand}
+			</if>
+			
+			<if test="priceStart > 0">
+			and a.agree_price &gt;= #{priceStart} 
+			</if>
+			<if test="priceEnd > 0">
+			and a.agree_price &lt;= #{priceEnd} 
+			</if>
+			) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="queryProfHotGoods" resultMap="goodsResultMap">
+		select * from (
+			select row_number() over (order by nvl(b.sale_num, 0) desc) rn, a.*, nvl(b.sale_num, 0) sale_num 
+			from t_sup_goods a 
+			left join t_goods_extra b 
+			on a.sup_id = b.sup_id 
+			and a.sup_goods_id = b.sup_goods_id
+			
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 1
+
+			where a.goods_status = 1
+			) x
+		where x.rn &lt;= #{size}
+	</select>
+	
+	
+	<select id="queryGoodsBrand" resultType="java.lang.String">
+			select distinct brand_name
+			from t_sup_goods a 
+			join t_cat_rel c
+			on a.sup_cat_id = c.sup_cat_id
+			and a.sup_id = c.sup_id
+			where a.goods_status = 1
+			<if test="supId > 0">
+			and a.sup_id = #{supId}
+			</if>
+			<if test="catStart > 0">
+			and c.sys_cat_id between #{catStart} and #{catEnd} 
+			</if>
+			<if test="keyword != null and keyword != ''">
+			and a.goods_name like '%'||#{keyword}||'%'
+			</if>
+	</select>
+	
+	<select id="queryProfGoodsBrand" resultType="java.lang.String">
+			select distinct brand_name
+			from t_sup_goods a 
+			join t_sup_info d
+			on a.sup_id = d.sup_id
+			and d.sup_type = 1
+			where a.goods_status = 1
+			<if test="supId > 0">
+			and a.sup_id = #{supId}
+			</if>
+	</select>
+	
+	<select id="queryGoodsById" resultMap="goodsResultMap">
+		select * from t_sup_goods
+		where sup_id = #{supId}
+		and sup_goods_id = #{supGoodsId}
+		
+	</select>
+	
+	<delete id="deleteSupGoodsImage">
+		delete from t_goods_image
+		where sup_id = #{supId}
+	</delete>
+	
+	
+	<select id="queryGoodsImage" resultType="java.lang.String">
+		select distinct image_path from t_goods_image
+		where sup_id = #{supId}
+		and sup_goods_id = #{supGoodsId}
+	</select>
+	
+	
+	<insert id="batchInsertGoodsImage" parameterType="java.util.List">
+		 insert into t_goods_image (sup_id, sup_goods_id, image_path, show_order)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supGoodsId,jdbcType=INTEGER},
+				#{item.imagePath,jdbcType=VARCHAR},
+				#{item.showOrder,jdbcType=INTEGER}
+			from dual 
+		</foreach>
+	</insert>
+	
+	<update id="updateGoodsPrice">
+		update t_sup_goods
+		   set sale_price = #{salePrice,jdbcType=DOUBLE}
+		     , count_price = #{countPrice,jdbcType=DOUBLE}
+		     , agree_price = #{agreePrice,jdbcType=DOUBLE}
+		 where sup_goods_id = #{supGoodsId}
+		   and sup_id = #{supId}
+	</update>
+	
+	<update id="updateGoodsStatus">
+		update t_sup_goods
+		   set goods_status = #{status}
+		 where sup_goods_id = #{supGoodsId}
+		   and sup_id = #{supId}
+	</update>
+	
+	
+	<select id="queryGoodsByIds" resultMap="goodsResultMap">
+		select 	b.sup_id, b.sup_goods_id, b.goods_name, b.image_path, b.goods_status, b.agree_price, b.business_price
+		  from	t_sup_goods b
+		 where	b.sup_id = #{supId}
+		   and  b.sup_goods_id in 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+
+	</select>
+	
+	<update id="updateGoodsSaleNum">
+		update t_goods_extra
+		   set sale_num = sale_num + #{num}
+		 where sup_id = #{supId}
+		   and sup_goods_id = #{supGoodsId}
+	</update>
+	
+	<insert id="insertGoodsSaleNum">
+		insert into t_goods_extra (sup_id, sup_goods_id, sale_num)
+		values (#{supId}, #{supGoodsId}, #{num})
+	</insert>
+	
+	<select id="querySaleNumCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_goods_extra
+		 where sup_id = #{supId}
+		   and sup_goods_id = #{supGoodsId}
+	</select>
+	
+	<select id="queryTradeRecordList" resultMap="tradeRecordResultMap">
+		select * from (
+			select row_number() over (order by a.order_time desc) rn, 
+				   (select usernamecn from users c where a.user_id = c.userid) username, 
+			       a.order_time, 
+			       b.buy_num, 
+			       b.goods_price 
+		      from t_order a, t_order_snapshot b 
+		     where a.order_id = b.order_id 
+		       and a.order_status = 2 
+		       and b.sup_id = #{supId}
+		       and b.sup_goods_id = #{supGoodsId}
+	      
+			) x
+		where x.rn between #{start} and #{end}
+		
+	</select>
+	
+	<select id="queryTradeRecordCount" resultType="java.lang.Integer">
+			select count(1)
+		      from t_order a, t_order_snapshot b 
+		     where a.order_id = b.order_id 
+		       and a.order_status = 2 
+		       and b.sup_id = #{supId}
+		       and b.sup_goods_id = #{supGoodsId}
+	</select>
+	
+</mapper>

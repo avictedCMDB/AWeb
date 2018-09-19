@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.BidContractMapper">
+	<resultMap id="bidContractMap" type="com.avic.management.models.BidContract">
+		<result column="contract_id" property="contractId" jdbcType="VARCHAR" /> 
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="user_id" property="userId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" /> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" /> 
+		<result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP" /> 
+		<result column="sign_time" property="signTime" jdbcType="TIMESTAMP" /> 
+		<result column="a_company_name" property="aCompanyName" jdbcType="VARCHAR" /> 
+		<result column="a_address" property="aAddress" jdbcType="VARCHAR" /> 
+		<result column="a_postcode" property="aPostcode" jdbcType="VARCHAR" /> 
+		<result column="a_phone" property="aPhone" jdbcType="VARCHAR" /> 
+		<result column="a_fax" property="aFax" jdbcType="VARCHAR" /> 
+		<result column="a_title" property="aTitle" jdbcType="VARCHAR" /> 
+		<result column="a_bank" property="aBank" jdbcType="VARCHAR" /> 
+		<result column="a_account" property="aAccount" jdbcType="VARCHAR" /> 
+		<result column="a_tax" property="aTax" jdbcType="VARCHAR" /> 
+		<result column="a_sign" property="aSign" jdbcType="VARCHAR" /> 
+		<result column="b_company_name" property="bCompanyName" jdbcType="VARCHAR" /> 
+		<result column="b_address" property="bAddress" jdbcType="VARCHAR" /> 
+		<result column="b_postcode" property="bPostcode" jdbcType="VARCHAR" /> 
+		<result column="b_phone" property="bPhone" jdbcType="VARCHAR" /> 
+		<result column="b_fax" property="bFax" jdbcType="VARCHAR" /> 
+		<result column="b_title" property="aTitle" jdbcType="VARCHAR" /> 
+		<result column="b_bank" property="bBank" jdbcType="VARCHAR" /> 
+		<result column="b_account" property="bAccount" jdbcType="VARCHAR" /> 
+		<result column="b_tax" property="bTax" jdbcType="VARCHAR" /> 
+		<result column="b_sign" property="bSign" jdbcType="VARCHAR" />  
+		<result column="a_param" property="aParam" jdbcType="VARCHAR" /> 
+		<result column="b_param" property="bParam" jdbcType="VARCHAR" /> 
+	</resultMap>
+
+	<select id="queryContractByProj" resultMap="bidContractMap">
+		select * from bid_contract where proj_id = #{projId} and sup_code = #{supCode}
+	</select>
+
+	<insert id="insertContract">
+		insert into bid_contract (
+			contract_id, proj_id, user_id, sup_code, create_time, 
+			a_param
+		) values (
+			#{contractId,jdbcType=VARCHAR},
+			#{projId,jdbcType=VARCHAR},
+			#{userId,jdbcType=VARCHAR},
+			#{supCode,jdbcType=VARCHAR},
+			sysdate,
+			#{aParam,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="updateContractSignDate">
+		update bid_contract
+		set sign_time = sysdate
+		where proj_id = #{projId}
+		and sup_code = #{supCode}
+	</update>
+</mapper>

@@ -1,0 +1,10 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.models.SysCategory;
+
+public interface CategoryService {
+    public List<SysCategory> getSysCatTree() throws ServiceException;
+}

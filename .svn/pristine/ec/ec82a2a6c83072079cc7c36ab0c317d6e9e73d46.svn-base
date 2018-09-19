@@ -1,0 +1,161 @@
+@charset "utf-8";
+/* CSS Document */
+.btn_add ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 8px;
+}
+#matter_section ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 8px;
+}
+#matter_section .special_input {
+	border-right: none;
+}
+#matter_section .form-control {
+	height: 28px;
+	width: 115px;
+}
+#matter_section .input-group-addon {
+	height: 28px;
+	padding: 7px 5px 5px 0px;
+	border-left: none;
+	background: #fff;
+	cursor: pointer;
+	display: inline-table;
+}
+.btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.red {
+	background: #0091dc;
+	color: #fff;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+.btn-list {
+	text-align: right;
+}
+.btn_add ul {
+	display: inline-block;
+}
+.search_result table tr td {
+	text-align: center;
+}
+.search_result table tr td.address{
+	text-align: left;
+}
+.search_result table tr td a{
+	margin: 0 2px;
+	color: #0089d1;
+}
+.search_result table tr td a:hover {
+	text-decoration: underline;
+}
+.add_details {
+	width: 730px;
+	margin: 0 auto;
+	border: 1px solid #dfdfdf;
+	background: #f6f5f5;
+	margin-top: 25px;
+	padding: 30px 75px;
+}
+.add_details dl {
+	margin-bottom: 10px;
+}
+.add_details dt {
+	float: left;
+	line-height: 28px;
+	text-align: right;
+	width: 95px;
+}
+.add_details dd {
+	float: left;
+	width: 460px;
+	margin-left: 5px;
+}
+
+
+.add_details .form-control {
+	height: 28px;
+}
+.add_details select {
+	display: inline-block;
+	width: 151px;
+	padding: 0;
+	}
+.add_details span.red_remind {
+	display: inline;
+	color: #ff4200;
+	margin-right: 10px;
+}
+.btn_middle {
+	text-align: center;
+	margin-top: 30px;
+}
+#contents .details{
+	padding-bottom: 60px;
+}
+.check dd {
+	line-height: 28px;
+}
+
+
+
+/*发票*/
+#info_invoice {
+	width: 730px;
+	margin: 0 auto;
+	border: 1px solid #dfdfdf;
+	background: #f6f5f5;
+	margin-top: 25px;
+	padding: 30px 75px;
+	font-size: 14px;
+}
+#info_invoice label {
+	font-weight: 100;
+	float: left;
+	width: 100px;
+	padding-right: 15px;
+}
+#info_invoice .detail {
+	float: left;
+	width: 480px;
+	
+}
+#info_invoice .invoice_list {
+	padding-left: 0;
+}
+#info_invoice .invoice_list ul li {
+	margin: 0;
+	margin-right: 10px;
+	margin-bottom: 15px;
+	float: left;
+	text-align: center;
+    width: 100px
+}
+#info_invoice .invoice_list a {
+	margin: 0;
+	width: 100px;
+	border-radius: 0;
+	display: block;
+	background: #fff;
+	border: 1px solid #eee;
+	color: #666;
+	line-height: 24px;
+	padding: 2px 10px;
+}
+#info_invoice .invoice_list .btn{
+	height: auto;
+}
+#info_invoice .invoice_list a:hover,
+#info_invoice .invoice_list a.active{
+	background: #fff url(../img/order/icon-select.png) right bottom no-repeat;
+	border: 1px solid #ff4200;
+}

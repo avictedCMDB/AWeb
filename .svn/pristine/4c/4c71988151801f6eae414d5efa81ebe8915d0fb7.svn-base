@@ -1,0 +1,209 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>订单审核|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_auditor.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/my97DatePicker/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/audit.js"></script>
+</head>
+
+<script type="text/javascript">
+function top_search() {
+	var kw = $.trim($("#search_keyword").val());
+	window.location.href = "${pageContext.request.contextPath}/market/goods/search?q=" + kw;
+}
+function setCartNum(num) {
+	$("#cart_num").text("("+num+")");
+}
+</script>
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="javascript:void(0);"><span class="fa fa-user"></span>${sessionScope.login_user.userNameCN}</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/management/audit">采购管理中心</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/">超市首页 </a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/passport/login/logout">退出</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+         <img src="${pageContext.request.contextPath}/static/img/management/logo-management.png" alt="中航采购网" />    
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control" id="search_keyword" value="${fn:escapeXml(searchKeyword)}"><span class="input-group-btn"><button class="btn btn-default" type="button" onclick="top_search();">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button" onclick="window.location.href='${pageContext.request.contextPath}/market/cart/list';"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  <div id="contents">
+    <div class="inner">
+    	<input id="path" type="hidden" value="${pageContext.request.contextPath}">
+    	<div id="side_navi">
+    		<dl>
+    			
+    			<dt class="tlt_receipt">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<li><a href="${pageContext.request.contextPath}/management/audit/auditorAudit"><span class="fa fa-caret-right"></span>订单审核管理</a></li>
+    				</ul>
+    			</dd>
+    		</dl>
+    		<!--#side_navi-->
+    	</div>
+      <div id="matter_section">
+      	<h2>订单审核管理</h2>
+      	<div class="search_area section">
+      	  <form id="orderForm" action="" method="post">
+      	  <input type="hidden" name="orderStatus" id="orderStatus" value="${searchAudit.orderStatus}">
+          <div class="search_list clearfix">
+            <dl class="clearfix">
+              <dt>供应商名称</dt>
+              <dd>
+                <input id="searchSupName" name="searchSupName" value="${searchAudit.searchSupName}" type="text" class="form-control">
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>订单编号</dt>
+              <dd>
+                <input id="searchOrderId" name="searchOrderId" value="${searchAudit.searchOrderId}" type="text" class="form-control">
+              </dd>
+            </dl>
+            <dl class="last clearfix">
+              <dt>商品信息</dt>
+              <dd>
+                <input id="searchGoodsName" name="searchGoodsName" value="${searchAudit.searchGoodsName}" type="text" class="form-control">
+              </dd>
+            </dl>
+            <dl class="clearfix">
+              <dt>创建时间</dt>
+              <dd>
+               <ul class="clearfix">
+               <li>
+              	<div class="input-group">
+                 <input id="startTime" name="startTime" value="${searchAudit.startTime}" type="text" class="form-control special_input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})">
+		         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+             	</div>
+             	</li>
+             	<li>
+             	  至
+             	  </li>
+             	  <li class="last">
+             	 <div class="input-group">
+	             	<input id="endTime" name="endTime" value="${searchAudit.endTime}" type="text" class="form-control special_input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})">
+			         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+             	 </div>
+             	 </li>
+             	 </ul>
+              </dd>
+            </dl>
+            <!-- <dl class="clearfix">
+              <dt>订单状态</dt>
+              <dd>
+                <select class="form-control">
+                  <option>全部</option>
+                  <option>订单待审核</option>
+                  <option>订单审核通过</option>
+                </select>
+              </dd>
+            </dl> -->
+          </div>
+          </form>
+          <div class="btn_list">
+            <ul>
+              <li><button type="button" class="btn btn-default red" onclick="search();">查询</button></li>
+              <li><button type="button" class="btn btn-default gray" onclick="clearSearchParam();">清空</button></li>
+            </ul>
+          </div>
+        <!--.search_area--></div>
+      	<div class="search_result">
+          <div class="state_list">
+            <ul>
+              <li id="allLi" <c:if test="${searchAudit.orderStatus == '-1'}">class="active"</c:if>><a href="javascript:void(0);" onclick="selectOrderStatus('-1');">全部</a></li>
+              <li id="waitLi" <c:if test="${searchAudit.orderStatus == '1' || empty searchAudit.orderStatus}">class="active"</c:if>><a href="javascript:void(0);" onclick="selectOrderStatus('1');">订单待审核</a></li>
+              <li id="passLi" <c:if test="${searchAudit.orderStatus == '15'}">class="active"</c:if>><a href="javascript:void(0);" onclick="selectOrderStatus('15');">订单审核通过</a></li>
+              <li id="resetLi" <c:if test="${searchAudit.orderStatus == '0'}">class="active"</c:if>><a href="javascript:void(0);" onclick="selectOrderStatus('0');">订单审核拒绝</a></li>
+            </ul>
+          </div>
+          <table border="0">
+            <tr>
+              <th colspan="2">商品信息</th>
+              <th width="90">单价(元)</th>
+              <th width="75">数量</th>
+              <th width="95">金额(元)</th>
+              <th width="80">订单状态</th>
+              <th width="145" class="last">操作</th>
+            </tr>
+            <c:forEach var="audit" items="${audits}" varStatus="status">
+	            <tr class="company">
+	              <td colspan="7">
+	                <ul>
+	                  <li>订单编号：<a href="#">${audit.orderID}</a></li>
+	                  <li>供应商：<span>${audit.supName}</span></li>
+	                  <li class="right_box">下单时间：<span>${audit.orderTime}</span></li>
+	                  <li class="right_box">合计：<span class="price"><fmt:formatNumber value="${audit.goodsAmount}" maxFractionDigits="2"/></span></li>
+	                  
+	                </ul>
+	              </td>
+	            </tr>
+	            <c:forEach var="snapshot" items="${audit.orderSnapshots}" varStatus="status">
+		            <tr>
+		              <td class="right_none"><p class="img_pro"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${snapshot.supId}&gid=${snapshot.supGoodsId}"><img src="${snapshot.imagePath}" width="55px" height="55px"/></a></p></td>
+		              <td width="387" class="left_none"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${snapshot.supId}&gid=${snapshot.supGoodsId}">${snapshot.goodsName}</a></td>
+		              <td class="price"><fmt:formatNumber value="${snapshot.goodsPrice}"  maxFractionDigits="2"/></td>
+		              <td class="num">${snapshot.buyNum}</td>
+		              <td class="price"><fmt:formatNumber value="${snapshot.goodsPrice*snapshot.buyNum}"  maxFractionDigits="2"/></td>
+		                 <c:if test="${status.index == 0}">
+		              	  <td rowspan="${fn:length(audit.orderSnapshots)}">${audit.orderStatusName}</td>
+				          <td rowspan="${fn:length(audit.orderSnapshots)}">
+				          <a href="${pageContext.request.contextPath}/market/order/detail?o=${audit.orderID}">查看</a>
+				          	<c:choose>
+				          		<c:when test="${audit.orderStatus == '1'}">
+				          			&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showAuditDiv(1,'${audit.orderID}');">订单审核</a>
+				          		</c:when>
+				          		<c:otherwise>
+				          			&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showAuditDiv(2,'${audit.orderID}');">查看审核结果</a>
+				          		</c:otherwise>
+				          	</c:choose>
+			              </td>
+			            </c:if>
+		              
+		            </tr>
+	            </c:forEach>
+            </c:forEach> 
+          </table>
+        <!--.search_result--></div>
+      	<jsp:include page="../page.jsp" />
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  
+  <jsp:include page="../footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

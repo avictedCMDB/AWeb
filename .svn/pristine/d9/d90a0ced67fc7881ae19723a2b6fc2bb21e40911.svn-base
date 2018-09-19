@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area dl dt {
+	width: 80px;
+}
+#matter_section .search_area dl dd {
+	width: 202px;
+}
+#matter_section .special_input {
+	width: 70px;
+}
+.search_result table tr.company td {
+    border: none;
+    font-weight: bold;
+}
+#matter_section .search_result table tr.company td ul li.right_box {
+    float: right;
+    margin-left: 30px;
+}
+.search_result table tr.company td span {
+    font-weight: 100;
+}
+.price {
+    color: #db433d;
+}
+.search_result table tr td.right_none {
+    border-right: none;
+}
+.search_result table tr td.left_none {
+    border-left: none;
+	text-align: left;
+}

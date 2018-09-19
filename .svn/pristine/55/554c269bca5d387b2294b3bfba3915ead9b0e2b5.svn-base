@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/supervise_user.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div id="vat_info">
+  <div class="inner">
+    <div class="add_title clearfix">增加/删除用户<a href="#"><i class="fa fa-close"></i></a></div>
+    <div class="main_inner">
+      <div class="up_area clearfix">
+        <dl class="clearfix date_list">
+          <dt>用户名：</dt>
+          <dd>
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>密码：</dt>
+          <dd>
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>联系人：</dt>
+          <dd>
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>联系电话：</dt>
+          <dd class="special">
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>联系人传真：</dt>
+          <dd class="special">
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>公司名称：</dt>
+          <dd>
+            <input class="form-control" type="text">
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>是否支付：</dt>
+          <dd class="special">
+            <select class="form-control">
+              <option value="" selected="selected">是</option>
+              <option value="">否</option>
+            </select>
+          </dd>
+        </dl>
+        <div class="btn_list">
+          <ul>
+            <li><button type="button" class="btn btn-default red">确定</button></li>
+            <li><button type="button" class="btn btn-default gray">关闭</button></li>
+          </ul>
+        </div>    
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

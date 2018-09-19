@@ -1,0 +1,16 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.User;
+
+
+@Repository
+public interface UserMapper {
+    public User queryUserByName(@Param("userName") String userName);
+    public List<User> queryCompanyList();
+    public List<String> queryUserMenu(@Param("user") String user);
+}

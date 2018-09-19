@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.CompanyInfoMapper">
+	<resultMap id="companyInfoMap" type="com.avic.supervise.models.CompanyInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询公司列表 -->
+	<select id="queryCompanyInfoList" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+		SELECT * FROM (
+			SELECT ROWNUM RN,
+			       TCI.ID,
+			       TCI.COMPANY_CODE,
+			       TCI.COMPANY_NAME,
+			       TCI.CREATE_DATE
+			  FROM T_COMPANY_INFO TCI
+			 WHERE 1=1
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND TCI.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND TCI.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+		   ) R
+        WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryCompanyInfo" resultMap="companyInfoMap" parameterType="com.avic.supervise.models.CompanyInfo">
+			SELECT TCI.ID,
+			       TCI.COMPANY_CODE,
+			       TCI.COMPANY_NAME,
+			       TCI.CREATE_DATE
+			  FROM T_COMPANY_INFO TCI
+			 WHERE TCI.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询公司数量 -->
+	<select id="getCompanyInfoCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.CompanyInfo">
+		    SELECT COUNT(1)
+			  FROM T_COMPANY_INFO TCI
+			 WHERE 1=1
+			  <if test="companyCode != null and companyCode != ''">
+			  	AND TCI.COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyName != null and companyName != ''">
+			  	AND TCI.COMPANY_NAME LIKE CONCAT('%',CONCAT(#{companyName,jdbcType=VARCHAR},'%'))
+			  </if>
+	</select>
+	
+	<!-- 添加公司-->
+	<insert id="addCompanyInfo" parameterType="com.avic.supervise.models.CompanyInfo">
+		INSERT INTO T_COMPANY_INFO
+		            (
+		              ID,
+		              COMPANY_CODE,
+			          COMPANY_NAME,
+			          CREATE_DATE
+		            )
+		      VALUES
+		            (
+		              COMPANY_INDEX.NEXTVAL,
+		              #{companyCode,jdbcType=VARCHAR},
+		              #{companyName,jdbcType=VARCHAR},
+		              sysdate
+		            )
+	</insert>
+	
+	<update id="updateCompanyInfo" parameterType="com.avic.supervise.models.CompanyInfo">
+		UPDATE T_COMPANY_INFO
+		   SET COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+		       COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+		       CREATE_DATE = sysdate
+		 WHERE ID =  #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

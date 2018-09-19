@@ -1,0 +1,15 @@
+package com.avic.supplier.mappers;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierOffStandRequire;
+
+public interface SupplierOffStandRequireMapper {
+	
+	public List<SupplierOffStandRequire> querySupplierOffStandRequiret(SupplierOffStandRequire supplierOffStandRequire) ;
+	
+	public Integer querySupplierOffStandRequiretCount(SupplierOffStandRequire supplierOffStandRequire);
+	
+	public void updateStatus(String id ,String goodsIds,String supId);
+
+}

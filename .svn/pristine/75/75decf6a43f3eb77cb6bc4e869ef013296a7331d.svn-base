@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="User" type="com.avic.supervise.models.User" />
+		<typeAlias alias="Order" type="com.avic.supervise.models.Order" />
+		<typeAlias alias="OrderSnapshot" type="com.avic.supervise.models.OrderSnapshot" />
+		<typeAlias alias="SupInfo" type="com.avic.supervise.models.SupInfo" />
+		<typeAlias alias="CodeList" type="com.avic.supervise.models.CodeList" />
+		<typeAlias alias="Goods" type="com.avic.supervise.models.Goods" />
+		<typeAlias alias="TradeRecord" type="com.avic.supervise.models.TradeRecord" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/supervise/mappers/mybatis/UserMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/SupMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/CodeListMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/GoodsMapper.xml" />
+	</mappers>
+</configuration>
+
+

@@ -1,0 +1,25 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.CartItem;
+
+@Repository
+public interface CartMapper {
+    public int queryCartItemCount(CartItem item);
+    public void insertCartItem(CartItem item);
+    public void increaseCartNum(CartItem item);
+    public int queryCartGoodsNum(@Param("userId")String userId);
+    public List<CartItem> queryCartGoodsList(@Param("userId")String userId);
+    public void deleteCart(@Param("userId")String userId);
+    public void batchDeleteCartGoods(List<CartItem> items);
+    public void updateCartNum(CartItem item);
+    public List<CartItem> queryCartGoodsByIds(@Param("userId") String userId, @Param("supId") int supId, @Param("list")List<String> ids);
+    public int queryGoodsCompareCount(@Param("userId") String userId, @Param("supId") String supId, @Param("supGoodsId") String supGoodsId);
+    public List<String> queryCartCompare(List<CartItem> items);
+    
+    public String queryQuoteId(@Param("userId") String userId, @Param("supId") int supId, @Param("goodsId") String goodsId);
+}

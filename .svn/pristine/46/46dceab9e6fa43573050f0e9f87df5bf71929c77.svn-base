@@ -1,0 +1,14 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.avic.supplier.models.SupplierContract;
+
+public interface SupplierContractService {
+    public List<SupplierContract> selectContractFile(String projId, String supCode);
+    public int selectMaxVersion(String projId, String supCode);
+    public void updateContract(String projId, String supCode, List<SupplierContract> list);
+    public SupplierContract selectContractFileById(String projId, String supCode, String fileId);
+}

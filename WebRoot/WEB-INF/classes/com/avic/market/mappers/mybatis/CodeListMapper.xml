@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.CodeListMapper">
+	<resultMap id="codeListResultMap" type="CodeList">
+		<result column="codelisttype" property="codeListType" jdbcType="VARCHAR" />
+		<result column="codetext" property="codeText" jdbcType="VARCHAR" />
+		<result column="codevalue" property="codeValue" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryCodeListByType" resultMap="codeListResultMap">
+		select 	codetext, codevalue
+		from 	codelist
+		where	codelisttype = #{type}
+	</select>
+	
+	<select id="queryCodeListByValue" resultMap="codeListResultMap">
+		select 	codetext, codevalue
+		from 	codelist
+		where	codelisttype = #{type}
+		and		codevalue = #{val}
+	</select>
+</mapper>

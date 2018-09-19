@@ -1,0 +1,145 @@
+package com.avic.supervise.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.UserService;
+
+@Controller
+@RequestMapping("/supplierUser")
+public class SuperviseUserController {
+
+	protected static final Log logger = LogFactory
+			.getLog(SuperviseUserController.class);
+
+	@Autowired
+	UserService userService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map, HttpSession httpSession,
+			@ModelAttribute("user") User userParam)
+			throws UnsupportedEncodingException {
+		logger.info("监管平台设置用户管理");
+		List<User> userList = userService.getUsersList(userParam);
+		map.put("userList", userList);
+		// 分页信息
+		String page = String.valueOf(userParam.getPage());
+
+		int total = userService.getUsersCount(userParam);
+
+		int pages = (int) Math.ceil((double) total / userParam.getPageSize());
+
+		map.put("page", page);
+		map.put("total", total);
+		map.put("pages", pages);
+		map.put("userParam", userParam);
+		map.put("userList", userList);
+		map.put("pageAction",
+				"supplier/address"
+						+ "?page=%PAGE%"
+						+ "&username="
+						+ URLEncoder.encode(
+								userParam.getUserName() == null ? ""
+										: userParam.getUserName(), "GBK")
+						+ "&contactPerson="
+						+ URLEncoder.encode(
+								userParam.getContactPerson() == null ? ""
+										: userParam.getContactPerson(), "GBK")
+						+ "&contactNum=" + userParam.getContactNum()
+						+ "&contactFax=" + userParam.getContactFax()
+						+ "&nopay=" + userParam.getNopay() + "&enabled="
+						+ userParam.getEnabled());
+		return "user/supervise_user";
+	}
+
+	@RequestMapping("userAddPage")
+	public String userAddPage(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("type") String type)
+			throws UnsupportedEncodingException {
+		map.put("type", type);
+		return "user/supervise_user_add";
+	}
+	
+	@RequestMapping("rolePage")
+	public String rolePage(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("userName") String userName)
+			throws UnsupportedEncodingException {
+		return "user/supervise_user_role";
+	}
+	@RequestMapping("deployUserRole")
+	public String deployUserRole(Map<String, Object> map, HttpSession httpSession,
+			@RequestParam("userName") String userName)
+			throws UnsupportedEncodingException {
+		return "0";
+	}
+
+	@RequestMapping("userUpdatePage")
+	public String userUpdatePage(Map<String, Object> map,
+			HttpSession httpSession, @RequestParam("type") String type,
+			@RequestParam("username") String username)
+			throws UnsupportedEncodingException {
+		User userParam = new User();
+		userParam.setSearchType("1");
+		userParam.setUserName(username);
+		List<User> userList = userService.getUsersList(userParam);
+		map.put("user", userList.get(0));
+		map.put("type", type);
+		return "user/supervise_user_add";
+	}
+
+	@RequestMapping("doUserExchange")
+	@ResponseBody
+	public Object doUserExchange(@RequestParam("type") String type,
+			@RequestParam("userName") String userName,
+			@RequestParam("password") String password,
+			@RequestParam("passwordOld") String passwordOld,
+			@RequestParam("contactPerson") String contactPerson,
+			@RequestParam("contactNum") String contactNum,
+			@RequestParam("contactFax") String contactFax,
+			@RequestParam("companyName") String companyName,
+			@RequestParam("nopay") String nopay,
+			HttpSession httpSession)
+			throws UnsupportedEncodingException {
+		User userParam = new User();
+		userParam.setType(type);
+		userParam.setUserName(userName);
+		userParam.setPassword(password);
+		userParam.setPasswordOld(passwordOld);
+		userParam.setCompanyName(companyName);
+		userParam.setContactNum(contactNum);
+		userParam.setContactFax(contactFax);
+		userParam.setNopay(nopay);
+		userParam.setContactPerson(contactPerson);
+		String msg= userService.doUserExchange(userParam);
+		return msg;
+	}
+	@RequestMapping("deleteUser")
+	@ResponseBody
+	public Object deleteUser(@RequestParam("userName") String userName,
+			HttpSession httpSession)
+			throws UnsupportedEncodingException {
+		userService.deleteUser(userName);
+		return "0";
+	}
+}

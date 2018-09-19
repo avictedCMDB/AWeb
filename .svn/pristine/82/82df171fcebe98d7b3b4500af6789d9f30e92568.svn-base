@@ -1,0 +1,270 @@
+/*---step---*/
+#step ul li {
+	float: left;
+}
+#step {
+	text-align: center;
+	margin-top: 10px;
+}
+#step ul.image_list {
+	display: inline-block;
+	text-align: left;
+}
+#step ul.image_list li {
+	background: url(../img/management/bg-step.gif) left center no-repeat;
+	background-position: -1px 0;
+	width: 229px;
+	height: 48px;
+	font-size: 24px;
+	color: #fff;
+	line-height: 48px;
+	padding-left: 16px;
+	margin-left: -1px;
+}
+#step ul.image_list li.selected {
+	background: url(../img/management/bg-step_on.gif) left center;
+	background-position: -1px 0;
+	padding-left: 14px;
+}
+#step ul.image_list li.selected:first-child {
+	background: url(../img/management/bg-step_first_on.gif) left center;
+}
+#step ul.image_list li:first-child {
+	margin-left: 0;
+	background-position: 0 0;
+}
+#step ul.image_list li:last-child {
+	width: 50px;
+	background: url(../img/management/bg-step_last.gif) left center;
+}
+#step ul.image_list li.selected:last-child {
+	background: url(../img/management/bg-step_last_on.gif) left center;
+}
+.section_inner h2 {
+	text-align: left;
+	border: none;
+	border-left: 4px solid #0089d1;
+	line-height: 10px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+.section_inner h2 span {
+	font-size: 14px;
+}
+.section_inner .title {
+	border-bottom: 1px #ccc dashed;
+}
+.section_inner dl {
+	width: 445px;
+	float: left;
+	margin: 0 15px 20px;
+	overflow: hidden;
+}
+.section_inner dl.role {
+	width: 920px;
+}
+.section_inner dl.role dd {
+	width: 790px;
+}
+.section_inner dl.tel_area dd {
+	width: 315px;
+}
+.section_inner dl dt {
+	width: 120px;
+	margin-right: 10px;
+	float: left;
+	line-height: 32px;
+	text-align: right;
+}
+.section_inner dl dd {
+	width: 315px;
+	float: left;
+	position: relative;
+}
+.section_inner dl dd span.remind {
+	position: absolute;
+	bottom: -18px;
+	left: 0;
+	font-size: 12px;
+}
+.section_inner dl dd span.remind_tel {
+	position: absolute;
+	bottom: 8px;
+	right: -340px;
+	font-size: 12px;
+}
+.red {
+	color: #ff4200;
+}
+.input_area {
+	margin-top: 15px;
+}
+.province {
+	width: 150px;
+	margin-right: 10px;
+	display: inline-block;
+}
+.city {
+	width: 150px;
+	display: inline-block;
+}
+input[type="radio"], input[type="checkbox"] {
+	margin-top: 2px;
+}
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+	margin-left: -15px;
+}
+.radio-inline + .radio-inline, .checkbox-inline + .checkbox-inline {
+	margin-left: 0;
+}
+label.checkbox-inline {
+	padding-top: 8px;
+	padding-left: 16px;
+}
+.role_list ul li {
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+.role_list ul li a {
+	display: block;
+	width: 120px;
+	padding: 5px 0;
+	text-align: center;
+	border: 1px solid #0089d1;
+	color: 
+}
+.role_list ul li.active a,
+.role_list ul li a:hover {
+	background: #0089d1;
+	color: #fff;
+	border: 1px solid #0089d1;
+}
+.tel_num  {
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 4px 0 0 4px;
+	padding: 0 10px;
+	border-right: none;
+}
+.tel_num label {
+	font-weight: 100;
+	padding-top: 5px;
+}
+.dropdown-menu {
+	height: 200px;
+	overflow-y:scroll;
+}
+.section_inner input.form-control {
+	padding: 0 5px;
+	height: 32px;
+}
+.btn_area {
+	text-align: center;
+}
+.btn_area button {
+	display: inline-block;
+	height: 32px;
+}
+#matter_section {
+	padding-bottom: 30px;
+}
+/*第二步*/
+.attention02 {
+	background-color: #f4f4f4;
+	padding: 20px;
+	margin-top: 20px;
+}
+.section_step dl {
+	width: 920px;
+}
+.section_step dl dt {
+	width: 150px;
+	margin-right: 15px;
+}
+.section_step dl dd {
+	width: 500px;
+}
+.section_step label.checkbox-inline {
+	padding-top: 8px;
+	padding-right: 10px;
+	padding-left: 0;
+}
+.section_step .form-control {
+	display: inline-block;
+}
+.money_input {
+	width: 100px;
+	display: inline-block;
+}
+.unit {
+	width: 100px;
+	display: inline-block;
+}
+.nothing {
+	width: 120px;
+	display: inline-block;
+	padding-left: 20px;
+}
+.up_button {
+	display: inline-block;
+}
+.up_button a {
+    background: #0089d1;
+	color: #fff;
+	border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    text-decoration: none;
+    text-indent: 0;
+}
+.up_button input {
+	font-size: 100px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.diplay_area {
+	line-height: 32px;
+	display: inline-block;
+}
+.diplay_area span {
+	background: url(../img/cIprocess.png) left top no-repeat;
+	padding-left: 20px;
+}
+.diplay_area a {
+	margin-left: 20px;
+	color: #0089d1;
+}
+.diplay_area a:hover {
+	color: #ff4200;
+}
+.paper {
+	border-bottom: 1px #ccc dashed;
+	margin-bottom: 20px;
+}
+.paper_last {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+.remind_title {
+	text-align: center;
+	margin-top: 100px;
+}
+.remind_title .txt_title {
+	font-size: 20px;
+}
+.remind_title a {
+	color: #0089d1;
+}
+.remind_title a:hover {
+	color: #ff4200;
+}

@@ -1,0 +1,15 @@
+function query(action){
+	
+	document.getElementById("supplierGoodsInfoQueryForm").action=action;
+	document.getElementById("supplierGoodsInfoQueryForm").submit();
+	
+}
+function deleteGoods(action,goodsStatus){
+	if (goodsStatus == 1) {
+		alert('已上架的商品不能删除，请先下架后再尝试！');
+		return;
+	}
+	if(confirm("是否删除该条记录？")){
+		window.location.href = action;
+	}
+}

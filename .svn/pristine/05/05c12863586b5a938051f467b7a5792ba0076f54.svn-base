@@ -1,0 +1,141 @@
+package com.avic.supervise.models;
+
+import java.io.Serializable;
+
+import com.avic.supplier.utils.BaseModels;
+
+public class Role extends BaseModels implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String id;
+	private String orgId;
+	private String roleName;
+	private String roleEname;
+	private String roleType;
+	private String dataScope;
+	private String isSys;
+	private String isUseable;
+	private String createUser;
+	private String createDate;
+	private String updateUser;
+	private String updateDate;
+	private String remarks;
+	private String delFlag;
+	private String isCheck;
+	private String systemFlag;
+	private String ifPayRole;
+	private String parentRoleId;
+
+	public String getParentRoleId() {
+		return parentRoleId;
+	}
+	public void setParentRoleId(String parentRoleId) {
+		this.parentRoleId = parentRoleId;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+	public String getRoleEname() {
+		return roleEname;
+	}
+	public void setRoleEname(String roleEname) {
+		this.roleEname = roleEname;
+	}
+	public String getRoleType() {
+		return roleType;
+	}
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
+	}
+	public String getDataScope() {
+		return dataScope;
+	}
+	public void setDataScope(String dataScope) {
+		this.dataScope = dataScope;
+	}
+	public String getIsSys() {
+		return isSys;
+	}
+	public void setIsSys(String isSys) {
+		this.isSys = isSys;
+	}
+	public String getIsUseable() {
+		return isUseable;
+	}
+	public void setIsUseable(String isUseable) {
+		this.isUseable = isUseable;
+	}
+	public String getCreateUser() {
+		return createUser;
+	}
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+	public String getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+	public String getUpdateUser() {
+		return updateUser;
+	}
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
+	public String getUpdateDate() {
+		return updateDate;
+	}
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getDelFlag() {
+		return delFlag;
+	}
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
+	}
+	public String getIsCheck() {
+		return isCheck;
+	}
+	public void setIsCheck(String isCheck) {
+		this.isCheck = isCheck;
+	}
+	public String getSystemFlag() {
+		return systemFlag;
+	}
+	public void setSystemFlag(String systemFlag) {
+		this.systemFlag = systemFlag;
+	}
+	public String getIfPayRole() {
+		return ifPayRole;
+	}
+	public void setIfPayRole(String ifPayRole) {
+		this.ifPayRole = ifPayRole;
+	}
+	
+	
+}

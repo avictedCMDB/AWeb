@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.HelpMapper">
+	<resultMap id="helpMap" type="help">
+		<id column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="TITLE" property="title" jdbcType="VARCHAR" />
+		<result column="CONTEXT" property="context" jdbcType="VARCHAR" />
+		<result column="TYPE" property="type" jdbcType="VARCHAR" /> 
+		<result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" /> 
+		<result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" /> 
+		<result column="STATUS" property="status" jdbcType="VARCHAR" /> 
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_BUYER" property="helpTypeBuyer" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_SUP" property="helpTypeSup" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_BUYER_NAME" property="helpTypeBuyerName" jdbcType="VARCHAR" />
+		<result column="HELP_TYPE_SUP_NAME" property="helpTypeSupName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryHelps" resultMap="helpMap">
+	SELECT * FROM (
+	  SELECT ROWNUM AS RN,H.* FROM (
+		SELECT 
+			   T.ID,
+		       T.TITLE,
+		       T.CONTEXT,
+		       T.TYPE,
+		       T.FILE_NAME,
+		       T.FILE_PATH,
+		       T.STATUS,
+		       T.CREATE_DATE,
+		       (SELECT C.CODETEXT FROM CODElIST C WHERE C.CODELISTTYPE = 'HELP_TYPE_BUYER' AND C.CODEVALUE = T.HELP_TYPE_BUYER) AS HELP_TYPE_BUYER_NAME,
+           	   (SELECT C.CODETEXT FROM CODElIST C WHERE C.CODELISTTYPE = 'HELP_TYPE_SUP' AND C.CODEVALUE = T.HELP_TYPE_SUP) AS HELP_TYPE_SUP_NAME,
+		       T.HELP_TYPE_BUYER,
+		       T.HELP_TYPE_SUP
+		  FROM T_HELP_INFO T
+		 WHERE 1=1
+		 <if test="searchTitle != null and searchTitle != ''">
+			 AND T.TITLE LIKE CONCAT('%',CONCAT(#{searchTitle,jdbcType=VARCHAR},'%'))
+		 </if>
+		 <if test="searchContext != null and searchContext != ''">
+			 AND T.CONTEXT LIKE CONCAT('%',CONCAT(#{searchContext,jdbcType=VARCHAR},'%'))
+		 </if>
+		 <if test="status != null and status != ''">
+			 AND T.STATUS = #{status,jdbcType=VARCHAR}
+		 </if>
+		 <if test="searceType != null and searceType != ''">
+			 AND T.TYPE = #{searceType,jdbcType=VARCHAR}
+		 </if>
+		 ORDER BY T.CREATE_DATE DESC
+		 )H
+		 )R
+   		 WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryHelpCount" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM T_HELP_INFO T
+		 WHERE 1=1
+		 <if test="title != null and title != ''">
+			 AND T.TITLE LIKE CONCAT('%',CONCAT(#{title,jdbcType=VARCHAR},'%'))
+		 </if>
+		 <if test="context != null and context != ''">
+			 AND T.CONTEXT LIKE CONCAT('%',CONCAT(#{context,jdbcType=VARCHAR},'%'))
+		 </if>
+		 <if test="status != null and status != ''">
+			 AND T.STATUS = #{status,jdbcType=VARCHAR}
+		 </if>
+		 <if test="type != null and type != ''">
+			 AND T.TYPE = #{type,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+	<select id="queryHelpById" resultMap="helpMap">
+		SELECT T.ID,
+		       T.TITLE,
+		       T.CONTEXT,
+		       T.TYPE,
+		       T.FILE_NAME,
+		       T.FILE_PATH,
+		       T.STATUS,
+		       T.CREATE_DATE,
+		       T.HELP_TYPE_BUYER,
+		       T.HELP_TYPE_SUP
+		  FROM T_HELP_INFO T
+		 WHERE T.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="addHelp" parameterType="com.avic.supervise.models.Help">
+		INSERT INTO T_HELP_INFO
+		       (
+		         ID,
+		         TITLE,
+		         CONTEXT,
+		         TYPE,
+		         FILE_NAME,
+		         FILE_PATH,
+		         STATUS,
+		         CREATE_DATE,
+		         HELP_TYPE_BUYER,
+		         HELP_TYPE_SUP
+		       )
+		 VALUES
+		       (
+            	HELP_INDEX.NEXTVAL,
+            	#{title,jdbcType=VARCHAR},
+            	#{context,jdbcType=VARCHAR},
+            	#{type,jdbcType=VARCHAR},
+            	#{fileName,jdbcType=VARCHAR},
+            	#{filePath,jdbcType=VARCHAR},
+            	'0',
+            	sysdate,
+            	#{helpTypeBuyer,jdbcType=VARCHAR},
+            	#{helpTypeSup,jdbcType=VARCHAR}
+           	   )
+            	
+	</insert>
+	<update id="updateHelp" parameterType="com.avic.supervise.models.Help">
+			UPDATE T_HELP_INFO T
+			   SET T.TITLE = #{title,jdbcType=VARCHAR}
+			   	  <if test="context != null and context != ''">
+			       ,T.CONTEXT = #{context,jdbcType=VARCHAR}
+			       </if>
+			       <if test="type != null and type != ''">
+			       ,T.TYPE = #{type,jdbcType=VARCHAR}
+			       </if>
+			       <if test="fileName != null and fileName != ''">
+			       ,T.FILE_NAME = #{fileName,jdbcType=VARCHAR}
+			       </if>
+			       <if test="filePath != null and filePath != ''">
+			       ,T.FILE_PATH = #{filePath,jdbcType=VARCHAR}
+			       </if>
+			       <if test="helpTypeBuyer != null and helpTypeBuyer != ''">
+			       , T.HELP_TYPE_BUYER= #{helpTypeBuyer,jdbcType=VARCHAR}
+			       </if>
+			       <if test="helpTypeSup != null and helpTypeSup != ''">
+			       ,T.HELP_TYPE_SUP = #{helpTypeSup,jdbcType=VARCHAR}
+			       </if>
+			 WHERE T.ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateHelpStatus" parameterType="com.avic.supervise.models.Help">
+			UPDATE T_HELP_INFO T
+			   SET T.STATUS = #{status,jdbcType=VARCHAR}
+			 WHERE T.ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteHelp"  parameterType="com.avic.supervise.models.Help">
+		DELETE FROM T_HELP_INFO
+              WHERE ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="queryFileEx" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Help">
+		SELECT COUNT(1)
+		  FROM T_HELP_INFO
+		 WHERE FILE_PATH LIKE CONCAT('%',CONCAT(#{helpPath,jdbcType=VARCHAR},'%'))
+     </select>
+</mapper>

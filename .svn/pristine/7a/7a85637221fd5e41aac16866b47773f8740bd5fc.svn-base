@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjSupplierMapper">
+	<resultMap id="bidProjSupplierMap" type="com.avic.management.models.BidProjSupplier">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="join_type" property="joinType" jdbcType="INTEGER" />
+		<result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+		<result column="join_time" property="joinTime" jdbcType="TIMESTAMP" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="audit_user" property="auditUser" jdbcType="VARCHAR" />
+		<result column="fail_reason" property="failReason" jdbcType="VARCHAR" />
+		<result column="bid_num" property="bidNum" jdbcType="VARCHAR" />
+		<result column="trial_ban" property="trialBan" jdbcType="INTEGER" />
+		<result column="real_ban" property="realBan" jdbcType="INTEGER" />
+		<result column="bid_result" property="bidResult" jdbcType="INTEGER" />
+		<result column="real_current_quota" property="realCurrentQuota" jdbcType="INTEGER" />
+		<result column="contract_status" property="contractStatus" jdbcType="INTEGER" />
+		<result column="contract_time" property="contractTime" jdbcType="TIMESTAMP" />
+		<result column="contract_remark" property="contractRemark" jdbcType="VARCHAR" />
+		<result column="fee_status" property="feeStatus" jdbcType="INTEGER" />
+		
+		
+		<result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+		<result column="sup_id" property="supId" jdbcType="VARCHAR" />
+		<result column="proj_name" property="projName" jdbcType="VARCHAR" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="contact_person" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="contact_num" property="contactNum" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="proj_status" property="projStatus" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<insert id="insertProjSupplier">
+		insert into bid_proj_supplier (
+			proj_id, sup_code, join_type, 
+			audit_status, join_time, bid_num
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{supCode,jdbcType=VARCHAR}, #{joinType,jdbcType=INTEGER},
+			#{auditStatus,jdbcType=INTEGER}, sysdate, #{bidNum,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<delete id="deleteByProjId">
+		delete from bid_proj_supplier where proj_id = #{projId}
+	</delete>
+	
+	
+	<select id="querySupInfoByProj" resultMap="bidProjSupplierMap">
+		select a.sup_code, b.sup_name, b.contact_person, b.contact_num, b.email 
+		from bid_proj_supplier a, t_sup_info b 
+		where a.sup_code = b.sup_code and proj_id = #{projId}
+	</select>
+	
+	<select id="queryAuditPassSupByProj" resultMap="bidProjSupplierMap">
+		select a.sup_code, b.sup_name, a.trial_ban, a.real_ban
+		from bid_proj_supplier a, t_sup_info b 
+		where a.sup_code = b.sup_code and proj_id = #{projId} and audit_status = 2
+        <if test="supName != null and supName != ''">
+        	and b.sup_name like '%'||#{supName}||'%'
+        </if>
+		
+	</select>
+	
+	<select id="querySupplierCount" resultType="java.lang.Integer">
+		select count(1)
+		from bid_proj_supplier a,  bid_project b, t_sup_info c
+		where a.proj_id = b.proj_id and c.sup_code = a.sup_code
+		and b.user_id = #{userId}
+		<if test="projId != null and projId != ''">
+			and b.proj_id = #{projId}
+		</if>
+        <if test="projName != null and projName != ''">
+        	and b.proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="supName != null and supName != ''">
+        	and c.sup_name like '%'||#{supName}||'%'
+        </if>
+		<if test="publishTime != null and publishTime != ''">
+			and to_char(b.publish_time,'YYYY-MM-DD') = #{publishTime}
+		</if>
+		<if test="auditStatus > 0">
+			and a.audit_status = #{auditStatus}
+		</if>
+		<if test="projType > 0">
+			and b.proj_type = #{projType}
+		</if>
+	</select>
+	
+	<select id="querySupplierList" resultMap="bidProjSupplierMap">
+	select x.* from (
+		select row_number() over (order by b.publish_time asc) rn, b.proj_id, b.proj_name, b.proj_status, b.publish_time, a.audit_status, a.fail_reason, c.sup_id, c.sup_code, c.sup_name, c.contact_person, c.contact_num, c.email
+		from bid_proj_supplier a,  bid_project b, t_sup_info c
+		where a.proj_id = b.proj_id and c.sup_code = a.sup_code
+		and b.user_id = #{userId}
+		<if test="projId != null and projId != ''">
+			and b.proj_id = #{projId}
+		</if>
+        <if test="projName != null and projName != ''">
+        	and b.proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="supName != null and supName != ''">
+        	and c.sup_name like '%'||#{supName}||'%'
+        </if>
+		<if test="publishTime != null and publishTime != ''">
+			and to_char(b.publish_time,'YYYY-MM-DD') = #{publishTime}
+		</if>
+		<if test="auditStatus > 0">
+			and a.audit_status = #{auditStatus}
+		</if>
+		<if test="projType > 0">
+			and b.proj_type = #{projType}
+		</if>
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	
+	<select id="queryProjSupplier" resultMap="bidProjSupplierMap">
+		select *
+		from bid_proj_supplier
+		where proj_id = #{projId} and sup_code = #{supCode}
+	</select>
+	
+	<select id="queryBidNumCount" resultType="java.lang.Integer">
+		select count(1)
+		from bid_proj_supplier
+		where proj_id = #{projId} and bid_num = #{bidNum}
+	</select>
+	
+	
+	
+	<update id="updateSupplierAudit">
+		update bid_proj_supplier
+		set audit_status = #{auditStatus}
+		, audit_time = sysdate
+		, audit_user = #{auditUser}
+		, fail_reason = #{failReason}
+		, bid_num = #{bidNum,jdbcType=VARCHAR}
+		where proj_id = #{projId}
+		and sup_code = #{supCode}
+		and audit_status = 1
+	</update>
+	
+	<update id="updateSupplierTrialBan">
+		update bid_proj_supplier
+		set trial_ban = #{ban}
+		where proj_id = #{projId}
+		and sup_code = #{supCode}
+	</update>
+	
+	<update id="updateSupplierRealBan">
+		update bid_proj_supplier
+		set real_ban = #{ban}
+		where proj_id = #{projId}
+		and sup_code = #{supCode}
+	</update>
+	
+	
+	
+	<select id="queryQuateSupplier" resultMap="bidProjSupplierMap">
+		select a.*, b.sup_name
+		from bid_proj_supplier a, t_sup_info b 
+		where a.sup_code = b.sup_code and proj_id = #{projId} and real_current_quota &gt; 0
+	</select>
+	
+	<update id="updateSupplierAward">
+		update bid_proj_supplier
+		set bid_result = 1
+		, contract_status = 1
+		, fee_status = 2
+		where proj_id = #{projId}
+		and sup_code = #{supCode}
+	</update>
+	
+	<update id="updateSupplierObsolete">
+		update bid_proj_supplier
+		set bid_result = 0
+		where proj_id = #{projId}
+	</update>
+	
+	
+	<select id="queryAwardSupplier" resultMap="bidProjSupplierMap">
+		select a.*, b.sup_name
+		from bid_proj_supplier a, t_sup_info b
+		where a.sup_code = b.sup_code and a.proj_id = #{projId} and a.bid_result = 1
+	</select>
+	
+	<select id="querySupplierContractCount" resultType="java.lang.Integer">
+		select count(1)
+		from bid_proj_supplier a,  bid_project b
+		where a.proj_id = b.proj_id 
+		and b.user_id = #{userId}
+		and b.proj_status = 7
+		and a.bid_result = 1
+		<if test="projId != null and projId != ''">
+			and b.proj_id like '%'||#{projId}||'%'
+		</if>
+        <if test="projName != null and projName != ''">
+        	and b.proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="contractStatus > 0">
+        	and a.contract_status = #{contractStatus}
+        </if>
+		<if test="startTime != null and startTime != ''">
+		  AND TO_CHAR(a.contract_time,'yyyy-MM-dd') &gt;= #{startTime,jdbcType=VARCHAR}
+		</if>
+		<if test="endTime != null and endTime != ''">
+		  AND TO_CHAR(a.contract_time, 'yyyy-MM-dd') &lt;= #{endTime,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="querySupplierContractList" resultMap="bidProjSupplierMap">
+	select x.* from (
+		select rownum rn, b.proj_id, b.proj_name, a.real_current_quota, a.contract_time, a.contract_status, a.sup_code
+		
+		from bid_proj_supplier a,  bid_project b
+		where a.proj_id = b.proj_id 
+		and b.user_id = #{userId}
+		and b.proj_status = 7
+		and a.bid_result = 1
+		<if test="projId != null and projId != ''">
+			and b.proj_id like '%'||#{projId}||'%'
+		</if>
+        <if test="projName != null and projName != ''">
+        	and b.proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="contractStatus > 0">
+        	and a.contract_status = #{contractStatus}
+        </if>
+		<if test="startTime != null and startTime != ''">
+		  AND TO_CHAR(a.contract_time,'yyyy-MM-dd') &gt;= #{startTime,jdbcType=VARCHAR}
+		</if>
+		<if test="endTime != null and endTime != ''">
+		  AND TO_CHAR(a.contract_time, 'yyyy-MM-dd') &lt;= #{endTime,jdbcType=VARCHAR}
+		</if>
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	<update id="updateSupplierContractStatus">
+		update bid_proj_supplier
+		set contract_status = #{contractStatus}, contract_remark = #{contractRemark}
+		where proj_id = #{projId} and sup_code = #{supCode} and contract_status = 2
+	</update>
+</mapper>

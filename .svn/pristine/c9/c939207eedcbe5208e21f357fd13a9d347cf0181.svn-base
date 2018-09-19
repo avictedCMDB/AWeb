@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ProductCompareMapper">
+	<resultMap id="productCompareMap" type="com.avic.management.models.ProductCompare">
+		<result column="COMPARE_ID" property="compareID" jdbcType="VARCHAR" /> 
+		<result column="C_SUP_ONE_ID" property="supOneID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_ONE_ID" property="supGoodsOneID" jdbcType="VARCHAR" />
+		<result column="C_SUP_TWO_ID" property="supTwoID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_TWO_ID" property="supGoodsTwoID" jdbcType="VARCHAR" />
+		<result column="C_SUP_THREE_ID" property="supThreeID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_THREE_ID" property="supGoodsThreeID" jdbcType="VARCHAR" />
+		<result column="C_SUP_FOUR_ID" property="supFourID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_FOUR_ID" property="supGoodsFourID" jdbcType="VARCHAR" />
+		<result column="C_SUP_CHECKED_ID" property="supCheckedID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_CHECKED_ID" property="supGoodsCheckedID" jdbcType="VARCHAR" />
+		<result column="C_PRO_CHECKED_REASON" property="ProCheckedReason" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryProductCompare" resultMap="productCompareMap" parameterType="com.avic.management.models.ProductCompare">
+		SELECT TPC.COMPARE_ID,
+		       TPC.C_SUP_ONE_ID,
+		       TPC.C_SUP_GOODS_ONE_ID,
+		       TPC.C_SUP_TWO_ID,
+		       TPC.C_SUP_GOODS_TWO_ID,
+		       TPC.C_SUP_THREE_ID,
+		       TPC.C_SUP_GOODS_THREE_ID,
+		       TPC.C_SUP_FOUR_ID,
+		       TPC.C_SUP_GOODS_FOUR_ID,
+		       TPC.C_SUP_CHECKED_ID,
+		       TPC.C_SUP_GOODS_CHECKED_ID,
+		       TPC.C_PRO_CHECKED_REASON
+		  FROM T_PRODUCT_COMPARE_INFO TPC
+		 WHERE TPC.COMPARE_ID = #{compareID,jdbcType=VARCHAR}
+	</select>
+</mapper>

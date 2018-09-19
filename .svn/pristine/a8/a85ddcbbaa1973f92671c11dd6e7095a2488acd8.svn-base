@@ -1,0 +1,327 @@
+<%@ page contentType="application/msword; charset=gbk" pageEncoding="GBK" trimDirectiveWhitespaces="true" %>  
+<%   
+  response.setHeader("Content-disposition","attachment; filename=" + request.getAttribute("word") + ".doc");  
+  
+%>  
+Mime-Version: 1.0
+Content-Base: http://zc.aited.cn/
+Content-Type: Multipart/related; boundary="NEXT.ITEM-BOUNDARY";type="text/html"
+
+--NEXT.ITEM-BOUNDARY
+Content-Type: text/html; charset="gbk"
+Content-Location: http://zc.aited.cn/
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<style>
+
+</style>
+</head>
+<body>
+<div style="width:600px;margin:0 auto;">
+<p style=";text-align:center;line-height:150%">
+    <strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 19px"><span style="font-family:微软雅黑">采购合同</span></span></strong>
+</p>
+<p style=";line-height:150%;text-align:right;">
+    <strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></strong><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">合同编号：${contract.contractId }</span></span>
+</p>
+<p style=";line-height:150%">
+    <strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></strong>
+</p>
+<p style=";line-height:150%">
+    <span style="text-decoration:underline;"><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${user.companyName }</span></strong></span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">（以下简称</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">“甲方”</span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">）与</span></span></strong><span style="text-decoration:underline;"><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${sup.supName }</span></strong></span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">（以下简称</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">“乙方”</span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">）</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">在平等、自愿、公平、诚实信用之基础上，就甲方</span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${proj.projName }</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">项目（项目编号</span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${proj.projId }</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">）向乙方采购</span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${subs }</span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;color: rgb(255, 0, 0);font-size: 15px;background: rgb(217, 217, 217)"></span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;color: rgb(255, 0, 0);font-size: 15px;background: rgb(217, 217, 217)"><span style="font-family:微软雅黑"></span></span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;color: rgb(255, 0, 0);font-size: 15px;background: rgb(217, 217, 217)"></span></span></strong><strong><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></strong><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">事宜，经友好协商一致，订立本合同，以资共同信守。</span></span></strong>
+</p>
+<p style=";line-height:150%">
+    <strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></strong>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">一、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">货物清单及价格</span></span></strong>
+</p>
+<table width="544" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border-spacing:0;">
+    <tbody>
+        <tr style="height:30px" class="firstRow">
+            <td width="52" valign="center" style="padding: 0px 7px; border:1px solid #000;background: rgb(221, 216, 194);">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">序号</span>
+                </p>
+            </td>
+            <td width="85" valign="center" style="padding: 0px 7px; border:1px solid #000; background: rgb(221, 216, 194);">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">品牌</span>
+                </p>
+            </td>
+            <td width="96" valign="center" style="padding: 0px 7px; border:1px solid #000; background: rgb(221, 216, 194);">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">规格型号</span>
+                </p>
+            </td>
+            <td width="79" valign="center" style="padding: 0px 7px; border:1px solid #000; background: rgb(221, 216, 194);">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">数量</span>
+                </p>
+            </td>
+            <td width="86" valign="center" style="padding: 0px 7px; border:1px solid #000; background: rgb(221, 216, 194);">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">标的名称</span>
+                </p>
+            </td>
+        </tr>
+                      <c:forEach varStatus="sta" var="i" items="${mtrs }">
+<tr style="height:30px">
+            <td width="52" valign="center" style="padding: 0px 7px; border:1px solid #000;">
+                <p style="text-align:center;line-height:150%">
+                    <span style="font-family:微软雅黑;line-height:150%;font-size:15px">${sta.index + 1 }</span>
+                </p>
+            </td>
+            <td width="85" valign="center" style="padding: 0px 7px; border:1px solid #000;">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">${i.materBrand }</span>
+                </p>
+            </td>
+            <td width="96" valign="center" style="padding: 0px 7px; border:1px solid #000;">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">${i.materModel }</span>
+                </p>
+            </td>
+            <td width="79" valign="center" style="padding: 0px 7px; border:1px solid #000;">
+			                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">${i.materNum }</span>
+                </p>
+			</td>
+            <td width="86" valign="center" style="padding: 0px 7px; border:1px solid #000;">
+                <p style="text-align:center;line-height:150%">
+                    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">${i.subjectName }</span>
+                </p>
+            </td>
+        </tr>
+                      </c:forEach>
+    </tbody>
+</table>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">二、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">合同总金额</span></span></strong>
+</p>
+<p style="text-indent:29px;line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">合同总金额为：人民币（大写）</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${total }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">（小写￥</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><fmt:formatNumber value="${sup.realCurrentQuota }" currencySymbol="" type="currency"></fmt:formatNumber> </span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">）。该合同总金额已包含</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">（运输费、保险费以及其他费用等）。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">三、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">付款方式及进度</span></span></strong><span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">付款方式：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p3_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">付款进度：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p3_2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">3.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">其他约定：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p3_3 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span> </span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">四、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">货物交付</span></span></strong>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">交货时间：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">交货地点：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">3.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">收货人：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_3_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">；联系方式：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_3_2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">4.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">交货方式：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_4 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">5.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">运输及费用承担：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p4_5 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">五、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">所有权及风险转移</span></span></strong>
+</p>
+<p style="text-indent:29px;line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">合同项下货物灭失、毁损的风险，自货物交付后转移至甲方。在甲方未付清本合同总价款以前，合同项下货物的所有权归乙方所有。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">六、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">货物验收</span></span></strong>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">甲方应当在提取货物或货物抵达甲方指定地点当日按照本合同约定标准对货物进行验收（如采用抽样检验的，抽样标准</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_1_1 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">，抽样比例</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_1_2 }<span style="font-family:微软雅黑">）</span></span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">货物品牌、型号、数量、质量等不符合本合同约定的，甲方应在妥为保管货物的同时，在收货后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_2_1 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日内向乙方提出异议。乙方在接到甲方异议通知后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${p6_2_2 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日内，应当对货物情况进行核查，如经乙方确认货物异议情况确实存在，乙方应在异议确认后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_2_3 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日内，采取修理、更换或补足等措施达到本合同约定标准。如果双方对货物</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">验收结果发生争议，双方同意由</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p6_2_4 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（第三方检验机构）对货物进行检验，并接受该检验机构的检验结果认定。</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">如果甲方在收货后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_2_5 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日内未向乙方提出异议的，视为货物验收合格。</span> </span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">3.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">货物验收合格后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_3 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日内，甲方应向乙方出具验收合格报告。</span> &nbsp;&nbsp;&nbsp;</span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">4.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">甲方因自身原因保管、使用、保养不善等造成货物质量下降的，不得提出异议。</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">5.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">其他约定：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p6_5 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">七、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">技术标准</span></span></strong>
+</p>
+<p style="text-indent:29px;line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">货物质量、技术标准按照以下第</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p7_0 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">种执行：</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:14px">1.&nbsp;</span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">按照</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p7_1 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">标准执行（国家标准</span>/行业标准/生产厂家标准）。</span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:14px">2.&nbsp;</span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">按样本执行，样本作为本合同的附件。</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:14px">3.&nbsp;</span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">按双方商定要求执行，具体要求为</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p7_3 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">八、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">包装要求</span></span></strong>
+</p>
+<p style="text-indent:29px;line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">除双方另有规定外，乙方提供的货物均应按标准保护措施进行包装。该包装应适应于远距离运输、防潮、防震、防锈和防野蛮装卸，以确保货物安全无损运抵甲方指定的交货地点。由于包装不善所引起的货物毁损、灭失等由乙方承担责任。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">九、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">质保期</span></span></strong>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">本合同项下的货物质保期为</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p9_1_1 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">年，从</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p9_1_2 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">起算。</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">质保期内，乙方在收到甲方质量问题反馈后，应在</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p9_2 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">日之内采取</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">修理、更换或退货等</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">措施解决。</span></span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">3.&nbsp;</span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">其他约定：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 15px">${aparam.p9_3 }</span></span><span style=";font-family:微软雅黑;font-size:15px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">十、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">违约责任</span></span></strong>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:14px">1.&nbsp;</span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">甲方违约责任：</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>1）甲方中途退货的，应向乙方赔偿退货部分货款</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_1_1 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">的违约金。</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>2）甲方未按双方约定时间提供技术要求、包装物要求的，除乙方的交货日期得以顺延外，每顺延一日，应按顺延交货部分货款金额</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_1_2_1 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">计算，向乙方支付违约金；如</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_1_2_2 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">日内仍不能提供的，按中途退货处理。</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>3）甲方逾期付款的，每延期一日，应按逾期付款金额</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_1_3 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">计算，向乙方支付违约金。</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>4）甲方如错填交货地点和收货人信息，致使乙方不能按期交货的，相关风险及损失由甲方承担。</span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>5）其他约定：<span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_1_5 }</span></span>。</span>
+</p>
+<p style="margin-left:28px;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:14px">2.&nbsp;</span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">乙方违约责任：</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>1）乙方不能交货的，应向甲方偿付不能交货部分货款</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_2_1 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">的违约金。</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>2）乙方所交货物品种、型号、规格、数量、质量不符合同规定的，如甲方同意利用，应按质论价；甲方不能利用的，应根据具体情况，由乙方负责修理、更换、调换或退货，并承担因此支出的全部费用。</span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>3）乙方因货物包装不符合合同规定，须返修或重新包装的，乙方负责返修或重新包装，并承担因此支出的全部费用。甲方不要求返修或重新包装而要求赔偿损失的，乙方应赔偿甲方该不合格包装物低于合格物的差价部分。因包装不当造成货物损坏或灭失的，由乙方负责赔偿。</span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>4）乙方逾期交货的，每延期一日，应按照逾期交货金额</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_2_4_1 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">计算，向甲方支付违约金，并赔偿甲方因此所遭受的损失。如逾期交货超过</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_2_4_2 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">日，甲方有权终止合同并可就遭受的全部损失要求乙方予以赔偿。</span></span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>5）质保期内，如果乙方未能在约定期限内采取补救措施的，甲方有权自行处理，由此产生的风险和费用由乙方承担。</span>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">（</span>6）其他约定：</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p10_2_6 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">十一、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">不可抗力</span></span></strong>
+</p>
+<p style="text-indent:28px;line-height:150%">
+    <span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">任何一方由于不可抗力原因不能履行合同时，应在不可抗力事件结束后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p11 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">日内向对方通报，以减轻可能给对方造成的损失，在取得有关机构的不可抗力证明后，双方协商延期履行、部分履行或者不履行合同，并根据情况可部分或全部免予承担违约责任。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">十二、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">争议解决</span></span></strong>
+</p>
+<p style="text-indent:29px;line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">本合同在履行过程中所发生的全部争议，甲、乙双方应友好协商解决；如在争议事项发生后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p12_0_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">日内双方未能达成一致的，任何一方可选择下列第</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p12_0_2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">种方式解决：</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">将争议提交</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p12_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">仲裁委员会仲裁；</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">依法向</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p12_2 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">人民法院提起诉讼。</span></span>
+</p>
+<p style="margin-top:10px;margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-weight:bold;font-size:15px">十三、&nbsp;</span><strong><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px"><span style="font-family:微软雅黑">合同生效及其他</span></span></strong>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">1.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">按本合同规定应付的违约金、赔偿金、保管保养费以及各种经济损失，应当在明确责任后</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;line-height: 150%;font-size: 15px">${aparam.p13_1 }</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">日内，由一方向另一方付清，否则按逾期付款的规定处理。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">2.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">约定的违约金，视为违约的损失赔偿。双方没有约定违约金或预先赔偿额的计算方法的，损失赔偿额应当相当于违约所造成的损失，包括合同履行后可获得的利益，但不得超过违反合同一方订立合同时应当预见到的因违反合同可能造成的损失。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">3.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">本合同未尽事宜由甲、乙双方另行协商确定，并制作书面补充合同。补充合同将作为本合同的有效组成部分，与本合同具有同等法律效力。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">4.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">本合同任何条款成为非法、无效或不可强制执行并不影响本合同其他条款的效力及可强制执行性。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">5.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">本合同由双方施加单位电子印章或有权代表电子签名，并自较晚一方施加完成后立即生效。除双方书面同意外，任何一方不得部分转让或全部转让其应履行的合同义务。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">6.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">本合同生效后，本合同彩色打印版即可作为合同原件，双方对此均予以认可。</span></span>
+</p>
+<p style="margin-left:0;text-indent:0;line-height:150%">
+    <span style="font-family:微软雅黑;font-size:15px">7.&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">其他约定：</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;font-size: 14px">${aparam.p13_7 }</span></span><span style=";font-family:微软雅黑;font-size:14px"><span style="font-family:微软雅黑">。</span> </span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">（以下无正文，为双方签章页面）</span></span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="position:relative; font-family:微软雅黑">甲方（盖章）：<span style="position:absolute; top:-50px; left:100px;"><img src="http://zc.aited.cn/a_ca_pic.png" /></span></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="position:relative; font-family:微软雅黑">乙方（盖章）：<span style="position:absolute; top:-50px; left:100px;"><img src="http://zc.aited.cn/b_ca_pic.png" /></span></span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">或有权代表</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">（签名）：</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">或有权代表</span></span><span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">（签名）：</span></span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;${aparam.a_sign}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${bparam.b_sign }</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px">&nbsp;</span>
+</p>
+<p style=";line-height:150%">
+    <span style=";font-family:微软雅黑;line-height:150%;font-size:15px"><span style="font-family:微软雅黑">日期：</span> ${aparam.a_year }<span style="font-family:微软雅黑">年</span> ${aparam.a_month }<span style="font-family:微软雅黑">月</span> ${aparam.a_day }<span style="font-family:微软雅黑">日</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-family:微软雅黑">日期：</span> ${bparam.b_year }<span style="font-family:微软雅黑">年</span> ${bparam.b_month }<span style="font-family:微软雅黑">月</span> ${bparam.b_day }<span style="font-family:微软雅黑">日</span></span>
+</p>
+<p>
+    <br/>
+</p>
+</div>
+</body>
+</html>
+
+--NEXT.ITEM-BOUNDARY
+Content-Location: http://zc.aited.cn/a_ca_pic.png
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+
+${contract.aCaPic}
+
+--NEXT.ITEM-BOUNDARY
+Content-Location: http://zc.aited.cn/b_ca_pic.png
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+
+${contract.bCaPic}
+
+--NEXT.ITEM-BOUNDARY--

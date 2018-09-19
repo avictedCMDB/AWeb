@@ -1,0 +1,286 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<html>
+<jsp:include page="../head.jsp">
+	<jsp:param value="商品详情" name="title"/>
+</jsp:include>
+<style type="text/css">
+.Ptable{
+	width: 100%;
+	background-color: #fff;
+	padding: 10px;
+}
+.Ptable	tr th{
+	border-bottom: 1px solid #eee;
+	padding: 5px 0;
+}
+.Ptable	tr td{
+	font-size: 14px;
+}
+body.detail .pop .ao .prod-count .count input{
+	line-height: 100%;
+	padding: 5px 0;
+}
+</style>
+<body class="detail include-footer" style="overflow-x: hidden;overflow-y: auto;">
+    <div id="app">
+		<c:if test="${sup.supType == 0}">
+	        <div class="scroll-imgs" id="scroll-imgs">
+	        	<c:if test="${fn:length(goods.images) == 0}">
+	        		<div class="slide" id="slide">
+		                <ul :style="{'width' : 1 * 320 + 'px'}" id="item-list">
+		                     <li class="img-item">
+		                        <img src="${goods.imagePath}"/>
+		                    </li>
+		                </ul>
+		            </div>
+		            <ul class="p">
+		                <li v-for="i in 1" :class="{'active' : index == i}"></li>
+		            </ul>
+	        	</c:if>
+	        	<c:if test="${fn:length(goods.images) > 0}">
+	        		<div class="slide" id="slide">
+		                <ul :style="{'width' : ${fn:length(goods.images)} * 320 + 'px'}" id="item-list">
+		                    <c:forEach var="item" items="${goods.images}" varStatus="sta">
+			                    <li class="img-item">
+			                        <img src="${item}"/>
+			                    </li>
+							</c:forEach>
+		                </ul>
+		            </div>
+		            <ul class="p">
+		                <li v-for="i in ${fn:length(goods.images)}" :class="{'active' : index == i}"></li>
+		            </ul>
+	        	</c:if>
+	            
+	        </div>
+        </c:if>
+        
+        
+		<c:if test="${sup.supType == 1}">
+	        <div class="scroll-imgs" id="scroll-imgs">
+	            <div class="slide" id="slide">
+	                <ul :style="{'width' : 1 * 320 + 'px'}" id="item-list">
+	                    <li class="img-item">
+		                        <img src="${pageContext.request.contextPath}/static/img/img-profession.jpg"/>
+		                    </li>
+	                </ul>
+	            </div>
+	            <ul class="p">
+	                <li v-for="i in 1" :class="{'active' : index == i}"></li>
+	            </ul>
+	        </div>
+        </c:if>
+        
+        <p class="p-name">
+            ${fn:escapeXml(goods.goodsName)}
+        </p>
+        <p class="p-info">
+            <a class="price">￥${goods.agreePrice}</a>
+            <a class="count">销量 ${goods.saleNum}</a>
+        </p>
+        <!-- <p class="u-address" @click="selectAddress()">
+            送至<span>{{address.l1.name}}</span><span>{{address.l2.name}}</span><span>{{address.l3.name}}</span>
+            <span class="right iconfont">&#xe727;</span>
+        </p> -->
+        <p class="p-detail" @click="prodInfo ? (prodInfo = false) : (prodInfo = true)">
+            <span class="iconfont">&#xe607;</span>
+            <span>图文详情</span>
+            <span class="right iconfont">&#xe727;</span>
+        </p>
+        <div class="border-bottom" v-show="prodInfo">
+        	${goods.goodsDesc}
+        </div>
+        
+        <p class="p-detail" @click="prodParam ? (prodParam = false) : (prodParam = true)">
+            <span class="iconfont">&#xe62f;</span>
+            <span>产品参数</span>
+            <span class="right iconfont">&#xe727;</span>
+        </p>
+        <div class="border-bottom" v-show="prodParam" @click="prodParam ? (prodParam = false) : (prodParam = true)">
+        	${goods.goodsParam}
+        </div>
+        <div class="op" @click="sTop(); showMask = true, orderAdd = true;">
+            <a class="submit">
+                <span>立即下单</span>
+            </a>
+            <a class="add">
+                <span>加入购物车</span>
+            </a>
+        </div>
+        <div style="height: 60px; opacity: 0;"></div>
+        <jsp:include page="../foot.jsp">
+	    	<jsp:param value="" name="tab"/>
+	    </jsp:include>
+        <div class="pop" v-show="showMask">
+            <img src="${pageContext.request.contextPath}/static/image/pop-close.png" class="pop-close" @click="showMask = false">
+            <div class="sa" v-show="addressList">
+                <div class="hd">
+                    <span>选择收货地址</span>
+                </div>
+                <div class="content">
+                    <p class="a" v-for="i in 10">
+                        <span class="iconfont">&#xe600;</span>
+                        爱上你的金卡是男的就卡死你多久加德纳价位的
+                    </p>
+                    <div class="btns" @click="addAddress()">
+                        <a class="btn">其他收货地址</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aa" v-show="addressAdd">
+                <div class="hd">
+                    <span class="back iconfont" @click="addressList = true, addressAdd = false;">&#xe615;</span>
+                    <span>选择收货地址</span>
+                </div>
+                <div class="tab">
+                    <a class="item active">辽宁</a>
+                    <a class="item">大连</a>
+                    <a class="item">沙河口</a>
+                </div>
+                <div class="content">
+                    <p class="a" v-for="i in 100">辽宁</p>
+                    <div class="btns" @click="showMask = false">
+                        <a class="btn">确认收货地址</a>
+                    </div>
+                </div>
+            </div>
+            <div class="ao" v-show="orderAdd">
+                <div class="prod-info">
+                    <img src="${pageContext.request.contextPath}/static/image/index-prod.jpg"/>
+                    <p class="prod-name">
+                        ${fn:escapeXml(goods.goodsName)}
+                    </p>
+                    <p class="prod-price">
+                        ￥${goods.agreePrice}
+                    </p>
+                </div>
+                <div class="prod-count">
+                    <span>数量</span>
+                    <div class="count">
+                        <span class="op add iconfont" @click="val++">&#xe622;</span>
+                        <input type="tel" autocomplete="off" v-model="val">
+                        <span class="op sub iconfont" @click="val == 1 ? 1 : val--">&#xe620;</span>
+                    </div>
+                </div>
+
+                <div class="ao-btns" @click="showMask = false">
+                    <a class="submit" @click="submitOrder()">立即下单</a>
+                    <a class="add" @click="addToCard()">加入购物车</a>
+                </div>
+            </div>
+        </div>
+        <div class="mask-bg" v-show="showMask"></div>
+    </div>
+</body>
+<script type="text/javascript">
+    var app = new Vue({
+        el      : '#app',
+        data    : {
+            showMask    : false,
+            addressList : false,
+            addressAdd  : false,
+            orderAdd    : false,
+            prodInfo	: false,
+            prodParam	: false,
+            index   : 1,
+            address : {
+                l1 : {
+                    name    : '辽宁',
+                    code    : ''
+                },
+                l2  : {
+                    name    : '大连',
+                    code    : ''
+                },
+                l3  : {
+                    name    : '沙河口区',
+                    code    : ''
+                }
+            },
+            val : 1,
+            sid	: '${goods.supId}',
+            gid	: '${goods.supGoodsId}',
+            cartCount : 0
+        },
+        methods : {
+            selectAddress   : function () {
+                this.showMask = true;
+                this.addressList = true;
+            },
+            addAddress : function () {
+                this.addressList = false;
+                this.addressAdd = true;
+            },
+            addToCard	: function () {
+            	this.$http.post('${pageContext.request.contextPath}/market/cart/add', {sid:this.sid, gid:this.gid, num:this.val}, {emulateJSON:true}).then(function(res){
+            		if (res.body && res.body.status == 0) {
+            			this.cartCount = res.body.result;
+        				alert('添加成功！');
+        			} else if (res.body.status == -100) {
+        				location.href = '${pageContext.request.contextPath}/passport/login';
+            		} else {
+            			alert(res.body.result);
+            		}
+        		});
+            },
+            submitOrder	: function () {
+            	location.href = '${pageContext.request.contextPath}/market/order/confirm?type=1&ids=' + this.sid + '_' + this.gid + '_' + this.val;
+            },
+            sTop:function () {
+            	 $('html, body').animate({scrollTop:0}, 0);
+            }
+        },
+        mounted: function () {
+        	<c:if test="${error != null}">
+        	setTimeout(function () {
+        		alert("${error}");
+        	}, 300);
+        	</c:if>
+        }
+    });
+    app.$watch('showMask', function () {
+        if (!app.showMask) {
+            app.addressList = app.addressAdd = app.orderAdd = false;
+        }
+    })
+    var target = document.getElementById('item-list');
+    Transform(target);
+    var min = - (document.getElementsByClassName('img-item').length - 1) * 320, start = 0;
+    new AlloyTouch({
+        touch:"#slide",//反馈触摸的dom
+        vertical: false,//不必需，默认是true代表监听竖直方向touch
+        target: target, //运动的对象
+        min : min > 0 ? 0 : min,
+        max: 0,
+        property: "translateX",  //被运动的属性
+        bindSelf: false,
+        factor: 0,//不必需,表示触摸位移与被运动属性映射关系，默认值是1
+        initialValue: 0,
+        touchStart:function(evt, value){
+            start = value;
+        },
+        touchEnd:function(evt,value){
+            var moved = value - start;
+            if (moved > 50 && start != 0) {
+                TouchTo(this, start + 320);
+            } else if (moved < -50 && start != min) {
+                TouchTo(this, start - 320);
+            } else {
+                TouchTo(this, start);
+            }
+        }
+    });
+    function TouchTo(at, x) {
+        setTimeout(function () {
+            at.to(x);
+            app.index = - x / 320 + 1;
+        }, 10);
+    }
+</script>
+</body>
+</html>

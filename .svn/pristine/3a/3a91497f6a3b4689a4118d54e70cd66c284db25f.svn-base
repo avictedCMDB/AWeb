@@ -1,0 +1,96 @@
+function searchCompany(supID){
+	var path = $("#path").val();
+//	var companyName = $("#companyName").val();
+//	var companyCode = $("#companyCode").val();
+//	window.location.href = "${pageContext.request.contextPath}/supervise/companyInfo?companyName="+companyName+"&companyCode="+companyCode;
+	document.getElementById("companyForm").action=path+"/supervise/companyInfo";
+	document.getElementById("companyForm").submit();
+}
+
+function clean(){
+	$("#companyName").val("");
+ 	$("#companyCode").val("");
+}
+
+function addCompanyInfo(id){
+	var path = $("#path").val();
+	if(id!=""&&id!=null){
+		window.location.href = path+"/supervise/companyInfo/initEditCompany?id="+id;
+	}else{
+		window.location.href = path+"/supervise/companyInfo/initEditCompany";
+	}
+}
+
+function editCompanyInfo(type){
+	var path = $("#path").val();
+	var id;
+	var companyCode = $("#companyCode").html();
+	var companyName = $("#companyName").val();
+	if(companyName==""||companyName==null){
+		alert("请输入公司名称!");
+		return;
+	}
+	if(type=="1"){
+		id = companyCode;
+		$.ajax({
+	        type: "POST",
+	        url: path+"/supervise/companyInfo/addCompanyInfo",
+	        dataType: 'json',
+	        data: {
+	        	id:id,
+	        	companyName:companyName,
+	        	companyCode:companyCode
+	        },
+	        success: function(data) {
+	        	if("success"==data.status){
+	        		window.location.href=path+"/supervise/companyInfo";
+	    		}else{
+	    			alert(data.status);
+	    		}
+	        	
+	        }
+	    });
+	}else{
+		id = $("#id").val();
+		$.ajax({
+	        type: "POST",
+	        url: path+"/supervise/companyInfo/updCompanyInfo",
+	        dataType: 'json',
+	        data: {
+	        	id:id,
+	        	companyName:companyName
+	        },
+	        success: function(data) {
+	        	if("success"==data.status){
+	        		window.location.href=path+"/supervise/companyInfo";
+	    		}else{
+	    			alert(data.status);
+	    		}
+	        }
+	    });
+	}
+}
+
+function cancle(){
+	var path = $("#path").val();
+	window.location.href = path+"/supervise/companyInfo";
+}
+
+function delCompanyInfo(id){
+	var path = $("#path").val();
+	$.ajax({
+        type: "POST",
+        url: path+"/supervise/companyInfo/updCompanyInfo",
+        contentType:"application/x-www-form-urlencoded; charset=utf-8", 
+        data: {
+        	id:id
+        },
+        success: function(data) {
+        	if("success"==data.status){
+        		window.location.href=path+"/supervise/companyInfo";
+    		}else{
+    			alert(data.status);
+    		}
+        }
+    });
+}

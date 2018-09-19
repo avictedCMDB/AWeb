@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.CartMapper">
+	<resultMap id="cartItemResultMap" type="CartItem">
+		<id column="user_id" property="userId" jdbcType="VARCHAR" /> 
+		<id column="sup_id" property="supId" jdbcType="INTEGER" /> 
+		<id column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" /> 
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="agree_price" property="agreePrice" jdbcType="DOUBLE" />
+		<result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+		<result column="compare" property="compare" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryCartItemCount" resultType="java.lang.Integer">
+		select 	count(1)
+		  from	t_cart
+		 where	user_id = #{userId}
+		   and	sup_id = #{supId}
+		   and	sup_goods_id = #{supGoodsId}
+	</select>
+	
+	
+	<insert id="insertCartItem">
+		insert into t_cart (user_id, sup_id, sup_goods_id, buy_num)
+		values (#{userId}, #{supId}, #{supGoodsId}, #{buyNum})
+	</insert>
+	
+	<update id="increaseCartNum">
+		update t_cart
+		   set buy_num = buy_num + #{buyNum}
+		 where user_id = #{userId}
+		   and sup_id = #{supId}
+		   and sup_goods_id = #{supGoodsId}
+	</update>
+	
+	
+	<select id="queryCartGoodsNum" resultType="java.lang.Integer">
+		select 	nvl(sum(buy_num), 0)
+		  from	t_cart
+		 where	user_id = #{userId}
+	</select>
+	
+	
+	<select id="queryCartGoodsList" resultMap="cartItemResultMap">
+		select 	a.sup_id, a.sup_goods_id, a.buy_num, b.goods_name, b.image_path, b.goods_status, b.agree_price,
+		        (select count(1) 
+		           from t_product_compare_info c 
+		          where c.userid = a.user_id 
+		            and c.c_sup_checked_id = a.sup_id 
+		            and c.c_sup_goods_checked_id = a.sup_goods_id) compare
+		  from	t_cart a, t_sup_goods b
+		 where	a.sup_id = b.sup_id
+		   and  a.sup_goods_id = b.sup_goods_id
+		   and  a.user_id = #{userId}
+	  order by	a.sup_id
+	</select>
+	
+	<delete id="deleteCart">
+		delete from t_cart where user_id = #{userId}
+	</delete>
+	
+	
+	<delete id="batchDeleteCartGoods" parameterType="java.util.List">
+		 delete from t_cart where 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="or"> 
+			user_id = #{item.userId} and sup_id = #{item.supId} and sup_goods_id = #{item.supGoodsId}
+		</foreach>
+	</delete>
+	
+	<update id="updateCartNum">
+		update t_cart
+		   set buy_num = #{buyNum}
+		 where user_id = #{userId}
+		   and sup_id = #{supId}
+		   and sup_goods_id = #{supGoodsId}
+	</update>
+	
+	<select id="queryCartGoodsByIds" resultMap="cartItemResultMap">
+		select 	b.sup_id, b.sup_goods_id, b.goods_name, b.image_path, b.goods_status, b.agree_price,
+		        (select count(1) 
+		           from t_product_compare_info c 
+		          where c.userid = #{userId} 
+		            and c.c_sup_checked_id = b.sup_id 
+		            and c.c_sup_goods_checked_id = b.sup_goods_id) compare
+		  from	t_sup_goods b
+		 where	b.sup_id = #{supId}
+		   and  b.sup_goods_id in 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+
+	</select>
+	
+	<select id="queryGoodsCompareCount" resultType="java.lang.Integer">
+		select count(1) 
+          from t_product_compare_info c 
+         where c.userid = #{userId} 
+           and c.c_sup_checked_id = #{supId}
+           and c.c_sup_goods_checked_id = #{supGoodsId}
+
+	</select>
+	
+</mapper>

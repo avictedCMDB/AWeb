@@ -1,0 +1,10 @@
+connection1.driverClass=oracle.jdbc.driver.OracleDriver
+connection1.jdbcUrl=jdbc:oracle:thin:@127.0.0.1:1521:XE
+connection1.username=AVIC
+connection1.password=AVIC
+connection1.initialPoolSize=2
+connection1.minPoolSize=1
+connection1.maxPoolSize=5
+connection1.acquireIncrement=1
+connection1.maxIdleTime=0
+connection1.maxStatements=0

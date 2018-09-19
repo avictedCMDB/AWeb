@@ -1,0 +1,34 @@
+package com.avic.supplier.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
+
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+
+public class ReadExcel {
+
+	// 读取单元格的数据,把一行行的数据保存到map中，用map来过滤重复身份证的数据
+	public List readExcelFile(File file) {
+		String result = "";
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			StringBuilder sb = new StringBuilder();
+			jxl.Workbook rwb = Workbook.getWorkbook(fis);
+			Sheet[] sheet = rwb.getSheets();
+			Sheet rs = rwb.getSheet(0);
+			for (int j = 0; j < rs.getRows(); j++) {
+				Cell[] cells = rs.getRow(j);
+				for (int k = 0; k < cells.length; k++)
+					sb.append(cells[k].getContents());
+			}
+			fis.close();
+			result += sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

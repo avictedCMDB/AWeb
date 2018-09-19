@@ -1,0 +1,218 @@
+package com.avic.supplier.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.market.cpi.CpiService;
+import com.avic.market.cpi.exceptions.NoSuchSupplierException;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.supplier.models.SupArea;
+import com.avic.supplier.models.SupplierGoodsImage;
+import com.avic.supplier.models.SupplierGoodsInfo;
+import com.avic.supplier.services.SupAreaService;
+import com.avic.supplier.services.SupplierGoodsInfoService;
+
+@Controller
+@RequestMapping("/goodsInfo")
+public class SupplierGoodsInfoController {
+	protected static final Log logger = LogFactory
+			.getLog(SupplierGoodsInfoController.class);
+
+	@Autowired
+	SupplierGoodsInfoService supplierGoodsInfoService;
+
+	@Autowired
+	SupAreaService areaService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("")
+	public String index(Map<String, Object> map) {
+		logger.info("快递公司管理信息");
+		// TODO 供应商Id 取得不详
+		String supId = "1";
+		SupplierGoodsInfo supplierGoodInfo = new SupplierGoodsInfo();
+		supplierGoodInfo.setSupId(supId);
+		supplierGoodInfo.setDeleteFlag("0");
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService
+				.querySupplierGoodsInfoList(supplierGoodInfo);
+		map.put("supplierGoodsInfoList", supplierGoodsInfoList);
+		List<SupplierGoodsInfo> bankNameList = supplierGoodsInfoService
+				.querySupplierGoodsInfoBrandNameList(supplierGoodInfo);
+		map.put("bankNameList", bankNameList);
+		return "goods/supplier_goods_info";
+	}
+
+	/**
+	 * 页面查询
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/query")
+	public String query(
+			Map<String, Object> map,
+			@ModelAttribute("supplierGoodsInfo") SupplierGoodsInfo supplierGoodsInfo) {
+		logger.info("快递公司管理信息");
+		// TODO 供应商Id 取得不详
+		String supId = "1";
+		supplierGoodsInfo.setSupId(supId);
+		supplierGoodsInfo.setDeleteFlag("0");
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService
+				.querySupplierGoodsInfoList(supplierGoodsInfo);
+		map.put("supplierGoodsInfoList", supplierGoodsInfoList);
+		List<SupplierGoodsInfo> bankNameList = supplierGoodsInfoService
+				.querySupplierGoodsInfoBrandNameList(supplierGoodsInfo);
+		map.put("bankNameList", bankNameList);
+		map.put("queryParam", supplierGoodsInfo);
+		return "goods/supplier_goods_info";
+	}
+	/**
+	 * 查询商品详细信息
+	 * 
+	 * @param map
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping("/queryDetailed/{supGoodsId}")
+	public String queryDetailed(Map<String, Object> map,
+			@PathVariable("supGoodsId") String supGoodsId) {
+		logger.info("查询金额");
+		// TODO 供应商Id 取得不详
+		String supId = "1";
+		SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+		supplierGoodsInfo.setSupId(supId);
+		supplierGoodsInfo.setDeleteFlag("0");
+		supplierGoodsInfo.setSupGoodsId(supGoodsId);
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService
+				.querySupplierGoodsInfoList(supplierGoodsInfo);
+		map.put("supplierGoodsInfo", supplierGoodsInfoList.get(0));
+		SupplierGoodsImage supplierGoodsImage = new SupplierGoodsImage();
+		supplierGoodsImage.setSupId(Integer.parseInt(supId));
+		supplierGoodsImage.setSupGoodsId(supGoodsId);
+		List<SupplierGoodsImage> supplierGoodsImageList = supplierGoodsInfoService.queryGoodsImg(supplierGoodsImage);
+		map.put("supplierGoodsImageList", supplierGoodsImageList);
+		return "goods/supplier_goods_info_check";
+	}
+	/**
+	 * 查询价格
+	 * 
+	 * @param map
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping("/queryPrice/{supGoodsId}")
+	public String queryPrice(Map<String, Object> map,
+			@PathVariable("supGoodsId") String supGoodsId) {
+		logger.info("查询金额");
+		// TODO 供应商Id 取得不详
+		String supId = "1";
+		SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+		supplierGoodsInfo.setSupId(supId);
+		supplierGoodsInfo.setDeleteFlag("0");
+		supplierGoodsInfo.setSupGoodsId(supGoodsId);
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService
+				.querySupplierGoodsInfoList(supplierGoodsInfo);
+		map.put("supplierGoodsPrice", supplierGoodsInfoList.get(0));
+		return "goods/supplier_goods_info_price";
+	}
+
+	/**
+	 * 查询存库
+	 * 
+	 * @param map
+	 * @return
+	 * @throws ServiceExecutionFailedException
+	 * @throws NoSuchSupplierException
+	 */
+	@RequestMapping("/queryStore/{supGoodsId}")
+	public String queryStore(Map<String, Object> map,
+			@PathVariable("supGoodsId") String supGoodsId)
+			throws NoSuchSupplierException, ServiceExecutionFailedException {
+		logger.info("查询库存");
+		// TODO 供应商Id 取得不详
+		String supId = "1";
+		// 取得商品信息
+		SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+		supplierGoodsInfo.setSupId(supId);
+		supplierGoodsInfo.setDeleteFlag("0");
+		supplierGoodsInfo.setSupGoodsId(supGoodsId);
+		List<SupplierGoodsInfo> supplierGoodsInfoList = supplierGoodsInfoService
+				.querySupplierGoodsInfoList(supplierGoodsInfo);
+		map.put("supplierGoodsPrice", supplierGoodsInfoList.get(0));
+		// 取得地区信息
+		SupArea supArea = new SupArea();
+		supArea.setSupID("2");
+		// 加载地区信息
+		List<SupArea> areas = areaService.queryAreas(supArea);
+		map.put("areasList", areas);
+		return "goods/supplier_goods_info_store";
+	}
+
+	/**
+	 * 删除转入回收站
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/updateDeleteFlag/{supGoodsId}")
+	public String updateDeleteFlag(Map<String, Object> map,
+			@PathVariable("supGoodsId") String supGoodsId) {
+		logger.info("删除转入回收站");
+		String supId = "1";
+		SupplierGoodsInfo supplierGoodsInfo = new SupplierGoodsInfo();
+		supplierGoodsInfo.setSupId(supId);
+		supplierGoodsInfo.setSupGoodsId(supGoodsId);
+		supplierGoodsInfo.setDeleteFlag("1");
+		supplierGoodsInfoService.updateDeleteFlag(supplierGoodsInfo);
+		return "redirect:/supplier/goodsInfo";
+	}
+
+	@RequestMapping("/loadSubArea")
+	@ResponseBody
+	public Object loadSubArea(@RequestParam("parentId") String parentId)
+			throws NoSuchSupplierException, ServiceExecutionFailedException {
+		SupArea supArea = new SupArea();
+		supArea.setSupParentArea(parentId);
+		// 加载地区信息
+		List<SupArea> areas = new ArrayList<SupArea>();
+		areas = areaService.querySubAreas(supArea);
+		return areas;
+	}
+
+	@RequestMapping("/queryStoreNumber")
+	@ResponseBody
+	public Object queryStoreNumber(@RequestParam("area") String area,
+			@RequestParam("areaSub") String areaSub,
+			@RequestParam("areaLast") String areaLast,
+			@RequestParam("supGoodsId") String supGoodsId)
+			throws NoSuchSupplierException, ServiceExecutionFailedException {
+		// 加载地区信息
+		List<String> item = new ArrayList<String>();
+		item.add(supGoodsId);
+		List<String> item2 = new ArrayList<String>();
+		item2.add(area);
+		item2.add(areaSub);
+		item2.add(areaLast);
+		String supId = "1";
+		Map<String, Integer> store = CpiService.getInstance().getGoodsStock(Integer.parseInt(supId),
+				item, item2);
+		return store;
+	}
+
+}

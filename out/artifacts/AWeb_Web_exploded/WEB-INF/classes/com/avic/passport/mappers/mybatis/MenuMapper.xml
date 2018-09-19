@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.passport.mappers.MenuMapper">
+	<resultMap id="menuMap" type="menu">
+		<result column="MENU_ID" property="menuID" jdbcType="VARCHAR" />
+		<result column="PARENT_ID" property="parentID" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="USERID" property="userId" jdbcType="VARCHAR" />
+		<result column="HREF" property="href" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryUserAuthMenu" resultMap="menuMap" parameterType="com.avic.passport.models.Menu">
+		 SELECT T.MENU_ID,
+		        T.PARENT_ID,
+		        T.NAME,
+		        T.HREF
+		   FROM T_MENU T
+		  WHERE T.MENU_ID IN (
+		                     SELECT TRM.MENU_PAHT
+		                      FROM T_ROLE_MENU TRM,AUTHORITIES A
+		                     WHERE TRM.ROLE_ID = A.AUTHORITY
+		                       AND A.USERID = #{userId}
+		                  ) 
+	START WITH T.MENU_ID = '00000000' CONNECT BY PRIOR T.MENU_ID = T.PARENT_ID
+	</select>
+</mapper>

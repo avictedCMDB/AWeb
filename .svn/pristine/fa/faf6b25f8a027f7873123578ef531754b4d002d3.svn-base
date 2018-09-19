@@ -1,0 +1,72 @@
+package com.avic.supervise.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.passport.models.User;
+import com.avic.supervise.models.Contract;
+import com.avic.supervise.services.ContractService;
+
+@Controller
+@RequestMapping("/contract")
+public class ContractController {
+    protected static final Log logger = LogFactory.getLog(ContractController.class);
+    
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    ContractService contractService;
+    
+    @SuppressWarnings("unused")
+	@RequestMapping("")
+    public String index(@ModelAttribute("contract") Contract contract,
+    		HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("品牌推荐");
+        User user = new User();
+        /*try {
+        	user = Permission.check(httpSession, UserRole.BUY,UserRole.CLIENT);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}*/
+		String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        //查询数量
+        int total = contractService.queryContractCount(contract);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        List<Contract> contractList = new ArrayList<Contract>();
+        contract.setPage(pageNum);
+        contract.setPageSize(PAGE_SIZE);
+        contractList = contractService.queryContract(contract);
+        
+        map.put("contracts", contractList);
+        map.put("searchContract", contract);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","contract/supervise_contract?page=%PAGE%");
+        return "/business/contract/supervise_contract";
+    }
+}

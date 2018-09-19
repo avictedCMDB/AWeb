@@ -1,0 +1,120 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供应商管理中心|中航采购网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supplier_delivery.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierUtil.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/supplierOrderExchange.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+<jsp:include page="../header.jsp" />
+  
+  
+  <div id="contents">
+    <div class="inner">
+      <div class="order_section">
+        <h2>发货单</h2>
+          <h3>供应商基本信息</h3>
+          <div class="info_detail">
+            <div class="txt_area">
+              <label>发货单编号：</label>
+              <span></span>
+              <label>超市名称：</label>
+              <span>晨光科力普</span>
+              <label>超市供应商名称：</label>
+              <span>晨光科力普</span>
+              <label>联系人：</label>
+              <span>晨光科力普</span>
+              <label>联系电话：</label>
+              <span>1234567</span>
+            </div>
+            <div class="form-group clearfix">
+              <label>备注：</label>
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <h3>发货商品信息</h3>
+          <div class="search_result">
+            <table class="details">
+              <tr>
+                <th colspan="2">商品信息</th>
+                <th width="100">订单数量</th>
+                <th width="100">已发货数量</th>
+                <th width="100">待发货数量</th>
+                <th width="100">本次发货数量</th>
+                <th class="last" width="100">操作</th>
+              </tr>
+              <tr class="company">
+                <td colspan="7" class="order_info order_num"><span>2016-03-18</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>订单号：<a href="#">D100003110000</a></span></td>
+              </tr>
+              <tr>
+                <td width="77" class="right_none"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+                <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+                <td>10</td>
+                <td>10</td>
+                <td>1</td>
+                <td>
+                  <div class="input-group input-group-num">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default input-group-addon" type="button">-</button>
+                    </span>
+                    <input id="after" class="form-control" type="text" value="1" min="1" max="10">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default input-group-addon" type="button">+</button>
+                    </span>
+                  </div>
+                </td>
+                <td><a href="#">删除</a></td>
+              </tr>
+            </table>
+          </div>
+          <h3>物流信息</h3>
+          <dl class="dl-horizontal">
+            <dt>物流信息：</dt>
+            <dd>北京 北京市 朝阳区 朝阳区慧忠路5号远大中心B座20层中航经贸</dd>
+          </dl>
+          <div class="info_list clearfix">
+            <dl class="dl-horizontal">
+              <dt><span>*</span>快递公司：</dt>
+              <dd><input class="form-control" type="text"></dd>
+            </dl>
+            <dl class="dl-horizontal">
+              <dt><span>*</span>快递编号：</dt>
+              <dd><input class="form-control" type="text"></dd>
+            </dl>
+            <div class="btn_add">
+              <button type="button" class="btn btn-default red">增加</button>
+            </div>
+          </div>
+	      <div class="btn_area">
+            <ul class="clearfix">
+              <li><button type="button" class="btn btn-default red">暂存</button></li>
+              <li><button type="button" class="btn btn-default red">提交</button></li>
+              <li><button type="button" class="btn btn-default gray" onclick="redirectPage('${pageContext.request.contextPath}/supplier/exchange/back')">返回</button></li>
+            </ul>
+          </div>
+	    	<!--.order_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

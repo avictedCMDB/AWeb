@@ -1,0 +1,189 @@
+#content {
+	background: url(../img/campaign_aug/bg.jpg) top center no-repeat;
+	background-attachment:fixed;
+}
+#content #banner {
+	text-align: center;
+	overflow: hidden;
+	display: block;
+	position: relative;
+	margin: 0 auto;
+
+}
+#content .inner {
+	width: 965px;
+	margin: 0 auto;
+	padding-bottom: 30px;
+    position: relative;
+}
+#content .inner .section {
+	margin-bottom: 60px;
+}
+#content .inner .section_special {
+	margin-bottom: 0;
+}
+#main_inner {
+	background: #def1ed;
+	padding-top:40px;
+}
+#content .inner h3 {
+	margin-top: 0;
+}
+#content .inner .goods_list ul li{
+	float: left;
+    height: 436px;
+    margin-right: 1px;
+    margin-top: 10px;
+    position: relative;
+    width: 240px;
+    z-index: 1;
+}
+.goods-wrap {
+	background: #fff;
+    border: 1px solid #fff;
+    left: 0;
+    padding: 38px 9px 10px;
+    position: absolute;
+    top: 0;
+    transition: border-color 0.1s ease 0s;
+    width: 240px;
+    z-index: 1;
+    margin-right: -10px;
+}
+.goods-img {
+	height: 220px;
+    margin-bottom: 15px;
+    padding: 0;
+    position: relative;
+}
+.goods-img a {
+	display: block;
+    overflow: hidden;
+    position: relative;
+}
+.goods-img img {
+	width: 220px;
+	height: 220px;
+}
+.goods-price {
+	height: 22px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.goods-price span {
+    float: right;
+    font-size: 12px;
+    color: #333;
+    
+}
+.goods-price span b {
+    font-weight: 100;
+}
+.goods-price strong {
+	color: #e86c08;
+    font-family: Verdana;
+    font-weight: 400;
+	color: #e86c08;
+    font-size: 20px;
+    margin-right: 10px;
+}
+.goods-name {
+	height: 40px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+.goods-name strong {
+	display: block;
+    font-weight: normal;
+    line-height: 20px;
+    overflow: hidden;
+    transition: height 0.08s ease 0s;
+    font-size: 12px;
+}
+.goods-code {
+	margin-bottom: 8px;
+	font-size: 12px;
+}
+.goods-operate {
+	margin-bottom: 10px;
+    overflow: hidden;
+}
+.btn.red {
+    color: #0091dc;
+}
+.btn {
+    font-size: 12px;
+    padding: 2px 14px;
+}
+/*对比*/
+#compare {
+    position: absolute;
+    bottom: 0px;
+    left: -120.5px;
+    width: 1206px;
+    font-size: 12px;
+    border: 2px solid #0091dc;
+    z-index: 9999;
+    background-color: #fff;
+}
+
+#compare h2 {
+    position: relative;
+    margin: 0;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0091dc;
+}
+
+#compare h2 span {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+#compare_main {
+    padding: 15px;
+}
+
+#compare_main li {
+    padding: 5px 20px;
+    float: left;
+    border-right: 1px solid #dfdfdf;
+}
+
+#compare_main li p {
+    float: left;
+    margin: 0;
+}
+
+#compare_main li p.txt {
+    padding-left: 10px;
+    width: 140px;
+    line-height: 56px;
+}
+
+#compare_main li dl {
+    margin-bottom: 0;
+    padding-top: 14px;
+    width: 140px;
+    float: right;
+}
+#compare_main .compare_btn {
+    padding: 12px 0 0 70px;
+    text-align: center;
+    border: none;
+}
+
+#compare_main .compare_btn a {
+    color: #018ad0;
+}
+.font-color-red {
+    color: #ff4200;
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择商品</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/manage_common.css" rel="stylesheet">
+<link href="css/management_select.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="select_pro">
+  <h3>选择商品</h3>
+  <div class="search_area">
+    <dl>
+      <dt>商品名称</dt>
+      <dd>
+        <ul>
+          <li><input type="text" class="form-control"></li>
+          <li><button type="button" class="btn btn-default red">查询</button></li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+  <div class="search_table">
+  <table border="0">
+    <tr>
+      <th width="40"><input type="checkbox" id="allchecked" value=""></th>
+      <th width="40">序号</th>
+      <th colspan="2">商品名称</th>
+      <th width="110">可换货数量</th>
+       <th width="110">单价(元)</th>
+      <th width="80">操作</th>
+    </tr>
+    <tr>
+      <td><input type="checkbox" id="allchecked" value=""></td>
+      <td>1</td>
+      <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+      <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+      <td>4本</td>
+      <td class="price">1.54</td>
+      <td><a href="#">查看</a></td>
+    </tr>
+     <tr>
+      <td><input type="checkbox" id="allchecked" value=""></td>
+      <td>2</td>
+      <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+      <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+      <td>4本</td>
+      <td class="price">1.54</td>
+      <td><a href="#">查看</a></td>
+    </tr>
+     <tr>
+      <td><input type="checkbox" id="allchecked" value=""></td>
+      <td>3</td>
+      <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+      <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+      <td>4本</td>
+      <td class="price">1.54</td>
+      <td><a href="#">查看</a></td>
+    </tr>
+     <tr>
+      <td><input type="checkbox" id="allchecked" value=""></td>
+      <td>4</td>
+      <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+      <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+      <td>4本</td>
+      <td class="price">1.54</td>
+      <td><a href="#">查看</a></td>
+    </tr>
+     <tr>
+      <td><input type="checkbox" id="allchecked" value=""></td>
+      <td>5</td>
+      <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="img/management/img-order.jpg" /></a></p></td>
+      <td class="left_none"><a href="#">晨光 M&G 优事贴自粘便条纸AS32A10110 3"*2" 76mm*51mm 100页/本（黄色）40本/盒</a></td>
+      <td>4本</td>
+      <td class="price">1.54</td>
+      <td><a href="#">查看</a></td>
+    </tr>
+  </table>
+  </div>
+  <div class="btn_list">
+    <ul>
+      <li><button type="button" class="btn btn-default red">确定</button></li>
+      <li><button type="button" class="btn btn-default gray">取消</button></li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

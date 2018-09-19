@@ -1,0 +1,19 @@
+package com.avic.management.services;
+
+import com.avic.passport.models.User;
+
+
+public interface UserService {
+	/**
+	 *修改密码
+	 * @return 
+	 */
+	public void changePassword(User user);
+	/**
+	 * 根据用户名密码查询用户
+	 * @return 
+	 */
+	public int selectUserByPassword(User user);
+	
+	public com.avic.management.models.User queryUserById(String userId);
+}

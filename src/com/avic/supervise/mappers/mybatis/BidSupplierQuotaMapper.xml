@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.bid.BidSupplierQuotaMapper">
+	<resultMap id="bidSupplierQuotaMap" type="com.avic.management.models.BidSupplierQuota">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="quota_round" property="quotaRound" jdbcType="INTEGER" />
+		<result column="bid_num" property="bidNum" jdbcType="VARCHAR" /> 
+		<result column="quota_num" property="quotaNum" jdbcType="INTEGER" /> 
+		<result column="quota_time" property="quotaTime" jdbcType="TIMESTAMP" /> 
+		<result column="quota_type" property="quotaType" jdbcType="INTEGER" /> 
+		<result column="timeout_flag" property="timeoutFlag" jdbcType="INTEGER" />
+		<result column="quota_ip" property="quotaIp" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<select id="queryQuotaListByProj" resultMap="bidSupplierQuotaMap">
+		select a.bid_num, a.quota_num, a.quota_time, a.quota_round, a.sup_code, b.sup_name, a.quota_ip
+		from bid_supplier_quota a, t_sup_info b 
+		where a.sup_code = b.sup_code and a.proj_id = #{projId} and a.quota_type = #{type} 
+		order by quota_time
+	</select>
+</mapper>

@@ -1,0 +1,90 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>组织机构管理|中航采购网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/supervise_user.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/companyInfo.js"></script>
+</head>
+<body>
+<input id="path" type="hidden" value="${pageContext.request.contextPath}"/>
+<div class="page-wrapper">
+ <jsp:include page="../header.jsp" />
+  
+  
+  <div id="contents">
+    <div class="inner">
+      <jsp:include page="../left.jsp">
+		  <jsp:param name="menu" value="address" />
+	  </jsp:include>
+      <div id="matter_section">
+      	<h2>组织机构管理</h2>
+      	<div class="search_area section">
+      	<form action="${pageContext.request.contextPath}/supervise/companyInfo" id="companyForm" method="post">
+          <div class="search_list clearfix">
+            <dl class="clearfix">
+              <dt>组织机构编号：</dt>
+              <dd>
+                <input type="text" class="form-control" name="companyCode" id="companyCode" value="${companyCode}">
+              </dd>
+            </dl>
+             <dl class="clearfix">
+              <dt>组织机构名称：</dt>
+              <dd>
+                <input type="text" class="form-control" name="companyName" id="companyName" value="${companyName}">
+              </dd>
+            </dl>
+          </div>
+          
+          <div class="btn_list">
+            <ul>
+              <li><button type="button" class="btn btn-default red" onclick="searchCompany();">查询</button></li>
+              <li><button type="button" class="btn btn-default red" onclick="addCompanyInfo();">新增组织机构</button></li>
+              <li><button type="button" class="btn btn-default gray" onclick="clean();">清空</button></li>
+            </ul>
+          </div>
+            
+        <!--.search_area--></div>
+        </form>
+      	<div class="search_result">
+          <table border="0">
+            <tr>
+              <th width="300">组织机构编码</th>
+              <th width="320">组织机构名称</th>
+              <th width="180">操作</th>
+            </tr>
+            <c:forEach var="company" items="${companyInfos}" varStatus="status">
+	            <tr>
+	              <td>${company.companyCode}</td>
+	              <td>${company.companyName}</td>
+	              <td>
+	              	  <a href="javascript:void(0);" onclick="addCompanyInfo('${company.id}')">修改</a>
+				  </td>
+	            </tr>
+            </c:forEach>
+          </table>
+        <!--.search_result--></div>
+        <jsp:include page="../page.jsp" />
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+<jsp:include page="../footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

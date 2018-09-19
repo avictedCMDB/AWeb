@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/supervise_role.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div id="vat_info" class="special">
+  <div class="inner">
+    <div class="add_title clearfix">分配菜单<a href="#"><i class="fa fa-close"></i></a></div>
+    <div class="main_inner">
+      <div class="btn_list btn_right">
+          <ul>
+            <li><button type="button" class="btn btn-default red">确定</button></li>
+            <li><button type="button" class="btn btn-default gray">关闭</button></li>
+          </ul>
+      </div> 
+      <div class="tree_area clearfix">
+         <ul class="tree">
+             <li class="tree-node">
+                 <label>
+                     <input class="node-check" type="checkbox">
+                     <div class="node-content">
+                         <i class="node-icon icon-expand"></i>
+                         <input type="checkbox">
+                         <i class="node-icon icon-allot"></i>
+                         <span class="node-text node-title">查询</span>
+                         <ul class="tree">
+        					
+        					<li class="tree-node">
+        						<label>
+                                    <input class="node-check" type="checkbox">
+        							<div class="node-content">
+        								<i class="node-icon icon-elbow-line"></i>
+        								<i class="node-icon icon-expand"></i>
+                                        <input type="checkbox">
+        								<i class="node-icon icon-allot"></i>
+        								<span class="node-text node-title">大数据信息查询</span>
+        								<ul class="tree">
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">电子抵账信息查询</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">失控（失联）发票信息</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">注销、非正常户信息查询</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow-end"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">海关失信企业名单查询</span>
+        											</div>
+        										</label>
+        									</li>
+        								</ul>
+        							</div>
+                                    
+        						</label>
+        					</li>
+                            <li class="tree-node">
+        						<label>
+                                    <input class="node-check" type="checkbox">
+        							<div class="node-content">
+        								<i class="node-icon icon-elbow-line"></i>
+        								<i class="node-icon icon-expand"></i>
+                                        <input type="checkbox">
+        								<i class="node-icon icon-allot"></i>
+        								<span class="node-text node-title">大数据信息查询</span>
+        								<ul class="tree">
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">电子抵账信息查询</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">失控（失联）发票信息</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">注销、非正常户信息查询</span>
+        											</div>
+        										</label>
+        									</li>
+        									<li class="tree-node">
+        										<label>
+                                                    <input class="node-check" type="checkbox">
+        											<div class="node-content">
+        												<i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-line"></i>
+        												<i class="node-icon icon-elbow-end"></i>
+                                                        <input type="checkbox">
+        												<i class="node-icon icon-file"></i>
+        												<span class="node-text">海关失信企业名单查询</span>
+        											</div>
+        										</label>
+        									</li>
+        								</ul>
+        							</div>
+                                    
+        						</label>
+        					</li>
+                            <li class="tree-node">
+                                <label>
+                                    <input class="node-check" type="checkbox">
+                                    <div class="node-content">
+                                        <i class="node-icon icon-expand"></i>
+                                        <input type="checkbox">
+                                        <i class="node-icon icon-allot"></i>
+                                        <span class="node-text node-title">系统管理</span>
+                                        <ul class="tree">
+                                            <li class="tree-node">
+                                                <label>
+                                                    <div class="node-content">
+                                                        <i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">用户管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                            <li class="tree-node">
+                                                <label>
+                                                    <input class="node-check" type="checkbox">
+                                                    <div class="node-content">
+                                                        <i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">角色管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                            <li class="tree-node">
+                                                <label>
+                                                    <input class="node-check" type="checkbox">
+                                                    <div class="node-content">
+                                                        <i class="node-icon icon-elbow-line"></i>
+                                                        <i class="node-icon icon-elbow-end"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">定时任务管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </label>
+                            </li>
+                            <li class="tree-node">
+                                <label>
+                                    <input class="node-check" type="checkbox">
+                                    <div class="node-content">
+                                        <i class="node-icon icon-expand"></i>
+                                        <input type="checkbox">
+                                        <i class="node-icon icon-allot"></i>
+                                        <span class="node-text node-title">系统管理</span>
+                                        <ul class="tree">
+                                            <li class="tree-node">
+                                                <label>
+                                                    <div class="node-content">
+                                                        <i class="node-icon"></i>
+                                                        <i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">用户管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                            <li class="tree-node">
+                                                <label>
+                                                    <input class="node-check" type="checkbox">
+                                                    <div class="node-content">
+                                                        <i class="node-icon"></i>
+                                                        <i class="node-icon icon-elbow"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">角色管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                            <li class="tree-node">
+                                                <label>
+                                                    <input class="node-check" type="checkbox">
+                                                    <div class="node-content">
+                                                        <i class="node-icon"></i>
+                                                        <i class="node-icon icon-elbow-end"></i>
+                                                        <input type="checkbox">
+                                                        <i class="node-icon icon-file"></i>
+                                                        <span class="node-text">定时任务管理</span>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </label>
+                            </li>
+        				</ul>
+                     </div>
+                 </label>
+             </li>
+         </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

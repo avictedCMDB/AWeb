@@ -1,0 +1,53 @@
+var timer;
+var actionPath;
+function startListener(){
+	var xmlhttp;
+	try{
+		//IE 5.0 
+		xmlhttp = new ActiveXObject('Msxm12.XMLHTTP');
+	}catch(e){
+		try{
+			//IE 5.5 及更高版本
+			xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		}catch(e){
+			try{
+				//其他浏览器
+				xmlhttp = new XMLHttpRequest();
+			}catch(e){}
+		}
+	}
+	var progressStatusText = document.getElementById("progressBar");
+	xmlhttp.open("get",actionPath+"/UploadServlet?uploadStatus=true",true);
+	/**此处Header设置非常重要，必须设置Content-type类型，负责会报错误
+	*/
+	 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	 xmlhttp.onreadystatechange = function(){
+		if(xmlhttp.readyState == 4){
+			if(xmlhttp.status == 200){
+				progressStatusText.innerHTML = "";
+				progressStatusText.innerHTML = xmlhttp.responseText;
+				var temp = xmlhttp.responseText.indexOf("success_");
+				if (temp > 0){
+					var imgPath = $('#hidden_path').val();
+					window.clearTimeout(timer);
+					//添加缩略图
+					var imgCount = $("#imgCount").val();
+					var imgHtml = "<a class='preview' href='"+actionPath+imgPath+"'><li id='imgli_"+imgCount+"'><img src='"+actionPath+imgPath+"'></li></a>";
+					$("#imgUl").append(imgHtml);
+					$('#imgli_'+imgCount).append($('#hidden_path'));
+					$("#imgCount").val(Number(imgCount)+1);
+					$("a.preview").preview();
+				}else{
+					timer = window.setTimeout(startListener,1000);
+				}
+			}
+		}
+	}
+	xmlhttp.send(null);
+}
+
+function startUpload(path){
+	actionPath = path;
+    timer = window.setTimeout(startListener,1000);
+	return true;//执行提交
+}

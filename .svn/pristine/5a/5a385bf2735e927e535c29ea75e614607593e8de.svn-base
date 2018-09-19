@@ -1,0 +1,19 @@
+function checkAll(){
+	if($("#checkAll").is(':checked') == true){
+		$(":checkbox").prop("checked",true);
+	}else{
+		$(":checkbox").removeAttr("checked");
+	}
+}
+
+function delSomeAddress(){
+	var addressIDs = "";
+	$("input:checkbox[name='checkAddressIDs']:checked").each(function() { // 遍历多选框
+		addressIDs += $(this).val();  // 每一个被选中项的值
+	});
+	window.location.href = "/AWeb/management/address/delete/"+addressIDs;
+};
+
+function addMarketAddress(){
+	window.location.href = "/AWeb/management/address/addAddressPage";
+}

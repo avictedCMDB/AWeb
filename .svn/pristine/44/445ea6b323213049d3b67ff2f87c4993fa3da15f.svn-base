@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.SupplierMapper">
+	<resultMap id="supplierResultMap" type="Supplier">
+		<id column="sup_id" property="supId" jdbcType="INTEGER" /> 
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="auth_user" property="authUser" jdbcType="VARCHAR" />
+		<result column="auth_pass" property="authPass" jdbcType="VARCHAR" />
+		<result column="auth_code" property="authCode" jdbcType="VARCHAR" />
+		<result column="access_token" property="accessToken" jdbcType="VARCHAR" />
+		<result column="access_expire" property="accessExpire" jdbcType="TIMESTAMP" />
+		<result column="refresh_token" property="refreshToken" jdbcType="VARCHAR" />
+		<result column="refresh_expire" property="refreshExpire" jdbcType="TIMESTAMP" />
+		<result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+		<result column="dept_code" property="deptCode" jdbcType="VARCHAR" />
+		<result column="api_url" property="apiUrl" jdbcType="VARCHAR" />
+		<result column="if_valid" property="ifValid" jdbcType="INTEGER" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+		<result column="contact_num" property="contactNum" jdbcType="VARCHAR" />
+		<result column="price_para" property="pricePara" jdbcType="DOUBLE" />
+		<result column="busi_type" property="busiType" jdbcType="VARCHAR" />
+		<result column="busi_range" property="busiRange" jdbcType="VARCHAR" />
+		<result column="sup_image" property="supImage" jdbcType="VARCHAR" />
+		<result column="enter_date" property="enterDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="querySupplierList" resultMap="supplierResultMap">
+		select *
+		  from t_sup_info
+		 where if_valid = 1
+	</select>
+	
+	<select id="querySupplierById" resultMap="supplierResultMap">
+		select *
+		  from t_sup_info
+		 where if_valid = 1 and sup_id = #{supId}
+	</select>
+	
+	<update id="updateSupplierToken">
+		update t_sup_info
+		   set access_token = #{accessToken,jdbcType=VARCHAR},
+		       access_expire = #{accessExpire,jdbcType=TIMESTAMP},
+		       refresh_token = #{refreshToken,jdbcType=VARCHAR},
+		       refresh_expire = #{refreshExpire,jdbcType=TIMESTAMP}
+		 where sup_id = #{supId}
+	</update>
+	
+	<select id="queryNewTraSup" resultMap="supplierResultMap">
+		select * from (
+			select row_number() over (order by enter_date desc) rn, 
+					sup_id, sup_name, enter_date
+			  from t_sup_info
+			 where sup_type = 1
+			   and if_valid = 1
+			) x
+		where x.rn &lt;= 9
+	</select>
+	
+	<select id="queryMyTraSup" resultMap="supplierResultMap">
+		select * from (
+			select rownum rn, 
+					sup_id, sup_name, enter_date
+			  from t_sup_info a, T_ENTERPRISE_SUP_MAPPING b 
+			  where b.sup_info_id = a.sup_id
+			 	and a.sup_type = 1
+			   and a.if_valid = 1
+			   and b.if_building = 0
+			   and company_id = #{compId}
+			) x
+		where x.rn &lt;= 9
+	</select>
+	
+	<select id="queryRecommandTraSup" resultMap="supplierResultMap">
+		select * from (
+			select rownum rn, 
+					a.sup_id, sup_name, enter_date, b.busi_range, b.busi_type, b.sup_image
+			  from t_sup_info a, t_sup_info_ext b
+			 where sup_type = 1
+			   and a.sup_id = b.sup_id
+			   and if_valid = 1
+			   and if_recommend = 0
+			   and begin_date &lt;= sysdate
+			   and end_date &gt;= sysdate
+			) x
+		where x.rn &lt;= 9
+	</select>
+	
+	
+	<select id="queryRecommandSup" resultMap="supplierResultMap">
+		select * from (
+			select rownum rn, 
+					a.sup_id, sup_name, enter_date, b.busi_range, b.busi_type, b.sup_image
+			  from t_sup_info a, t_sup_info_ext b
+			 where a.sup_id = b.sup_id
+			   and if_valid = 1
+			   and if_recommend = 0
+			   and begin_date &lt;= sysdate
+			   and end_date &gt;= sysdate
+			) x
+		where x.rn &lt;= #{num}
+	</select>
+	
+	
+	
+	<select id="queryMappingSupCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_enterprise_sup_mapping t
+		 where t.company_id in
+		       (select k.company_code
+		          from t_company_info k
+		         start with k.company_code = '20170912171609000482'
+		        connect by prior k.company_code = k.parent_company_id) 
+		   and t.company_id = #{comp}
+		   and t.sup_info_id = #{sup}
+	</select>
+</mapper>

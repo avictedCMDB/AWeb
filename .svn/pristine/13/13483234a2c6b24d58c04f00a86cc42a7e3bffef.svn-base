@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新增地址|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/manage_common.css" rel="stylesheet">
+<link href="css/management_address.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="#"><span class="fa fa-user"></span>经办人用户</a><span>|</span></li>
+        <li><a href="#">采购管理中心</a><span>|</span></li>
+        <li><a href="#">超市首页 </a><span>|</span></li>
+        <li><a href="#">登录</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="img/management/logo-management.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner details">
+      <h2>新增地址</h2>
+      <div class="add_details">
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>收货人姓名：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>所在地区：</dt>
+          <dd>
+              <select class="form-control">
+                <option value="000">请选择</option>
+                <option selected="selected" value="0000020">北京</option>
+                <option value="0000210">天津</option>
+                <option value="000040">河北省</option>
+                <option value="000224">山西省</option>
+                <option value="000470">辽宁省</option>
+                <option value="000585">吉林省</option>
+                <option value="000655">黑龙江省</option>
+                <option value="000799">上海市</option>
+                <option value="000819">江苏省</option>
+                <option value="000939">浙江省</option>
+                <option value="001066">安徽省</option>
+                <option value="001189">福建省</option>
+                <option value="001284">江西省</option>
+                <option value="001395">山东省</option>
+                <option value="001552">河南省</option>
+                <option value="001728">湖北省</option>
+                <option value="001844">湖南省</option>
+                <option value="001981">广东省</option>
+                <option value="002249">海南省</option>
+                <option value="002274">重庆市</option>
+                <option value="002315">四川省</option>
+                <option value="002518">贵州省</option>
+                <option value="002616">云南省</option>
+                <option value="002843">陕西省</option>
+                <option value="002961">甘肃省</option>
+                <option value="003062">青海省</option>
+                <option value="003114">宁夏回族自治区</option>
+                <option value="003141">新疆维吾尔自治区</option>
+                <option value="003255">台湾省</option>
+                <option value="003256">香港特别行政区</option>
+                <option value="003257">澳门特别行政区</option>
+                <option value="003258">国外地区</option>
+              </select>
+              <select class="form-control">
+               <option value="000">请选择</option>
+               <option selected="selected" value="000002">北京市</option>
+              </select>
+              <select class="form-control">
+                <option value="000">请选择</option>
+                <option value="0000021">北京市（本级）</option>
+                <option value="000003">东城区</option>
+                <option value="000004">西城区</option>
+                <option value="000005">崇文区</option>
+                <option value="000006">宣武区</option>
+                <option selected="selected" value="000007">朝阳区</option>
+                <option value="000008">丰台区</option>
+                <option value="000009">石景山区</option>
+                <option value="000010">海淀区</option>
+                <option value="000011">门头沟区</option>
+                <option value="000012">房山区</option>
+                <option value="000013">通州区</option>
+                <option value="000014">顺义区</option>
+                <option value="000015">昌平区</option>
+                <option value="000016">大兴区</option>
+                <option value="000017">怀柔区</option>
+                <option value="000018">平谷区</option>
+                <option value="000019">密云县</option>
+                <option value="000020">延庆县</option>
+              </select>
+          </dd>
+        </dl>
+        <dl class="clearfix">
+          <dt><span class="red_remind">*</span>详细地址：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>联系电话：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>手机号码：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>供应商：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <dl class="clearfix">
+          <dt>邮政编码：</dt>
+          <dd><input type="text" class="form-control"></dd>
+        </dl>
+        <div class="btn_add btn_middle">
+          <ul>
+            <li><button type="button" class="btn btn-default red">保存</button></li>
+            <li><button type="button" class="btn btn-default gray">取消</button></li>
+          </ul>
+        </div>
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

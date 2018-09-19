@@ -1,0 +1,347 @@
+package com.avic.supplier.models;
+
+import com.avic.supplier.utils.BaseModels;
+
+public class SupplierGoodsInfo extends BaseModels{
+	
+	private String supCatId;
+
+	private String supId;
+	
+	private String supGoodsId;
+	
+	private String goodsUrl;
+	
+	private String goodsModel;
+	
+	private String goodsWeight;
+	
+	private String imagePath;
+	
+	private String brandName;
+	
+	private String goodsName;
+	
+	private String productArea;
+	
+	private String goodsCode;
+	
+	private String goodsUnit;
+	
+	private String goodsService;
+	
+	private String goodsDesc;
+	
+	private String goodsParam;
+	
+	private String goodsWare;
+	
+	private String goodsStatus;
+	
+	private String salePrice;
+	
+	private String countPrice;
+	
+	private String agreePrice;
+	
+	private String poolId;
+	
+	private String deleteFlag;
+	
+	private String createDateStar;
+	
+	private String createDate;
+	
+	private String createDateEnd;
+	
+	private String userId;
+	
+	private String goodsPrice;
+	
+	private String buyNum;
+	
+	private String payTime;
+	
+	private String avgPrice;
+	
+	private String maxPrice;
+	
+	private String minPrice;
+	
+	private String nowPrice;
+	
+	private String marketCatId;
+	
+	public String getSupCatId() {
+		return supCatId;
+	}
+
+	public void setSupCatId(String supCatId) {
+		this.supCatId = supCatId;
+	}
+
+	public String getSupId() {
+		return supId;
+	}
+
+	public void setSupId(String supId) {
+		this.supId = supId;
+	}
+
+	public String getSupGoodsId() {
+		return supGoodsId;
+	}
+
+	public void setSupGoodsId(String supGoodsId) {
+		this.supGoodsId = supGoodsId;
+	}
+
+	public String getGoodsUrl() {
+		return goodsUrl;
+	}
+
+	public void setGoodsUrl(String goodsUrl) {
+		this.goodsUrl = goodsUrl;
+	}
+
+	public String getGoodsModel() {
+		return goodsModel;
+	}
+
+	public void setGoodsModel(String goodsModel) {
+		this.goodsModel = goodsModel;
+	}
+
+	public String getGoodsWeight() {
+		return goodsWeight;
+	}
+
+	public void setGoodsWeight(String goodsWeight) {
+		this.goodsWeight = goodsWeight;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getProductArea() {
+		return productArea;
+	}
+
+	public void setProductArea(String productArea) {
+		this.productArea = productArea;
+	}
+
+	public String getGoodsCode() {
+		return goodsCode;
+	}
+
+	public void setGoodsCode(String goodsCode) {
+		this.goodsCode = goodsCode;
+	}
+
+	public String getGoodsUnit() {
+		return goodsUnit;
+	}
+
+	public void setGoodsUnit(String goodsUnit) {
+		this.goodsUnit = goodsUnit;
+	}
+
+	public String getGoodsService() {
+		return goodsService;
+	}
+
+	public void setGoodsService(String goodsService) {
+		this.goodsService = goodsService;
+	}
+
+	public String getGoodsDesc() {
+		return goodsDesc;
+	}
+
+	public void setGoodsDesc(String goodsDesc) {
+		this.goodsDesc = goodsDesc;
+	}
+
+	public String getGoodsParam() {
+		return goodsParam;
+	}
+
+	public void setGoodsParam(String goodsParam) {
+		this.goodsParam = goodsParam;
+	}
+
+	public String getGoodsWare() {
+		return goodsWare;
+	}
+
+	public void setGoodsWare(String goodsWare) {
+		this.goodsWare = goodsWare;
+	}
+
+	public String getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(String goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+	public String getSalePrice() {
+		return salePrice;
+	}
+
+	public void setSalePrice(String salePrice) {
+		this.salePrice = salePrice;
+	}
+
+	public String getCountPrice() {
+		return countPrice;
+	}
+
+	public void setCountPrice(String countPrice) {
+		this.countPrice = countPrice;
+	}
+
+	public String getAgreePrice() {
+		return agreePrice;
+	}
+
+	public void setAgreePrice(String agreePrice) {
+		this.agreePrice = agreePrice;
+	}
+
+	public String getPoolId() {
+		return poolId;
+	}
+
+	public void setPoolId(String poolId) {
+		this.poolId = poolId;
+	}
+
+	public String getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(String deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
+	public String getCreateDateStar() {
+		return createDateStar;
+	}
+
+	public void setCreateDateStar(String createDateStar) {
+		this.createDateStar = createDateStar;
+	}
+
+	public String getCreateDateEnd() {
+		return createDateEnd;
+	}
+
+	public void setCreateDateEnd(String createDateEnd) {
+		this.createDateEnd = createDateEnd;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getGoodsPrice() {
+		return goodsPrice;
+	}
+
+	public void setGoodsPrice(String goodsPrice) {
+		this.goodsPrice = goodsPrice;
+	}
+
+	public String getBuyNum() {
+		return buyNum;
+	}
+
+	public void setBuyNum(String buyNum) {
+		this.buyNum = buyNum;
+	}
+
+	public String getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(String payTime) {
+		this.payTime = payTime;
+	}
+
+	public String getAvgPrice() {
+		return avgPrice;
+	}
+
+	public void setAvgPrice(String avgPrice) {
+		this.avgPrice = avgPrice;
+	}
+
+	public String getMaxPrice() {
+		return maxPrice;
+	}
+
+	public void setMaxPrice(String maxPrice) {
+		this.maxPrice = maxPrice;
+	}
+
+	public String getMinPrice() {
+		return minPrice;
+	}
+
+	public void setMinPrice(String minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public String getNowPrice() {
+		return nowPrice;
+	}
+
+	public void setNowPrice(String nowPrice) {
+		this.nowPrice = nowPrice;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getMarketCatId() {
+		return marketCatId;
+	}
+
+	public void setMarketCatId(String marketCatId) {
+		this.marketCatId = marketCatId;
+	}
+	
+}

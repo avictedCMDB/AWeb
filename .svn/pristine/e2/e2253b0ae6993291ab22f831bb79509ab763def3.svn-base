@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.GoodsMapper">
+	<resultMap id="goodsResultMap" type="Goods">
+		<id column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<result column="goods_url" property="goodsUrl" jdbcType="VARCHAR" />
+		<result column="goods_model" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="goods_weight" property="goodsWeight" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="product_area" property="productArea" jdbcType="VARCHAR" />
+		<result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+		<result column="goods_unit" property="goodsUnit" jdbcType="VARCHAR" />
+		<result column="goods_service" property="goodsService" jdbcType="CLOB" />
+		<result column="goods_desc" property="goodsDesc" jdbcType="CLOB" />
+		<result column="goods_param" property="goodsParam" jdbcType="CLOB" />
+		<result column="goods_ware" property="goodsWare" jdbcType="CLOB" />
+		<result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+		<result column="sale_price" property="salePrice" jdbcType="DOUBLE" />
+		<result column="count_price" property="countPrice" jdbcType="DOUBLE" />
+		<result column="agree_price" property="agreePrice" jdbcType="DOUBLE" />
+		<result column="pool_id" property="poolId" jdbcType="INTEGER" />
+		<result column="sys_cat_id" property="sysCatId" jdbcType="INTEGER" />
+		<result column="sale_num" property="saleNum" jdbcType="INTEGER" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="tradeRecordResultMap" type="TradeRecord">
+		<result column="username" property="userName" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="order_time" property="orderTime" jdbcType="DATE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+	</resultMap>
+	
+
+	
+	<select id="queryGoodsById" resultMap="goodsResultMap">
+		select a.*, b.sup_type from t_sup_goods a, t_sup_info b
+		where a.sup_id = b.sup_id and a.sup_id = #{supId}
+		and sup_goods_id = #{supGoodsId}
+		
+	</select>
+	
+	
+	<select id="queryGoodsImage" resultType="java.lang.String">
+		select distinct image_path from t_goods_image
+		where sup_id = #{supId}
+		and sup_goods_id = #{supGoodsId}
+		
+	</select>
+	
+	
+	<select id="queryTradeRecordList" resultMap="tradeRecordResultMap">
+		select * from (
+			select row_number() over (order by a.order_time desc) rn, 
+				   (select usernamecn from users c where a.user_id = c.userid) username, 
+			       a.order_time, 
+			       b.buy_num, 
+			       b.goods_price 
+		      from t_order a, t_order_snapshot b 
+		     where a.order_id = b.order_id 
+		       and a.order_status = 2 
+		       and b.sup_id = #{supId}
+		       and b.sup_goods_id = #{supGoodsId}
+			) x
+		where x.rn between #{start} and #{end}
+		
+	</select>
+	
+	<select id="queryTradeRecordCount" resultType="java.lang.Integer">
+			select count(1)
+		      from t_order a, t_order_snapshot b 
+		     where a.order_id = b.order_id 
+		       and a.order_status = 2 
+		       and b.sup_id = #{supId}
+		       and b.sup_goods_id = #{supGoodsId}
+	</select>
+	
+</mapper>

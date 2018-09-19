@@ -1,0 +1,42 @@
+#step03 .form-group label.title {
+	width: auto;
+	text-align: left;
+}
+#step03 .form-group .input_area {
+	width: 305px;
+} 
+#step03 .form-group .input_area_special {
+	width: 90px;
+}
+#step03 .form-group .input_area_special_last {
+	width: 55px;
+	margin: 0 5px;
+}
+#step03 .input-group .form-control {
+	border-radius: 4px;
+}
+#step03 .input-group.input-group_special {
+	width: 200px;
+}
+#step03 .form-group .input_area.input_area02 .form-control {
+	border-radius: 4px;
+}
+#step03 .input-group.input-group_special .form-control {
+	border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+#step03 .input-group span {
+	display: table-cell;
+	padding-left: 5px;
+	vertical-align: middle;
+}
+#step03 .input-group span.first {
+	padding-left: 0;
+}
+#step03 .form-group .input_area label {
+	float: left;
+}
+#step03 .special_group01 {
+	width: 890px;
+
+}

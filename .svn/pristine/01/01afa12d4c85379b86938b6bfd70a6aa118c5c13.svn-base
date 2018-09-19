@@ -1,0 +1,15 @@
+package com.avic.market.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.market.models.Order;
+import com.avic.market.models.OrderSnapshot;
+
+@Repository
+public interface OrderMapper {
+    public void insertOrder(Order order);
+    public void batchInsertOrderSnapshot(List<OrderSnapshot> list);
+    public String queryOrderIndex();
+}

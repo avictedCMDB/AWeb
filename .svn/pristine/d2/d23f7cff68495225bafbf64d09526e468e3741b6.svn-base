@@ -1,0 +1,12 @@
+package com.avic.management.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.BidProjSubject;
+import com.avic.management.models.BidSubjectMtr;
+
+@Repository
+public interface BidProjSubjectMapper {
+    public void insertProjSubject(BidProjSubject bidProjSubject);
+    public void insertSubjectMtr(BidSubjectMtr bidSubjectMtr);
+}

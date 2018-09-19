@@ -1,0 +1,14 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.market.models.EnquiryGoods;
+
+public interface EnquiryGoodsService {
+	/**
+	 *  添加询价信息
+	 * @param enquiryGoods
+	 * @return
+	 */
+    public void addEnquiryGoods(EnquiryGoods enquiryGoods);
+}

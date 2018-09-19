@@ -1,0 +1,419 @@
+
+function prefix(num, val) {
+    return (new Array(num).join('0') + val).slice(-num);
+}
+
+var timeDiff = function (diff) {
+
+    var hour = parseInt(diff / (60 * 60 * 1000));
+    var min = parseInt((diff / (60 * 1000)) - hour * 60);
+    var sec = parseInt(diff / 1000 - hour * 60 * 60 - min * 60);
+    
+    
+    if (hour < 0) {
+    	hour = 0;
+    }
+    
+    if (min < 0) {
+    	min = 0;
+    }
+    
+    if (sec < 0) {
+    	sec = 0;
+    }
+    
+    return [hour, min, sec];
+}
+
+var timeCount = function () {
+
+	var diff = $("#time_count").attr("data-time");
+	
+	diff -= 1000;
+
+    var arr = timeDiff(diff);
+    
+    var hour = arr[0];
+    var min = arr[1];
+    var sec = arr[2];
+    
+    $("#time_count").attr("data-time", diff);
+    $("#time_hour").text(prefix(2, hour));
+    $("#time_min").text(prefix(2, min));
+    $("#time_sec").text(prefix(2, sec));
+
+	if (contextDisable && !waiting) return;
+    if (diff <= 0) {
+    	window.location.reload();
+    }
+}
+
+var quotaData = false;
+
+var chart = null;
+var loadData = function () {
+	if (disable) return;
+	async(CONTEXT + '/supervise/bid/project/hall/data', {projId:projId}, function (msg) {
+		var result = msg.result;
+		if (result) {
+			quotaData = result.quotas;
+
+			var rank = [];
+			var map = {};
+			var first = {};
+			var keys = [];
+			var series = [];
+			var minTime = new Date();
+          	for (var i = 0; i < quotaData.length; i++) {
+          		var item = quotaData[i];
+        		if (map.hasOwnProperty(item.bidNum)) {
+        			if (map[item.bidNum].quotaRound < item.quotaRound) {
+        				map[item.bidNum] = item;
+        			}
+        		} else {
+        			map[item.bidNum] = item;
+        		}
+        		
+        		if(item.quotaRound == 1) {
+        			first[item.bidNum] = item.quotaNum;
+                    keys.push(item.bidNum);
+        		}
+        		
+        		if (i == 0) {
+        			minTime = item.quotaTime;
+        		}
+           	}
+          	
+          	for (var i in map) {
+          		rank.push(map[i]);
+          	}
+          	
+          	rank.sort(function(a, b){
+          		if (a.quotaNum == b.quotaNum) {
+          			return a.quotaTime - b.quotaTime;
+          		} else {
+                    return a.quotaNum - b.quotaNum;
+          		}
+            });
+          	/*
+          	
+                   <li class="special">
+                     <div class="num">1</div>
+                     <div class="name"><span class="title">TIZR</span><span>中国航发</span></div>
+                     <div class="price">12900</div>
+                     <div class="frequency">第13次</div>
+                   </li>
+          	
+          	*/
+      		
+      		/*
+
+            <tr>
+              <td>01</td>
+              <td>01010</td>
+              <td>10000</td>
+              <td>8000</td>
+              <td>2000</td>
+              <td>2017-02-27 12:00:00</td>
+            </tr>
+            */
+          	
+          	var sups = result.sups;
+          	
+          	$("#rank_ul").empty();
+          	$("#rank_tbody").empty();
+          	var i = 0
+          	for (; i < rank.length; i++) {
+          		var item = rank[i];
+          		var li = $('<li class="special" id="rank_sup_' + item.supCode + '">');
+          		li.append('<div class="num">' + (i + 1) + '</div>');
+          		li.append('<div class="name"><span class="title">' + item.bidNum + '</span><span>' + item.supName + '</span></div>');
+          		li.append('<div class="price">' + item.quotaNum + '</div>');
+          		li.append('<div class="frequency">第' + item.quotaRound + '次</div>');
+          		$("#rank_ul").append(li);
+                
+                var tr = $("<tr>");
+                tr.append('<td>' + (i + 1) + '</td>');
+                tr.append('<td>' + item.bidNum + '</td>');
+                tr.append('<td>' + first[item.bidNum] + '</td>');
+                tr.append('<td>' + item.quotaNum + '</td>');
+                tr.append('<td>' + (first[item.bidNum] - item.quotaNum) + '</td>');
+                tr.append('<td>' + item.quotaIp + '</td>');
+                tr.append('<td>' + new Date(item.quotaTime).asString('yyyy-mm-dd hh:min:ss') + '</td>');
+                $("#rank_tbody").append(tr);
+                
+                
+                var data = [];
+              	for (var j = 0; j < quotaData.length; j++) {
+              		if (quotaData[j].bidNum == item.bidNum) {
+              			data.push([
+                           new Date(quotaData[j].quotaTime),
+                           quotaData[j].quotaNum
+                        ]);
+              		}
+              	}
+              	series.push({
+	                  name: item.bidNum,
+	                  type: 'line',
+	                  showAllSymbol: true,
+	                  symbolSize: 5,
+	                  data:data
+              	});
+          	}
+          	
+          	for (var j = 0; j < sups.length; j++) {
+
+          		var item = sups[j];
+          		
+          		if ($("#rank_sup_" + item.supCode).size() > 0) {
+          			continue;
+          		}
+          		
+          		var li = $('<li class="special" id="rank_sup_' + item.supCode + '">');
+          		li.append('<div class="num">' + (i + j + 1) + '</div>');
+          		li.append('<div class="name"><span class="title">' + item.bidNum + '</span><span>' + item.supName + '</span></div>');
+          		li.append('<div class="price">准备报价</div>');
+
+          		$("#rank_ul").append(li);
+          		
+          	}
+          	
+            var option = {
+            			    title : {
+            			        x:'center'
+            			    },
+            			    tooltip : {
+            			        trigger: 'item',
+            			        formatter : function (params) {
+									
+            			            return new Date(params.value[0]).asString('yyyy-mm-dd hh:min:ss') + '<br/>'
+            			                   + params.value[1];
+            			        }
+            			    },
+            			    toolbox: {
+            			        show : false
+            			    },
+            			    legend : {
+            			        data : keys
+            			    },
+            			    grid: {
+            			        y2: 80,
+            			        x2:20,
+            			        x:70,
+            			        y:30
+            			    },
+            			    xAxis : [
+            			        {
+            			            type : 'time',
+            			            min:minTime,
+            			            max:new Date(),
+            			            splitNumber:8
+            			        }
+            			    ],
+            			    yAxis : [
+            			        {
+            			            type : 'value'
+            			        }
+            			    ],
+            			    series : series
+            			};
+            chart.setOption(option);
+		}
+	}, false, true);
+}
+
+var msgId = 0;
+
+var loadMsg = function () {
+	if (disable) return;
+	async(CONTEXT + '/supervise/bid/project/hall/msg/data', {projId:projId, msgId:msgId}, function (msg) {
+
+
+		if (msg.result) {
+          	for (var i = 0; i < msg.result.length; i++) {
+				appendMsg(msg.result[i]);
+				msgId = msg.result[i].msgId;
+           	}
+             
+		}
+	}, false, true);
+}
+
+/*
+
+                   <li>
+                     <p class="title">我对所有供应商说<span>15:00:01</span></p>
+                     <p class="txt">现在是试报价时间现在是试报价时间现在是试报价时间</p>
+                   </li>
+ */
+
+var appendMsg = function (msg) {
+	if (!msg || $("#msg_" + msg.msgId).size() > 0) {
+		return;
+	}	 
+	
+	var li = $("<li>");
+	li.attr("id", "msg_" + msg.msgId);
+	var title = "";
+	if (msg.sendType == 1) {
+		title = msg.supName + "对我说";
+	} else if (msg.supCode == 0) {
+		title = "我对所有供应商说";
+	} else {
+		title = "我对" + msg.supName + "说";
+	}
+	li.append('<p class="title">' + title + ' <span> ' + (new Date(msg.sendTime).asString('yyyy-mm-dd hh:min:ss')) + '</span></p>');
+	li.append('<p class="txt">' + msg.msgContent + '</p>');
+	
+	$("#msg_ul").append(li);
+	
+	var st = $("#msg_ul").height() - $("#msg_cnt").height();
+	
+	if (st > 0) {
+		$("#msg_cnt").scrollTop(st);
+	}
+}
+
+var loadAuth = function () {
+	if (disable) return;
+	var supName = $.trim($("#auth_sup_name").val());
+
+	$("#auth_tbody").empty();
+	async(CONTEXT + '/supervise/bid/project/hall/sup', {projId:projId, supName:supName}, function (msg) {
+		var result = msg.result;
+
+		if (result) {
+			/*
+				<tr>
+				  <td></td>
+				  <td></td>
+				  <td><a href="#">启用</a><a href="#">停用</a></td>
+				</tr>
+            */
+             
+			
+          	for (var i = 0; i < result.length; i++) {
+          		var item = result[i];
+	        	var tr = $("<tr>");
+	            tr.append("<td>" + (i + 1) + "</td>");
+	            tr.append("<td>" + item.supName + "</td>");
+	            var op = $("<td>");
+	            
+	            if (item.ban == 1) {
+	            	op.append("<a href='javascript:;' data-sup='" + item.supCode + "' data-status='0' onclick='supAuth(this)'>启用</a>");
+	            } else {
+	            	op.append("<a href='javascript:;' data-sup='" + item.supCode + "' data-status='1' onclick='supAuth(this)'>停用</a>");
+	            }
+	            
+	            tr.append(op);
+	            $("#auth_tbody").append(tr);
+        	   
+           	}
+             
+             
+		}
+	});
+};
+
+var supAuth = function (obj) {
+	if ($(obj).attr("data-status") == 0) {
+		if (confirm("确认启用此供应商？")) {
+			async(CONTEXT + '/supervise/bid/project/hall/sup/on', {projId:projId, supCode:$(obj).attr("data-sup")}, function (msg) {
+				$(obj).text("停用");
+				$(obj).attr("data-status", 1);
+			});
+		}
+	} else {
+		if (confirm("确认停用此供应商？")) {
+			async(CONTEXT + '/supervise/bid/project/hall/sup/off', {projId:projId, supCode:$(obj).attr("data-sup")}, function (msg) {
+				$(obj).text("启用");
+				$(obj).attr("data-status", 0);
+			});
+		}
+	}
+	
+}
+
+
+var disable = false;
+$(function () {
+	chart = echarts.init(document.getElementById('chart'));
+	timeCount();
+	loadData();
+	loadMsg();
+	setInterval(timeCount, 1000);
+	setInterval(loadData, 10000);
+	setInterval(loadMsg, 3000);
+	disable = contextDisable;
+	
+	$("#auth_click").click(function () {
+		if (disable) {
+			alert($("#sta_text").text());
+			return false;
+		}
+		
+		$("#auth_modal").modal("show");
+		
+		$("#auth_sup_name").val("");
+		$("#auth_tbody").empty();
+		loadAuth();
+	});
+	
+	$("#auth_query").click(loadAuth);
+	
+	$("#his_click").click(function() {
+		$("#his_sup_name").val("");
+		$("#his_bid_num").val("");
+		$("#his_tbody").empty();
+		$("#his_modal").modal("show");
+		queryHis();
+	});
+	
+	$("#his_query").click(queryHis);
+	
+	$("#msg_send").click(function () {
+		if (disable) return;
+		var msg = $.trim($("#msg_input").val());
+		
+		if (msg == "") {
+			alert("请输入消息内容");
+			return false;
+		}
+		
+		var sup = $("#sup_sel").val();
+
+		async(CONTEXT + '/supervise/bid/project/hall/msg/send', {projId:projId, supCode:sup, msgContent:msg}, function (msg) {
+			var item = msg.result;
+			item.supName = $("#sup_sel").find("option:selected").text();
+			appendMsg(item);
+			$("#msg_input").val("");
+		});
+	});
+});
+
+var queryHis = function () {
+	var supName = $.trim($("#his_sup_name").val());
+	var bidNum = $.trim($("#his_bid_num").val());
+
+	$("#his_tbody").empty();
+	/*
+		<tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>2017-02-27 15:00:00</td>
+        </tr>
+    */
+	if (quotaData) {
+		for (var i = 0; i < quotaData.length; i++) {
+			if ((supName == "" || quotaData[i].supName.indexOf(supName) >= 0) && (bidNum == "" || quotaData[i].bidNum == bidNum)) {
+				var tr = $("<tr>");
+				tr.append('<td>' + quotaData[i].supName + '</td>');
+				tr.append('<td>' + quotaData[i].bidNum + '</td>');
+				tr.append('<td>' + quotaData[i].quotaNum + '</td>');
+				tr.append('<td>' + new Date(quotaData[i].quotaTime).asString('yyyy-mm-dd hh:min:ss') + '</td>');
+				$("#his_tbody").append(tr);
+			}
+		}
+	}
+}

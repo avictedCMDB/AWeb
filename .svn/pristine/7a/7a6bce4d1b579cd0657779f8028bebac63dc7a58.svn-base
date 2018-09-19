@@ -1,0 +1,280 @@
+<%@ page language="java" contentType="text/html; charset=gbk"	pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合同管理|中航采购网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/bid_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/bid_contract_info_new.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/my97DatePicker/My97DatePicker/WdatePicker.js"></script></link>
+
+<script type="text/javascript">
+var cabPath = "${pageContext.request.contextPath}/static/bjca";
+</script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/bjca/BJCAWebSignCom.js"></script>
+<script type="text/javascript">
+
+var SignObj_1;
+var SignObj_2;
+
+function ver1() {
+	var verify = SignObj_1.Verify($("#a_param").val(), $("#a_ca_sign").val());
+	if (verify) {
+		alert("验证成功");
+	}
+}
+
+function ver2() {
+	var verify = SignObj_2.Verify($("#b_param").val(), $("#b_ca_sign").val());
+	if (verify) {
+		alert("验证成功");
+	}
+}
+
+
+$(function () {
+
+	SignObj_1 = CreateWebSignObject("SignObj1", false, "", ver1, "ver1()");
+	SignObj_2 = CreateWebSignObject("SignObj2", false, "", ver2, "ver2()");
+	
+	if ($("#a_ca_sign").val() != "") {
+		var verify = SignObj_1.Verify($("#a_param").val(), $("#a_ca_sign").val());
+		
+		if(SignObj_1 && verify) 
+		{
+			SignObj_1.SetVisible(true);
+			SignObj_1.SetOffsetPos("a_sign_pic", 80, -60);
+		} else {
+			alert("甲方签章验证失败");
+			return false;
+		}
+	}
+
+	if ($("#b_ca_sign").val() != "") {
+		
+		var verify2 = SignObj_2.Verify($("#b_param").val(), $("#b_ca_sign").val());
+		
+		if(SignObj_2 && verify2) 
+		{
+			SignObj_2.SetVisible(true);
+			SignObj_2.SetOffsetPos("b_sign_pic", 80, -60);
+		} else {
+			alert("乙方签章验证失败");
+			return false;
+		}
+	}
+	
+});
+</script>
+</head>
+
+
+<body>
+
+  <div id="contents">
+      <div class="inner">
+          <div id="matter_section">
+              <h2>采购合同</h2>
+              <p class="code">合同编号：${contract.contractId}</p>
+              <div class="summary">
+                <p><span class="border_bottom">${user.companyName }</span>（以下简称“甲方”）与 <span class="border_bottom">${sup.supName }</span>（以下简称“乙方”）在平等、自愿、公平、诚实信用之基础上，就甲方<span class="border_bottom">${sup.projName }</span>项目（项目编号<span class="border_bottom">${sup.projId}</span>）向乙方采购<span class="border_bottom">${subs }</span>事宜，经友好协商一致，订立本合同，以资共同信守。</p>
+              </div>
+              <div class="section list_notice">
+                  <h3>一、货物清单及价格</h3>
+                  <div class="notice_inner add_inner">
+                    <table>
+                      <tr>
+                        <th width="60">序号</th>
+                        <th>品牌</th>
+                        <th width="100">规格型号</th>
+                        <th width="80">数量</th>
+                        <th width="200">标的名称</th>
+                      </tr>
+                      <c:forEach varStatus="sta" var="i" items="${mtrs }">
+                      <tr>
+                        <td>${sta.index + 1 }</td>
+                        <td>${i.materBrand }</td>
+                        <td>${i.materModel }</td>
+                        <td>${i.materNum }</td>
+                        <td>${i.subjectName }</td>
+                      </tr>
+                      </c:forEach>
+                    </table>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>二、合同总金额</h3>
+                  <div class="notice_inner">
+                    <p>合同总金额为：人民币（大写）<span class="border_bottom">${total }</span>（小写￥<span class="border_bottom"><fmt:formatNumber value="${sup.realCurrentQuota }" currencySymbol="" type="currency"></fmt:formatNumber></span>）。该合同总金额已包含<span class="border_bottom">${aparam.p2 }</span>（运输费、保险费以及其他费用等）。</p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>三、付款方式及进度 </h3>
+                  <div class="notice_inner">
+                    <p class="none-indent">1、付款方式：<span class="border_bottom">${aparam.p3_1 }</span></p>
+                    <p class="none-indent">2、付款进度：<span class="border_bottom">${aparam.p3_2}</span></p>
+                    <p class="none-indent">3、其他约定：<span class="border_bottom">${aparam.p3_3 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>四、货物交付 </h3>
+                  <div class="notice_inner">
+                    <p>1、交货时间：<span class="border_bottom">${aparam.p4_1 }</span></p>
+                    <p>2、交货地点：<span class="border_bottom">${aparam.p4_2 }</span></p>
+                    <p>3、收货人：<span class="border_bottom">${aparam.p4_3_1 }</span>；联系方式：<span class="border_bottom">${aparam.p4_3_2 }</span></p>
+                    <p>4、交货方式：<span class="border_bottom">${aparam.p4_4 }</span></p>
+                    <p>5、运输及费用承担：<span class="border_bottom">${aparam.p4_5 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>五、所有权及风险转移</h3>
+                  <div class="notice_inner">
+                    <p>合同项下货物灭失、毁损的风险，自货物交付后转移至甲方。在甲方未付清本合同总价款以前，合同项下货物的所有权归乙方所有。</p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>六、货物验收</h3>
+                  <div class="notice_inner">
+                    <p>1、甲方应当在提取货物或货物抵达甲方指定地点当日按照本合同约定标准对货物进行验收（如采用抽样检验的，抽样标准<span class="border_bottom">${aparam.p6_1_1 }</span>，抽样比例<span class="border_bottom">${aparam.p6_1_2 }</span></p>
+                    <p>2、货物品牌、型号、数量、质量等不符合本合同约定的，甲方应在妥为保管货物的同时，在收货后<span class="border_bottom">${aparam.p6_2_1 }</span>日内向乙方提出异议。乙方在接到甲方异议通知后<span class="border_bottom">${aparam.p6_2_2 }</span>日内，应当对货物情况进行核查，如经乙方确认货物异议情况确实存在，乙方应在异议确认后<span class="border_bottom">${aparam.p6_2_3 }</span>日内，采取修理、更换或补足等措施达到本合同约定标准。如果双方对货物验收结果发生争议，双方同意由<span class="border_bottom">${aparam.p6_2_4 }</span>（第三方检验机构）对货物进行检验，并接受该检验机构的检验结果认定。如果甲方在收货后<span class="border_bottom">${aparam.p6_2_5 }</span>日内未向乙方提出异议的，视为货物验收合格。 </p>
+                    <p>3、货物验收合格后<span class="border_bottom">${aparam.p6_3 }</span>日内，甲方应向乙方出具验收合格报告。</p>
+                    <p>4、甲方因自身原因保管、使用、保养不善等造成货物质量下降的，不得提出异议。</p>
+                    <p>5、其他约定：<span class="border_bottom">${aparam.p6_5 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>七、技术标准</h3>
+                  <div class="notice_inner">
+                    <p>货物质量、技术标准按照以下第<span class="border_bottom">${aparam.p7_0 }</span>种执行：</p>
+                    <p>1、按照<span class="border_bottom">${aparam.p7_1 }</span>1.标准执行（国家标准/行业标准/生产厂家标准）。</p>
+                    <p>2、按样本执行，样本作为本合同的附件。</p>
+                    <p>3、按双方商定要求执行，具体要求为<span class="border_bottom">${aparam.p7_3 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>八、包装要求</h3>
+                  <div class="notice_inner">
+                    <p>除双方另有规定外，乙方提供的货物均应按标准保护措施进行包装。该包装应适应于远距离运输、防潮、防震、防锈和防野蛮装卸，以确保货物安全无损运抵甲方指定的交货地点。由于包装不善所引起的货物毁损、灭失等由乙方承担责任。</p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>九、质保期</h3>
+                  <div class="notice_inner">
+                    <p>1、本合同项下的货物质保期为<span class="border_bottom">${aparam.p9_1_1 }</span>年，从<span class="border_bottom">${aparam.p9_1_2 }</span>起算。</p>
+                    <p>2、质保期内，乙方在收到甲方质量问题反馈后，应在<span class="border_bottom">${aparam.p9_2 }</span></span>日之内采取修理、更换或退货等措施解决。</p>
+                    <p>3、其他约定：<span class="border_bottom">${aparam.p9_3 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>十、违约责任</h3>
+                  <div class="notice_inner">
+                    <p>1、甲方违约责任：</p>
+                    <div class="response">
+                      <p>（1）甲方中途退货的，应向乙方赔偿退货部分货款<span class="border_bottom">${aparam.p10_1_1 }</span>的违约金。</p>
+                      <p>（2）甲方未按双方约定时间提供技术要求、包装物要求的，除乙方的交货日期得以顺延外，每顺延一日，应按顺延交货部分货款金额<span class="border_bottom">${aparam.p10_1_2_1 }</span>计算，向乙方支付违约金；如<span class="border_bottom">${aparam.p10_1_2_2 }</span>日内仍不能提供的，按中途退货处理。</p>
+                      <p>（3）甲方逾期付款的，每延期一日，应按逾期付款金额<span class="border_bottom">${param.p10_1_3 }</span>计算，向乙方支付违约金。</p>
+                      <p>（4）甲方如错填交货地点和收货人信息，致使乙方不能按期交货的，相关风险及损失由甲方承担。</p>
+                      <p>（5）其他约定：<span class="border_bottom">${aparam.p10_1_5 }</span>的违约金。</p>
+
+                    </div>
+                    <p>2、乙方违约责任：</p>
+                    <div class="response">
+                      <p>（1）乙方不能交货的，应向甲方偿付不能交货部分货款<span class="border_bottom">${aparam.p10_2_1 }</span></p>
+                      <p>（2）乙方所交货物品种、型号、规格、数量、质量不符合同规定的，如甲方同意利用，应按质论价；甲方不能利用的，应根据具体情况，由乙方负责修理、更换、调换或退货，并承担因此支出的全部费用。</p>
+                      <p>（3）乙方因货物包装不符合合同规定，须返修或重新包装的，乙方负责返修或重新包装，并承担因此支出的全部费用。甲方不要求返修或重新包装而要求赔偿损失的，乙方应赔偿甲方该不合格包装物低于合格物的差价部分。因包装不当造成货物损坏或灭失的，由乙方负责赔偿。</p>
+                      <p>（4）乙方逾期交货的，每延期一日，应按照逾期交货金额<span class="border_bottom">${aparam.p10_2_4_1 }</span>计算，向甲方支付违约金，并赔偿甲方因此所遭受的损失。如逾期交货超过<span class="border_bottom">${aparam.p10_2_4_2 }</span>日，甲方有权终止合同并可就遭受的全部损失要求乙方予以赔偿。</p>
+                      <p>（5）质保期内，如果乙方未能在约定期限内采取补救措施的，甲方有权自行处理，由此产生的风险和费用由乙方承担。</p>
+                      <p>（6）其他约定：<span class="border_bottom">${aparam.p10_2_6 }</span></p>
+                    </div>
+
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>十一、不可抗力</h3>
+                  <div class="notice_inner">
+                    <p>任何一方由于不可抗力原因不能履行合同时，应在不可抗力事件结束后<span class="border_bottom">${aparam.p11 }</span>日内向对方通报，以减轻可能给对方造成的损失，在取得有关机构的不可抗力证明后，双方协商延期履行、部分履行或者不履行合同，并根据情况可部分或全部免予承担违约责任。</p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>十二、争议解决</h3>
+                  <div class="notice_inner">
+                    <p>本合同在履行过程中所发生的全部争议，甲、乙双方应友好协商解决；如在争议事项发生后<span class="border_bottom">${aparam.p12_0_1 }</span>日内双方未能达成一致的，任何一方可选择下列第<span class="border_bottom">${aparam.p12_0_2 }</span>种方式解决：</p>
+                    <p>1、将争议提交<span class="border_bottom">${aparam.p12_1 }</span>仲裁委员会仲裁；</p>
+                    <p>2、依法向<span class="border_bottom">${aparam.p12_2 }</span>人民法院提起诉讼。</p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>十三、合同生效及其他</h3>
+                  <div class="notice_inner">
+                    <p>1、按本合同规定应付的违约金、赔偿金、保管保养费以及各种经济损失，应当在明确责任后<span class="border_bottom">${aparam.p13_1 }</span>日内，由一方向另一方付清，否则按逾期付款的规定处理。</p>
+                    <p>2、约定的违约金，视为违约的损失赔偿。双方没有约定违约金或预先赔偿额的计算方法的，损失赔偿额应当相当于违约所造成的损失，包括合同履行后可获得的利益，但不得超过违反合同一方订立合同时应当预见到的因违反合同可能造成的损失。</p>
+                    <p>3、本合同未尽事宜由甲、乙双方另行协商确定，并制作书面补充合同。补充合同将作为本合同的有效组成部分，与本合同具有同等法律效力。</p>
+                    <p>4、本合同任何条款成为非法、无效或不可强制执行并不影响本合同其他条款的效力及可强制执行性。</p>
+                    <p>5、本合同由双方施加单位电子印章或有权代表电子签名，并自较晚一方施加完成后立即生效。除双方书面同意外，任何一方不得部分转让或全部转让其应履行的合同义务。</p>
+                    <p>6、本合同生效后，本合同彩色打印版即可作为合同原件，双方对此均予以认可。</p>
+                    <p>7、其他约定：<span class="border_bottom">${aparam.p13_7 }</span></p>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="signo clearfix">
+                <p class="attention">（以下无正文，为双方签章页面）</p>
+                <div class="signo01 clearfix">
+                  <dl class="clearfix">
+                    <dt id="a_sign_pic">甲方(盖章)</dt>
+                    <dd></dd>
+                  </dl>
+                  <dl class="clearfix">
+                    <dt id="b_sign_pic">乙方(盖章)</dt>
+                    <dd></dd>
+                  </dl>
+                </div>
+                <div class="signo02 clearfix">
+                  <dl class="clearfix">
+                    <dt>或有权代表（签名）： </dt>
+                    <dd><span class="border_bottom">${aparam.a_sign }</span></dd>
+                  </dl>
+                  <dl class="clearfix">
+                    <dt>或有权代表（签名）：</dt>
+                    <dd><span class="border_bottom">${bparam.b_sign }</span></dd>
+                  </dl>
+                </div>
+                <div class="signo03 clearfix">
+                  <dl class="clearfix">
+                    <dt>日期：</dt>
+                    <dd><span class="border_bottom">${aparam.a_year }</span>年<span class="border_bottom">${aparam.a_month }</span>月<span class="border_bottom">${aparam.a_day }</span>日</dd>
+                  </dl>
+                  <dl class="clearfix">
+                    <dt>日期：</dt>
+                    <dd><span class="border_bottom">${bparam.b_year }</span>年<span class="border_bottom">${bparam.b_month }</span>月<span class="border_bottom">${bparam.b_day }</span>日</dd>
+                  </dl>
+                </div>
+				              <div class="submit_btn">
+                 <ul>
+                    <li><button class="btn btn-default blue" onclick="window.open('${pageContext.request.contextPath}/supplier/contract/word?projId=${sup.projId }');">导出word</button></li>
+					<li><button class="btn btn-default blue" onclick="$('.submit_btn').hide();window.print();$('.submit_btn').show();">打印</button></li>
+                    <li><button class="btn btn-default gray_cart" onclick="window.close();">关闭</button></li>
+                 </ul>
+              </div>
+            </div>
+              </div>
+          <!--#matter_section--></div>
+              <input type="hidden" id="a_ca_sign" value="${contract.aCaSign }"/>
+              <input type="hidden" id="b_ca_sign" value="${contract.bCaSign }"/>
+              <input type="hidden" id="a_param" value='${contract.aParam }'/>
+              <input type="hidden" id="b_param" value='${contract.bParam }'/>
+
+      <!--.inner--></div>
+  <!--#contents--></div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+package com.avic.supervise.services.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.mappers.OrderMapper;
+import com.avic.supervise.models.Order;
+import com.avic.supervise.models.OrderSnapshot;
+import com.avic.supervise.services.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    OrderMapper orderMapper;
+    
+    @Override
+    public int getManageOrderCount(int supId, String orderId, String goodsName, String companyName, String timeStart, String timeEnd, int orderStatus, int supType,String companyId)
+            throws ServiceException {
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+        return orderMapper.queryManageOrderCount(supId, orderId, goodsName, companyName, timeStart, timeEnd, orderStatus, supType,companyId);
+    }
+
+    @Override
+    public List<Order> getManageOrderList(int supId, String orderId, String goodsName, String companyName, String timeStart, String timeEnd, int orderStatus, int supType,
+            int page, int size,String companyId) throws ServiceException {
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+        
+        List<Order> list = orderMapper.queryManageOrderList(supId, orderId, goodsName, companyName, timeStart, timeEnd, orderStatus, supType, start, end,companyId);
+        
+        if (list != null) {
+            List<String> orderIds = new ArrayList<String>();
+            
+            for (Order i : list) {
+                orderIds.add(i.getOrderId());
+            }
+            
+            List<OrderSnapshot> snapshots = orderMapper.queryMultiOrderSnapshot(orderIds);
+            
+            Map<String, List<OrderSnapshot>> map = new HashMap<String, List<OrderSnapshot>>();
+            
+            for (OrderSnapshot i : snapshots) {
+                if (!map.containsKey(i.getOrderId())) {
+                    map.put(i.getOrderId(), new ArrayList<OrderSnapshot>());
+                }
+                
+                map.get(i.getOrderId()).add(i);
+            }
+            
+            for (Order i : list) {
+                i.setSnapshots(map.get(i.getOrderId()));
+            }
+        }
+        
+        
+        return list;
+    }
+    
+    @Override
+    public List<Order> getManageOrderListAllData(int supId, String orderId, String goodsName, 
+    		String companyName, String timeStart, String timeEnd, int orderStatus, int supType,String companyId) throws ServiceException {
+    	if (!StringUtils.isEmpty(timeStart)) {
+    		timeStart += " 00:00:00";
+    	}
+    	
+    	if (!StringUtils.isEmpty(timeEnd)) {
+    		timeEnd += " 23:59:59";
+    	}
+    	
+    	List<Order> list = orderMapper.getManageOrderListAllData(supId, orderId, goodsName, companyName, timeStart, timeEnd, orderStatus, supType,companyId);
+    	
+    	return list;
+    }
+    
+    @Override
+    public Order getOrderDetail(String orderId) throws ServiceException {
+        Order order = orderMapper.queryOrderDetail(orderId);
+        
+        if (order != null) {
+            order.setSnapshots(orderMapper.queryOrderSnapshot(orderId));
+            order.setImgs(orderMapper.queryOrderImage(orderId));
+        }
+        return order;
+    }
+
+    @Transactional
+    @Override
+    public void updateOrderStatus(String orderId, int status) throws ServiceException {
+
+        try {
+            orderMapper.updateOrderStatus(orderId, status);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+    
+    @Override
+    public Order getManageOrderStat(int supId, String orderId, String goodsName, String companyName, String timeStart, String timeEnd,
+            int orderStatus, int supType,String companyId) throws ServiceException {
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+        Order stat = orderMapper.queryManageOrderStat(supId, orderId, goodsName, companyName, timeStart, timeEnd, orderStatus, supType,companyId);
+        if (stat != null) {
+            stat.setRefundPrice(orderMapper.queryManageOrderRefund(supId, orderId, goodsName, companyName, timeStart, timeEnd, orderStatus, supType,companyId));
+        }
+        
+        return stat;
+    }
+    
+    @Transactional
+    @Override
+    public void deleteOrder(String orderId) throws ServiceException {
+        orderMapper.deleteOrderById(orderId);
+        orderMapper.deleteOrderSnapshot(orderId);
+    }
+}

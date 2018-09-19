@@ -1,0 +1,653 @@
+package com.avic.management.controllers.bid;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.BidMessage;
+import com.avic.management.models.BidProjSupplier;
+import com.avic.management.models.BidProject;
+import com.avic.management.models.CodeList;
+import com.avic.management.services.BidMessageService;
+import com.avic.management.services.BidProjectService;
+import com.avic.management.services.BidQuotaService;
+import com.avic.management.services.BidSupplierService;
+import com.avic.management.services.CodeListService;
+import com.avic.management.services.UserService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/bid/project")
+public class ProjectController {
+    protected static final Log logger = LogFactory.getLog(PublishController.class);
+    
+
+    @Autowired
+    CodeListService codeListService;
+    
+    @Autowired
+    BidProjectService bidProjectService;
+    
+    @Autowired
+    BidSupplierService bidSupplierService;
+    
+    @Autowired
+    BidQuotaService bidQuotaService;
+    
+    @Autowired
+    UserService userService;
+    
+    @Autowired
+    BidMessageService bidMessageService;
+    
+
+    @RequestMapping("")
+    public String index(HttpSession sess, Map<String, Object> map) {
+        logger.info("我的项目");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+        CodeList param = new CodeList();
+        param.setCodeListType("BID_CAT");
+
+        List<CodeList> cats = codeListService.queryCodes(param);
+
+        map.put("cats", cats);
+
+        return "bid/project";
+    }
+    
+
+    static final int PAGE_SIZE = 10;
+
+
+    @RequestMapping("/query")
+    @ResponseBody
+    public ResultObject query(@RequestParam(value="projId", defaultValue="") String projId,
+            @RequestParam(value="projName", defaultValue="") String projName,
+            @RequestParam(value="bidCat", defaultValue="") String bidCat,
+            @RequestParam(value="createTime", defaultValue="") String createTime,
+            @RequestParam(value="projStatus", defaultValue="") String projStatus,
+            @RequestParam(value="page", defaultValue="1") int page) {
+        
+        List<String> status = new ArrayList<String>();
+        
+        if ("1".equals(projStatus)) {
+            status.add("2");
+            status.add("3");
+        } else if ("2".equals(projStatus)) {
+            status.add("1");
+        } else {
+            status.add("4");
+            status.add("5");
+            status.add("6");
+            status.add("7");
+        }
+
+        int total = bidProjectService.queryProjectCount(projId, projName, bidCat, createTime, status);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (page > pages) {
+            page = pages;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (total > 0) {
+            map.put("data", bidProjectService.queryProjectList(projId, projName, bidCat, createTime, status, page, PAGE_SIZE));
+        }
+        map.put("pages", pages);
+        return new ResultObject(ResultObject.OK, map);
+    }
+
+    @RequestMapping("/publish")
+    @ResponseBody
+    public ResultObject publish(@RequestParam("projId") String projId, HttpSession sess) {
+
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (Exception e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+        
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            return new ResultObject(ResultObject.FAIL, "项目不存在");
+        }
+        
+        bidProjectService.updatePublish(projId);
+
+        return new ResultObject(ResultObject.OK, "");
+    }
+    
+
+
+    @RequestMapping("/del")
+    @ResponseBody
+    public ResultObject del(@RequestParam("projId") String projId, HttpSession sess) {
+
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (Exception e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+        
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() != 1) {
+            return new ResultObject(ResultObject.FAIL, "项目不存在");
+        }
+        
+        bidProjectService.deleteProject(projId);
+
+        return new ResultObject(ResultObject.OK, "");
+    }
+    
+    @RequestMapping("/hall")
+    public String hall(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        logger.info("竞价大厅");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        proj.setCurrencyName(codeListService.queryCodeListByValue("CURRENCY", proj.getCurrency()).getCodeText());
+        map.put("proj", proj);
+        map.put("sups", bidSupplierService.queryAuditPassSupByProj(projId, null));
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3) {
+            map.put("disable", "disable");
+            map.put("sta", "竞价已结束");
+            map.put("time", "0");
+            return "bid/project_hall";
+        }
+        
+        Date now = new Date();
+        
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            
+            map.put("sta", "试竞价");
+            map.put("time", proj.getTrialEndTime().getTime() - now.getTime());
+            
+            return "bid/project_hall";
+        }
+        
+        // 正式竞价
+        if (now.getTime() <= proj.getTimeoutEndTime().getTime()) {
+            
+            if (now.getTime() >= proj.getBidStartTime().getTime() && now.getTime() <= proj.getBidEndTime().getTime()) {
+                map.put("sta", "正式竞价");
+                map.put("time", proj.getBidEndTime().getTime() - now.getTime());
+            } else if (now.after(proj.getBidEndTime())) {
+                map.put("sta", "超时竞价");
+                map.put("time", proj.getTimeoutEndTime().getTime() - now.getTime());
+            } else {
+                map.put("sta", "等待竞价开始");
+                map.put("disable", "disable");
+                map.put("time", proj.getBidStartTime().getTime() - now.getTime());
+            }
+
+            return "bid/project_hall";
+        }
+        map.put("disable", "disable");
+        map.put("sta", "竞价已结束");
+        map.put("time", "0");
+
+        return "bid/project_hall";
+    }
+
+
+    @RequestMapping("/hall/msg/data")
+    @ResponseBody
+    public ResultObject hallMsgData(@RequestParam("projId") String projId, @RequestParam("msgId") int msgId, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3 && proj.getProjStatus() != 4) {
+            return new ResultObject(ResultObject.FAIL, "竞价已结束");
+        }
+        
+
+        
+        Date now = new Date();
+        
+        int type = 0;
+
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            type = 1;
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime()) {
+            type = 2;
+        }
+        return new ResultObject(ResultObject.OK, bidMessageService.queryMessageList(projId, type, msgId));
+    }
+    
+
+
+    @RequestMapping("/hall/msg/send")
+    @ResponseBody
+    public ResultObject hallMsgSend(@RequestParam("projId") String projId, @RequestParam(value="supCode", defaultValue="0") String supCode, @RequestParam("msgContent") String msgContent, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3 && proj.getProjStatus() != 4) {
+            return new ResultObject(ResultObject.FAIL, "竞价已结束");
+        }
+
+        Date now = new Date();
+
+        BidMessage message = new BidMessage();
+        message.setMsgContent(msgContent);
+        message.setProjId(projId);
+        message.setSupCode(supCode);
+        message.setSendType(2);
+        message.setSendTime(now);
+        
+
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            message.setMsgType(1);
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime()) {
+            message.setMsgType(2);
+        }
+        
+        if (message.getMsgType() == 0) {
+            return new ResultObject(ResultObject.FAIL, "非法操作");
+        }
+        
+        bidMessageService.insertMessage(message);
+        
+        return new ResultObject(ResultObject.OK, message);
+    }
+    
+
+    @RequestMapping("/hall/sup")
+    @ResponseBody
+    public ResultObject hallSup(@RequestParam("projId") String projId, @RequestParam("supName") String supName, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3) {
+            return new ResultObject(ResultObject.FAIL, "竞价已结束");
+        }
+        
+        Date now = new Date();
+        int type = 0;
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            type = 1;
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime() && now.getTime() <= proj.getTimeoutEndTime().getTime()) {
+            type = 2;
+        }
+        
+        if (type == 0) {
+            new ResultObject(ResultObject.OK, "");
+        }
+        
+        List<BidProjSupplier> list = bidSupplierService.queryAuditPassSupByProj(projId, supName);
+        
+        if (list != null && list.size() > 0) {
+            for (BidProjSupplier i : list) {
+                i.setBan(type == 2 ? i.getRealBan() : i.getTrialBan());
+            }
+        }
+        
+        return new ResultObject(ResultObject.OK, list);
+    }
+    
+
+    @RequestMapping("/hall/sup/on")
+    @ResponseBody
+    public ResultObject hallSupOn(@RequestParam("projId") String projId, @RequestParam("supCode") String supCode, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3) {
+            return new ResultObject(ResultObject.FAIL, "竞价已结束");
+        }
+        
+        Date now = new Date();
+
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            bidSupplierService.updateSupplierTrialBan(projId, supCode, 0);
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime() && now.getTime() <= proj.getTimeoutEndTime().getTime()) {
+            bidSupplierService.updateSupplierRealBan(projId, supCode, 0);
+        }
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+
+
+    @RequestMapping("/hall/sup/off")
+    @ResponseBody
+    public ResultObject hallSupOff(@RequestParam("projId") String projId, @RequestParam("supCode") String supCode, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (proj.getProjStatus() != 2 && proj.getProjStatus() != 3) {
+            return new ResultObject(ResultObject.FAIL, "竞价已结束");
+        }
+        
+        Date now = new Date();
+
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            bidSupplierService.updateSupplierTrialBan(projId, supCode, 1);
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime() && now.getTime() <= proj.getTimeoutEndTime().getTime()) {
+            bidSupplierService.updateSupplierRealBan(projId, supCode, 1);
+        }
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+
+    @RequestMapping("/hall/data")
+    @ResponseBody
+    public ResultObject hallData(@RequestParam("projId") String projId, HttpSession sess) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException();
+        }
+        
+        Date now = new Date();
+        
+        int type = 0;
+
+        // 试竞价
+        if (now.getTime() <= proj.getTrialEndTime().getTime()) {
+            type = 1;
+        }
+        
+        // 正式竞价
+        if (now.getTime() >= proj.getBidStartTime().getTime()) {
+            type = 2;
+        }
+        return new ResultObject(ResultObject.OK, bidQuotaService.queryQuotaListByProj(projId, type));
+    }
+    
+    @RequestMapping("/award")
+    public String award(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        logger.info("授标页面");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() < 4) {
+            throw new IllegalArgumentException();
+        }
+        
+        map.put("proj", proj);
+        map.put("sups", bidSupplierService.queryQuateSupplier(projId));
+        map.put("title", "项目授标");
+        map.put("action", "award");
+        try {
+            map.put("quotas", new ObjectMapper().writeValueAsString(bidQuotaService.queryQuotaListByProj(projId, 2)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return "bid/project_award";
+    }
+    
+    
+
+
+    @RequestMapping("/award/submit")
+    @ResponseBody
+    public ResultObject awardSubmit(@RequestParam("projId") String projId, @RequestParam("contractTpl") String contractTpl, @RequestParam("supCode") String supCode, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() != 4) {
+            throw new IllegalArgumentException();
+        }
+
+        bidProjectService.updateProjectAward(projId, supCode, contractTpl);
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+    
+    @RequestMapping("/view")
+    public String view(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        logger.info("授标查看页面");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() < 4) {
+            throw new IllegalArgumentException();
+        }
+        
+        map.put("proj", proj);
+        map.put("sups", bidSupplierService.queryQuateSupplier(projId));
+        map.put("title", "项目查看");
+        map.put("action", "view");
+        try {
+            map.put("quotas", new ObjectMapper().writeValueAsString(bidQuotaService.queryQuotaListByProj(projId, 2)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return "bid/project_award";
+    }
+    
+    @RequestMapping("/obsolete")
+    public String obsolete(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        logger.info("废标页面");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() < 4) {
+            throw new IllegalArgumentException();
+        }
+        
+        map.put("proj", proj);
+        map.put("sups", bidSupplierService.queryQuateSupplier(projId));
+        map.put("title", "项目废标");
+        map.put("action", "obsolete");
+        try {
+            map.put("quotas", new ObjectMapper().writeValueAsString(bidQuotaService.queryQuotaListByProj(projId, 2)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return "bid/project_award";
+    }
+
+
+    @RequestMapping("/obsolete/submit")
+    @ResponseBody
+    public ResultObject obsoleteSubmit(@RequestParam("projId") String projId, @RequestParam("reason") String reason, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() < 4 || proj.getProjStatus() > 5) {
+            throw new IllegalArgumentException();
+        }
+
+        bidProjectService.updateProjectObsolete(projId, reason);
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+    
+
+    
+    @RequestMapping("/notice")
+    public String notice(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        logger.info("中标通知书页面");
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return "redirect:/passport/login";
+        } catch (NoPermissionException e) {
+            return "redirect:/passport/login";
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() < 5 || proj.getProjStatus() == 6) {
+            throw new IllegalArgumentException();
+        }
+        
+        map.put("proj", proj);
+        map.put("subs", bidProjectService.querySubjectList(projId));
+        map.put("sup", bidSupplierService.queryAwardSupplier(projId));
+        map.put("user", userService.queryUserById(user.getUserId()));
+        map.put("now", new Date());
+        
+        return "bid/project_notice";
+    }
+    
+
+
+    @RequestMapping("/notice/submit")
+    @ResponseBody
+    public ResultObject noticeSubmit(@RequestParam("projId") String projId, HttpSession sess, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(sess, UserRole.BUY, UserRole.CLIENT);
+        } catch (UserNotLoginException e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        BidProject proj = bidProjectService.queryProjectById(projId);
+        if (proj == null || !proj.getUserId().equals(user.getUserId()) || proj.getProjStatus() != 5) {
+            throw new IllegalArgumentException();
+        }
+
+        bidProjectService.updateProjectNotice(projId);
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+}

@@ -1,0 +1,51 @@
+package com.avic.supplier.controllers;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.management.models.Order;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.services.SupplierOrderService;
+
+@Controller
+@RequestMapping("/order")
+public class SupplierOrderController {
+	
+	protected static final Log logger = LogFactory
+			.getLog(SupplierLoginController.class);
+	
+	SupplierOrderService supplierOrderService;
+
+	/**
+	 * 页面初始化方法
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("")
+	public String index(@ModelAttribute("supplierOrder") Order supplierOrderParam,
+    		HttpSession httpSession,HttpServletRequest request) {
+        //从session获取userid
+        String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+        SupplierOrder supplierOrder = new SupplierOrder();
+        supplierOrder.setSupId(supId);
+        List<SupplierOrder> ordersList = supplierOrderService.queryOrderList(supplierOrder);
+
+        //订单状态初始化结果集
+        List<SupplierOrder> ordersStatusList = supplierOrderService.queryOrderStatusList();
+        
+        request.setAttribute("ordersList", ordersList);//查询结果集
+        request.setAttribute("orderQuery", supplierOrderParam);//查询条件回显
+        request.setAttribute("ordersStatusList", ordersStatusList);//订单状态列表结果集
+		return "order/supplier_order";
+	}
+}

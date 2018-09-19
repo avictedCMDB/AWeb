@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ExchangeGoodsMapper">
+	<resultMap id="exchangeGoodsMap" type="com.avic.management.models.ExchangeGoods">
+		<result column="EXCHANGE_ID" property="exchangeID" jdbcType="VARCHAR" /> 
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_NUM" property="exchangeNum" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_REASON" property="exchangeReason" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<delete id="delExchangeGoods" parameterType="com.avic.management.models.ExchangeGoods">
+		 DELETE FROM T_EXCHANGE_GOODS
+	      WHERE EXCHANGE_ID = #{exchangeID,jdbcType=VARCHAR}
+	        AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</delete>
+</mapper>

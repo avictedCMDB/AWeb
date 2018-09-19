@@ -1,0 +1,19 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.Refund;
+import com.avic.supervise.models.RefundGoods;
+
+@Repository
+public interface RefundMapper {
+    public List<Refund> queryRefundList(@Param("timeStart") String timeStart, @Param("timeEnd") String timeEnd, @Param("refundId") String refundId, @Param("supId") String supId, @Param("orderId") String orderId, @Param("refundStatus") String refundStatus, @Param("start") int start, @Param("end") int end);
+    public int queryRefundCount(@Param("timeStart") String timeStart, @Param("timeEnd") String timeEnd, @Param("refundId") String refundId, @Param("supId") String supId, @Param("orderId") String orderId, @Param("refundStatus") String refundStatus);
+    public Refund queryRefundStat(@Param("timeStart") String timeStart, @Param("timeEnd") String timeEnd, @Param("refundId") String refundId, @Param("supId") String supId, @Param("orderId") String orderId, @Param("refundStatus") String refundStatus);
+    public Refund queryRefundDetail(@Param("refundId") String refundId);
+    public List<RefundGoods> queryRefundGoods(@Param("refundId") String refundId, @Param("orderId") String orderId);
+    public void updateRefundStatus(@Param("refundId") String refundId);
+}

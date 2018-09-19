@@ -1,0 +1,132 @@
+@charset "utf-8";
+/* CSS Document */
+.select_pro {
+	width: 1210px;
+	margin: 0 auto;
+}
+.select_pro h3 {
+	text-align: center;
+	background: #db433d;
+	color: #fff;
+	font-size: 20px;
+	padding: 5px 0;
+	margin-top: 0;
+}
+.select_pro .search_area {
+	padding: 0 20px;
+}
+.select_pro .search_area {
+	background: #f6f4f5;
+	padding: 25px 0 25px 15px;
+	border: 1px solid #dfdfdf;
+}
+.select_pro .search_area dl dt {
+	float: left;
+	margin-right: 10px;
+	font-size: 12px;
+	padding-top: 5px;
+}
+.select_pro .search_area dl dd {
+	float: left;
+}
+.select_pro .search_area dl dd li {
+	float: left;
+	margin-right: 10px;
+}
+.red {
+	background: #db433d;
+	color: #fff;
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.select_pro .form-control {
+	height: 28px;
+	width: 350px;
+}
+.search_table {
+	height: 366px;
+	overflow-y: scroll;
+}
+.select_pro table {
+	width: 100%;
+	margin-top: 20px;	
+}
+.select_pro table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+}
+.select_pro table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.select_pro table tr td {
+	border:1px solid #dfdfdf;
+	padding: 10px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.select_pro table tr td a {
+	word-break: break-all;
+}
+.select_pro table tr td.right_none {
+	border-right: none;
+}
+.select_pro table tr td.left_none {
+	border-left: none;
+	text-align: left;
+	color: #4798ed;
+}
+.select_pro table tr.company td {
+	border: none;
+	font-weight: bold;
+}
+.select_pro table tr td a {
+	margin-right: 5px;
+	color: #4798ed;
+}
+.select_pro table tr td a:hover {
+	text-decoration: underline;
+}
+.select_pro table tr.company td span{
+	font-weight: 100;
+}
+.select_pro .img_pro {
+	border:1px solid #dfdfdf;
+	margin-bottom: 0;
+}
+.select_pro .price {
+	color: #db433d;
+}
+.select_pro table tr td.price,
+.select_pro table tr td.num {
+	vertical-align: middle;
+}
+.select_pro table tr.company td ul li.right_box {
+	float: right;
+	margin-left: 30px;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.select_pro .btn_list {
+	text-align: center;
+}
+.select_pro .btn_list ul {
+	display: inline-block;
+	margin-top: 30px;
+}
+.btn_list ul li {
+	float: left;
+	margin: 0 10px;
+}

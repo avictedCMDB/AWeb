@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysCategory" type="com.avic.market.models.SysCategory" />
+		<typeAlias alias="SupCategory" type="com.avic.market.models.SupCategory" />
+		<typeAlias alias="CategoryRelation" type="com.avic.market.models.CategoryRelation" />
+		<typeAlias alias="Supplier" type="com.avic.market.models.Supplier" />
+		<typeAlias alias="Goods" type="com.avic.market.models.Goods" />
+		<typeAlias alias="CartItem" type="com.avic.market.models.CartItem" />
+		<typeAlias alias="Address" type="com.avic.market.models.Address" />
+		<typeAlias alias="Invoice" type="com.avic.market.models.Invoice" />
+		<typeAlias alias="SupArea" type="com.avic.market.models.SupArea" />
+		<typeAlias alias="Order" type="com.avic.market.models.Order" />
+		<typeAlias alias="VatInfo" type="com.avic.market.models.VatInfo" />
+		<typeAlias alias="PayFlow" type="com.avic.market.models.PayFlow" />
+		<typeAlias alias="SettleData" type="com.avic.market.models.SettleData" />
+		<typeAlias alias="OrderSnapshot" type="com.avic.market.models.OrderSnapshot" />
+		<typeAlias alias="TradeRecord" type="com.avic.market.models.TradeRecord" />
+		<typeAlias alias="MarketCategory" type="com.avic.market.models.MarketCategory" />
+		<typeAlias alias="BrandAd" type="com.avic.market.models.BrandAd" />
+		<typeAlias alias="EnquiryGoods" type="com.avic.market.models.EnquiryGoods" />
+		<typeAlias alias="UPDQuiteInfo" type="com.avic.market.models.UPDQuiteInfo" />
+		<typeAlias alias="Services" type="com.avic.market.models.Services" />
+		<typeAlias alias="BidProject" type="com.avic.market.models.BidProject" />
+		<typeAlias alias="CompanyInfo" type="com.avic.market.models.CompanyInfo" />
+		<typeAlias alias="CodeList" type="com.avic.market.models.CodeList" />
+		<typeAlias alias="BidProjSubject" type="com.avic.market.models.BidProjSubject" />
+		<typeAlias alias="User" type="com.avic.market.models.User" />
+		<typeAlias alias="BidProjSupplier" type="com.avic.market.models.BidProjSupplier" />
+		<typeAlias alias="BidSupplierQuota" type="com.avic.market.models.BidSupplierQuota" />
+		<typeAlias alias="BidMessage" type="com.avic.market.models.BidMessage" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/market/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SupplierMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/GoodsMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/CartMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/AddressMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/InvoiceMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/PayFlowMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SettleMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/EnquiryGoodsMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/ServicesMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/BidProjectMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/CompanyInfoMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/CodeListMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/UserMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/BidProjSubjectMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/BidProjSupplierMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/BidSupplierQuotaMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/BidMessageMapper.xml" />
+	</mappers>
+</configuration>
+
+

@@ -1,0 +1,143 @@
+@charset "utf-8";
+/* CSS Document */
+.breadcrumb {
+    padding: 8px 0;
+	margin-bottom: 3px;
+}
+.breadcrumb li {
+	float: left;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+.breadcrumb li span {
+	padding-left: 10px;
+}
+#info_list {
+	background-color: #fff;
+	font-size: 12px;
+	padding: 0px 20px 20px;
+}
+#info_list .section_inner {
+	width: 780px;
+	padding: 0  20px 20px;
+}
+#info_list .section_inner dl {
+	margin-bottom: 30px;
+	padding-bottom: 30px;
+	border-bottom: 1px dashed #aaa}
+#info_list .section_inner dl dt {
+	width: 85px;
+	float: left;
+	text-align: right;
+	font-size: 14px;
+	line-height: 28px;
+}
+#info_list .section_inner dl dd {
+	width: 635px;
+	float: left;
+	line-height: 28px;
+}
+#info_list .section_inner dl dd ul {
+	display: table;
+}
+#info_list .section_inner dl dd ul li {
+	display: table-cell;
+	padding-right: 10px;
+}
+#info_list .section_inner dl dd .detail_list {
+	margin-top: 10px;
+}
+#info_list .section_inner dl dd .detail_list img {
+	width: 90px;
+	height: 110px;
+}
+#info_list .section_inner dl dd .detail_list a {
+	display: block;
+	text-align: center;
+	margin-top: 5px;
+}
+#info_list .section_inner dl dd .detail_list a img {
+	width: 16px;
+	height: 16px;
+}
+.tab_list li a {
+	padding: 6px 20px;
+	border: 1px solid #ff4200;
+	border-radius: 4px;
+}
+.list_inner {
+	margin-top: 30px;
+}
+#info_list .section_inner dl dd .list_inner li {
+	float: left;
+	padding: 3px 10px;
+	border: 1px solid #dfdfdf;
+	margin-right: 20px;
+	position: relative;
+	line-height: 20px;
+}
+.list_inner li a {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	height: 14px;
+	width: 14px;
+}
+.list_inner li a img {
+	height: 14px;
+	width: 14px;
+}
+.btn_list {
+	text-align: center;
+	margin-top: 40px;
+}
+.btn_list ul {
+	display: inline-block;
+}
+.btn_list ul li {
+	float: left;
+}
+.add_btn {
+	background: #0091dc;
+	color: #fff;
+	height: 28px;
+	border: none;
+	line-height: 28px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+#contents .inner .input-append .btn {
+	margin-top: -6px;
+}
+#info_list .section_inner dl.spectal_title dd {
+	width: 200px;
+}
+#info_list .section_inner dl.spectal_title dd input {
+	margin-left: 10px;
+}
+#info_list .section_inner dl.spectal_title dd input.form-control {
+	height: 28px;
+	margin-left: 0px;
+}
+a.blue_link {
+	color: #0089d1;
+}
+a.blue_link:hover {
+	text-decoration: underline;
+}
+.input_area {
+	display: inline-block;
+}
+.link_download {
+	display: inline-block;
+}
+#matter_section ul.viewer-toolbar li {
+	line-height: auto;
+	margin-right: 0;
+}
+#matter_section .section table tr td ul.viewer-toolbar li {
+	width: auto;
+	border: none;
+	margin-bottom: 0;
+}

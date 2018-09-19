@@ -1,0 +1,6 @@
+function query(action){
+	
+	document.getElementById("supplierGoodsInfoQueryForm").action=action;
+	document.getElementById("supplierGoodsInfoQueryForm").submit();
+	
+}

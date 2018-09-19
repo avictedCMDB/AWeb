@@ -1,0 +1,55 @@
+package com.avic.supervise.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supervise.mappers.HelpMapper;
+import com.avic.supervise.models.Help;
+import com.avic.supervise.services.HelpService;
+
+@Service
+public class HelpServiceImpl implements HelpService {
+    
+    @Autowired
+    HelpMapper helpMapper;
+
+	@Override
+	public List<Help> queryHelps(Help help) {
+		return helpMapper.queryHelps(help);
+	}
+
+	@Override
+	public Help queryHelpById(Help help) {
+		return helpMapper.queryHelpById(help);
+	}
+
+	@Override
+	public void addHelp(Help help) {
+		helpMapper.addHelp(help);
+	}
+
+	@Override
+	public void updateHelp(Help help) {
+		helpMapper.updateHelp(help);
+	}
+
+	@Override
+	public void updateHelpStatus(Help help) {
+		helpMapper.updateHelpStatus(help);
+	}
+
+	@Override
+	public void deleteHelp(Help help) {
+		helpMapper.deleteHelp(help);
+	}
+
+	@Override
+	public int queryHelpCount(Help help) {
+		return helpMapper.queryHelpCount(help);
+	}
+    
+
+
+}

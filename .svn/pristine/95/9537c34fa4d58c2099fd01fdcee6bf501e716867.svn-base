@@ -1,0 +1,127 @@
+package com.avic.supplier.models;
+
+import java.util.List;
+
+public class SupplierOrderContract {
+	
+	private String contractCode;
+	
+	private String orderId;
+	
+	private String contractName;
+	
+	private String supName;
+	
+	private String signDate;
+	
+	private String contractPrice;
+	
+	private String buyType;
+	
+	private String contractAttachmentPath;
+	
+	private String createDate;
+	
+	private String remark;
+	
+	private String pictures;
+	
+	private List<SupplierGoodsImage> supplierGoodsImage;
+
+	public String getContractCode() {
+		return contractCode;
+	}
+
+	public void setContractCode(String contractCode) {
+		this.contractCode = contractCode;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
+	}
+
+	public String getSupName() {
+		return supName;
+	}
+
+	public void setSupName(String supName) {
+		this.supName = supName;
+	}
+
+	public String getSignDate() {
+		return signDate;
+	}
+
+	public void setSignDate(String signDate) {
+		this.signDate = signDate;
+	}
+
+	public String getContractPrice() {
+		return contractPrice;
+	}
+
+	public void setContractPrice(String contractPrice) {
+		this.contractPrice = contractPrice;
+	}
+
+	public String getBuyType() {
+		return buyType;
+	}
+
+	public void setBuyType(String buyType) {
+		this.buyType = buyType;
+	}
+
+	public String getContractAttachmentPath() {
+		return contractAttachmentPath;
+	}
+
+	public void setContractAttachmentPath(String contractAttachmentPath) {
+		this.contractAttachmentPath = contractAttachmentPath;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getPictures() {
+		return pictures;
+	}
+
+	public void setPictures(String pictures) {
+		this.pictures = pictures;
+	}
+
+	public List<SupplierGoodsImage> getSupplierGoodsImage() {
+		return supplierGoodsImage;
+	}
+
+	public void setSupplierGoodsImage(List<SupplierGoodsImage> supplierGoodsImage) {
+		this.supplierGoodsImage = supplierGoodsImage;
+	}
+	
+}

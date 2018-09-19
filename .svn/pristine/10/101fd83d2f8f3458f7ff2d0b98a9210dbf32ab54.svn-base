@@ -1,0 +1,74 @@
+function query(action){
+	
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+	
+}
+function queryFast(action,status){
+	$("#orderStatus").val(status);
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+}
+function doSend(atcion,orderId){
+	if(confirm("是否确认发货?")){
+		$.ajax({
+
+		     type: 'POST',
+
+		     url: atcion,
+
+			    data : {
+				'orderId' : orderId
+			} ,
+
+		    success: function (data){
+		    	window.location.href=window.location.href;
+		    } ,
+
+		    dataType: 'json',
+		    
+		    cache:false,
+		});
+	}
+}
+function passStatus(atcion,orderId,returnAction){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: atcion,
+
+		    data : {
+			'orderId' : orderId
+		} ,
+
+	    success: function (data){
+	    	window.location.href=returnAction;
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+function returnStatus(atcion,orderId,returnAction){
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: atcion,
+
+		    data : {
+			'orderId' : orderId
+		} ,
+
+	    success: function (data){
+	    	window.location.href=returnAction;
+	    } ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+}
+

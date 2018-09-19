@@ -1,0 +1,106 @@
+package com.avic.market.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.market.mappers.BidProjSubjectMapper;
+import com.avic.market.mappers.BidProjSupplierMapper;
+import com.avic.market.mappers.BidProjectMapper;
+import com.avic.market.models.BidProjSubject;
+import com.avic.market.models.BidProjSupplier;
+import com.avic.market.models.BidProject;
+import com.avic.market.services.BidProjectService;
+
+@Service
+public class BidProjectServiceImpl implements BidProjectService {
+    
+    @Autowired
+    BidProjectMapper bidProjectMapper;
+    
+    @Autowired
+    BidProjSubjectMapper bidProjSubjectMapper;
+
+    @Autowired
+    BidProjSupplierMapper bidProjSupplierMapper;
+    
+    @Override
+    public int getProjectCount(String projName, String addrProv, String companyId, String bidCat) {
+        return bidProjectMapper.queryProjectCount(projName, addrProv, companyId, bidCat);
+    }
+
+    @Override
+    public List<BidProject> getProjectList(String projName, String addrProv, String companyId, String bidCat, int order, int page, int size) {
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+        
+        return bidProjectMapper.queryProjectList(projName, addrProv, companyId, bidCat, order, start, end);
+    }
+
+    @Override
+    public List<BidProject> getRecommProject() {
+        return bidProjectMapper.queryRecommProject();
+    }
+
+    @Override
+    public List<BidProject> getExpiringProject() {
+        return bidProjectMapper.queryExpiringProject();
+    }
+    
+    @Override
+    public int getNoticeCount(String projName, String addrProv, String companyId, String bidCat) {
+        return bidProjectMapper.queryNoticeCount(projName, addrProv, companyId, bidCat);
+    }
+    
+    @Override
+    public List<BidProject> getNoticeList(String projName, String addrProv, String companyId, String bidCat, int page, int size) {
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+        
+        return bidProjectMapper.queryNoticeList(projName, addrProv, companyId, bidCat, start, end);
+    }
+    
+    @Override
+    public BidProject getProjectById(String projId) {
+        return bidProjectMapper.queryProjectById(projId);
+    }
+    
+    @Override
+    public List<BidProjSubject> getSubjects(String projId) {
+        return bidProjSubjectMapper.querySubjectList(projId);
+    }
+    
+    @Override
+    public int getResultCount(String projName, String addrProv, String companyId, String bidCat, int projStatus) {
+        return bidProjectMapper.queryResultCount(projName, addrProv, companyId, bidCat, projStatus);
+    }
+    
+    @Override
+    public List<BidProject> getResultList(String projName, String addrProv, String companyId, String bidCat, int projStatus, int page, int size) {
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+        
+        return bidProjectMapper.queryResultList(projName, addrProv, companyId, bidCat, projStatus, start, end);
+    }
+    
+    @Override
+    public BidProjSupplier getAwardSupplier(String projId) {
+        return bidProjSupplierMapper.queryAwardSupplier(projId);
+    }
+}

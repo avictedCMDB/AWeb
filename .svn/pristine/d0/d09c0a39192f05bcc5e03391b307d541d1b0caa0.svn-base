@@ -1,0 +1,16 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.Invoice;
+
+@Repository
+public interface InvoiceMapper {
+    public int queryInvoiceCount(@Param("orderId") String orderId, @Param("supId") int supId, @Param("invoiceStatus") String invoiceStatus);
+    public List<Invoice> queryInvoiceList(@Param("orderId") String orderId, @Param("supId") int supId, @Param("invoiceStatus") String invoiceStatus, @Param("start") int start, @Param("end") int end);
+    public Invoice queryInvoiceDetail(@Param("orderId") String orderId);
+    public void updateOrderInvoice(Invoice invoice);
+}

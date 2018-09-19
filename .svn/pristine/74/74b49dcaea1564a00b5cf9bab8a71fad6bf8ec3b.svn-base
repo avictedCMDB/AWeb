@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ServicesMapper">
+	<resultMap id="servicesMap" type="com.avic.management.models.Services">
+	    <result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" /> 
+		<result column="TYPE_ID" property="typeID" jdbcType="VARCHAR" />
+		<result column="SUP_ORDER_ID" property="supOrderID" jdbcType="VARCHAR" />
+		<result column="SERVICES_ID" property="servicesID" jdbcType="VARCHAR" />
+		<result column="SERVICES_TYPE" property="servicesType" jdbcType="VARCHAR" />
+		<result column="SERVICES_STATUS" property="servicesStatus" jdbcType="VARCHAR" />
+		<result column="AFSAPPLYTIME" property="afsApplyTime" jdbcType="VARCHAR" />
+		<result column="IFCANCEL" property="ifCancel" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE" property="goodsPrice" jdbcType="VARCHAR" />
+		<result column="EXCHANGE_NUM" property="exchangeNum" jdbcType="VARCHAR" />
+		<result column="REFOUND_NUM" property="refoundNum" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="SUP_GOODS_ID" property="supGoodsID" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE_INIT" property="goodsPriceInit" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 换货服务单 -->
+	<select id="queryExchangeServices" resultMap="servicesMap" parameterType="com.avic.management.models.Services">
+		  SELECT T.ORDER_ID,
+	             T.TYPE_ID,
+	             T.SUP_ORDER_ID,
+	             T.SERVICES_ID,
+	            (SELECT C.CODETEXT FROM CODELIST C WHERE C.CODELISTTYPE = 'SERVICES_TYPE' AND C.CODEVALUE = T.SERVICES_TYPE) AS SERVICES_TYPE,
+                (SELECT C.CODETEXT FROM CODELIST C WHERE C.CODELISTTYPE = 'SERVICES_STATUS' AND C.CODEVALUE = T.SERVICES_STATUS) AS SERVICES_STATUS,
+	             T.AFSAPPLYTIME,
+	             T.IFCANCEL,
+	             T.SUP_GOODS_ID,
+	             TOS.GOODS_NAME,
+	             TEG.EXCHANGE_NUM,
+	             TOS.GOODS_PRICE,
+	             TOS.GOODS_PRICE_INIT,
+	             TEG.SUP_ID
+	        FROM T_SERVICES T
+	    JOIN t_order_exchange tor
+            ON t.order_id = tor.order_id         
+	    JOIN T_EXCHANGE_GOODS TEG
+	          ON T.TYPE_ID = TEG.EXCHANGE_ID
+	    JOIN T_ORDER_SNAPSHOT TOS
+	          ON TEG.SUP_GOODS_ID = tos.sup_goods_id
+	       WHERE 1=1
+       <if test="orderID != null and orderID != ''">
+       	 AND T.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+       </if>
+        <if test="typeID != null and typeID != ''">
+       	 AND T.TYPE_ID = #{typeID,jdbcType=VARCHAR}
+       </if>
+        <if test="supOrderID != null and supOrderID != ''">
+       	 AND T.SUP_ORDER_ID = #{supOrderID,jdbcType=VARCHAR}
+       </if>
+        <if test="servicesID != null and servicesID != ''">
+       	 AND T.SERVICES_ID = #{servicesID,jdbcType=VARCHAR}
+       </if>
+       <if test="servicesStatus != null and servicesStatus != ''">
+       	 AND T.SERVICES_STATUS = #{servicesStatus,jdbcType=VARCHAR}
+       </if>
+	</select>
+	
+	<!-- 退货服务单 -->
+	<select id="queryRefoundServices" resultMap="servicesMap" parameterType="com.avic.management.models.Services">
+		  SELECT T.ORDER_ID,
+	             T.TYPE_ID,
+	             T.SUP_ORDER_ID,
+	             T.SERVICES_ID,
+	             (SELECT C.CODETEXT FROM CODELIST C WHERE C.CODELISTTYPE = 'SERVICES_TYPE' AND C.CODEVALUE = T.SERVICES_TYPE) AS SERVICES_TYPE,
+                (SELECT C.CODETEXT FROM CODELIST C WHERE C.CODELISTTYPE = 'SERVICES_STATUS' AND C.CODEVALUE = T.SERVICES_STATUS) AS SERVICES_STATUS,
+	             T.AFSAPPLYTIME,
+	             T.IFCANCEL,
+	             T.SUP_GOODS_ID,
+	             TOS.GOODS_NAME,
+	             TRG.REFOUND_NUM,
+	             TOS.GOODS_PRICE,
+	             TOS.GOODS_PRICE_INIT,
+	             TRG.SUP_ID,
+               TRG.SUP_GOODS_ID
+	        FROM T_SERVICES T
+	    JOIN t_order_refound tor
+            ON t.order_id = tor.order_id       
+	    JOIN T_REFOUND_GOODS TRG
+	          ON T.TYPE_ID = TRG.REFOUND_ID
+	    JOIN T_ORDER_SNAPSHOT TOS
+             ON TRG.Sup_Goods_Id = tos.sup_goods_id	
+         WHERE 1=1
+       <if test="orderID != null and orderID != ''">
+       	 AND T.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+       </if>
+        <if test="typeID != null and typeID != ''">
+       	 AND T.TYPE_ID = #{typeID,jdbcType=VARCHAR}
+       </if>
+        <if test="supOrderID != null and supOrderID != ''">
+       	 AND T.SUP_ORDER_ID = #{supOrderID,jdbcType=VARCHAR}
+       </if>
+        <if test="servicesID != null and servicesID != ''">
+       	 AND T.SERVICES_ID = #{servicesID,jdbcType=VARCHAR}
+       </if>
+       <if test="servicesStatus != null and servicesStatus != ''">
+       	 AND T.SERVICES_STATUS = #{servicesStatus,jdbcType=VARCHAR}
+       </if>
+	</select>
+	
+	
+	
+	<update id="updateServices" parameterType="com.avic.management.models.Services">
+		  UPDATE T_SERVICES 
+		     SET IFCANCEL = '1'
+		   WHERE SERVICES_ID = #{servicesID,jdbcType=VARCHAR}
+	</update>
+</mapper>

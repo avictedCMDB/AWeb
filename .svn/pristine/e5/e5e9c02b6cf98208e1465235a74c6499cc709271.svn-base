@@ -1,0 +1,167 @@
+function addVatSpecialInfo(){
+	$("#vatSpecilDiv").show();
+}
+
+function cancle(){
+	if($("#id").val()!=""){
+		$("#id").val("");
+		$("#companyName").val("");
+		$("#taxpayerCode").val("");
+		$("#registerPath").val("");
+		$("#registerTel").val("");
+		$("#bankName").val("");
+		$("#bankAccount").val("");
+	}
+	$("#vatSpecilDiv").hide();
+}
+
+function addVat(){
+	var path =$("#path").val();
+	if($("#companyName").val()==""){
+		alert("请输入单位名称！");
+		return;
+	}
+	if($("#taxpayerCode").val()==""){
+		alert("请输入纳税人识别码！");
+		return;
+	}
+	if($("#registerPath").val()==""){
+		alert("请输入注册地址！");
+		return;
+	}
+	if($("#registerTel").val()==""){
+		alert("请输入注册电话！");
+		return;
+	}
+	if($("#bankName").val()==""){
+		alert("请输入开户银行！");
+		return;
+	}
+	if($("#bankAccount").val()==""){
+		alert("请输入银行账户！");
+		return;
+	}
+	if($("#id").val()==""){
+		document.getElementById("vatSpecialForm").action=path+"/management/vat/add";
+	}else{
+		document.getElementById("vatSpecialForm").action=path+"/management/vat/update";
+	}
+	document.getElementById("vatSpecialForm").submit();
+}
+
+function delVatSpecialInfo(){
+	window.location.href=path+"/management/vat/del/"+$("#id").val();
+}
+function help(which){
+	if($("#helpDiv"+which).is(":hidden")){
+		$("#helpDiv"+which).show();
+	} else{
+		$("#helpDiv"+which).hide();
+	}
+}
+
+function hideHelp(which){
+	$("#helpDiv"+which).hide();
+}
+
+function ajaxFileUpload(beforePath,fileID,imgDivID,type) {  
+	var path = $("#path").val();
+	$.ajaxFileUpload({  
+        url: path + '/management/vat/uploadPic', //服务器端请求地址  
+        secureuri: false, //是否需要安全协议，一般设置为false  
+        fileElementId: fileID, //文件上传域的ID  
+        dataType: 'json', //返回值类型 一般设置为json  
+        enctype:'multipart/form-data',//注意一定要有该参数  
+        success: function (data, status)  //服务器成功响应处理函数  
+        {  
+        	data = data.replace(/<pre.*?>/g, '');  //ajaxFileUpload会对服务器响应回来的text内容加上<pre style="....">text</pre>前后缀  
+        	data = data.replace(/<PRE.*?>/g, '');  
+        	data = data.replace("<PRE>", '');  
+        	data = data.replace("</PRE>", '');  
+        	data = data.replace("<pre>", '');  
+        	data = data.replace("</pre>", ''); 
+        	var pos=data.lastIndexOf("/")+1; 
+        	var picName = data.substring(pos);
+        	//处理DATA
+        	var imgDiv = $("#"+imgDivID);
+        	//var subCount = $("#inp"+type+"").val();
+        	var countDiv = parseInt($("#inp"+type+"").val())+1;
+        	$("#inp"+type+"").val(parseInt($("#inp"+type+"").val())+1);
+        	var contentDiv = $("<div id='contentDiv"+type+"_"+countDiv+"'></div>");
+        	var img = $("<img height='100px' width='100px' src='"+beforePath+data+"'/>");
+        	var imgSpan = $("<a href='javascript:void(0);' onclick=\"delImage('contentDiv"+type+"_"+countDiv+"','"+picName+"','"+type+"');\">X</a>");
+        	var valueInp = $("<input type='hidden' value='"+picName+"' name='imageSaveInp"+type+"'/>");
+        	contentDiv.appendTo(imgDiv);
+        	img.appendTo(contentDiv);
+        	imgSpan.appendTo(contentDiv);
+        	valueInp.appendTo(contentDiv);
+        },  
+        error: function (data, status, e)//服务器响应失败处理函数  
+        {  
+        }  
+    });
+}  
+
+function delImage(contentDiv,picName){
+	debugger;
+	var path = $("#path").val();
+	var pos=picName.lastIndexOf("/");
+	if(pos>0){
+		picName = picName.substring(pos);
+	}
+	$.ajax({
+	     type: 'POST',
+	     url: path+"/management/vat/deletePic",
+	     dataType: 'json',
+	     data:{  
+	    	 fileName : picName  
+	     },  
+	     success: function(data) {  
+	    	 debugger;
+	    	if(data.status =="success" ){  
+	    		$("#"+contentDiv).remove();
+	    	}  
+	     },
+	     error : function() {  
+	    	 alert("异常！");  
+	     } 
+	});
+}
+
+function saveVatPic(){
+	var path = $("#path").val();
+	var inpPath1 = $("input[name='imageSaveInp1']");
+    var picPath1 = new Array();
+    for(var i=0;i<inpPath1.length;i++){
+    	var pos=inpPath1[i].value.lastIndexOf("/");
+    	if(pos>0){
+    		picPath1[i] = inpPath1[i].value.substring(pos+1);
+    	}else{
+    		picPath1[i] = inpPath1[i].value;
+    	}
+    }
+	var inpPath2 = $("input[name='imageSaveInp2']");
+	var picPath2 = new Array();
+    for(var i=0;i<inpPath2.length;i++){
+    	var pos=inpPath2[i].value.lastIndexOf("/");
+    	if(pos>0){
+    		picPath2[i] = inpPath2[i].value.substring(pos+1);
+    	}else{
+    		picPath2[i] = inpPath2[i].value;
+    	}
+    	picPath2[i] = inpPath2[i].value;
+    }
+	var inpPath3 = $("input[name='imageSaveInp3']");
+	var picPath3 = new Array();
+    for(var i=0;i<inpPath3.length;i++){
+    	var pos=inpPath3[i].value.lastIndexOf("/");
+    	if(pos>0){
+    		picPath3[i] = inpPath3[i].value.substring(pos+1);
+    	}else{
+    		picPath3[i] = inpPath3[i].value;
+    	}
+    }
+	var businessID = $("#businessIDInp").val();
+	console.log(picPath1+"--"+picPath2+"--"+picPath3);
+	window.location.href=path+"/management/vat/savePic?businessID="+businessID+"&picPath1="+picPath1+"&picPath2="+picPath2+"&picPath3="+picPath3;
+}

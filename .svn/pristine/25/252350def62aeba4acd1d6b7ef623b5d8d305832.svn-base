@@ -1,0 +1,42 @@
+package com.avic.supplier.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierImageInfo;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.models.SupplierOrderContract;
+import com.avic.supplier.models.SupplierQuoteInfo;
+
+
+@Repository
+public interface SupplierOrderMapper {
+	
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder);
+	
+	public Integer queryOrderListCount(SupplierOrder supplierOrder);
+	
+	public List<SupplierOrder> queryOrderStatusList();
+	
+	public void updateOrderStatus(SupplierOrder supplierOrder);
+	
+	public void updataOrderPrice(SupplierOrder supplierOrder) ;
+	
+	public String queryAuthorities(String userId);
+	
+	public String queryContactNum(String orderId);
+	
+	public void insertContract(SupplierOrderContract supplierOrderContract);
+	
+	public void insertImageInfo(SupplierImageInfo supplierImageInfo);
+	
+	public SupplierOrderContract queryOrderContract(String orderId);
+	
+	public SupplierQuoteInfo queryQuoteInfo(String orderId);
+	
+	public void updataQuoteInfo(SupplierQuoteInfo supplierQuoteInfo) ;
+	
+	public List<SupplierImageInfo> queryImageInfo(String contractCode,String businessType);
+
+}

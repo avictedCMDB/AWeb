@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.CodeListMapper">
+	<resultMap id="codeMap" type="com.avic.supplier.models.CodeList">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="CODELISTTYPE" property="codeListType" jdbcType="VARCHAR" />
+		<result column="CODETEXT" property="codeText" jdbcType="VARCHAR" />
+		<result column="CODEVALUE" property="codeValue" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryCodes" resultMap="codeMap" parameterType="com.avic.supplier.models.CodeList">
+		SELECT ID,
+		       CODELISTTYPE,
+		       CODETEXT,
+		       CODEVALUE
+		  FROM CODELIST
+		 WHERE CODELISTTYPE = #{codeListType,jdbcType=VARCHAR}
+		 <if test="codeValue != null and codeValue != ''">
+			AND CODEVALUE = #{codeValue,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+	<select id="queryCodeListByValue" resultMap="codeMap">
+		select 	codetext, codevalue
+		from 	codelist
+		where	codelisttype = #{type}
+		and		codevalue = #{val}
+	</select>
+</mapper>

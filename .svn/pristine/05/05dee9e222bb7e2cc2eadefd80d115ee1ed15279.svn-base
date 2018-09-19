@@ -1,0 +1,72 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.supplier.models.SupplierGoodsEnquiry;
+import com.avic.supplier.services.SupplierGoodsEnquiryService;
+
+@Controller
+@RequestMapping("/goodsEnquiry")
+public class SupplierGoodsEnquiryController {
+	
+	protected static final Log logger = LogFactory.getLog(SupplierGoodsEnquiryController.class);
+	
+	@Autowired
+	SupplierGoodsEnquiryService supplierGoodsEnquiryService;
+	
+    @RequestMapping("")
+    public String index(Map<String, Object> map,HttpSession httpSession,
+    		@ModelAttribute("supplierGoodsEnquiry") SupplierGoodsEnquiry supplierGoodsEnquiry) throws UnsupportedEncodingException {
+    	String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+    	supplierGoodsEnquiry.setSupId(supId);
+    	List<SupplierGoodsEnquiry> supplierGoodsEnquiryList = supplierGoodsEnquiryService.queryGoodsEnquiry(supplierGoodsEnquiry);
+    	map.put("supplierGoodsEnquiryList", supplierGoodsEnquiryList);
+    	map.put("supplierGoodsEnquiryParam", supplierGoodsEnquiry);
+    	//·ÖÒ³
+    	String page = String.valueOf(supplierGoodsEnquiry.getPage());
+        int total = supplierGoodsEnquiryService.queryGoodsEnquiryCount(supplierGoodsEnquiry);
+
+        int pages = (int) Math.ceil((double) total / supplierGoodsEnquiry.getPageSize());
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/goodsEnquiry?"
+        		+ "&enquiryStatus="+(supplierGoodsEnquiry.getEnquiryStatus() == null ?"":supplierGoodsEnquiry.getEnquiryStatus())
+        		+ "&goodsName="+URLEncoder.encode((supplierGoodsEnquiry.getGoodsName() == null ?"":supplierGoodsEnquiry.getGoodsName()),"GBK")
+        		+ "&enquiryDateStar="+(supplierGoodsEnquiry.getEnquiryDateStar() == null ?"":supplierGoodsEnquiry.getEnquiryDateStar())
+        		+ "&enquiryDateEnd="+(supplierGoodsEnquiry.getEnquiryDateEnd() == null ?"":supplierGoodsEnquiry.getEnquiryDateEnd())
+        		+ "&superOfferDateStar="+(supplierGoodsEnquiry.getSuperOfferDateStar() == null ?"":supplierGoodsEnquiry.getSuperOfferDateStar())
+        		+ "&superOfferDateEnd="+(supplierGoodsEnquiry.getSuperOfferDateEnd() == null ?"":supplierGoodsEnquiry.getSuperOfferDateEnd())
+        		+ "&priceValidDate="+(supplierGoodsEnquiry.getPriceValidDate() == null ?"":supplierGoodsEnquiry.getPriceValidDate())
+                + "&page=%PAGE%");
+    	return "order/supplier_enquiry";
+    }
+
+    
+    @RequestMapping("/updateGoodsEnquiry")
+    public String updateGoodsEnquiry(Map<String, Object> map,HttpSession httpSession,
+    		@ModelAttribute("supplierGoodsEnquiry") SupplierGoodsEnquiry supplierGoodsEnquiry) {
+    	return "order/supplier_enquiry";
+    }
+    @RequestMapping("/enquiryPricePage/{id}")
+    public String enquiryPricePage(Map<String, Object> map,HttpSession httpSession,
+    		@PathVariable("id") String id) {
+    	map.put("id", id);
+    	return "order/supplier_enquiry_price";
+    }
+    
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjSplitMapper">
+	<resultMap id="bidProjSplitMap" type="com.avic.management.models.BidProjSplit">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="bid_rank" property="bidRank" jdbcType="INTEGER" />
+		<result column="split_prop" property="splitProp" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<insert id="insertProjSplit">
+		insert into bid_proj_split (
+			proj_id, bid_rank, split_prop
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{bidRank,jdbcType=INTEGER}, #{splitProp,jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<delete id="deleteByProjId">
+		delete from bid_proj_split where proj_id = #{projId}
+	</delete>
+	
+	
+	<select id="queryListByProj" resultMap="bidProjSplitMap">
+		select * from bid_proj_split where proj_id = #{projId}
+	</select>
+</mapper>

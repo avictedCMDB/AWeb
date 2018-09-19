@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.InvoiceMapper">
+	<resultMap id="invoiceResultMap" type="Invoice">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<result column="order_amount" property="orderAmount" jdbcType="DOUBLE" />
+		<result column="goods_num" property="goodsNum" jdbcType="INTEGER" /> 
+		<result column="invoice_company" property="invoiceCompany" jdbcType="VARCHAR" /> 
+		<result column="invoice_status" property="invoiceStatus" jdbcType="VARCHAR" /> 
+		<result column="express_name" property="expressName" jdbcType="VARCHAR" /> 
+		<result column="express_code" property="expressCode" jdbcType="VARCHAR" />
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR" />
+		<result column="invoice_flag" property="invoiceFlag" jdbcType="INTEGER" /> 
+		<result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="vatMap" type="com.avic.supervise.models.VatInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="TAXPAYER_CODE" property="taxpayerCode" jdbcType="VARCHAR" /> 
+		<result column="REGISTER_PATH" property="registerPath" jdbcType="VARCHAR" /> 
+		<result column="REGISTER_TEL" property="registerTel" jdbcType="VARCHAR" /> 
+		<result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" /> 
+		<result column="BANK_ACCOUNT" property="bankAccount" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="INTEGER" /> 
+		<result column="VAT_RECEIVE_NAME" property="vatReceiveName" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_TEL" property="vatReceiveTel" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_PROV" property="vatReceiveProv" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_CITY" property="vatReceiveCity" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_DIST" property="vatReceiveDist" jdbcType="VARCHAR" />
+		<result column="VAT_RECEIVE_DETAIL" property="vatReceiveDetail" jdbcType="VARCHAR" />
+		<result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="AUDIT_CONTENT" property="auditContent" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryInvoiceList" resultMap="invoiceResultMap">
+	select * from (
+		select row_number() over (order by order_time desc) rn, order_id, order_amount, (select sum(buy_num) from t_order_snapshot b where a.order_id = b.order_id) as goods_num, 
+			   invoice_company, invoice_status, express_name, express_code, invoice_num, invoice_flag, invoice_content
+		  from t_order a
+		 where 1 = 1
+		 <if test="supId > 0">
+		   and sup_id = #{supId}
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="invoiceStatus != null and invoiceStatus != ''">
+		   and invoice_status = #{invoiceStatus}
+		 </if>
+		 ) x
+	where x.rn between #{start} and #{end}
+	</select>
+	<select id="queryInvoiceCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_order
+		 where 1 = 1
+		 <if test="supId > 0">
+		   and sup_id = #{supId}
+		 </if>
+		 <if test="orderId != null and orderId != ''">
+		   and order_id like '%'||#{orderId}||'%'
+		 </if>
+		 <if test="invoiceStatus != null and invoiceStatus != ''">
+		   and invoice_status = #{invoiceStatus}
+		 </if>
+	</select>
+	<select id="queryInvoiceDetail" resultMap="invoiceResultMap">
+		select rownum rn, order_id, order_amount, 
+			   invoice_company, invoice_status, express_name, express_code, invoice_num, invoice_flag, invoice_content
+		  from t_order a
+		 where order_id = #{orderId}
+	</select>
+	<update id="updateOrderInvoice">
+		update t_order
+		   set invoice_company = #{invoiceCompany,jdbcType=VARCHAR}
+		     , invoice_num = #{invoiceNum,jdbcType=VARCHAR}
+		     , invoice_flag = #{invoiceFlag,jdbcType=INTEGER}
+		     , invoice_content = #{invoiceContent,jdbcType=VARCHAR}
+		     , express_name = #{expressName,jdbcType=VARCHAR}
+		     , express_code = #{expressCode,jdbcType=VARCHAR}
+		     , invoice_status = '1'
+		 where order_id = #{orderId}
+	</update>
+		<select id="queryVatInfoList" resultMap="vatMap">
+		select R.* 
+		from (select ID,
+			       COMPANY_NAME,
+			       TAXPAYER_CODE,
+			       REGISTER_PATH,
+			       REGISTER_TEL,
+			       BANK_NAME,
+			       BANK_ACCOUNT,
+			       USER_ID,
+			       CREATE_DATE,
+			       VAT_RECEIVE_NAME,
+			       VAT_RECEIVE_TEL,
+			       VAT_RECEIVE_PROV,
+			       VAT_RECEIVE_CITY,
+			       VAT_RECEIVE_DIST,
+			       VAT_RECEIVE_DETAIL,
+			       AUDIT_STATUS,
+			       AUDIT_CONTENT,
+			       rownum rn
+			  from T_VAT_INFO t
+			  where 1=1
+			   <if test="companyName != null and companyName != ''">
+               and COMPANY_NAME like '%'||#{companyName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerPath != null and registerPath != ''">
+	               and REGISTER_PATH like '%'||#{registerPath,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerTel != null and registerTel != ''">
+	               and REGISTER_TEL like '%'||#{registerTel,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankName != null and bankName != ''">
+	               and BANK_NAME like '%'||#{bankName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankAccount != null and bankAccount != ''">
+	               and BANK_ACCOUNT like '%'||#{bankAccount,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="taxpayerCode != null and taxpayerCode != ''">
+	               and TAXPAYER_CODE like '%'||#{taxpayerCode,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="auditStatus != null and auditStatus != ''">
+	               and AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+	         </if>
+	          <if test="id != null and id != ''">
+	               and ID = #{id,jdbcType=VARCHAR}
+	         </if>) R
+		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	<select id="queryVatInfoCount" resultType="java.lang.Integer">
+		select COUNT(1)
+			  from T_VAT_INFO t
+			  where 1=1
+			   <if test="companyName != null and companyName != ''">
+               and COMPANY_NAME like '%'||#{companyName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerPath != null and registerPath != ''">
+	               and REGISTER_PATH like '%'||#{registerPath,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="registerTel != null and registerTel != ''">
+	               and REGISTER_TEL like '%'||#{registerTel,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankName != null and bankName != ''">
+	               and BANK_NAME like '%'|| #{bankName,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="bankAccount != null and bankAccount != ''">
+	               and BANK_ACCOUNT like '%'||#{bankAccount,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="taxpayerCode != null and taxpayerCode != ''">
+	               and TAXPAYER_CODE like '%'||#{taxpayerCode,jdbcType=VARCHAR}||'%'
+	         </if>
+	          <if test="auditStatus != null and auditStatus != ''">
+	               and AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR}
+	         </if>
+	         <if test="id != null and id != ''">
+	               and ID = #{id,jdbcType=VARCHAR}
+	         </if>
+	</select>
+	<select id="queryImageInfo" resultType="java.lang.Integer">
+		select t.*, t.rowid
+		  from T_IMAGE_INFO t
+		 where t.id =#{id,jdbcType=VARCHAR}
+		   and t.business_type =#{businessType,jdbcType=VARCHAR}
+	</select>
+</mapper>

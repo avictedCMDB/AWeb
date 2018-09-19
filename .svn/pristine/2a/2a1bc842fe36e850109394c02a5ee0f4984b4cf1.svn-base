@@ -1,0 +1,59 @@
+
+
+function cancle(){
+	window.location.href = "/AWeb/management/invoice";
+}
+
+function chooseInvoiceFlg(type){
+	debugger;
+	$("#invoiceContentUL").find('li').removeClass();
+	if(type==0){
+		$("#invoiceContent").val($("#invoiceContent0").html());
+		$("#invoiceContent0").addClass("active");
+		$("#invoiceContent1").addClass("disabled btn");
+		$("#invoiceContent2").addClass("disabled btn");
+		$("#invoiceContent3").addClass("disabled btn");
+	}else if(type==1){
+		$("#invoiceContent").val($("#invoiceContent1").html());
+		$("#invoiceContent1").addClass("active");
+		$("#invoiceContent0").addClass("disabled btn");
+		$("#invoiceContent2").addClass("disabled btn");
+		$("#invoiceContent3").addClass("disabled btn");
+	}else if(type==2){
+		$("#invoiceContent").val($("#invoiceContent2").html());
+		$("invoiceContent2").addClass("active");
+		$("invoiceContent1").addClass("disabled btn");
+		$("invoiceContent0").addClass("disabled btn");
+		$("invoiceContent3").addClass("disabled btn");
+	}else if(type==3){
+		$("#invoiceContent").val($("#invoiceContent3").html());
+		$("#invoiceContent3").addClass("active");
+		$("#invoiceContent1").addClass("disabled btn");
+		$("#invoiceContent2").addClass("disabled btn");
+		$("#invoiceContent0").addClass("disabled btn");
+	}
+}
+
+function saveInvoice(){
+	if($("#setDefaultCB").is(':checked') == true){
+		$("#ifDefault").val("1");
+	}else{
+		$("#ifDefault").val("0");
+	}
+	if($("#companyName").val()==""){
+		alert("请输入发票抬头！");
+		return;
+	}
+	if($("#invoiceContent").val()==""){
+		alert("请选择发票内容！");
+		return;
+	}
+	
+	if($("#invoiceID").val()==""){
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/add";
+		document.getElementById("editInvoiceForm").submit();
+	}else{
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/update?invoiceID="+$("#invoiceID").val();
+		document.getElementById("editInvoiceForm").submit();
+	}
+}

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.UserMapper">
+	<resultMap id="userResultMap" type="User">
+		<id column="userid" property="userId" jdbcType="VARCHAR" /> 
+		<result column="username" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="usernamecn" property="userNameCN" jdbcType="VARCHAR" />
+		<result column="companyid" property="companyId" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="userResultListMap" type="User">
+		<id column="userid" property="userId" jdbcType="VARCHAR" /> 
+		<result column="username" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="usernamecn" property="userNameCN" jdbcType="VARCHAR" />
+		<result column="companyid" property="companyId" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+		<result column="ENABLED" property="enabled" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+		<result column="NOPAY" property="nopay" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="userRoleResultListMap" type="User">
+		<id column="userid" property="userId" jdbcType="VARCHAR" /> 
+		<result column="username" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="usernamecn" property="userNameCN" jdbcType="VARCHAR" />
+		<result column="companyid" property="companyId" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+		<result column="ENABLED" property="enabled" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+		<result column="NOPAY" property="nopay" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="authority" property="authority" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="roleResultListMap" type="com.avic.supervise.models.Role">
+		<id column="id" property="id" jdbcType="VARCHAR" /> 
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="IS_USEABLE" property="isUseable" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="companyResultListMap" type="com.avic.supervise.models.CompanyInfo">
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+	</resultMap>
+		<resultMap id="menuResultListMap" type="com.avic.supervise.models.Menu">
+		<result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+		<result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="MENU_LEVEL" property="menuLevel" jdbcType="VARCHAR" />
+		<result column="href" property="href" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<select id="queryUserByName" resultMap="userResultMap">
+		select 	a.*
+		  from 	users a,authorities b,t_role c
+		 where  a.username = b.username
+           and b.authority = c.id
+		   and  upper(a.username) = upper(#{userName})
+		   and	enabled = 0
+		   and c.system_flag = 0
+	</select>
+	
+	<select id="queryCompanyList" resultMap="userResultMap">
+		select distinct companyid, companyname 
+		  from users a
+		 where enabled = 0
+		   and exists (select 1 from authorities b where a.userid = b.userid and (b.authority = 'ROLE_BUY' or b.authority = 'ROLE_2C'))
+	</select>
+	
+	<select id="queryUserMenu" resultMap="menuResultListMap">
+		select distinct c.parent_id,c.menu_id,c.name,c.MENU_LEVEL,c.href
+      from T_ROLE_MENU a, authorities b,T_Menu c
+     where a.role_id = b.authority 
+     and  a.menu_paht = c.menu_id
+     and system_flag = '0'
+     and b.userid = #{user}
+     order by menu_id
+	</select>
+	
+	<select id="getUsersList" resultMap="userResultListMap">
+		SELECT * FROM (
+			select C.*,rownum rn from (
+					select 	a.*
+		  from 	users a
+		 where 1=1
+		 and a.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+		 <if test="userName != null and userName != ''">
+		 	<if test="searchType == 1">
+		 		AND username = #{userName,jdbcType=VARCHAR}
+		 	</if>
+		 	<if test="searchType != '1'">
+     		  AND username LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+     		  </if>
+     	</if>
+     	<if test="contactPerson != null and contactPerson != ''">
+     		  	 AND CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="contactNum != null and contactNum != ''">
+     		  	AND CONTACT_NUM LIKE CONCAT('%',CONCAT(#{contactNum,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="contactFax != null and contactFax != ''">
+     		  	AND CONTACT_FAX LIKE CONCAT('%',CONCAT(#{contactFax,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="enabled != null and enabled != ''">
+     		  	AND ENABLED LIKE CONCAT('%',CONCAT(#{enabled,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="nopay != null and nopay != ''">
+     		  	AND NOPAY LIKE CONCAT('%',CONCAT(#{nopay,jdbcType=VARCHAR},'%'))
+     	</if>  
+     	order by CREATE_DATE desc
+			)C
+		 )R
+ 		  WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	
+	</select>
+	
+	<select id="getUsersCount" resultType="java.lang.Integer">
+		select 	count(1)
+		  from 	users a
+		  where 1=1
+		 and a.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+		 <if test="userName != null and userName != ''">
+     		  AND username LIKE CONCAT('%',CONCAT(#{userName,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="contactPerson != null and contactPerson != ''">
+     		  	 AND CONTACT_PERSON LIKE CONCAT('%',CONCAT(#{contactPerson,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="contactNum != null and contactNum != ''">
+     		  	AND CONTACT_NUM LIKE CONCAT('%',CONCAT(#{contactNum,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="contactFax != null and contactFax != ''">
+     		  	AND CONTACT_FAX LIKE CONCAT('%',CONCAT(#{contactFax,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="enabled != null and enabled != ''">
+     		  	AND ENABLED LIKE CONCAT('%',CONCAT(#{enabled,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="nopay != null and nopay != ''">
+     		  	AND NOPAY LIKE CONCAT('%',CONCAT(#{nopay,jdbcType=VARCHAR},'%'))
+     	</if> 
+	</select>
+	<insert id="inserUser" parameterType="com.avic.supervise.models.User">
+		insert into users (USERNAME, PASSWORD, ENABLED, USERID,  COMPANYNAME,COMPANYID, CONTACT_NUM, NOPAY , CONTACT_PERSON, CONTACT_FAX,CREATE_USER)
+		values
+		  (#{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},'0',#{userId,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR},#{companyId,jdbcType=VARCHAR} 
+		  ,#{contactNum,jdbcType=VARCHAR},#{nopay,jdbcType=VARCHAR},#{contactPerson,jdbcType=VARCHAR},#{contactFax,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateUser" parameterType="com.avic.supervise.models.User">
+		update users set PASSWORD = #{password,jdbcType=VARCHAR},COMPANYNAME= #{companyName,jdbcType=VARCHAR} ,COMPANYID= #{companyId,jdbcType=VARCHAR} ,
+		CONTACT_NUM = #{contactNum,jdbcType=VARCHAR}, NOPAY = #{nopay,jdbcType=VARCHAR} , CONTACT_PERSON = #{contactPerson,jdbcType=VARCHAR}
+		,CONTACT_FAX = #{contactFax,jdbcType=VARCHAR}
+		
+		where  USERNAME = #{userName,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteUser" parameterType="java.lang.String">
+		delete from users where username = #{param,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteUserRole" parameterType="java.lang.String">
+		delete from AUTHORITIES where username = #{param,jdbcType=VARCHAR}
+	</delete>
+	<select id="queryUserRole" resultMap="userRoleResultListMap">
+		select x.*,r.role_name,t.authority
+		  from users x, AUTHORITIES t, t_role r
+		 where x.username = t.username
+		   and r.id = t.authority
+		   and x.username = #{param,jdbcType=VARCHAR}
+	</select>
+	<select id="queryRole" resultMap="roleResultListMap" parameterType="java.lang.String">
+		select t.* from (select distinct * from t_role k 
+         start with k.id in (${roleId}) connect by prior k.id = k.parent_role_id) t where t.del_flag = '1'
+	</select>
+	<insert id="deployUserRole">
+		insert into authorities (USERNAME, AUTHORITY, USERID)
+		select #{param1,jdbcType=VARCHAR},#{param2,jdbcType=VARCHAR} ,userid from users where username = #{param1,jdbcType=VARCHAR}
+	</insert>
+	<select id="queryCompany" parameterType="java.lang.String" resultMap="companyResultListMap">
+		select * from t_company_info k start with k.company_code = #{parentCompanyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id
+	</select>
+	
+	<select id="queryUserByCompanyID" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select 	count(*)
+		  from 	users
+         where  COMPANYID = #{companyId,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateUserCompany" parameterType="com.avic.supervise.models.User">
+		update users 
+		   set COMPANYNAME= #{companyName,jdbcType=VARCHAR} 
+		 where COMPANYID= #{companyId,jdbcType=VARCHAR} 
+	</update>
+</mapper>

@@ -1,0 +1,110 @@
+package com.avic.management.models;
+
+public class OrderSnapshot {
+    private String orderId;
+    private int supId;
+    private String supGoodsId;
+    private String goodsName;
+    private String imagePath;
+    private double goodsPrice;
+    private int buyNum;
+    private int refundStatus;
+    private String exchangeID;
+    private String exchangeReason;
+    private String fullBuyNum;
+    
+    private String refoundID;
+    private String refoundReason;
+    
+    private int supType;
+    
+    public int getSupType() {
+        return supType;
+    }
+    public void setSupType(int supType) {
+        this.supType = supType;
+    }
+    
+    
+    
+    public String getRefoundID() {
+		return refoundID;
+	}
+	public void setRefoundID(String refoundID) {
+		this.refoundID = refoundID;
+	}
+	public String getRefoundReason() {
+		return refoundReason;
+	}
+	public void setRefoundReason(String refoundReason) {
+		this.refoundReason = refoundReason;
+	}
+	public String getExchangeReason() {
+		return exchangeReason;
+	}
+	public void setExchangeReason(String exchangeReason) {
+		this.exchangeReason = exchangeReason;
+	}
+	public String getExchangeID() {
+		return exchangeID;
+	}
+	public void setExchangeID(String exchangeID) {
+		this.exchangeID = exchangeID;
+	}
+	public String getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+    public int getSupId() {
+        return supId;
+    }
+    public void setSupId(int supId) {
+        this.supId = supId;
+    }
+    public String getSupGoodsId() {
+        return supGoodsId;
+    }
+    public void setSupGoodsId(String supGoodsId) {
+        this.supGoodsId = supGoodsId;
+    }
+    public String getGoodsName() {
+        return goodsName;
+    }
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+    public String getImagePath() {
+        return imagePath;
+    }
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+    public double getGoodsPrice() {
+        return goodsPrice;
+    }
+    public void setGoodsPrice(double goodsPrice) {
+        this.goodsPrice = goodsPrice;
+    }
+    public int getBuyNum() {
+        return buyNum;
+    }
+    public void setBuyNum(int buyNum) {
+        this.buyNum = buyNum;
+    }
+    public int getRefundStatus() {
+        return refundStatus;
+    }
+    public void setRefundStatus(int refundStatus) {
+        this.refundStatus = refundStatus;
+    }
+	public String getFullBuyNum() {
+		return fullBuyNum;
+	}
+	public void setFullBuyNum(String fullBuyNum) {
+		this.fullBuyNum = fullBuyNum;
+	}
+    
+    
+}

@@ -1,0 +1,33 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section h2 {
+    border-bottom: 1px solid #dfdfdf;
+    color: #0091dc;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+.step_section .form-group {
+	margin-bottom: 0px;
+}
+.red {
+	color: #ff4200;
+}
+.table_area tr.red a {
+	color: #ff4200;
+}
+.table_area tr.red  a:hover {
+	text-decoration: underline;
+}
+.modal-body .table_area {
+	margin-top: 0;
+}
+.btn_list {
+    margin-right: 10px;
+
+}
+.btn_list .btn {
+	margin: 0 5px;
+}

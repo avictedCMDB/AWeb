@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.BidProjectMapper">
+	<resultMap id="bidProjectMap" type="BidProject">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="proj_name" property="projName" jdbcType="VARCHAR" />
+		<result column="bid_cat" property="bidCat" jdbcType="VARCHAR" />
+		<result column="proj_type" property="projType" jdbcType="INTEGER" />
+		<result column="decide_type" property="decideType" jdbcType="INTEGER" />
+		<result column="currency" property="currency" jdbcType="VARCHAR" />
+		<result column="exchange_rate" property="exchangeRate" jdbcType="VARCHAR" />
+		<result column="min_tender" property="minTender" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="quota_type" property="quotaType" jdbcType="INTEGER" />
+		<result column="quota_limit_type" property="quotaLimitType" jdbcType="INTEGER" />
+		<result column="quota_limit_num" property="quotaLimitNum" jdbcType="INTEGER" />
+		<result column="split_type" property="splitType" jdbcType="INTEGER" />
+		<result column="proj_status" property="projStatus" jdbcType="INTEGER" />
+		<result column="trial_end_time" property="trialEndTime" jdbcType="TIMESTAMP" />
+		<result column="join_end_time" property="joinEndTime" jdbcType="TIMESTAMP" />
+		<result column="bid_start_time" property="bidStartTime" jdbcType="TIMESTAMP" />
+		<result column="bid_end_time" property="bidEndTime" jdbcType="TIMESTAMP" />
+		<result column="bid_duration" property="bidDuration" jdbcType="INTEGER" />
+		<result column="timeout_interval" property="timeoutInterval" jdbcType="INTEGER" />
+		<result column="min_incr_type" property="minIncrType" jdbcType="INTEGER" />
+		<result column="min_incr_val" property="minIncrVal" jdbcType="INTEGER" />
+		<result column="quota_decr_limit" property="quotaDecrLimit" jdbcType="INTEGER" />
+		<result column="times_limit_type" property="timesLimitType" jdbcType="INTEGER" />
+		<result column="times_limit_num" property="timesLimitNum" jdbcType="INTEGER" />
+		<result column="accept_type" property="acceptType" jdbcType="INTEGER" />
+		<result column="tender_price" property="tenderPrice" jdbcType="INTEGER" />
+		<result column="bid_bond" property="bidBond" jdbcType="INTEGER" />
+		<result column="bidder_qual" property="bidderQual" jdbcType="VARCHAR" />
+		<result column="bid_invitation" property="bidInvitation" jdbcType="VARCHAR" />
+		<result column="bid_time_rule" property="bidTimeRule" jdbcType="VARCHAR" />
+		<result column="bid_quota_rule" property="bidQuotaRule" jdbcType="VARCHAR" />
+		<result column="caution" property="caution" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="publish_quota" property="publishQuota" jdbcType="INTEGER" />
+		<result column="notice_status" property="noticeStatus" jdbcType="INTEGER" />
+		<result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+		<result column="bid_cat_name" property="bidCatName" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="sub_num" property="subNum" jdbcType="INTEGER" />
+		<result column="timeout_end_time" property="timeoutEndTime" jdbcType="TIMESTAMP" />
+		<result column="notice_time" property="noticeTime" jdbcType="TIMESTAMP" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="real_current_quota" property="realCurrentQuota" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	<select id="queryProjectCount" resultType="java.lang.Integer">
+		select count(1) from bid_project
+		where proj_status in (2, 3)
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = bid_project.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+	</select>
+	
+	
+	<select id="queryProjectList" resultMap="bidProjectMap">
+	select x.* from (
+		select 
+			<if test="order == 1">
+			row_number() over (order by publish_time desc) rn, 
+			</if>
+			<if test="order == 2">
+			row_number() over (order by bid_end_time asc) rn, 
+			</if>
+			 proj_id, proj_name, (select codetext from codelist b where b.codevalue = bid_project.bid_cat and b.codelisttype = 'BID_CAT') bid_cat_name, bid_start_time, proj_status, 
+			 (select company_name from t_company_info b where b.company_code = bid_project.company_id) company_name, publish_time, bid_end_time, proj_type, 
+			 (select sum(subject_num) from bid_proj_subject b where b.proj_id = bid_project.proj_id) sub_num, decide_type
+		from bid_project
+		
+		where proj_status in (2, 3)
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = bid_project.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	
+	
+	<select id="queryRecommProject" resultMap="bidProjectMap">
+	select x.* from (
+		select 
+			row_number() over (order by publish_time desc) rn, 
+			 proj_id, proj_name, bid_end_time, (select company_name from t_company_info b where b.company_code = bid_project.company_id) company_name
+		from bid_project
+		
+		where proj_status in (2, 3)
+        ) x
+		where x.rn &lt; 5
+	</select>
+	
+	
+	<select id="queryExpiringProject" resultMap="bidProjectMap">
+	select x.* from (
+		select 
+			row_number() over (order by bid_end_time asc) rn, 
+			 proj_id, proj_name, bid_end_time, (select company_name from t_company_info b where b.company_code = bid_project.company_id) company_name
+		from bid_project
+		
+		where proj_status in (2, 3)
+        ) x
+		where x.rn &lt; 8
+	</select>
+	
+	
+	
+	<select id="queryNoticeCount" resultType="java.lang.Integer">
+		select count(1) from bid_project
+		where notice_status = 2
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = bid_project.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+	</select>
+	
+	
+	<select id="queryNoticeList" resultMap="bidProjectMap">
+	select x.* from (
+		select 
+			row_number() over (order by publish_time desc) rn, 
+			 proj_id, proj_name, publish_time
+		from bid_project		
+		where notice_status = 2
+		
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = bid_project.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	<select id="queryProjectById" resultMap="bidProjectMap">
+		select * from bid_project where proj_id = #{projId}
+	</select>
+	
+	<update id="updateTimeoutEndTime">
+		update 	bid_project
+		set		timeout_end_time = sysdate + numtodsinterval(timeout_interval,'second')
+		where	proj_id = #{projId}
+	</update>
+	
+	
+	
+	<select id="queryResultCount" resultType="java.lang.Integer">
+		select count(1) from bid_project
+		where proj_status = 7
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = bid_project.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+	</select>
+	
+	
+	<select id="queryResultList" resultMap="bidProjectMap">
+	select x.* from (
+		select 
+			row_number() over (order by a.notice_time desc) rn, 
+			 a.proj_id, a.proj_name, a.notice_time,
+			 (select codetext from codelist b where b.codevalue = a.bid_cat and b.codelisttype = 'BID_CAT') bid_cat_name, proj_type,
+			 (select company_name from t_company_info b where b.company_code = a.company_id) company_name,
+			 (select sum(subject_num) from bid_proj_subject b where b.proj_id = a.proj_id) sub_num,
+			 (select sup_name from t_sup_info b where b.sup_code = s.sup_code) sup_name,
+			 s.real_current_quota
+		from bid_project a, bid_proj_supplier s
+		where a.proj_id = s.proj_id and s.bid_result = 1 and a.proj_status = 7
+		
+        <if test="projName != null and projName != ''">
+        	and a.proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="addrProv != null and addrProv != ''">
+        	and exists (select 1 from bid_proj_tender c where c.tender_type = 1 and c.addr_prov = #{addrProv} and c.proj_id = a.proj_id)
+        </if> 
+        <if test="companyId != null and companyId != ''">
+        	and a.company_id = #{companyId}
+        </if> 
+        <if test="bidCat != null and bidCat != ''">
+        	and a.bid_cat = #{bidCat}
+        </if> 
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+</mapper>

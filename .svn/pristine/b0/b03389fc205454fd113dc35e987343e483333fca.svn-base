@@ -1,0 +1,96 @@
+$(document).ready(function(){
+	//全选事件
+	$('#allchecked').click(function(){
+		var allcheck = $("#allchecked").is(':checked');
+		$('input[name="subCheckbox"]').attr('checked',allcheck);
+		getTotalText();
+	});
+});
+
+function gotoSelectSupPage(sup_type){
+	var url = $('#path').val()+'/management/specialGoods/supSelect?o='+sup_type;
+	var iWidth=800;                          //弹出窗口的宽度; 
+    var iHeight=600;                         //弹出窗口的高度; 
+	var iTop = (window.screen.availHeight-30-iHeight)/2;       //获得窗口的垂直位置;
+	var iLeft = (window.screen.availWidth-10-iWidth)/2;           //获得窗口的水平位置;
+	window.open(url, 'newwindow', 'height='+iHeight+', width='+iWidth+', top='+iTop+', left='+iLeft+', toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no,modal=yes');
+}
+
+function childCallParentMethod(){
+	setTimeout("fnDelayed()",100);
+}
+
+function fnDelayed(){
+	//为html增加供应商img
+	var newSupIds = $('#new_sup_id').val();
+	var supInfoStr = ''
+	if(newSupIds!=null && newSupIds!=''){
+		supInfoStr = getSelectedSupHtml(newSupIds);
+		$('.list_inner').prepend(supInfoStr);
+	}
+}
+
+//获取供应商imgHtml
+function getSelectedSupHtml(newSupIds){
+	var dataArr = new Array();
+	if(newSupIds.indexOf(',')!=-1){
+		dataArr = newSupIds.split(',');
+	}else{
+		dataArr.push(newSupIds); 
+	}
+	
+	var strHtmlArr = new Array();
+	$(dataArr).each(function(){
+		var supDetail = this.split('_');
+		strHtmlArr.push(" <li id='"+supDetail[1]+"'>"+supDetail[0]+"<a href='javascript:void(0);' onclick='removeSup(this);'><img src='img/icon-close_blue.png'/></a></li>");
+	});
+	return strHtmlArr.join("");
+}
+
+//移除供应商
+function removeSup(aSupImgObj){
+	var supIds = $('#sup_id').val();
+	var idStr = $(aSupImgObj).parent().attr('id')+',';
+	supIds=supIds.replace(idStr,'');
+	$('#sup_id').val(supIds);
+	$(aSupImgObj).parent().remove();
+}
+
+function doSave(path){
+	var goods_desc_new = $('#goods_desc_new').val();
+	if(goods_desc_new == null || goods_desc_new == ''){
+		alert('请先填写商品描述，再提交。');
+		$('#goods_desc_new').focus();
+		return;
+	}
+
+	var supIds = $('#sup_id').val();
+	if(supIds == null || supIds == ''){
+		alert('请先选择供应商，再提交。');
+		return;
+	}
+	
+	var imgArray = new Array();
+	var imgObj = $('input:hidden[name=hidden_path]');
+	imgObj.each(function(i){
+		imgArray.push(imgObj[i].value);
+	});
+	var imgPaths = imgArray.join(",");
+	$.ajax({
+	    url: path+"/management/specialGoods/doSave?goods_desc_new="+goods_desc_new
+	    	+"&sup_id="+supIds+"&imgCount="+$('#realCount').val()+"&imgPaths="+imgPaths,
+	    type: "POST",
+	    contentType : 'application/json;charset=gbk', //设置请求头信息
+	    dataType:"json",
+	    success: function(data){
+	    	if(data.result=='ok'){
+	    		window.location.href=path+"/management/specialGoods/offStandardRequirePage";
+	    	}else{
+	    		alert('系统忙，请稍后再试。');
+	    	}
+	    },
+	    error: function(res){
+            alert('系统忙，请稍后再试。');
+        }
+	});
+}

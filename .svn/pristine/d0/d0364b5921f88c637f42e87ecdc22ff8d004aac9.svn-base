@@ -1,0 +1,51 @@
+$(document).ready(function(){
+	$('#sul > li').click(function(){
+    	$(this).addClass('active').siblings().removeClass('active');
+    	var s_val = $(this).children().html();
+    	if(s_val=='全部'){
+    		$('#order_status').val('99');
+    	}else if(s_val=='待审核'){
+    		$('#order_status').val('1');
+    	}else if(s_val=='待收货'){
+    		$('#order_status').val('3');
+    	}else{
+    		$('#order_status').val('6');
+    	}
+    	clrVal();//tab页查询前先请所有查询条件
+    	doInit();
+	});
+});
+
+function doInit(){
+	document.getElementById("searchForm").action="/AWeb/management/order";
+	document.getElementById("searchForm").submit();
+}
+
+function getOrderStatus(){
+	var order_status1 = $('#order_status1').val();
+	$('#order_status').val(order_status1);
+	if(order_status1=='99' || order_status1=='1' || order_status1=='3' || order_status1=='6'){
+		$('#li'+order_status1).addClass('active').siblings().removeClass('active');
+	}else{
+		$("#li99").removeClass('active').siblings().removeClass('active');
+	}
+}
+
+function exchangeGoods(path,order_id){
+	window.location.href=path+'/management/orderExchange?o='+order_id;;
+}
+
+function clrVal(){
+	$("#sup_name").val('');
+	$("#order_id").val('');
+	$("#goods_name").val('');
+	$("#order_time").val('');
+	$("#order_status1").val('99');
+	
+}
+
+function clrAllVal(){
+	clrVal();
+	$("#order_status").val('99');
+	$("#li99").addClass('active').siblings().removeClass('active');
+}

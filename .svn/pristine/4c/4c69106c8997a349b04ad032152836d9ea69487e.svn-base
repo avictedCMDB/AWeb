@@ -1,0 +1,43 @@
+
+
+function cancle(){
+	window.location.href = "/AWeb/management/invoice";
+}
+
+function chooseInvoiceFlg(){
+	var flg = $('input[name="invoiceFlag"]:checked').val();
+	if(flg==1){
+		$("#invoiceContentP").show();
+	}else{
+		$("#invoiceContentP").hide();
+	}
+}
+
+function saveInvoice(type){
+	if($("#setDefaultCB").is(':checked') == true){
+		$("#ifDefault").val("1");
+	}else{
+		$("#ifDefault").val("0");
+	}
+	if($('input:radio[name="invoiceFlag"]:checked').val()=="1"){
+		if($("#invoiceContent").val()==""){
+			alert("请输入发票自定义内容！");
+			return;
+		}
+	}
+	if($("#companyName").val()==""){
+		alert("请输入付款单位名称！");
+		return;
+	}
+	if($("#invocieNum").val()==""){
+		alert("请输入税务登记号！");
+		return;
+	}
+	if(type==1){
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/add";
+		document.getElementById("editInvoiceForm").submit();
+	}else{
+		document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/update?invoiceID="+$("#invoiceID").val();
+		document.getElementById("editInvoiceForm").submit();
+	}
+}

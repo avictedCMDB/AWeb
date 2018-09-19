@@ -1,0 +1,144 @@
+@charset "utf-8";
+/* CSS Document */
+ul.social-links li.first a {
+	color: #db433d;
+}
+.logo {
+	margin-left: 77px;
+	margin-top: 40px;
+}
+.search {
+	margin-top: 30px;
+}
+
+#header {
+	margin-bottom: 30px;
+	padding-top: 0px;
+}
+#contents .inner {
+	background: #fff;
+	padding: 20px 20px;
+}
+#contents .inner:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+#side_navi {
+	float: left;
+	width: 202px;
+}
+#side_navi dt {
+	padding: 8px 10px 8px 15px;
+	color: #FFF;
+	font-size: 13px;
+	font-weight: bold;
+	position: relative;
+}
+#side_navi dt.tlt_merchandise {
+	background: #eea701;
+}
+#side_navi dt.tlt_information {
+	background: #4898ed;
+}
+#side_navi dt.tlt_transaction {
+	background: #95bc01;
+}
+#side_navi dt.tlt_reeturns {
+	background: #ff4c83;
+}
+#side_navi dt.tlt_receipt {
+	background: #ed5d52;
+}
+#side_navi dt span {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	font-size: 15px;
+}
+#side_navi dd {
+	padding: 10px 10px 0 15px;
+	font-size: 12px;
+	border-right: 1px solid #dfdfdf;
+	border-left: 1px solid #dfdfdf;
+}
+#side_navi dd.last_child {
+	border-bottom: 1px solid #dfdfdf;
+}
+#side_navi dd span {
+	padding: 0 5px 0 0;
+	color: #db423a;
+	font-size: 13px;
+}
+#side_navi dd ul li {
+	padding: 0 0 10px;
+}
+#side_navi dd ul li.active a {
+	font-weight: bold;
+	color: #db423a;
+}
+#matter_section {
+	float: right;
+	width: 950px;
+}
+.inner {
+	font-size: 12px;
+}
+.inner h2 {
+  padding: 0 0 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  border-bottom: 1px solid #dfdfdf;
+  font-weight: bold;
+  color: #db423a;
+}
+
+.search_result table {
+	width: 950px;
+	margin-top: 15px;
+}
+.search_result table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+}
+.search_result table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.search_result table tr td {
+	border:1px solid #dfdfdf;
+	padding: 10px;
+	font-size: 12px;
+	vertical-align: top;
+}
+.page {
+	text-align: right;
+}
+.pagination > li > a, .pagination > li  {
+	color: #666666;
+}
+.pagination > li.active > a,
+.pagination > li.active > a:hover,
+.pagination > li > a:hover,
+.pagination > li > a:focus {
+  color: #fff;
+  background-color: #db433d;
+  border-color: #db433d;
+}
+.form-control {
+	font-size: 12px;
+	padding: 0;
+	padding-left: 6px;
+	height: 28px;
+}
+#matter_section {
+	float: right;
+	width: 950px;
+}

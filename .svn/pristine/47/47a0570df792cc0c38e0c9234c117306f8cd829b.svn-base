@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ManagementMapper">
+	<resultMap id="managementMap" type="com.avic.management.models.Management">
+		<result column="WAIT_ORDER_COUNT" property="waitOrderCount" jdbcType="INTEGER" /> 
+		<result column="WAITPAY_ORDER_COUNT" property="waitPayOrderCount" jdbcType="INTEGER" /> 
+		<result column="REJECT_ORDER_COUNT" property="rejectOrderCount" jdbcType="INTEGER" />
+		<result column="RETURN_ORDER_COUNT" property="returnOrderCount" jdbcType="INTEGER" />
+		<result column="CHANGE_ORDER_COUNT" property="changeOrderCount" jdbcType="INTEGER" />
+		<result column="REJECT_REFOUND_COUNT" property="rejectRefoundCount" jdbcType="INTEGER" />
+		<result column="REJECT_EXCHANGE_COUNT" property="rejectExchangeCount" jdbcType="INTEGER" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_GOODS_COUNT" property="enquiryGoodsCount" jdbcType="INTEGER" />
+		<result column="OFF_STANDARD_REQUIRE_COUNT" property="offStandardRequireCount" jdbcType="INTEGER" />
+		<result column="ENQUIRY_STATUS" property="enquiryStatus" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryManagementCount" resultMap="managementMap" parameterType="com.avic.management.models.Management">
+		SELECT 
+	      (SELECT COUNT(*) FROM T_ORDER WHERE ORDER_STATUS = 2 AND USER_ID = #{userID,jdbcType=VARCHAR}) AS WAIT_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM T_ORDER WHERE ORDER_STATUS = 15 AND USER_ID = #{userID,jdbcType=VARCHAR}) AS WAITPAY_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM T_ORDER WHERE ORDER_STATUS = 6 AND USER_ID = #{userID,jdbcType=VARCHAR}) AS REJECT_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM t_order_refound WHERE REFOUND_STATUS = '1' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS RETURN_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '1' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS CHANGE_ORDER_COUNT,
+	      (SELECT COUNT(*) FROM t_order_refound WHERE REFOUND_STATUS = '2' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS REJECT_REFOUND_COUNT,
+	      (SELECT COUNT(*) FROM t_order_exchange WHERE EXCHANGE_STATUS = '2' AND USER_ID = #{userID,jdbcType=VARCHAR}) AS REJECT_EXCHANGE_COUNT,
+	       (SELECT COUNT(1)
+			  FROM T_ENQUIRY_GOODS 
+			 WHERE USER_ID = #{userID,jdbcType=VARCHAR}
+			   AND ENQUIRY_STATUS = '1') AS ENQUIRY_GOODS_COUNT,
+			(SELECT COUNT(1)
+			  FROM T_OFF_STANDARD_REQUIRE
+			 WHERE USER_ID = #{userID,jdbcType=VARCHAR}
+			   AND STATUS = '1') AS OFF_STANDARD_REQUIRE_COUNT
+ 		FROM DUAL
+	</select>
+	
+</mapper>

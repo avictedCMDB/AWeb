@@ -1,0 +1,33 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.supplier.models.SupplierOffStandRequire;
+
+@Controller
+@RequestMapping("/offStandRequire")
+public class SupplierOffStandRequireController {
+	
+	protected static final Log logger = LogFactory
+	.getLog(SupplierOffStandRequireController.class);
+	
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOffStandRequire") SupplierOffStandRequire supplierOffStandRequire,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+		
+		
+		
+		return null;
+	}
+
+}

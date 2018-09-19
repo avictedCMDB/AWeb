@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+    	<div id="side_navi">
+            <div class="photo">
+              <dl class="dl-horizontal">
+                <dt><a href="#"><img src="${pageContext.request.contextPath}/static/img/supervise/defaultpic.jpg" /></a></dt>
+                <dd>
+                  <h3>${sessionScope.login_supervise.userNameCN}</h3>
+                  <p>${sessionScope.login_supervise.companyName}</p>
+                </dd>
+              </dl>
+            </div>
+    		<dl>
+    			<dt class="tlt_merchandise">结算管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li <c:if test="${param.menu == 'settle-effective'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/settle/effective/list"><span class="fa fa-caret-right"></span>结算管理</a></li>
+                        <li <c:if test="${param.menu == 'settle-pending'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/settle/pending/list"><span class="fa fa-caret-right"></span>待结算管理</a></li>
+                    </ul>
+    			</dd>
+    			<dt class="tlt_transaction">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li <c:if test="${param.menu == 'order'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/order/list"><span class="fa fa-caret-right"></span>订单管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_reeturns ">退款管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+                        <li <c:if test="${param.menu == 'refund'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/refund/list"><span class="fa fa-caret-right"></span>退货退款</a></li>
+    				</ul>
+    			</dd>
+                <dt class="tlt_information">发票管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    				    <li <c:if test="${param.menu == 'invoice'}">class="active"</c:if>><a href="${pageContext.request.contextPath}/supervise/invoice/list"><span class="fa fa-caret-right"></span>采购方发票管理</a></li>
+    				</ul>
+    			</dd>
+    		</dl>
+    		<!--#side_navi-->
+    	</div>

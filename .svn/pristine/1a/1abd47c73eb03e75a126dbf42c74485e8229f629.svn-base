@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.InvoiceMapper">
+	<resultMap id="invoiceResultMap" type="Invoice">
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR" />
+		<result column="invoice_flag" property="invoiceFlag" jdbcType="VARCHAR" />
+		<result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="if_default" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="vatResultMap" type="VatInfo">
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="taxpayer_code" property="taxPayerCode" jdbcType="VARCHAR" />
+		<result column="register_path" property="registerPath" jdbcType="VARCHAR" />
+		<result column="register_tel" property="registerTel" jdbcType="VARCHAR" />
+		<result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+		<result column="bank_account" property="bankAccount" jdbcType="VARCHAR" />
+		<result column="vat_receive_name" property="vatReceiveName" jdbcType="VARCHAR" />
+		<result column="vat_receive_tel" property="vatReceiveTel" jdbcType="VARCHAR" />
+		<result column="vat_receive_detail" property="vatReceiveDetail" jdbcType="VARCHAR" />
+		<result column="vat_receive_prov" property="vatReceiveProv" jdbcType="INTEGER" />
+		<result column="vat_receive_city" property="vatReceiveCity" jdbcType="INTEGER" />
+		<result column="vat_receive_dist" property="vatReceiveDist" jdbcType="INTEGER" />
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="queryUserInvoice" resultMap="invoiceResultMap">
+		select company_name, invoice_flag, invoice_content, to_char(invoice_num) invoice_num, if_default
+		  from t_invoice
+		 where user_id = #{userId}
+	  order by if_default desc
+	</select>
+	
+	<select id="queryDefaultInvoiceCount" resultType="java.lang.Integer">
+		select count(1)
+		  from t_invoice
+		 where user_id = #{userId}
+		   and if_default = '1'
+	</select>
+	
+	<insert id="insertInvoice">
+		insert into t_invoice (
+			invoice_id,
+			company_name, 
+			invoice_num, 
+			invoice_flag, 
+			invoice_content, 
+			if_default, 
+			user_id)
+		values (
+			to_char(sysdate, 'yyyyMMddHH24miss') || lpad(common_index.nextval, 6, '0'),
+			#{companyName,jdbcType=VARCHAR},
+			to_number(#{invoiceNum,jdbcType=VARCHAR}),
+			#{invoiceFlag,jdbcType=VARCHAR},
+			#{invoiceContent,jdbcType=VARCHAR},
+			#{ifDefault,jdbcType=VARCHAR},
+			#{userId,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="updateInvoice">
+	update t_invoice
+	   set company_name = #{companyName,jdbcType=VARCHAR}
+	     , invoice_flag = #{invoiceFlag,jdbcType=VARCHAR}
+	     , invoice_content = #{invoiceContent,jdbcType=VARCHAR}
+	 where user_id = #{userId,jdbcType=VARCHAR}
+	   and if_default = 1
+	</update>
+
+	<select id="queryDefaultUserInvoice" resultMap="invoiceResultMap">
+		select company_name, invoice_flag, invoice_content, to_char(invoice_num) invoice_num, if_default
+		  from t_invoice
+		 where user_id = #{userId}
+	       and if_default = 1
+	</select>
+	<select id="queryUserVat" resultMap="vatResultMap">
+		select *
+		  from t_vat_info
+		 where user_id = #{userId}
+	</select>
+	<update id="updateVat">
+	update t_vat_info
+	   set vat_receive_name = #{vatReceiveName,jdbcType=VARCHAR}
+	     , vat_receive_city = #{vatReceiveCity,jdbcType=INTEGER}
+	     , vat_receive_prov = #{vatReceiveProv,jdbcType=INTEGER}
+	     , vat_receive_dist = #{vatReceiveDist,jdbcType=INTEGER}
+	     , vat_receive_tel = #{vatReceiveTel,jdbcType=VARCHAR}
+	     , vat_receive_detail = #{vatReceiveDetail,jdbcType=VARCHAR}
+	 where user_id = #{userId,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.QuoteDetailMapper">
+	<resultMap id="quoteDetailMap" type="com.avic.management.models.QuoteDetail">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="QUOTE_ID" property="quoteID" jdbcType="VARCHAR" />
+		<result column="GOODS_ID" property="goodsID" jdbcType="VARCHAR" />
+		<result column="QUOTE_NUM" property="quoteNum" jdbcType="VARCHAR" />
+		<result column="GOODS_MODEL" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="GOODS_STUFF" property="goodsStuff" jdbcType="VARCHAR" />
+		<result column="SALE_PRICE" property="salePrice" jdbcType="VARCHAR" />
+		<result column="PRICE_ALL" property="priceAll" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryQuoteDetailByRequireID" resultMap="quoteDetailMap">
+		SELECT TQD.ID,
+		       TQD.QUOTE_ID,
+		       TQD.GOODS_ID,
+		       TQD.QUOTE_NUM,
+		       TSG.GOODS_MODEL,
+		       TSG.BRAND_NAME,
+		       TSG.GOODS_NAME,
+		       TSG.GOODS_STUFF,
+		       TSG.SALE_PRICE,
+		       TSG.SALE_PRICE*TQD.Quote_Num PRICE_ALL
+		  FROM T_QUOTE_DETAIL TQD,T_SUP_GOODS TSG
+		 WHERE TQD.GOODS_ID = TSG.SUP_GOODS_ID
+		 <if test="quoteID != null and quoteID != ''">
+		 	AND TQD.QUOTE_ID = #{quoteID,jdbcType=VARCHAR}
+		 </if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,64 @@
+
+#matter_section .list_inner {
+	padding-bottom: 10px;
+}
+#step05 .add_inner .title_add {
+	background: #0091dc;
+	margin-top: 20px;
+	color: #fff;
+	text-align: left;
+	width: 100%;
+	padding: 4px 0px 4px 20px;
+}
+#step05 .add_inner .title_add p {
+	line-height: 28px;
+	margin: 0;
+	font-weight: bold;
+	font-size: 16px;
+	float: left;
+	width: 680px;
+}
+#step05 .add_inner .title_add .btn_list {
+	float: right;
+	text-align: right;
+	width: 240px;
+	margin-top: 0;
+	display: inline-block;
+	vertical-align: middle;
+}
+#step05 .add_inner .title_add .btn_list .btn {
+	background: #fff;
+	color: #0091dc;
+	font-weight: bold;
+}
+#step05 .add_inner .title_add .btn_list .btn:hover {
+	background: #dfdfdf;
+	color: #000;
+}
+#step05 .form-group .input_area.input_area_day {
+	width: 100%;
+}
+#step05 .form-group .input_area .form-control {
+	display: inline-block;
+}
+#step05 .modal-body .form-group .form-control.form-control_day {
+	width: 10%;
+}
+#step05 .modal-body .form-group .form-control.form-control_place {
+	width: 15%;
+}
+#step05 .modal-body .form-group .form-control.form-control_place02 {
+	width: 40%;
+}
+#step05 .input-append {
+	margin-top: 10px;
+}
+@media (max-width: 480px) {
+	#step05 .modal-body .form-group .form-control.form-control_place02 {
+		margin-top: 10px;
+		width: 100%;
+	}
+	#step05 .modal-body .form-group .form-control.form-control_place {
+		width: 25%;
+	}
+}

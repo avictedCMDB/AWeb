@@ -1,0 +1,249 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area {
+  background: #f6f4f5;
+  padding: 25px 0 15px 15px;
+  border: 1px solid #dfdfdf;
+}
+#matter_section .search_area dl {
+	float: left;
+	font-size: 12px;
+	margin-bottom: 10px;
+	margin-right: 20px;
+}
+#matter_section .search_area dl.last {
+	margin-right: 0;
+}
+#matter_section .search_area dl dt {
+	float: left;
+	line-height: 25px;
+	margin-right: 5px;
+	width: 85px;
+	text-align: right;
+}
+
+#matter_section .search_area dl dd {
+	float: left;
+	width: 205px;
+}
+#matter_section ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 8px;
+}
+#matter_section .special_input {
+	border-right: none;
+}
+#matter_section .form-control {
+	height: 28px;
+	padding: 0;
+}
+#matter_section li .form-control {
+	width: 78px;
+}
+#matter_section ul li.last {
+	margin-right: 0;
+}
+#matter_section .input-group-addon {
+	height: 28px;
+	padding: 6px 5px 5px 0px;
+	border-left: none;
+	background: #fff;
+	cursor: pointer;
+	display: inline-table;
+}
+#matter_section .input-group-addon.special {
+	display: table-cell;
+}
+#matter_section .btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.red {
+	background: #0091dc;
+	color: #fff;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+.search_result {
+	padding-top: 15px;
+}
+.section table {
+	width: 950px;
+}
+.section table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+}
+.section table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.section table tr td {
+	border:1px solid #dfdfdf;
+	padding: 10px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.section table tr td a {
+	word-break: break-all;
+}
+.section table tr.company td {
+	border: none;
+	font-weight: bold;
+}
+.section table tr td a {
+	margin-right: 5px;
+	color: #4798ed;
+}
+.section table tr td a:hover {
+	text-decoration: underline;
+}
+/*审核资质*/
+#vat_info {
+	border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 712px;
+}
+#vat_info .inner {
+	width: 704px;
+}
+#vat_info .add_title {
+    background: #0091dc none repeat scroll 0 0;
+	border-left: right;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    height: 27px;
+    line-height: 27px;
+    padding: 0 10px;
+}
+#vat_info .add_title a {
+	float: right;
+	padding-top: 5px;
+	color: #fff;
+	display: block;
+}
+#vat_info .main_inner {
+	padding: 20px 40px;
+	font-size: 14px;
+}
+#vat_info dl.first {
+	border-bottom: 1px dashed #dfdfdf;
+	padding-bottom: 20px;
+}
+#vat_info dl {
+	margin-bottom: 15px;
+	
+	
+}
+#vat_info dl ul li:first-child {
+	margin-left: 0;
+}
+#vat_info dl dt {
+	width: 100px;
+	float: left;
+	line-height: 26px;
+	text-align: right;
+}
+#vat_info dl dd {
+	width: 515px;
+	float: left;
+}
+#vat_info dl dd.special {
+	width: 350px;}
+#vat_info .inner {
+    width: 704px;
+}
+#vat_info ul li{
+	float: left;
+	margin-right: 10px;
+	
+}
+#vat_info ul.company li {
+	width: 300px;
+}
+#vat_info ul.supplier li {
+	border: 1px solid #eee;
+	line-height: 26px;
+	padding: 0 20px;
+	position: relative;
+}
+#vat_info ul.company li.btn_search{
+	float: right;
+	text-align: right;
+	width: 80px;
+}
+#vat_info ul.supplier li a {
+	position: absolute;
+	top:-5px;
+	right: -5px;
+}
+#vat_info .form-control {
+    height: 28px;
+}
+#vat_info select.form-control {
+	padding: 0;
+}
+.gray {
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 12px;
+	background: #666;
+	border: none;
+}
+#vat_info .btn_list {
+	text-align: center;
+	margin-top: 20px;
+}
+#vat_info table {
+	width: 100%;
+}
+#vat_info table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+}
+#vat_info table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+#vat_info table tr td {
+	border:1px solid #dfdfdf;
+	padding: 10px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+#vat_info table tr td a {
+	margin-right: 5px;
+	color: #4798ed;
+}
+#vat_info table tr td a:hover {
+	text-decoration: underline;
+}
+#vat_info .btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}

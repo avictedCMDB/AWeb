@@ -1,0 +1,14 @@
+function search(){
+//	var path = $("#path").val();
+//	document.getElementById("enterpriseForm").action=path+"/management/enterprise";
+//	document.getElementById("enterpriseForm").submit();
+}
+function clearSearchParam(){
+	$("#goodsName").val("");
+	$("#startDate1").val("");
+	$("#endDate1").val("");
+	$("#startDate2").val("");
+	$("#endDate2").val("");
+	$("#supName").val("");
+	$("#enquiryStatus").val("");
+}

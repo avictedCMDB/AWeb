@@ -1,0 +1,23 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierProject;
+
+public interface SupplierProjectService {
+	
+	public List<SupplierProject> selectProject(
+			String projType,
+			String auditStatus,
+			String compName,
+			String projId,
+			String startTime, 
+			String endTime, 
+			int page, String type);
+	
+	public int selectProjectCount(String projType,String auditStatus,String compName,String projId,String startTime, String endTime, String type);
+	public void insertBidProjSupplierByProjIdWithSupId(String projId, String supId);
+	public SupplierProject selectProjectByProjIdAndSupCode(String projId, String supCode);
+	public SupplierProject selectProjectByProjId(String projId);
+
+}

@@ -1,0 +1,95 @@
+#header {
+    margin-bottom: 0px;
+    padding-top: 15px;
+}
+.logo {
+	margin-left: 0;
+}
+#header .buy {
+	margin-top: 38px;
+}
+#header .search_cate li a,
+#header .search_cate li.active a, #header .search_cate li a:hover {
+	font-size: 16px;
+}
+#matter_section h2 {
+    border-bottom: 1px solid #dfdfdf;
+    color: #0091dc;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+.quick_search {
+	border: 1px solid #dfdfdf;
+	padding: 15px;
+	margin-bottom: 20px;
+	background: #f6f4f5;
+}
+.quick_search ul li {
+	float: left;
+	margin: 5px;
+	background: #fff;
+}
+.quick_search ul li a {
+	display: block;
+	padding: 8px 0px;
+	border: 1px solid #dfdfdf;
+	width: 121px;
+	text-align: center;
+}
+.quick_search ul li.active a,
+.quick_search ul li a:hover {
+	border: 1px solid #ff4200;
+	color: #ff4200;
+}
+.search_area {
+	margin-bottom: 30px;
+}
+.search_area .search_inner {
+	display: inline-block;
+	width: 500px;
+}
+.search_area .blue {
+	height: 34px;
+	padding: 0 20px;
+}
+.question_list ul li {
+	border-bottom: 1px dotted #dfdfdf;
+	padding-bottom: 12px;
+	margin-top: 12px;
+	background: url(../img/bid/icon-list.gif) left 5px no-repeat;
+	padding-left: 15px;
+}
+p.question {
+	color: #0091dc;
+	margin-bottom: 5px;
+	font-size: 16px;
+}
+p.answer {
+	background: #f6f4f5;
+	padding: 10px;
+}
+.page {
+	text-align: right;
+	font-size:12px;
+}
+.page ul {
+	margin-bottom: 0;
+}
+.pagination > li {
+	margin-left: 8px;
+	float: left;
+}
+.pagination > li > a, .pagination > li  {
+	color: #666666;
+}
+.pagination > li.active > a,
+.pagination > li.active > a:hover,
+.pagination > li > a:hover,
+.pagination > li > a:focus {
+  color: #fff;
+  background-color: #0091dc;
+  border-color: #0091dc;
+}

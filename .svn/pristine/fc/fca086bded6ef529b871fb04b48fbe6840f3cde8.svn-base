@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.CompanyInfoMapper">
+	<resultMap id="companyInfoMap" type="com.avic.management.models.CompanyInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+		<result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+		<result column="CONTACT_IPHONE" property="contactIphone" jdbcType="VARCHAR" />
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR" />
+		<result column="BANK_NAME" property="bankName" jdbcType="VARCHAR" />
+		<result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR" />
+		<result column="TAX_CODE" property="taxCode" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryCompanyInfoById" resultMap="companyInfoMap">
+		SELECT *
+		  FROM T_COMPANY_INFO
+		 WHERE ID = #{id}
+	</select>
+	
+	<select id="queryCompanyInfoByCode" resultMap="companyInfoMap">
+		SELECT *
+		  FROM T_COMPANY_INFO
+		 WHERE COMPANY_CODE  = #{code}
+	</select>
+</mapper>

@@ -1,0 +1,70 @@
+function deleteData(action){
+	if(confirm("是否删除该条记录？")){
+		window.location.href = action;
+	}
+}
+function deleteList(action){
+	var checkIDs = "";
+	var checkCount = 0;
+	$("input:checkbox[name='checkIDs']:checked").each(function() {
+		checkCount++;
+		checkIDs = checkIDs + $(this).val() + ',';
+	});
+	if(checkCount == 0){
+		alert('请选择要删除的数据！');
+		return;
+	}
+	if(confirm("是否删除该条记录？")){
+		checkIDs = checkIDs.substring(0,checkIDs.length - 1);
+		window.location.href = action+checkIDs;
+	}
+}
+function checkAll(){
+	if($("#checkAll").is(':checked') == true){
+		$(":checkbox").prop("checked",true);
+	}else{
+		$(":checkbox").removeAttr("checked");
+	}
+}
+function redirectPage(action){
+	window.location.href = action;
+}
+function clearForm(objE){//objE为form表单  
+    $(objE).find(':input').each(  
+        function(){  
+            switch(this.type){  
+                case 'passsword':  
+                case 'select-multiple':  
+                case 'select-one':  
+                case 'text':  
+                case 'textarea':  
+                    $(this).val('');  
+                    break;  
+                case 'checkbox':  
+                case 'radio':  
+                    this.checked = false;  
+            }  
+        }     
+    );  
+}
+function opDialog(action) {
+	window.showModalDialog(action,"1","edge: Raised; center: Yes; help: Yes; resizable: Yes; status: Yes; dialogWidth=1100px;dialogHeight=355px");
+}
+function ajaxSubmit(action){
+	var formParam = $("#supplierSubmit").serialize();
+	$.ajax({
+
+	     type: 'POST',
+
+	     url: action ,
+
+	    data: formParam ,
+
+	    success: ajaxSuccess ,
+
+	    dataType: 'json',
+	    
+	    cache:false,
+	});
+	
+}

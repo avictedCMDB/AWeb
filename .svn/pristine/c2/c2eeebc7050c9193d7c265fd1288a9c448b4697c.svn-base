@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avic.supplier.mappers.SupplierExchangeMapper">
+	<resultMap id="queryExchangeOrderMap" type="com.avic.supplier.models.SupplierExchange">
+		<result column="EXCHANGE_ID" property="exchangeId" jdbcType="VARCHAR"/>
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_TIME" property="exchangeTime" jdbcType="VARCHAR"/>
+		<result column="SUP_CHECK_DATE" property="supCheckDate" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_STATUS" property="exchangeStatus" jdbcType="VARCHAR"/>
+		<result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+		<result column="SUP_SEND_DATE" property="supSendDate" jdbcType="VARCHAR"/>
+		<result column="SUP_REVIEW_DATE" property="supReviewDate" jdbcType="VARCHAR"/>
+		<result column="BUYER_SEND_DATE" property="buyerSendDate" jdbcType="VARCHAR"/>
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR"/>
+		<result column="BUY_REVIEW_DATE" property="buyReviewDate" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_AMOUNT" property="exchangeAmount" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_PRICE" property="exchangePrice" jdbcType="VARCHAR"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+		<result column="companyname" property="companyname" jdbcType="VARCHAR"/>
+		<result column="EXCHANGE_STATUS_NAME" property="exchangeStatusName" jdbcType="VARCHAR"/>
+		<result column="ADDR_NAME" property="addrName" jdbcType="VARCHAR"/>
+		<result column="ADDR_PHONE" property="addrPhone" jdbcType="VARCHAR"/>
+		<result column="ADDR_ALL" property="addrAll" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="exchangeOrderDetailedMap" type="com.avic.supplier.models.SupplierExchange">
+		<result column="rn" property="rn" jdbcType="VARCHAR"/>
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR"/>
+		<result column="exchange_num" property="exchangeNum" jdbcType="VARCHAR"/>
+		<result column="sum_change_price" property="sumChangePrice" jdbcType="VARCHAR"/>
+		<result column="exchange_reason" property="exchangeReason" jdbcType="VARCHAR"/>
+		<result column="sup_Goods_Id" property="supGoodsId" jdbcType="VARCHAR"/>
+		<result column="buy_num" property="buyNum" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryDetailedMap" type="com.avic.supplier.models.SupplierExchange">
+		<result column="rn" property="rn" jdbcType="VARCHAR"/>
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+		<result column="sup_Goods_Id" property="supGoodsId" jdbcType="VARCHAR"/>
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR"/>
+		<result column="exchange_num" property="exchangeNum" jdbcType="VARCHAR"/>
+		<result column="sum_change_price" property="sumChangePrice" jdbcType="VARCHAR"/>
+		<result column="exchange_reason" property="exchangeReason" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryOrderStatusMap" type="com.avic.supplier.models.SupplierCodeList">
+	</resultMap>
+		<select id="queryExchangeOrderList" parameterType="com.avic.supplier.models.SupplierExchange" resultMap="queryExchangeOrderMap">
+	SELECT * FROM (
+			select EXCHANGE_ID,
+			       T_ORDER_EXCHANGE.SUP_ID,
+			       EXCHANGE_TIME,
+			       SUP_CHECK_DATE,
+			       EXCHANGE_STATUS,
+			       REMARK,
+			       SUP_SEND_DATE,
+			       SUP_REVIEW_DATE,
+			       BUYER_SEND_DATE,
+			       T_ORDER_EXCHANGE.ORDER_ID,
+			       BUY_REVIEW_DATE,
+			       EXCHANGE_AMOUNT,
+			       EXCHANGE_PRICE,
+			       T_ORDER_EXCHANGE.USER_ID,
+			       codetext EXCHANGE_STATUS_NAME,
+			       companyname,
+			       x.ADDR_NAME,
+             	   x.ADDR_PHONE,
+             	   x.ADDR_ALL,
+			       rownum rn
+			  from T_ORDER_EXCHANGE, T_ORDER x,codelist,users usertable
+			 where T_ORDER_EXCHANGE.ORDER_ID = x.ORDER_ID
+			    and T_ORDER_EXCHANGE.Exchange_Status = codelist.codevalue
+   				and codelist.codelisttype = 'EXCHANGE_STATUS'
+   				and usertable.userid = x.user_id
+			    and T_ORDER_EXCHANGE.sup_id = #{supId} 
+			 <if test="exchangeId != null and exchangeId != ''">
+                and T_ORDER_EXCHANGE.EXCHANGE_ID like  '%'|| #{exchangeId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="orderId != null and orderId != ''">
+                and T_ORDER_EXCHANGE.order_id like '%'|| #{orderId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="exchangeStatus != null and exchangeStatus != ''">
+                and T_ORDER_EXCHANGE.exchange_status = #{exchangeStatus,jdbcType=VARCHAR}
+           	  </if>
+			   <if test="companyname != null and companyname != ''">
+                and usertable.companyname like '%'|| #{companyname,jdbcType=VARCHAR} || '%'
+           	  </if>
+           	  <if test="exchangeTimeStar != null and exchangeTimeStar != ''">
+				  AND TO_CHAR(T_ORDER_EXCHANGE.EXCHANGE_TIME,'yyyy-MM-dd') &gt;= #{exchangeTimeStar,jdbcType=VARCHAR}
+				</if>
+				<if test="exchangeTimeEnd != null and exchangeTimeEnd != ''">
+				  AND TO_CHAR(T_ORDER_EXCHANGE.EXCHANGE_TIME, 'yyyy-MM-dd') &lt;= #{exchangeTimeEnd,jdbcType=VARCHAR}
+				</if>
+				order by exchange_time DESC
+	        ) R
+	     WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+			<select id="queryExchangeOrderListCount" parameterType="com.avic.supplier.models.SupplierExchange" resultType="java.lang.Integer">
+			select count(1)
+			  from T_ORDER_EXCHANGE, T_ORDER x,codelist,users usertable
+			 where T_ORDER_EXCHANGE.ORDER_ID = x.ORDER_ID
+			    and T_ORDER_EXCHANGE.Exchange_Status = codelist.codevalue
+   				and codelist.codelisttype = 'EXCHANGE_STATUS'
+   				and usertable.userid = x.user_id
+			    and T_ORDER_EXCHANGE.sup_id = #{supId} 
+			 <if test="exchangeId != null and exchangeId != ''">
+                and T_ORDER_EXCHANGE.EXCHANGE_ID like  '%'|| #{exchangeId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="orderId != null and orderId != ''">
+                and T_ORDER_EXCHANGE.order_id like '%'|| #{orderId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="exchangeStatus != null and exchangeStatus != ''">
+                and T_ORDER_EXCHANGE.exchange_status = #{exchangeStatus,jdbcType=VARCHAR}
+           	  </if>
+			   <if test="companyname != null and companyname != ''">
+                and usertable.companyname like '%'|| #{companyname,jdbcType=VARCHAR} || '%'
+           	  </if>
+           	  <if test="exchangeTimeStar != null and exchangeTimeStar != ''">
+				  AND TO_CHAR(T_ORDER_EXCHANGE.EXCHANGE_TIME,'yyyy-MM-dd') &gt;= #{exchangeTimeStar,jdbcType=VARCHAR}
+				</if>
+				<if test="exchangeTimeEnd != null and exchangeTimeEnd != ''">
+				  AND TO_CHAR(T_ORDER_EXCHANGE.EXCHANGE_TIME, 'yyyy-MM-dd') &lt;= #{exchangeTimeEnd,jdbcType=VARCHAR}
+				</if>
+	</select>
+	<select id="queryExchangeOrderDetailed" resultMap="exchangeOrderDetailedMap" parameterType="com.avic.supplier.models.SupplierExchange">
+		select rownum rn,
+		       T_ORDER_SNAPSHOT.goods_name,
+		       T_ORDER_SNAPSHOT.image_path,
+		       T_ORDER_SNAPSHOT.goods_price AGREE_PRICE,
+		       T_ORDER_SNAPSHOT.sup_Goods_Id,
+		       T_ORDER_SNAPSHOT.buy_num,
+		       t_exchange_goods.exchange_num,
+		       T_ORDER_SNAPSHOT.goods_price *
+		       t_exchange_goods.exchange_num sum_change_price,
+		       t_exchange_goods.exchange_reason
+		  from T_ORDER_EXCHANGE, t_exchange_goods, T_ORDER_SNAPSHOT
+		 where T_ORDER_EXCHANGE.EXCHANGE_ID = t_exchange_goods.exchange_id
+		   and T_ORDER_EXCHANGE.order_id= T_ORDER_SNAPSHOT.order_id
+		   and T_ORDER_EXCHANGE.EXCHANGE_ID = #{exchangeId,jdbcType=VARCHAR}
+		   and T_ORDER_EXCHANGE.SUP_ID = #{supId}
+	</select>
+	<select id="queryExchangeOrderStatusList" resultMap="queryOrderStatusMap" parameterType="com.avic.supplier.models.SupplierCodeList">
+		select codetext,codevalue from codelist t where t.codelisttype = 'EXCHANGE_STATUS'
+	</select>
+	
+	<update id="updateExchangeOrderStatus" parameterType="com.avic.supplier.models.SupplierExchange">
+		 update T_ORDER_EXCHANGE set EXCHANGE_STATUS = #{exchangeStatus,jdbcType=VARCHAR}
+		 	
+		 	<if test="supCheckInfo != null and supCheckInfo != ''">
+		 		,SUP_CHECK_INFO = #{supCheckInfo,jdbcType=VARCHAR}
+           	</if>
+           	<if test="supplierAddressId != null and supplierAddressId != ''">
+           		,SUP_ADDRESS_ID = #{supplierAddressId,jdbcType=VARCHAR}
+           	</if>
+           	<if test="exchangeExpressNameSup != null and exchangeExpressNameSup != ''">
+           		,EXCHANGE_EXPRESS_NAME_SUP = #{exchangeExpressNameSup,jdbcType=VARCHAR}
+           	</if>
+           	<if test="exchangeExpressCodeSup != null and exchangeExpressCodeSup != ''">
+           		,EXCHANGE_EXPRESS_CODE_SUP = #{exchangeExpressCodeSup,jdbcType=VARCHAR}
+           	</if>
+           	<if test="supRemark != null and supRemark != ''">
+           		,SUP_REMARK = #{supRemark,jdbcType=VARCHAR}
+           	</if>
+           	<if test="exchangeStatus == 1 or exchangeStatus == 2">
+           		,sup_check_date = sysdate
+           	</if>
+           	<if test="exchangeStatus == 4">
+           		,SUP_REVIEW_DATE = sysdate
+           	</if>
+           	<if test="exchangeStatus == 5">
+           		,SUP_SEND_DATE = sysdate
+           	</if>
+		  where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+	</update>
+</mapper>

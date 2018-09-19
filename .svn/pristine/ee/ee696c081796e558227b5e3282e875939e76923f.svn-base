@@ -1,0 +1,85 @@
+package com.avic.management.controllers;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.management.models.OrderExchangeBean;
+import com.avic.management.services.OrderExchangeService;
+
+@Controller
+@RequestMapping("/orderExchange")
+public class OrderExchangeController {
+    protected static final Log logger = LogFactory.getLog(OrderExchangeController.class);
+    
+    @Autowired
+    OrderExchangeService orderExchangeService;
+    
+    @RequestMapping("")
+    public String index(HttpServletRequest request, Map<String, Object> map) {
+        logger.info("订单-换货");
+//      订单编号
+//        String order_id = request.getParameter("o");
+        String order_id = "D100003110000";
+        if (StringUtils.isEmpty(order_id)) {
+            throw new PageNotFoundException();
+        }
+        
+//      获取要换货单基本信息
+        OrderExchangeBean order = orderExchangeService.getOrderDetail(order_id);
+        if (order_id == null) {
+            throw new PageNotFoundException();
+        }
+        
+        map.put("order", order);
+        return "management_order_exchange";
+    }
+    
+    @RequestMapping("/orderSelect")
+    public String orderSelectDoInit(@ModelAttribute("order") OrderExchangeBean query_items,
+    		HttpServletRequest request, Map<String, Object> map) {
+        logger.info("订单-换货-选择商品");
+        
+        OrderExchangeBean oeBean = new OrderExchangeBean();
+//      订单编号
+        String order_id = request.getParameter("o");
+        if(order_id ==null || "".equals(order_id)){//为空说明是页面查询，否则为跳转查询
+        	order_id = query_items.getOrder_id();
+        }
+        String goods_name = query_items.getGoods_name();
+        
+        //TODO:改参数
+//        String order_id = "D100003110000";
+//        String good_name = "";
+        
+        if (StringUtils.isEmpty(order_id)) {
+            throw new PageNotFoundException();
+        }
+        
+        oeBean.setOrder_id(order_id);
+        oeBean.setGoods_name(goods_name);
+        
+//      获取订单商品列表
+        List<OrderExchangeBean> orderGoodsList = orderExchangeService.orderSelectDoInit(oeBean);
+        if (orderGoodsList == null) {
+            throw new PageNotFoundException();
+        }
+        String sup_id = ((OrderExchangeBean) orderGoodsList.get(0)).getSup_id();
+        
+        map.put("oglist", orderGoodsList);
+        request.setAttribute("order_id", order_id);
+        request.setAttribute("sup_id", sup_id);
+        request.setAttribute("goods_name", goods_name);
+        return "management_order_select";
+    }
+}

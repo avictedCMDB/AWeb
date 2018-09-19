@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ManagementPartnerMapper">
+	<resultMap id="partnerMap" type="com.avic.management.models.EnterpriseSupMapping">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="COMPANY_ID" property="companyId" jdbcType="VARCHAR" />
+		<result column="SUP_INFO_ID" property="supInfoId" jdbcType="VARCHAR" />
+		<result column="IF_BUILDING" property="ifBuilding" jdbcType="VARCHAR" />
+		<result column="JOIN_DATE" property="joinDate" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="SUP_DATE" property="supDate" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<insert id="addCart" parameterType="com.avic.management.models.Cart">
+		INSERT INTO T_CART
+            (
+              USER_ID,
+              SUP_ID,
+              SUP_GOODS_ID,
+              BUY_NUM
+              <if test="quoteID != null and quoteID != ''">
+              ,QUOTE_ID
+              </if>
+            )
+     VALUES
+            (
+	             #{userID,jdbcType=VARCHAR},
+	             #{supID,jdbcType=VARCHAR},
+	             #{supGoodsID,jdbcType=VARCHAR},
+	             #{buyNum,jdbcType=VARCHAR}
+	              <if test="quoteID != null and quoteID != ''">
+	              , #{quoteID,jdbcType=VARCHAR}
+	              </if>
+	          )
+	</insert>
+	
+	<select id="queryEnterpriseSupMappingList" resultMap="partnerMap" parameterType="com.avic.management.models.EnterpriseSupMapping">
+			 SELECT COUNT(1) FROM T_CART 
+			 WHERE USER_ID =  #{userID,jdbcType=VARCHAR}
+			 AND SUP_ID =  #{supID,jdbcType=VARCHAR}
+			 AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</select>
+	<select id="queryEnterpriseSupMappingCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.EnterpriseSupMapping">
+			 SELECT COUNT(1) FROM T_CART 
+			 WHERE USER_ID =  #{userID,jdbcType=VARCHAR}
+			 AND SUP_ID =  #{supID,jdbcType=VARCHAR}
+			 AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCart" parameterType="com.avic.management.models.Cart">
+		UPDATE T_CART 
+		   SET BUY_NUM = BUY_NUM + #{buyNum,jdbcType=INTEGER}
+		   <if test="quoteID != null and quoteID != ''">
+	           ,QUOTE_ID = #{quoteID,jdbcType=VARCHAR}
+	       </if>
+		  WHERE USER_ID =  #{userID,jdbcType=VARCHAR}
+			 AND SUP_ID =  #{supID,jdbcType=VARCHAR}
+			 AND SUP_GOODS_ID = #{supGoodsID,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,163 @@
+package com.avic.supplier.services.impl;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierAddressMapper;
+import com.avic.supplier.mappers.SupplierGoodsInfoMapper;
+import com.avic.supplier.models.SupplierGoodsImage;
+import com.avic.supplier.models.SupplierGoodsInfo;
+import com.avic.supplier.services.SupplierGoodsInfoService;
+
+@Service
+public class SupplierGoodsInfoServiceImpl implements SupplierGoodsInfoService {
+
+	protected static final Log logger = LogFactory
+			.getLog(SupplierGoodsInfoServiceImpl.class);
+
+	@Autowired
+	SupplierGoodsInfoMapper supplierGoodsInfoMapper;
+
+	@Autowired
+	SupplierAddressMapper supplierAddressMapper;
+
+	@Override
+	public List<SupplierGoodsInfo> querySupplierGoodsInfoList(
+			SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper
+				.querySupplierGoodsInfoList(supplierGoodInfo);
+	}
+
+	@Override
+	public List<SupplierGoodsInfo> querySupplierGoodsInfoBrandNameList(
+			SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper
+				.querySupplierGoodsInfoBrandNameList(supplierGoodInfo);
+	}
+
+	@Override
+	public void updateDeleteFlag(SupplierGoodsInfo supplierGoodInfo) {
+		supplierGoodsInfoMapper.updateDeleteFlag(supplierGoodInfo);
+
+	}
+
+	@Override
+	public List<SupplierGoodsImage> queryGoodsImg(
+			SupplierGoodsImage supplierGoodsImage) {
+		return supplierGoodsInfoMapper.queryGoodsImg(supplierGoodsImage);
+	}
+
+	@Override
+	public List<SupplierGoodsInfo> queryOrderData(
+			SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper.queryOrderData(supplierGoodInfo);
+	}
+
+	@Override
+	public SupplierGoodsInfo queryReportOrderData(
+			SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper.queryReportOrderData(supplierGoodInfo);
+	}
+
+	@Override
+	public Integer querySupplierGoodsInfoListCount(
+			SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper
+				.querySupplierGoodsInfoListCount(supplierGoodInfo);
+	}
+
+	@Override
+	public Integer queryOrderDataCount(SupplierGoodsInfo supplierGoodInfo) {
+		return supplierGoodsInfoMapper.queryOrderDataCount(supplierGoodInfo);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.avic.supplier.services.SupplierGoodsInfoService#uploadData(java.util.List, java.lang.String)
+	 */
+	@Override
+	public Map<String, String> uploadData(List<List<String>> supplierGoodInfos, String supId,String imgPath) {
+		if (supplierGoodInfos == null) {
+			return null;
+		}
+		int count = supplierGoodInfos.size();
+		int errCount = 0;
+		int sussCount = 0;
+		String errMsg = "";
+		for (int i = 0; i < supplierGoodInfos.size(); i++) {
+			SupplierGoodsInfo supplierGoodInfo = new SupplierGoodsInfo();
+			List<String> execlData = supplierGoodInfos.get(i);
+			String index = supplierAddressMapper.querySupplierIndex();
+			supplierGoodInfo.setSupId(supId);
+			supplierGoodInfo.setSupGoodsId(index);
+			supplierGoodInfo.setGoodsStatus("1");
+			// 获取商品分类
+			String systemType = execlData.get(0);
+			String marketCatId="";
+			if ("非标准件".equals(systemType)) {
+				marketCatId = this.supplierGoodsInfoMapper.queryGoodsCatId(systemType, null);
+			}else {
+				String goodsType = execlData.get(1);
+				marketCatId = this.supplierGoodsInfoMapper.queryGoodsCatId(systemType, goodsType);
+			}
+			if (marketCatId == null || "".equals(marketCatId)) {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2);
+				continue;
+			}else {
+				supplierGoodInfo.setMarketCatId(marketCatId);
+			}
+			supplierGoodInfo.setGoodsName(execlData.get(2));
+			supplierGoodInfo.setGoodsDesc(execlData.get(3));
+			supplierGoodInfo.setGoodsParam(execlData.get(4));
+			supplierGoodInfo.setBrandName(execlData.get(5));
+			supplierGoodInfo.setGoodsModel(execlData.get(6));
+			supplierGoodInfo.setGoodsWeight(execlData.get(7));
+			supplierGoodInfo.setProductArea(execlData.get(8));
+			supplierGoodInfo.setGoodsCode(execlData.get(9));
+			supplierGoodInfo.setGoodsWare(execlData.get(10));
+			supplierGoodInfo.setGoodsUnit(execlData.get(11));
+			supplierGoodInfo.setCountPrice(execlData.get(12));
+			supplierGoodInfo.setSalePrice(execlData.get(12));
+			supplierGoodInfo.setAgreePrice(execlData.get(12));
+			supplierGoodInfo.setGoodsService(execlData.get(13));
+			supplierGoodInfo.setImagePath(imgPath);
+			try {
+				supplierGoodsInfoMapper.uploadData(supplierGoodInfo);
+				sussCount++;
+			} catch (Exception e) {
+				errCount++;
+				errMsg = errMsg + "，"+(i+2);
+			}
+			
+		}
+		Map<String, String> reultMap = new HashMap<String, String>();
+		reultMap.put("count", String.valueOf(count));
+		reultMap.put("sussCount", String.valueOf(sussCount));
+		reultMap.put("errCount", String.valueOf(errCount));
+		String reultMsg = "导入总条数："+count +"  成功条数："+sussCount + "  失败条数："+errCount +"<br/>";
+		if (!"".equals(errMsg)) {
+			errMsg = errMsg.substring(1,errMsg.length());
+			reultMsg = reultMsg + "错误行数："+errMsg;
+		}
+		reultMap.put("errMsg",errMsg);
+		return reultMap;
+	}
+
+	@Override
+	public void updateGoodsInfo(SupplierGoodsInfo supplierGoodInfo) {
+		supplierGoodsInfoMapper.updateGoodsInfo(supplierGoodInfo);
+	}
+
+	@Override
+	public List<SupplierGoodsImage> queryImage(
+			SupplierGoodsImage supplierGoodsImage) {
+		return supplierGoodsInfoMapper.queryImage(supplierGoodsImage);
+	}
+}

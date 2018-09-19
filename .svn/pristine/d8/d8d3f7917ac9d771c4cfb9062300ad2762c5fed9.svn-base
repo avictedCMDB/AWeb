@@ -1,0 +1,877 @@
+package com.avic.market.cpi.adapters;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.avic.common.utils.ConfigHolder;
+import com.avic.market.cpi.ServiceAdapter;
+import com.avic.market.cpi.exceptions.ServiceExecutionFailedException;
+import com.avic.market.cpi.exceptions.TokenInvalidException;
+import com.avic.market.models.Goods;
+import com.avic.market.models.GoodsImage;
+import com.avic.market.models.Order;
+import com.avic.market.models.OrderSnapshot;
+import com.avic.market.models.Price;
+import com.avic.market.models.SupArea;
+import com.avic.market.models.SupCategory;
+
+public class JdServiceAdapter extends ServiceAdapter {
+    protected static final Log logger = LogFactory.getLog(JdServiceAdapter.class);
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+    private static final String URL_AUTH = "https://kploauth.jd.com";
+    private static final String URL_API = "https://router.jd.com/api";
+    private static final String URL_IMAGE = "http://img13.360buyimg.com/n0/";
+    
+    public void init() {
+        logger.info("京东接口初始化 ...");
+        super.init();
+        //httpHeaders.add(new BasicHeader("Accept", "application/json"));
+
+    }
+
+    @Override
+    public void fetchToken() throws ServiceExecutionFailedException {
+        logger.info("京东-获取AccessToken");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("grant_type", "password");
+        param.put("app_key", supplier.getCompanyCode());
+        param.put("app_secret", supplier.getDeptCode());
+        param.put("state", "0");
+        param.put("username", supplier.getAuthUser());
+        param.put("password", supplier.getAuthPass());
+
+        Map<String, Object> result;
+        try {
+            result = executeAuth(param);
+            supplier.setAccessToken((String) result.get("access_token"));
+            int expire = (Integer)result.get("expires_in");
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, expire - 3600);
+            supplier.setAccessExpire(c.getTime());
+            supplier.setRefreshToken((String) result.get("refresh_token"));
+        } catch (Exception e) {
+            logger.error("京东-AccessToken获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+    }
+
+    @Override
+    public void refreshToken() throws ServiceExecutionFailedException {
+        logger.info("京东-刷新AccessToken");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("grant_type", "refresh_token");
+        param.put("app_key", supplier.getCompanyCode());
+        param.put("app_secret", supplier.getDeptCode());
+        param.put("state", "0");
+        param.put("username", supplier.getAuthUser());
+        param.put("password", supplier.getAuthPass());
+
+        Map<String, Object> result;
+        try {
+            result = executeAuth(param);
+            supplier.setAccessToken((String) result.get("access_token"));
+            int expire = (Integer)result.get("expires_in");
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, expire - 3600);
+            supplier.setAccessExpire(c.getTime());
+            supplier.setRefreshToken((String) result.get("refresh_token"));
+        } catch (Exception e) {
+            logger.error("京东-AccessToken刷新失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+    }
+
+    
+    @Override
+    public List<SupCategory> fetchCategory() throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取分类");
+
+
+        List<SupCategory> list = new ArrayList<SupCategory>();
+        SupCategory cat = null;
+        Map<String, Object> result;
+        List<Map<String, Object>> cats;
+        try {
+            result = executeApi("biz.product.PageNum.query", new HashMap<String, String>());
+            cats = (List<Map<String, Object>>) result.get("result");
+            if (cats == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Map<String, Object> i : cats) {
+                cat = new SupCategory();
+                cat.setSupCatId(Integer.parseInt((String) i.get("page_num")));
+                //cat.setSupCatName(new String(String.valueOf(i.get("name")).getBytes("GBK"), "GBK"));
+                cat.setSupCatName((String) i.get("name"));
+                cat.setSupId(supplier.getSupId());
+                list.add(cat);
+            }
+            logger.info("京东-分类获取成功，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-分类获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchProvince() throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取省份");
+
+        Map<String, String> param = new HashMap<String, String>();
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = executeApi("biz.address.allProvinces.query", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(1);
+                area.setSupParentArea(0);
+                list.add(area);
+            }
+            logger.info("京东-省份获取成功，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-省份获取失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchCity(int prov) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取城市 [" + prov + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("id", String.valueOf(prov));
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+
+        try {
+            result = executeApi("biz.address.citysByProvinceId.query", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(2);
+                area.setSupParentArea(prov);
+                list.add(area);
+            }
+            logger.info("京东-城市获取成功 [" + prov + "]，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-城市获取失败 [" + prov + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchCountry(int city) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取区县 [" + city + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("id", String.valueOf(city));
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = executeApi("biz.address.countysByCityId.query", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(3);
+                area.setSupParentArea(city);
+                list.add(area);
+            }
+            logger.info("京东-区县获取成功 [" + city + "]，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-区县获取失败 [" + city + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<SupArea> fetchTown(int town) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取乡镇 [" + town + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("id", String.valueOf(town));
+
+        List<SupArea> list = new ArrayList<SupArea>();
+        SupArea area = null;
+        Map<String, Object> result;
+        Map<String, Integer> areas;
+        try {
+            result = executeApi("biz.address.townsByCountyId.query", param);
+            areas = (Map<String, Integer>) result.get("result");
+            if (areas == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            for (Entry<String, Integer> i : areas.entrySet()) {
+                area = new SupArea();
+                area.setSupAreaId(i.getValue());
+                area.setSupAreaName(i.getKey());
+                area.setSupId(supplier.getSupId());
+                area.setSupAreaLevel(4);
+                area.setSupParentArea(town);
+                list.add(area);
+            }
+            logger.info("京东-乡镇获取成功 [" + town + "]，数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-乡镇获取失败 [" + town + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> fetchSku(int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取SKU [" + cat + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("pageNum", String.valueOf(cat));
+
+        List<String> list = new ArrayList<String>();
+
+        Map<String, Object> result;
+
+        try {
+            result = executeApi("biz.product.sku.query", param);
+            list = Arrays.asList(((String) result.get("result")).split(","));
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+
+            logger.info("京东-SKU获取成功，[" + cat + "] 数量： [" + list.size() + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-SKU获取失败[" + cat + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public Goods fetchGoods(String sku, int cat) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-获取商品信息 [" + sku + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("sku", sku);
+
+        Map<String, Object> data;
+
+        Map<String, Object> result;
+        
+        Goods goods = null;
+
+        try {
+            result = executeApi("biz.product.detail.query", param);
+            data = (Map<String, Object>) result.get("result");
+            if (data == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            goods = new Goods();
+            goods.setBrandName((String)data.get("brandName"));
+            goods.setGoodsCode((String)data.get("upc"));
+            goods.setGoodsDesc((String)data.get("introduction"));
+            //goods.setGoodsModel();
+            goods.setGoodsName((String)data.get("name"));
+            goods.setGoodsParam((String)data.get("param"));
+            //goods.setGoodsService(data.get("service"));
+            goods.setGoodsStatus((Integer)data.get("state"));
+            goods.setGoodsUnit((String)data.get("saleUnit"));
+            //goods.setGoodsUrl(data.get("url"));
+            goods.setGoodsWare((String)data.get("wareQD"));
+            goods.setGoodsWeight((String)data.get("weight"));
+            goods.setImagePath(URL_IMAGE + data.get("imagePath"));
+            goods.setProductArea((String)data.get("productArea"));
+            String[] category = ((String)data.get("category")).split(";");
+            
+            
+            goods.setSupCatId(Integer.parseInt(category[category.length - 1]));
+            goods.setSupGoodsId(sku);
+            goods.setSupId(supplier.getSupId());
+
+            logger.info("京东-商品信息获取成功，[" + sku + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-商品信息获取失败[" + sku + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return goods;
+    }
+
+    @Override
+    public Map<String, Price> fetchPrice(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        StringBuffer strBuf = new StringBuffer();
+        for (String i : skus) {
+            strBuf.append(i + ",");
+        }
+        
+        String skuString = strBuf.substring(0, strBuf.length() - 1);
+        logger.info("京东-获取价格 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("sku", skuString);
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        Map<String, Price> map = new HashMap<String, Price>();
+        Price price = null;
+        try {
+            result = executeApi("biz.price.sellPrice.get", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                price = new Price();
+                price.setBusinessPrice((Double)i.get("price"));
+                double p = new BigDecimal(price.getBusinessPrice() * (1 + supplier.getPricePara())).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                price.setAgreePrice(p);
+                price.setCountPrice(p);
+                price.setSalePrice((Double)i.get("jdPrice"));
+                map.put(String.valueOf(i.get("skuId")), price);
+            }
+
+            logger.info("京东-价格获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-价格获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return map;
+    }
+
+    @Override
+    public List<GoodsImage> fetchGoodsImage(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        
+        StringBuffer strBuf = new StringBuffer();
+        for (String i : skus) {
+            strBuf.append(i + ",");
+        }
+        
+        String skuString = strBuf.substring(0, strBuf.length() - 1);
+        logger.info("京东-获取商品图片 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("sku", skuString);
+
+        Map<String, Object> list;
+
+        Map<String, Object> result;
+
+        List<GoodsImage> images = new ArrayList<GoodsImage>();
+        GoodsImage gi = null;
+        String sku = null;
+        List<Map<String, Object>> imageData = null;
+        try {
+            result = executeApi("biz.product.skuImage.query", param);
+            list = (Map<String, Object>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Entry<String, Object> i : list.entrySet()) {
+                sku = i.getKey();
+                imageData = (List<Map<String, Object>>)i.getValue();
+                
+                if (imageData != null) {
+                    for (Map<String, Object> j : imageData) {
+                        gi = new GoodsImage();
+                        gi.setSupId(supplier.getSupId());
+                        gi.setSupGoodsId(sku);
+                        gi.setImagePath(URL_IMAGE + j.get("path"));
+                        gi.setShowOrder(j.get("orderSort") == null ? 0 : (Integer)j.get("orderSort"));
+                        images.add(gi);
+                    }
+                }
+            }
+
+            logger.info("京东-商品图片获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-商品图片获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return images;
+    }
+
+    @Override
+    public Map<String, Integer> fetchStock(List<String> skus, List<String> area) throws ServiceExecutionFailedException,
+            TokenInvalidException {
+
+        String a = null;
+        
+        if (area != null) {
+            a = area.get(0) + "_" + area.get(1) + "_" + area.get(2) + "_" + (area.size() > 3 ? area.get(3) : 0);
+        } else {
+            a = "1_0_0_0";
+        }
+
+        String skuString = StringUtils.join(skus, ",");
+        logger.info("京东-获取库存 [" + skuString + "]");
+        List<Map<String, String>> skuNums = new ArrayList<Map<String,String>>();
+        for (String i : skus) {
+            Map<String, String> m = new HashMap<String, String>();
+            m.put("skuId", i);
+            m.put("num", "1");
+            skuNums.add(m);
+        }
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("skuNums", skuNums);
+        param.put("area", a);
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+
+        try {
+            result = executeApi("biz.stock.fororder.batget", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                if (33 == (Integer)i.get("stockStateId") || 39 == (Integer)i.get("stockStateId") || 40 == (Integer)i.get("stockStateId")) {
+                	if(-1 == ((Integer)i.get("remainNum"))){
+                		 map.put(String.valueOf(i.get("skuId")), 10000);
+                	}else{
+                		map.put(String.valueOf(i.get("skuId")), (Integer)i.get("remainNum"));
+                	}                   
+                } else {
+                    map.put(String.valueOf(i.get("skuId")), 0);
+                }
+            }
+
+            logger.info("京东-库存获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-库存获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return map;
+    }
+
+    @Override
+    public Map<String, Integer> fetchStatus(List<String> skus) throws ServiceExecutionFailedException, TokenInvalidException {
+
+
+        String skuString = StringUtils.join(skus, ",");
+        logger.info("京东-获取上下架状态 [" + skuString + "]");
+
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("sku", skuString);
+
+        List<Map<String, Object>> list;
+
+        Map<String, Object> result;
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+
+        try {
+            result = executeApi("biz.product.state.query", param);
+            list = (List<Map<String, Object>>) result.get("result");
+            if (list == null) {
+                throw new ServiceExecutionFailedException("无数据");
+            }
+            
+            for (Map<String, Object> i : list) {
+                map.put(String.valueOf(i.get("sku")), (Integer)i.get("state"));
+            }
+
+            logger.info("京东-上下架状态获取成功，[" + skuString + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-上下架状态获取失败[" + skuString + "]", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return map;
+    }
+
+    @Override
+    public String orderSubmit(Order order) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        logger.info("京东-订单预占提交");
+        
+        List<Map<String, String>> skus = new ArrayList<Map<String,String>>();
+        
+        for (OrderSnapshot i : order.getSnapshots()) {
+            Map<String, String> m = new HashMap<String, String>();
+            m.put("id", i.getSupGoodsId());
+            m.put("num", String.valueOf(i.getBuyNum()));
+            skus.add(m);
+        }
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("thirdOrder", order.getOrderId());
+        param.put("sku", skus);
+        param.put("name", order.getAddrName());
+        param.put("province", String.valueOf(order.getAddrProv()));
+        param.put("city", String.valueOf(order.getAddrCity()));
+        param.put("county", String.valueOf(order.getAddrDist()));
+        param.put("town", String.valueOf(order.getAddrTown()));
+        param.put("address", order.getAddrDetail());
+        param.put("zip", order.getAddrZip());
+        param.put("phone", order.getAddrTel());
+        param.put("mobile", order.getAddrPhone());
+        param.put("email", order.getAddrEmail());
+        param.put("invoiceState", "2");
+        param.put("invoiceType", "1");
+        param.put("selectedInvoiceTitle", "2");
+        param.put("companyName", ConfigHolder.getInstance().getConfig("invoice.title"));
+        param.put("invoiceContent", "1");
+        param.put("isUseBalance", "0");
+        param.put("submitState", "0");
+        param.put("paymentType", "101");
+
+
+        Map<String, Object> result, data;
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        String orderNo = null;
+
+        try {
+            result = executeApi("biz.order.unite.submit", param);
+            data = (Map<String, Object>) result.get("result");
+            if (data == null) {
+                throw new ServiceExecutionFailedException("未知错误");
+            }
+            //data = (Map<String, Object>) data.get("result");
+
+            orderNo = String.valueOf(data.get("jdOrderId"));
+
+            logger.info("京东-订单预占提交成功，[" + orderNo + "]");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-订单预占提交失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        
+        return orderNo;
+    }
+
+    @Override
+    public void orderConfirm(String orderId, String supOrderId) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-订单预占确认");
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("jdOrderId", supOrderId);
+
+        try {
+            executeApi("biz.order.occupyStock.confirm", param);
+
+            logger.info("京东-订单预占确认成功");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-订单预占确认失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+    }
+
+    @Override
+    public void orderCancel(String orderId, String supOrderId) throws ServiceExecutionFailedException, TokenInvalidException {
+
+        logger.info("京东-订单预占取消");
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("jdOrderId", supOrderId);
+
+        try {
+            executeApi("biz.order.cancelorder", param);
+
+            logger.info("京东-订单预占取消成功");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-订单预占取消失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> trackInfo(String orderId, String supOrderId) throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-查看物流信息");
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("jdOrderId", supOrderId);
+        Map<String, Object> result;
+        try {
+        	result = executeApi("biz.order.orderTrack.query", param);
+
+            logger.info("京东-查看物流信息");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-查看物流信息失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return result;
+    }
+
+    private Map<String, Object> executeAuth(Map<String, String> param) throws Exception, TokenInvalidException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+
+        HttpUriRequest req = null;
+        RequestBuilder builder = RequestBuilder.get();
+        
+        for (Header i : httpHeaders) {
+            builder.addHeader(i);
+        }
+
+        StringBuffer strbuf = new StringBuffer(URL_AUTH + "/oauth/token");
+        strbuf.append("?");
+        for (Entry<String, String> i : ((Map<String, String>)param).entrySet()) {
+            strbuf.append(i.getKey()).append("=").append(URLEncoder.encode(i.getValue(), "UTF-8")).append("&");
+            
+        }
+        String api = strbuf.toString();
+        builder.setUri(api);
+
+        req = builder.build();
+        
+        logger.debug("京东-接口调用[" + api + "] ");
+        String content = null;
+        int code = 0;
+        try {
+            response = client.execute(req);
+            code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new Exception("京东-接口返回HTTP状态异常 [" + code + "]");
+            }
+
+            entity = response.getEntity();
+
+            content = EntityUtils.toString(entity, "utf-8");
+
+            Map<String, Object> result = (Map<String, Object>) mapper.readValue(content, Map.class);
+            EntityUtils.consume(entity);
+            
+
+            logger.debug("京东-接口调用成功 [" + api + "] 返回 : " + content);
+
+            if ("0".equals(result.get("code"))) {
+                return result;
+            } else {
+               throw new Exception((String)result.get("desc"));
+            }
+
+        } catch (Exception e) {
+            logger.error("京东-接口调用失败 [" + api + "]", e);
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    private Map<String, Object> executeApi(String method, Object map) throws Exception, TokenInvalidException {
+        ObjectMapper mapper = new ObjectMapper();
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("method", method);
+        param.put("app_key", supplier.getCompanyCode());
+        param.put("access_token", supplier.getAccessToken());
+        param.put("timestamp", df.format(new Date()));
+        param.put("format", "json");
+        param.put("v", "1.0");
+        try {
+            param.put("param_json", mapper.writeValueAsString(map));
+        } catch (Exception e1) {
+            // ignore
+        }
+
+        HttpUriRequest req = null;
+        List<BasicNameValuePair> nv = new ArrayList<BasicNameValuePair>();
+        for (Entry<String, String> i: param.entrySet()) {
+            nv.add(new BasicNameValuePair(i.getKey(), i.getValue()));
+            //url = url + i.getKey() + "=" + (i.getValue() == null ? "" : URLEncoder.encode(i.getValue(), "UTF-8")) + "&";
+        }
+        req = buildRequest(URL_API, new UrlEncodedFormEntity(nv, "UTF-8"));
+
+        /*
+        RequestBuilder builder = RequestBuilder.get();
+        
+        for (Header i : httpHeaders) {
+            builder.addHeader(i);
+        }
+        
+        StringBuffer strbuf = new StringBuffer(URL_API);
+        strbuf.append("?");
+        for (Entry<String, String> i : ((Map<String, String>)param).entrySet()) {
+            strbuf.append(i.getKey()).append("=").append(URLEncoder.encode(i.getValue(), "UTF-8")).append("&");
+            
+        }
+        String api = strbuf.toString();
+        builder.setUri(api);
+        
+        req = builder.build();
+        */
+        logger.debug("京东-接口调用[" + method + "] 参数 : " + param.get("param_json"));
+        
+        String content = null;
+        int code = 0;
+        try {
+            response = client.execute(req);
+            code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new Exception("京东-接口返回HTTP状态异常 [" + code + "]");
+            }
+
+            entity = response.getEntity();
+
+            content = EntityUtils.toString(entity, "UTF-8");
+            logger.debug("京东-接口调用成功 [" + method + "] 返回 : " + content);
+
+            Map<String, Object> result = (Map<String, Object>) mapper.readValue(content, Map.class);
+            EntityUtils.consume(entity);
+            
+            if (result.containsKey("errorResponse")) {
+                result = (Map<String, Object>)result.get("errorResponse");
+            } else {
+                String resKey = ((String)((Map)param).get("method")).replaceAll("[.]", "_") + "_response";
+                result = (Map<String, Object>)result.get(resKey);
+            }
+
+
+            if ((result.containsKey("code") && "0".equals(result.get("code"))) && (!result.containsKey("success") || "true".equals(String.valueOf(result.get("success"))))) {
+                return result;
+            } else {
+                
+                if ((result.get("code") != null && ((String)result.get("code")).equals("1004")) || (result.containsKey("resultCode") && "2007".equals(result.get("resultCode")))) {
+                    throw new TokenInvalidException("京东-接口返回数据为失败 : " + result.get("resultMessage"));
+                } else {
+                    if (result.containsKey("msg")) {
+                        throw new Exception((String)result.get("msg"));
+                    } else {
+                        throw new Exception((String)result.get("resultMessage"));
+                    }
+                }
+                
+            }
+
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-接口调用失败 [" + method + "]", e);
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
+	@Override
+	public Map<String, Object> selectOrder(String supOrderId)
+			throws ServiceExecutionFailedException, TokenInvalidException {
+        logger.info("京东-查看订单信息");
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("jdOrderId", supOrderId);
+        Map<String, Object> result;
+        try {
+        	result = executeApi("biz.order.jdOrder.query", param);
+
+            logger.info("京东-查看订单信息");
+        } catch (TokenInvalidException ex) {
+            throw ex;
+        } catch (Exception e) {
+            logger.error("京东-查看物流信息失败", e);
+            throw new ServiceExecutionFailedException(e);
+        }
+        return result;
+	}
+}

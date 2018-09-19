@@ -1,0 +1,66 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.CompanyMyInfo;
+
+
+
+@Repository
+public interface CompanyMyInfoMapper {
+
+	/**
+	 * 查询资料管理信息
+	 * @return 
+	 */
+	public CompanyMyInfo queryCompanyMyInfo(CompanyMyInfo companyMyInfo);
+	
+	/**
+	 * 修改资料管理信息
+	 * @return 
+	 */
+	public void updateCompanyMyInfo(CompanyMyInfo companyMyInfo);
+	
+
+	/**
+	 * 修改资料管理信息
+	 * @return 
+	 */
+	public void updateCompanyMyInfo2(CompanyMyInfo companyMyInfo);
+	
+	/**
+	 * 查询登陆用户对应企业父id判断是企业管理员还是平台管理员
+	 * @return 
+	 */
+	public CompanyMyInfo queryParentCompanyID(CompanyMyInfo companyMyInfo);
+	
+	/**
+	 * 查询资料管理信息
+	 * @return 
+	 */
+	public CompanyMyInfo queryCompanyMyInfoByCompanyID(CompanyMyInfo companyMyInfo);
+	
+	/**
+	 * 审核
+	 * @return 
+	 */
+	public void check(CompanyMyInfo companyMyInfo);
+	/**
+	 *生成ID
+	 * @return 
+	 */
+	public String queryCompanyIndex();
+	
+	/**
+	 * 添加企业资料
+	 * @return 
+	 */
+	public void addCompanyMyInfo(CompanyMyInfo companyMyInfo);
+	/**
+	 * 审核
+	 * @return 
+	 */
+	public void checkSupInfo(String id,String valid);
+}

@@ -1,0 +1,45 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierAddress;
+
+public interface SupplierAddressService {
+	
+	/**
+	 * 查询地址列表
+	 * @return 
+	 */
+	public List<SupplierAddress> querySupplierAddressList(SupplierAddress supplierAddress);
+	
+	public Integer querySupplierAddressListCount(SupplierAddress supplierAddress);
+	
+	/**
+	 * 查看地址
+	 * @return 
+	 */
+	public SupplierAddress querySupplierAddress(String supAddressId);
+	
+	/**
+	 * 删除地址
+	 * @return 
+	 */
+	public void deleteSupplierAddress(String supAddressId);
+	/**
+	 * 设置默认地址
+	 * @return 
+	 */
+	public void updateSupplierAddress(SupplierAddress supplierAddress);
+	/**
+	 * 添加地址
+	 * @return 
+	 */
+	public void insertSupplierAddress(SupplierAddress supplierAddress);
+	
+	/**
+	 * 查询供应商主键
+	 * @return
+	 */
+	public String querySupplierIndex();
+	
+}

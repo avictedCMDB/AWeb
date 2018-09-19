@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.EnquiryGoodsMapper">
+	<resultMap id="enquiryGoodsMap" type="com.avic.market.models.EnquiryGoods">
+		<id column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="GOODS_ID" property="goodsID" jdbcType="VARCHAR" />
+		<result column="GOODS_NUM" property="goodsNum" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE_BEFORE" property="goodsPriceBefore" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE_AFTER" property="goodsPriceAfter" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_DATE" property="enquiryDate" jdbcType="VARCHAR" />
+		<result column="SUPER_OFFER_DATE" property="superOfferDate" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_STATUS" property="enquiryStatus" jdbcType="VARCHAR" />
+		<result column="CONTACT_TEL" property="contactTel" jdbcType="VARCHAR" />
+		<result column="PRICE_VALID_DATE" property="priceValidDate" jdbcType="VARCHAR" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<insert id="addEnquiryGoods" parameterType="com.avic.market.models.EnquiryGoods">
+     
+     	INSERT INTO T_ENQUIRY_GOODS TEG
+            (
+               TEG.ID,
+               TEG.GOODS_ID,
+               TEG.GOODS_NUM,
+               TEG.GOODS_PRICE_BEFORE,
+               TEG.ENQUIRY_DATE,
+               TEG.SUP_ID,
+               TEG.ENQUIRY_STATUS,
+               TEG.CONTACT_TEL,
+               TEG.PRICE_VALID_DATE,
+               TEG.CONTACT_NAME,
+               TEG.USER_ID
+            )
+    VALUES
+            (
+               ENQUIRY_INDEX.NEXTVAL,
+               #{goodsID,jdbcType=VARCHAR},
+               #{goodsNum,jdbcType=VARCHAR},
+               #{goodsPriceBefore,jdbcType=VARCHAR},
+               sysdate,
+               #{supID,jdbcType=VARCHAR},
+               0,
+               #{contactTel,jdbcType=VARCHAR},
+               to_date(#{priceValidDate,jdbcType=VARCHAR},'yyyy-mm-dd'),
+               #{contactName,jdbcType=VARCHAR},
+               #{userID,jdbcType=VARCHAR}
+            )
+	</insert>
+	
+	
+	<select id="canEnquiry" resultType="java.lang.Integer" parameterType="com.avic.market.models.EnquiryGoods">
+		SELECT COUNT(1)
+		  FROM T_ENQUIRY_GOODS TEG
+		 WHERE TEG.GOODS_ID = #{goodsID,jdbcType=VARCHAR}
+		   AND TEG.SUP_ID = #{supID,jdbcType=VARCHAR}
+		   AND TEG.USER_ID = #{userID,jdbcType=VARCHAR}
+		   AND TEG.ENQUIRY_STATUS != '3'
+	</select>
+</mapper>

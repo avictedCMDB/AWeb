@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.NewsMapper">
+	<resultMap id="websiteNoticeListMap" type="WebsiteNotice">
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="NOTICE_SUBJECT" property="noticeSubject" jdbcType="VARCHAR" />
+		<result column="NOTICE_TYPE" property="noticeType" jdbcType="VARCHAR" />
+		<result column="BEGIN_DATE" property="beginDate" jdbcType="VARCHAR" />
+		<result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
+		<result column="CONTENT" property="content" jdbcType="BLOB" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+		<result column="BROWSE_COUNT" property="browseCount" jdbcType="VARCHAR" />
+		<result column="IS_PUBLISH" property="isPublish" jdbcType="VARCHAR" />
+		<result column="PUBLISH_DATE" property="publishDate" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryWebsiteNotice" resultMap="websiteNoticeListMap">
+		select *
+		  from (select R.*, rownum rn
+		          from (select ID,
+		                       NOTICE_SUBJECT,
+		                       NOTICE_TYPE,
+		                       to_char(BEGIN_DATE,'yyyy-mm-dd') BEGIN_DATE,
+		                       to_char(END_DATE,'yyyy-mm-dd') END_DATE,
+		                       CONTENT,
+		                       CREATE_DATE,
+		                       CREATE_USER,
+		                       BROWSE_COUNT,
+		                       IS_PUBLISH,
+		                       PUBLISH_DATE
+		                  from T_WEBSITE_NOTICE
+		                  where 1=1
+		                  <if test="noticeSubject != null and noticeSubject != ''">
+				                and NOTICE_SUBJECT like '%'||#{noticeSubject,jdbcType=VARCHAR}||'%'
+				           </if>
+				           <if test="noticeType != null and noticeType != ''">
+				                and NOTICE_TYPE=#{noticeType,jdbcType=VARCHAR}
+				           </if>
+				           <if test="id != null and id != ''">
+				                and id=#{id,jdbcType=VARCHAR}
+				           </if>
+				           <if test="publishSatrDate != null and publishSatrDate != ''">
+							  AND TO_CHAR(PUBLISH_DATE,'yyyy-MM-dd') &gt;= #{publishSatrDate,jdbcType=VARCHAR}
+							</if>
+							<if test="publishEndDate != null and publishEndDate != ''">
+							  AND TO_CHAR(PUBLISH_DATE, 'yyyy-MM-dd') &lt;= #{publishEndDate,jdbcType=VARCHAR}
+							</if>
+		                 order by CREATE_DATE desc) R)
+		 WHERE RN BETWEEN #{pageFrom, jdbcType = INTEGER} AND #{pageTo,
+		 jdbcType = INTEGER}
+
+	</select>
+	
+	<select id="queryWebsiteNoticeCount" resultType="java.lang.Integer">
+		select count(1)
+		                  from T_WEBSITE_NOTICE
+		                  where 1=1
+		                  <if test="noticeSubject != null and noticeSubject != ''">
+				                and NOTICE_SUBJECT like '%'||#{noticeSubject,jdbcType=VARCHAR}||'%'
+				           </if>
+				           <if test="noticeType != null and noticeType != ''">
+				                and NOTICE_TYPE=#{noticeType,jdbcType=VARCHAR}
+				           </if>
+				           <if test="id != null and id != ''">
+				                and id=#{id,jdbcType=VARCHAR}
+				           </if>
+				           <if test="publishSatrDate != null and publishSatrDate != ''">
+							  AND TO_CHAR(PUBLISH_DATE,'yyyy-MM-dd') &gt;= #{publishSatrDate,jdbcType=VARCHAR}
+							</if>
+							<if test="publishEndDate != null and publishEndDate != ''">
+							  AND TO_CHAR(PUBLISH_DATE, 'yyyy-MM-dd') &lt;= #{publishEndDate,jdbcType=VARCHAR}
+							</if>
+	</select>
+	<update id="updateIsPublish" >
+		update T_WEBSITE_NOTICE set IS_PUBLISH = #{isPublish,jdbcType=VARCHAR} 
+		
+		<if test="isPublish == 0">
+			,PUBLISH_DATE = sysdate 
+			</if>
+		where id=#{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteNews">
+		delete from T_WEBSITE_NOTICE where id=#{id,jdbcType=VARCHAR}
+	</delete>
+	<update id="updateNews" >
+		update T_WEBSITE_NOTICE set  BEGIN_DATE = to_date(#{beginDate,jdbcType=VARCHAR},'yyyy-mm-dd')
+		, END_DATE = to_date(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd')
+		, CONTENT = #{content,jdbcType=BLOB}
+		,NOTICE_TYPE = #{noticeType,jdbcType=VARCHAR}
+		,NOTICE_SUBJECT = #{noticeSubject,jdbcType=VARCHAR}
+		<if test="isPublish == 0">
+			,IS_PUBLISH = #{isPublish,jdbcType=VARCHAR} 
+			,PUBLISH_DATE = sysdate
+		</if>
+		where id=#{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertNews" >
+		insert into T_WEBSITE_NOTICE
+		  (ID,
+		   NOTICE_SUBJECT,
+		   NOTICE_TYPE,
+		   BEGIN_DATE,
+		   END_DATE,
+		   CONTENT,
+		   CREATE_USER,
+		   IS_PUBLISH
+		   <if test="isPublish == 0">
+			,PUBLISH_DATE
+			</if>
+		   )
+		values(
+			to_char(sysdate, 'yyyyMMddHH24miss') || lpad(NOTICE_INDEX.nextval, 6, '0'),
+			#{noticeSubject,jdbcType=VARCHAR},
+			#{noticeType,jdbcType=VARCHAR},
+			to_date(#{beginDate,jdbcType=VARCHAR},'yyyy-mm-dd'),
+			to_date(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd'),
+			#{content,jdbcType=BLOB},
+			#{createUser,jdbcType=VARCHAR},
+			#{isPublish,jdbcType=VARCHAR} 
+			<if test="isPublish == '0'">
+			,sysdate
+			</if>
+		)
+	</insert>
+	
+</mapper>

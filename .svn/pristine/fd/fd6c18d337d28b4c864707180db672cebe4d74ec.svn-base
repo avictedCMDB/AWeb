@@ -1,0 +1,100 @@
+var timer;
+var actionPath;
+
+//校验图片大小和格式
+$(document).ready(function(){
+   $("#file").change(function(){
+	   var filepath = $("input[name='file']").val();
+	   var extStart = filepath.lastIndexOf(".");
+	   var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+	   if (ext != ".BMP" && ext != ".PNG" && ext != ".GIF" && ext != ".JPG" && ext != ".JPEG") {
+	       img_check_show("图片限于bmp,png,gif,jpeg,jpg格式。");
+	       return false;
+	   }
+	   
+	   var file_size = 0;
+	   if ($.browser.msie) {
+	       var img = new Image();
+	       img.src = filepath;
+	       if (img.fileSize > 0) {
+	           if (img.fileSize > 4 * 1024 * 1024) {
+	               img_check_show("上传的图片大小不能超过4M！");
+	               return false;
+	           }
+	       }
+	   } else {
+	       file_size = this.files[0].size;
+	       var size = file_size / 1024;
+	       if (size > 4096) {
+	           img_check_show("上传的图片大小不能超过4M！");
+	           return false;
+	       }
+	   }
+	   
+	   $("#img_check").html("");
+	   $("#img_check").hide();
+	   return true;
+	});
+});
+
+function img_check_show(str){
+	$("#img_check").html(str);
+	$("#img_check").show();
+}
+
+function startListener(){
+	var xmlhttp;
+	try{
+		//IE 5.0 
+		xmlhttp = new ActiveXObject('Msxm12.XMLHTTP');
+	}catch(e){
+		try{
+			//IE 5.5 及更高版本
+			xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		}catch(e){
+			try{
+				//其他浏览器
+				xmlhttp = new XMLHttpRequest();
+			}catch(e){}
+		}
+	}
+	var progressStatusText = document.getElementById("progressBar");
+	xmlhttp.open("get",actionPath+"/UploadServlet?uploadStatus=true",true);
+	/**此处Header设置非常重要，必须设置Content-type类型，负责会报错误
+	*/
+	 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	 xmlhttp.onreadystatechange = function(){
+		if(xmlhttp.readyState == 4){
+			if(xmlhttp.status == 200){
+				progressStatusText.innerHTML = "";
+				progressStatusText.innerHTML = xmlhttp.responseText;
+				var temp = xmlhttp.responseText.indexOf("hidden_path");
+				if (temp > 0){
+					var imgPath = $('#hidden_path').val();
+					window.clearTimeout(timer);
+					//添加缩略图
+					var imgCount = $("#imgCount").val();
+					var imgHtml = "<a class='preview' href='"+actionPath+imgPath+"' target='_blank'><li id='imgli_"+imgCount+"'><img src='"+actionPath+imgPath+"'></li></a>";
+					$("#imgUl").append(imgHtml);
+					$('#imgli_'+imgCount).append($('#hidden_path'));
+					$("#imgCount").val(Number(imgCount)+1);
+					$("a.preview").preview();
+				}else{
+					timer = window.setTimeout(startListener,1000);
+				}
+			}
+		}
+	}
+	xmlhttp.send(null);
+}
+
+function startUpload(path){
+	var err_str = $("#img_check").html();
+	if(err_str!=null && err_str!="" && err_str!=undefined){//图片大小格式校验不通过
+		return false;
+	}else{
+		actionPath = path;
+	    timer = window.setTimeout(startListener,1000);
+		return true;//执行提交
+	}
+}

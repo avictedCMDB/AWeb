@@ -1,0 +1,65 @@
+package com.avic.management.models;
+
+import java.io.Serializable;
+
+public class Management implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private int waitOrderCount;			//订单带收货数量
+	private int waitPayOrderCount;		//订单待支付数量
+	private int rejectOrderCount;		//订单已拒绝数量
+	private int returnOrderCount;		//订单已退货数量
+	private int changeOrderCount;		//订单已换货数量
+	private int rejectRefoundCount;		//退货单已退回数量
+	private int rejectExchangeCount;		//换货单已退回数量
+	private String userID;
+	
+	
+	public String getUserID() {
+		return userID;
+	}
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+	public int getWaitOrderCount() {
+		return waitOrderCount;
+	}
+	public void setWaitOrderCount(int waitOrderCount) {
+		this.waitOrderCount = waitOrderCount;
+	}
+	public int getRejectOrderCount() {
+		return rejectOrderCount;
+	}
+	public void setRejectOrderCount(int rejectOrderCount) {
+		this.rejectOrderCount = rejectOrderCount;
+	}
+	public int getReturnOrderCount() {
+		return returnOrderCount;
+	}
+	public void setReturnOrderCount(int returnOrderCount) {
+		this.returnOrderCount = returnOrderCount;
+	}
+	public int getChangeOrderCount() {
+		return changeOrderCount;
+	}
+	public void setChangeOrderCount(int changeOrderCount) {
+		this.changeOrderCount = changeOrderCount;
+	}
+	public int getRejectRefoundCount() {
+		return rejectRefoundCount;
+	}
+	public void setRejectRefoundCount(int rejectRefoundCount) {
+		this.rejectRefoundCount = rejectRefoundCount;
+	}
+	public int getRejectExchangeCount() {
+		return rejectExchangeCount;
+	}
+	public void setRejectExchangeCount(int rejectExchangeCount) {
+		this.rejectExchangeCount = rejectExchangeCount;
+	}
+	public int getWaitPayOrderCount() {
+		return waitPayOrderCount;
+	}
+	public void setWaitPayOrderCount(int waitPayOrderCount) {
+		this.waitPayOrderCount = waitPayOrderCount;
+	}
+}

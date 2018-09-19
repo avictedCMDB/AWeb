@@ -1,0 +1,15 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierGoodsEnquiry;
+
+public interface SupplierGoodsEnquiryService {
+	
+	public List<SupplierGoodsEnquiry> queryGoodsEnquiry(SupplierGoodsEnquiry supplierGoodsEnquiry);
+	
+	public int queryGoodsEnquiryCount(SupplierGoodsEnquiry supplierGoodsEnquiry);
+	
+	public void updateGoodsEnquiry(SupplierGoodsEnquiry supplierGoodsEnquiry);
+
+}

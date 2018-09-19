@@ -1,0 +1,156 @@
+
+.breadcrumb {
+    margin-bottom: 3px;
+    padding: 8px 0;
+}
+.breadcrumb li {
+    float: left;
+    font-size: 12px;
+    padding-right: 10px;
+}
+.breadcrumb li span {
+    padding-left: 10px;
+}
+#info_list {
+    background-color: #fff;
+    font-size: 12px;
+    padding: 0 20px 20px;
+}
+#info_list .section_inner {
+    padding: 0 20px 20px;
+    width: 870px;
+}
+#info_list .section_inner dl {
+    border-bottom: 1px dashed #aaa;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+}
+#info_list .section_inner dl dt {
+    float: left;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: right;
+    width: 85px;
+}
+#info_list .section_inner dl dd {
+    float: left;
+    line-height: 28px;
+    width: 740px;
+}
+#info_list .section_inner dl dd ul {
+    display: table;
+}
+#info_list .section_inner dl dd ul li {
+    display: table-cell;
+    padding-right: 10px;
+}
+#info_list .section_inner dl dd .detail_list {
+    margin-top: 10px;
+}
+#info_list .section_inner dl dd .detail_list img {
+    height: 110px;
+    width: 90px;
+}
+#info_list .section_inner dl dd .detail_list a {
+    display: block;
+    margin-top: 5px;
+    text-align: center;
+}
+#info_list .section_inner dl dd .detail_list a img {
+    height: 16px;
+    width: 16px;
+}
+.tab_list li a {
+    border: 1px solid #ff4200;
+    border-radius: 4px;
+    padding: 6px 20px;
+}
+.list_inner {
+    margin-top: 30px;
+}
+#info_list .section_inner dl dd .list_inner li {
+    border: 1px solid #dfdfdf;
+    float: left;
+    line-height: 20px;
+    margin-right: 20px;
+    padding: 3px 10px;
+    position: relative;
+}
+.list_inner li a {
+    height: 14px;
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    width: 14px;
+}
+.list_inner li a img {
+    height: 14px;
+    width: 14px;
+}
+.btn_list {
+    margin-top: 40px;
+    text-align: center;
+}
+.btn_list ul {
+    display: inline-block;
+}
+.btn_list ul li {
+    float: left;
+}
+.add_btn {
+    background: #0091dc none repeat scroll 0 0;
+    border: medium none;
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+#contents .inner .input-append .btn {
+    margin-top: -6px;
+}
+#info_list .section_inner dl.spectal_title dd {
+    width: 200px;
+}
+#info_list .section_inner dl.spectal_title dd input {
+    margin-left: 10px;
+}
+#info_list .section_inner dl.spectal_title dd input.form-control {
+    height: 28px;
+    margin-left: 0;
+}
+a.blue_link {
+    color: #0089d1;
+}
+a.blue_link:hover {
+    text-decoration: underline;
+}
+.input_area {
+    display: inline-block;
+}
+.link_download {
+    display: inline-block;
+}
+.blue-text {
+	color: #0089d1;
+}
+.blue-text {
+	margin-left: 10px;
+}
+.up_img_list ul {
+	float: left;
+}
+.up_img_list ul li {
+	padding-bottom: 0;
+	padding-top: 0;
+	line-height: auto;
+}
+.up_img_list ul li a {
+	margin-top: 0;
+}
+.list_inner {
+    margin-top: 0px;
+}
+.tab_list {
+    margin-bottom: 30px;
+}

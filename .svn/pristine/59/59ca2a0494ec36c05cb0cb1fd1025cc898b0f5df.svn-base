@@ -1,0 +1,27 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.management.models.Order;
+
+public interface OrderService {
+	/**
+	 * 查询订单信息
+	 */
+	public List<Order> queryOrders(Order order);
+	/**
+	 * 获取订单状态列表
+	 */
+	public List<Order> getOrderStatusList();
+
+    // ===========================================================================
+    //                         财务支付管理使用
+    // ===========================================================================
+	public int getPaymentOrderCount(String companyId, int supId, String orderId, int orderStatus, String goodsName);
+    public List<Order> getPaymentOrderList(String companyId, int supId, String orderId, int orderStatus, String goodsName, int page, int size);
+    public Order getOrderById(String orderId);
+    public void updateOrderPayStatus(@Param("orderId") String orderId) throws ServiceException;
+}

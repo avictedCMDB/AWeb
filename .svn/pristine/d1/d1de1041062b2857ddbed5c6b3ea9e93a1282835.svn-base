@@ -1,0 +1,10 @@
+package com.avic.management.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.BidProjSplit;
+
+@Repository
+public interface BidProjSplitMapper {
+    public void insertProjSplit(BidProjSplit bidProjSplit);
+}

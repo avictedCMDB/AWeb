@@ -1,0 +1,10 @@
+package com.avic.management.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.BidProjSupplier;
+
+@Repository
+public interface BidProjSupplierMapper {
+    public void insertProjSupplier(BidProjSupplier bidProjSupplier);
+}

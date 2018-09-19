@@ -1,0 +1,419 @@
+package com.avic.supervise.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.management.models.SupArea;
+import com.avic.passport.models.Menu;
+import com.avic.supervise.models.CodeList;
+import com.avic.supervise.models.Company;
+import com.avic.supervise.models.CompanyInfo;
+import com.avic.supervise.models.CompanyMyInfo;
+import com.avic.supervise.models.DepartmentNode;
+import com.avic.supervise.models.Node;
+import com.avic.supervise.models.Role;
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.CodeListService;
+import com.avic.supervise.services.CompanyInfoService;
+import com.avic.supervise.services.CompanyMyInfoService;
+import com.avic.supervise.services.CompanyService;
+import com.avic.supervise.services.SupAreaService;
+import com.avic.supervise.services.UserService;
+
+@Controller
+@RequestMapping("/companyInfo")
+public class CompanyInfoController {
+    protected static final Log logger = LogFactory.getLog(CompanyInfoController.class);
+    static final int PAGE_SIZE = 10; //每页显示多少条
+    @Autowired
+    CompanyInfoService companyInfoService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CompanyMyInfoService companyMyInfoService;
+    @Autowired
+    CodeListService codeListService;
+    
+    @Autowired
+    SupAreaService areaService;
+    
+	@RequestMapping("")
+    public String index(@ModelAttribute("companyInfo") CompanyInfo companyInfo,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("公司列表查询");
+        //查询合作采购单位列表
+        List<CompanyInfo> companyInfos = new ArrayList<CompanyInfo>();
+        User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+        companyInfo.setParentCompanyId(user.getCompanyId());       	
+        String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        //查询数量
+        companyInfo.setCompanyType("1");//1.传统供应商
+        int total = companyInfoService.getCompanyInfoCount(companyInfo);
+        companyInfo.setPage(pageNum);
+        companyInfo.setPageSize(PAGE_SIZE);
+       
+        companyInfos = companyInfoService.queryCompanyInfoList(companyInfo);
+        
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        //添加根据企业父ID判断是企业管理员还是平台管理员
+        String adminType = "";
+        CompanyMyInfo companyMyInfo = new CompanyMyInfo();
+        companyMyInfo.setId(user.getCompanyId());
+        companyMyInfo = companyMyInfoService.queryParentCompanyID(companyMyInfo);
+        //空则是平台管理员 非空则使企业管理员
+        if(companyMyInfo==null){
+        	adminType = "1";
+        }else{
+        	if(companyMyInfo.getParentCompanyID()!=null&&!"".equals(companyMyInfo.getParentCompanyID())){
+        		adminType = "2";
+        	}else{
+        		adminType = "1";
+        	}
+        	
+        }
+        
+        map.put("adminType", adminType);
+        map.put("companyInfos", companyInfos);
+        map.put("companyName", companyInfo.getCompanyName());
+        map.put("companyCode", companyInfo.getCompanyCode());
+        map.put("companyType", companyInfo.getCompanyType());
+        map.put("contactPerson", companyInfo.getContactPerson());
+        map.put("contactIphone", companyInfo.getContactIphone());
+        map.put("userName", companyInfo.getUserName());
+        map.put("ifCheck", companyInfo.getIfCheck());
+        map.put("timeStart", companyInfo.getTimeStart());
+        map.put("timeEnd", companyInfo.getTimeEnd());
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","supervise/companyInfo?companyName="+URLEncoder.encode(companyInfo.getCompanyName()==null?"":companyInfo.getCompanyName(), "GBK")
+					+"&contactPerson="+URLEncoder.encode(companyInfo.getContactPerson()==null?"":companyInfo.getContactPerson(), "GBK")
+					+"&contactIphone="+URLEncoder.encode(companyInfo.getContactIphone()==null?"":companyInfo.getContactIphone(), "GBK")
+					+"&userName="+URLEncoder.encode(companyInfo.getUserName()==null?"":companyInfo.getUserName(), "GBK")
+					+"&timeStart="+URLEncoder.encode(companyInfo.getTimeStart()==null?"":companyInfo.getTimeStart(), "GBK")
+					+"&timeEnd="+URLEncoder.encode(companyInfo.getTimeEnd()==null?"":companyInfo.getTimeEnd(), "GBK")
+					+"&ifCheck="+URLEncoder.encode(companyInfo.getIfCheck()==null?"":companyInfo.getIfCheck(), "GBK")+"&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "companyInfo/company_list";
+    }
+	
+	@RequestMapping("businessEnterprise")
+    public String supplierIndex(@ModelAttribute("companyInfo") CompanyInfo companyInfo,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("公司列表查询");
+        //查询合作采购单位列表
+        List<CompanyInfo> companyInfos = new ArrayList<CompanyInfo>();
+        User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+        companyInfo.setParentCompanyId(user.getCompanyId());       	
+        String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        //查询数量
+        companyInfo.setCompanyType("2");//2.采购单位
+        int total = companyInfoService.getCompanyInfoCount(companyInfo);
+        companyInfo.setPage(pageNum);
+        companyInfo.setPageSize(PAGE_SIZE);
+       
+        companyInfos = companyInfoService.querySupplierCompanyInfoList(companyInfo);
+        
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        //添加根据企业父ID判断是企业管理员还是平台管理员
+        String adminType = "";
+        CompanyMyInfo companyMyInfo = new CompanyMyInfo();
+        companyMyInfo.setId(user.getCompanyId());
+        companyMyInfo = companyMyInfoService.queryParentCompanyID(companyMyInfo);
+        //空则是平台管理员 非空则使企业管理员
+        if(companyMyInfo==null){
+        	adminType = "1";
+        }else{
+        	if(companyMyInfo.getParentCompanyID()!=null&&!"".equals(companyMyInfo.getParentCompanyID())){
+        		adminType = "2";
+        	}else{
+        		adminType = "1";
+        	}
+        	
+        }
+        
+        map.put("adminType", adminType);
+        map.put("companyInfos", companyInfos);
+        map.put("companyName", companyInfo.getCompanyName());
+        map.put("companyCode", companyInfo.getCompanyCode());
+        map.put("companyType", companyInfo.getCompanyType());
+        map.put("contactPerson", companyInfo.getContactPerson());
+        map.put("contactIphone", companyInfo.getContactIphone());
+        map.put("ifCheck", companyInfo.getIfCheck());
+        map.put("timeStart", companyInfo.getTimeStart());
+        map.put("timeEnd", companyInfo.getTimeEnd());
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","supervise/companyInfo/businessEnterprise?companyName="+URLEncoder.encode(companyInfo.getCompanyName()==null?"":companyInfo.getCompanyName(), "GBK")
+					+"&contactPerson="+URLEncoder.encode(companyInfo.getContactPerson()==null?"":companyInfo.getContactPerson(), "GBK")
+					+"&contactIphone="+URLEncoder.encode(companyInfo.getContactIphone()==null?"":companyInfo.getContactIphone(), "GBK")
+					+"&timeStart="+URLEncoder.encode(companyInfo.getTimeStart()==null?"":companyInfo.getTimeStart(), "GBK")
+					+"&timeEnd="+URLEncoder.encode(companyInfo.getTimeEnd()==null?"":companyInfo.getTimeEnd(), "GBK")
+					+"&ifCheck="+URLEncoder.encode(companyInfo.getIfCheck()==null?"":companyInfo.getIfCheck(), "GBK")+"&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "companyInfo/company_supplier_list";
+    }
+	
+	
+	@RequestMapping("/initEditCompany")
+    public String initEditCompany(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("初始化编辑公司");
+        CompanyInfo company = new CompanyInfo();
+        if(!"".equals(companyInfo.getId()) && companyInfo.getId()!=null){
+        	
+        	company.setId(companyInfo.getId());
+            company = companyInfoService.queryCompanyInfo(company);
+        	map.put("companyInfo", company);
+        }else{
+        	String companyID = companyInfoService.getSeqID();
+        	company.setCompanyCode(companyID);
+        	map.put("companyInfo", company);
+        }
+        return "companyInfo/company_edit";
+    }
+	
+	
+	 	@RequestMapping("/addCompanyInfo")
+	 	@ResponseBody
+	    public Object addCompany(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("添加公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+	        companyInfo.setId(companyInfo.getCompanyCode());
+	        companyInfo.setParentCompanyId(user.getCompanyId());
+	        companyInfo.setCreateUser(user.getUserId());
+	        int companyCount = companyInfoService.getCompanyInfoCountByCompanyName(companyInfo);
+	        if(companyCount>0){
+	        	result.put("status","公司名称已经存在！");
+	        	return result;
+	        }else{
+	        	companyInfoService.addCompanyInfo(companyInfo);
+	        	result.put("status","success");
+	        }
+	       
+	        return result;
+	    }
+	 	
+	 	@RequestMapping("/updCompanyInfo")
+	 	@ResponseBody
+	    public Object updCompanyInfo(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("修改公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        int companyCount = companyInfoService.getCompanyInfoCountByCompanyName(companyInfo);
+	        if(companyCount>0){
+	        	result.put("status","公司名称已经存在！");
+	        	return result;
+	        }else{
+	        	companyInfoService.updateCompanyInfo(companyInfo);
+	        	User user = new User();
+	        	user.setCompanyName(companyInfo.getCompanyName());
+	        	user.setCompanyId(companyInfo.getId());
+	        	userService.updateUserCompany(user);
+	        	result.put("status","success");
+	        }
+	        
+	        return result;
+	    }
+	 	
+	 	@RequestMapping("/delCompanyInfo")
+	 	@ResponseBody
+	    public Object delCompanyInfo(@ModelAttribute("companyInfo") CompanyInfo companyInfo,Map<String, Object> map,HttpSession httpSession,RedirectAttributes attr) {
+	        logger.info("删除公司");
+	        Map<String, String> result = new HashMap<String, String>();
+	        int userCount = userService.queryUserByCompanyID(companyInfo.getId());
+	        if(userCount>0){
+	        	result.put("status","公司下存在用户，无法删除！");
+	        	return result;
+	        }else{
+	        	companyInfoService.deleteCompany(companyInfo);
+	        	result.put("status","success");
+	        }
+	        
+	        return result;
+	    }
+	 	
+	 	
+	 	 @RequestMapping("checkInit")
+	     public String index(@Param("witchPage")String witchPage,@Param("id")String id,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+	 		 	logger.info("加载公司资料管理信息");
+	 			CompanyMyInfo companyMyInfos = new CompanyMyInfo();
+	 			CompanyMyInfo companyMyInfo = new CompanyMyInfo();
+	 			companyMyInfo.setId(id);
+	 			
+	 			companyMyInfos = companyMyInfoService.queryCompanyMyInfoByCompanyID(companyMyInfo);
+	 			List<Role> roleList = userService.queryAllRole();
+	 			int userCount = userService.queryUserByCompanyID(companyMyInfo.getId());
+	 			List<CodeList> companyCodes = new ArrayList<CodeList>();
+	 			List<CodeList> userTypeCodes = new ArrayList<CodeList>();
+	 			List<CodeList> managementTypeCodes = new ArrayList<CodeList>();
+	 			companyCodes = codeListService.getCodeList("company_model");
+	 			userTypeCodes = codeListService.getCodeList("user_type");
+	 			managementTypeCodes = codeListService.getCodeList("management_type");
+	 			//加载地区
+	 			SupArea supArea = new SupArea();
+	 			List<SupArea> areas = new ArrayList<SupArea>();
+	 			supArea.setSupID("1");
+	 			areas = areaService.queryAreas(supArea);
+	 			
+	 			
+	 	        map.put("companyMyInfo", companyMyInfos);
+	 	        map.put("companyCodes", companyCodes);
+	 	        map.put("userTypeCodes", userTypeCodes);
+	 	        map.put("managementTypeCodes", managementTypeCodes);
+	 	        map.put("areas", areas);
+	 	        map.put("witchPage", witchPage);	 	      	 		
+	         if("1".equals(witchPage)||"".equals(witchPage)||witchPage == null){
+	         	return "companyInfo/supervise_myinfo_check";
+	         }else{
+	        	map.put("userCount", userCount);
+	        	map.put("roleList", roleList);
+	         	return "companyInfo/supervise_myinfo_check02";
+	         }
+	         
+	     }
+	 	 
+	 	 @RequestMapping("check")
+	     public String check(@ModelAttribute("companyMyInfo")CompanyMyInfo companyMyInfo,@Param("roles")String roles,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) {
+	 		String  valid = "";
+	 		 if("1".equals(companyMyInfo.getIfCheck()) && roles != ""){
+		 		 userService.defaultUserRole(companyMyInfo.getId(), roles);	 			 
+	 		 }
+	 		 companyMyInfoService.check(companyMyInfo);
+	 		 if(companyMyInfo.getIfCheck().equals("1")){
+	 			valid = "1";
+	 		 }else{
+	 			valid = "0";
+	 		 }
+	 		 companyMyInfoService.checkSupInfo(companyMyInfo.getId(), valid);
+	 	     return "redirect:/supervise/companyInfo";
+	     }
+	 	 
+	 	/**
+	 	 * 查询树形部门
+	 	 * @param companyInfo
+	 	 * @param map
+	 	 * @param httpSession
+	 	 * @return
+	 	 * @throws UnsupportedEncodingException 
+	 	 */
+	 	@RequestMapping("/selDepartment")
+	    public String selDepartment(@ModelAttribute("companyInfo") CompanyInfo companyInfo,HttpServletRequest req,Map<String, Object> map,HttpSession httpSession) throws UnsupportedEncodingException {
+	        logger.info("初始化编辑公司");
+	        User userParam = new User();
+	        String userName = req.getParameter("userName");
+        	String contactPerson = req.getParameter("contactPerson");
+        	String contactNum = req.getParameter("contactNum");
+        	userParam.setUserName(userName);
+        	userParam.setContactPerson(contactPerson);
+        	userParam.setContactNum(contactNum);
+        	
+	        if(companyInfo.getSearCompanyCode() != null && !"".equals(companyInfo.getSearCompanyCode())){
+	        	//User user = (User) httpSession.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+	        	userParam.setCompanyId(companyInfo.getSearCompanyCode());
+	        	 map.put("searCompanyCode", companyInfo.getSearCompanyCode());
+	        }else{
+	        	userParam.setCompanyId(companyInfo.getCompanyCode());
+	        }
+	        int pageNum = 1;
+     		
+     		// 分页信息
+     		String page = String.valueOf(userParam.getPage());
+
+     		int total = userService.getUsersCount(userParam);
+
+     		int pages = (int) Math.ceil((double) total / userParam.getPageSize());
+     		
+   		 
+            if (StringUtils.isNumeric(page)) {
+                pageNum = Integer.parseInt(page);
+            }
+            
+     		userParam.setPage(pageNum);
+     		userParam.setPageSize(PAGE_SIZE);
+     		List<User> userList = userService.getUsersList(userParam);
+     		map.put("userList", userList);
+     		
+     		
+     		
+     		map.put("page", page);
+     		map.put("total", total);
+     		map.put("pages", pages);
+     		map.put("userList", userList);
+     		map.put("pageAction","supervise/companyInfo/selDepartment?username="+URLEncoder.encode(userParam.getUserName()==null?"":userParam.getUserName(), "GBK")
+					+"&contactPerson="+URLEncoder.encode(userParam.getContactPerson()==null?"":userParam.getContactPerson(), "GBK")
+					+"&contactNum="+URLEncoder.encode(userParam.getContactNum()==null?"":userParam.getContactNum(), "GBK")+"&page=%PAGE%");
+	        
+	        List<DepartmentNode> departments = new ArrayList<DepartmentNode>();
+	        departments = companyInfoService.queryDepartments(companyInfo);
+	        
+	        map.put("user", userParam);
+	        map.put("departments", departments);
+	        map.put("companyCode", companyInfo.getCompanyCode());
+	        return "companyInfo/supervise_staff_info";
+	    }
+	 	
+	 	/**
+	 	 * 查询部门树形数据
+	 	 * @param companyInfo
+	 	 * @param map
+	 	 * @param httpSession
+	 	 * @return
+	 	 */
+	 	/*@RequestMapping("/getTreeData")
+	 	@ResponseBody
+	    public Object getTreeData(@ModelAttribute("companyInfo") CompanyInfo companyInfo,HttpSession httpSession) {
+	        logger.info("获取企业部门树形数据");
+	        CompanyInfo ci = new CompanyInfo();
+	        ci = companyInfoService.queryDepartments(companyInfo);
+	        List<CompanyInfo> companyInfos = new ArrayList<CompanyInfo>();
+	        companyInfos.add(ci);
+	        return companyInfos;
+	    }*/
+	 	
+}

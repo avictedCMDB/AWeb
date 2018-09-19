@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avic.supplier.mappers.SupplierOrderMapper">
+	<resultMap id="queryOrderMap" type="com.avic.supplier.models.SupplierOrder">
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR"/>
+		<result column="ORDER_TIME" property="orderTime" jdbcType="VARCHAR"/>
+		<result column="ORDER_STATUS" property="orderStatus" jdbcType="VARCHAR"/>
+		<result column="ORDER_AMOUNT" property="orderAmount" jdbcType="VARCHAR"/>
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR"/>
+		<result column="GOODS_URL" property="goodsUrl" jdbcType="VARCHAR"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR"/>
+		<result column="SUP_GOODS_ID" property="supGoodsId" jdbcType="VARCHAR"/>
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR"/>
+		<result column="GOODS_PRICE" property="goodsPrice" jdbcType="VARCHAR"/>
+		<result column="BUY_NUM" property="buyNum" jdbcType="VARCHAR"/>
+		<result column="TOTALPRICE" property="totalprice" jdbcType="VARCHAR"/>
+		<result column="REFUND_STATUS" property="refundStatus" jdbcType="VARCHAR"/>
+		<result column="ORDER_STATUS_NAME" property="orderStatusName" jdbcType="VARCHAR"/>
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR"/>
+		<result column="GOODS_MODEL" property="goodsModel" jdbcType="VARCHAR"/>
+		<result column="SUP_ORDER_ID" property="supOrderId" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryOrderStatusMap" type="com.avic.supplier.models.SupplierOrder">
+		<result column="order_status" property="orderStatus" jdbcType="VARCHAR"/>
+		<result column="order_status_code" property="orderStatusCode" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryOrderContractMap" type="com.avic.supplier.models.SupplierOrderContract">
+		<result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR"/>
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR"/>
+		<result column="CONTRACT_NAME" property="contractName" jdbcType="VARCHAR"/>
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR"/>
+		<result column="SIGN_DATE" property="signDate" jdbcType="VARCHAR"/>
+		<result column="CONTRACT_PRICE" property="contractPrice" jdbcType="VARCHAR"/>
+		<result column="CONTRACT_ATTACHMENT_PATH" property="contractAttachmentPath" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryQuoteInfoMap" type="com.avic.supplier.models.SupplierQuoteInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="ORDER_ID" property="orderId" jdbcType="VARCHAR"/>
+		<result column="BUY_COMPANY" property="buyCompany" jdbcType="VARCHAR"/>
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR"/>
+		<result column="CONTACT_TEL" property="contactTel" jdbcType="VARCHAR"/>
+		<result column="CONTACT_FAX" property="contactFax" jdbcType="VARCHAR"/>
+		<result column="QUOTE_DATE" property="quoteDate" jdbcType="VARCHAR"/>
+		<result column="SEND_PERSON" property="sendPerson" jdbcType="VARCHAR"/>
+		<result column="SEND_PERSON_TEL" property="sendPersonTel" jdbcType="VARCHAR"/>
+		<result column="SEND_PERSON_FAX" property="sendPersonFax" jdbcType="VARCHAR"/>
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR"/>
+		<result column="QUOTE_ATTACHMENT_PATH" property="quoteAttachmentPath" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryImageInfoMap" type="com.avic.supplier.models.SupplierImageInfo">
+		<result column="ID" property="id" jdbcType="VARCHAR"/>
+		<result column="BUSINESS_ID" property="businessId" jdbcType="VARCHAR"/>
+		<result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR"/>
+		<result column="URL" property="url" jdbcType="VARCHAR"/>
+	</resultMap>
+		<select id="queryOrderList" parameterType="com.avic.supplier.models.SupplierOrder" resultMap="queryOrderMap">
+	SELECT * FROM (
+					SELECT T1.ORDER_ID,
+			               T1.SUP_ID,
+			               TO_CHAR(T1.ORDER_TIME, 'YYYY-mm-dd') ORDER_TIME,
+			               T1.ORDER_STATUS,
+			               T1.ORDER_AMOUNT_INIT ORDER_AMOUNT,
+			               T1.USER_ID,
+			               T1.SUP_ORDER_ID,
+			               T2.SUP_NAME,
+			               T4.GOODS_URL,
+			               T3.GOODS_NAME,
+			               T3.GOODS_MODEL,
+			               T3.SUP_GOODS_ID,
+			               T3.IMAGE_PATH,
+			               T3.GOODS_PRICE_INIT GOODS_PRICE,
+			               T3.BUY_NUM,
+			               (T3.GOODS_PRICE_INIT * T3.BUY_NUM) TOTALPRICE,
+			               T3.REFUND_STATUS,
+			               T5.CODETEXT ORDER_STATUS_NAME,
+			               T8.ROWSPAN
+			          FROM T_ORDER T1
+			          LEFT OUTER JOIN T_SUP_INFO T2
+			            ON T1.SUP_ID = T2.SUP_ID
+			          LEFT OUTER JOIN T_ORDER_SNAPSHOT T3
+			            ON T1.ORDER_ID = T3.ORDER_ID
+			           AND T1.SUP_ID = T3.SUP_ID
+			          LEFT OUTER JOIN T_SUP_GOODS T4
+			            ON T3.SUP_ID = T4.SUP_ID
+			           AND T3.SUP_GOODS_ID = T4.SUP_GOODS_ID
+			          LEFT OUTER JOIN CODELIST T5
+			            ON T1.ORDER_STATUS = T5.CODEVALUE
+			           AND T5.CODELISTTYPE = 'ORDER_STATUS'
+			          LEFT OUTER JOIN (SELECT T6.ORDER_ID, COUNT(T7.SUP_GOODS_ID) ROWSPAN
+			                            FROM T_ORDER T6
+			                            LEFT OUTER JOIN T_ORDER_SNAPSHOT T7
+			                              ON T6.ORDER_ID = T7.ORDER_ID
+			                             AND T6.SUP_ID = T7.SUP_ID
+			                           WHERE T6.SUP_ID = #{supId, jdbcType = INTEGER}
+			                           GROUP BY T6.ORDER_ID) T8
+			            ON T1.ORDER_ID = T8.ORDER_ID
+			         WHERE 1 = 1) T99 
+	WHERE T99.ORDER_ID IN (select order_id from (
+		SELECT ORDER_ID,rownum rn FROM(
+	        SELECT ORDER_ID FROM (
+	            SELECT DISTINCT T1.ORDER_ID,T1.ORDER_TIME FROM T_ORDER T1 
+	            LEFT OUTER JOIN T_SUP_INFO T2 ON T1.SUP_ID=T2.SUP_ID 
+	            LEFT OUTER JOIN T_ORDER_SNAPSHOT T3 ON T1.ORDER_ID=T3.ORDER_ID AND T1.SUP_ID=T3.SUP_ID 
+	            WHERE 1=1   
+	            <if test="companyName != null and companyName != ''">
+					AND exists(
+						select 1 from users where USER_ID = T1.USER_ID and COMPANYNAME like '%' || #{companyName} || '%'
+					)
+				</if>
+				<if test="orderId != null and orderId != ''">
+				<![CDATA[ AND T1.ORDER_ID LIKE '%' || #{orderId} || '%' ]]>
+				</if>
+				<if test="goodsModel != null and goodsModel != ''">
+				<![CDATA[ AND T3.goods_Model LIKE '%' || #{goodsModel} || '%' ]]>
+				</if>
+				<if test="goodsName != null and goodsName != ''">
+				<![CDATA[ AND T3.GOODS_NAME LIKE '%' || #{goodsName} || '%' ]]>
+				</if>
+				<if test="orderTime != null and orderTime != '' and orderTime!='99'">
+					<choose>
+						<when test="orderTime == '0'"><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,1) ]]> </when> 
+						<when test="orderTime == '1'"><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,3) ]]> </when> 
+						<otherwise><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,12) ]]> </otherwise> 
+					</choose> 
+				</if>
+				<if test="orderStatus != null and orderStatus != '' and orderStatus != '99'">
+				AND T1.ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+				</if>
+				AND T1.SUP_ID = #{supId,jdbcType=INTEGER} 
+				ORDER BY ORDER_TIME DESC
+	        )
+	    )  )WHERE RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	) 
+	</select>
+	<select id="queryOrderListCount" parameterType="com.avic.supplier.models.SupplierOrder" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM(
+	        SELECT ROWNUM RN,ORDER_ID FROM (
+	            SELECT DISTINCT T1.ORDER_ID,T1.ORDER_TIME FROM T_ORDER T1 
+	            LEFT OUTER JOIN T_SUP_INFO T2 ON T1.SUP_ID=T2.SUP_ID 
+	            LEFT OUTER JOIN T_ORDER_SNAPSHOT T3 ON T1.ORDER_ID=T3.ORDER_ID AND T1.SUP_ID=T3.SUP_ID 
+	            WHERE 1=1   
+	            <if test="companyName != null and companyName != ''">
+					AND exists(
+						select 1 from users where USER_ID = T1.USER_ID and COMPANYNAME like '%' || #{companyName} || '%'
+					)
+				</if>
+				<if test="orderId != null and orderId != ''">
+				<![CDATA[ AND T1.ORDER_ID LIKE '%' || #{orderId} || '%' ]]>
+				</if>
+				<if test="goodsName != null and goodsName != ''">
+				<![CDATA[ AND T3.GOODS_NAME LIKE '%' || #{goodsName} || '%' ]]>
+				</if>
+				<if test="goodsModel != null and goodsModel != ''">
+				<![CDATA[ AND T3.goods_Model LIKE '%' || #{goodsModel} || '%' ]]>
+				</if>
+				<if test="orderTime != null and orderTime != '' and orderTime!='99'">
+					<choose>
+						<when test="orderTime == '0'"><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,1) ]]> </when> 
+						<when test="orderTime == '1'"><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,3) ]]> </when> 
+						<otherwise><![CDATA[ AND T1.ORDER_TIME < ADD_MONTHS(SYSDATE,12) ]]> </otherwise> 
+					</choose> 
+				</if>
+				<if test="orderStatus != null and orderStatus != '' and orderStatus != '99'">
+				AND T1.ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+				</if>
+				AND T1.SUP_ID = #{supId,jdbcType=INTEGER} 
+	            ORDER BY T1.ORDER_TIME DESC
+	        )
+	    )
+	</select>
+	<select id="queryOrderStatusList" resultMap="queryOrderStatusMap" parameterType="com.avic.supplier.models.SupplierOrder">
+		select codetext order_status,codevalue order_status_code from codelist t where t.codelisttype = 'ORDER_STATUS'
+	</select>
+	<update id="updateOrderStatus" parameterType="com.avic.supplier.models.SupplierOrder">
+		 update T_ORDER set order_Status = #{orderStatus,jdbcType=VARCHAR}
+		 <if test="supplierReviewRemark != null and supplierReviewRemark != ''">
+				, SUPPLIER_REVIEW_REMARK = #{supplierReviewRemark,jdbcType=VARCHAR}
+		</if>
+		 <if test="orderAmount != null and orderAmount != ''">
+				, ORDER_AMOUNT = #{orderAmount,jdbcType=VARCHAR}
+				, ORDER_AMOUNT_INIT = #{orderAmount,jdbcType=VARCHAR}
+		</if>
+		<if test="supExpressName != null and supExpressName != ''">
+				, SUP_EXPRESS_NAME = #{supExpressName,jdbcType=VARCHAR}
+				, SUP_EXPRESS_CODE = #{supExpressCode,jdbcType=VARCHAR}
+		</if>
+		  where order_Id = #{orderId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updataOrderPrice" parameterType="com.avic.supplier.models.SupplierOrder">
+		 update T_ORDER_SNAPSHOT set GOODS_PRICE = #{goodsPrice,jdbcType=VARCHAR},
+		  GOODS_PRICE_INIT = #{goodsPrice,jdbcType=VARCHAR},
+		 BUY_NUM = #{buyNum,jdbcType=VARCHAR}
+		  where order_Id = #{orderId,jdbcType=VARCHAR}
+		  and SUP_GOODS_ID = #{supGoodsId,jdbcType=VARCHAR}
+	</update>
+	<select id="queryAuthorities" resultType="java.lang.String" parameterType="java.lang.String">
+		select AUTHORITY from AUTHORITIES t where t.userid = #{userId,jdbcType=VARCHAR}
+	</select>
+	<select id="queryContactNum" resultType="java.lang.String" parameterType="java.lang.String">
+		select t.contact_num from T_order o,users t where o.user_id = t.userid and o.order_id =  #{orderId,jdbcType=VARCHAR}
+	</select>
+	<update id="insertContract" parameterType="com.avic.supplier.models.SupplierOrderContract">
+		 insert into T_ORDER_CONTRACT
+					  (CONTRACT_CODE,
+					   ORDER_ID,
+					   CONTRACT_NAME,
+					   SUP_NAME,
+					   SIGN_DATE,
+					   CONTRACT_PRICE,
+					   CONTRACT_ATTACHMENT_PATH,
+					   CREATE_DATE)
+					values
+					  (#{contractCode,jdbcType=VARCHAR},
+					   #{orderId,jdbcType=VARCHAR},
+					   #{contractName,jdbcType=VARCHAR},
+					   #{supName,jdbcType=VARCHAR},
+					   to_date(#{signDate,jdbcType=VARCHAR},'yyyy-mm-dd'),
+					   #{contractPrice,jdbcType=VARCHAR},
+					   #{contractAttachmentPath,jdbcType=VARCHAR},
+					   sysdate
+					  )
+	</update>
+	<update id="insertImageInfo" parameterType="com.avic.supplier.models.SupplierImageInfo">
+		 insert into T_IMAGE_INFO
+					  (id,
+					   BUSINESS_ID,
+					   BUSINESS_TYPE,
+					   URL)
+					values
+					  (#{id,jdbcType=VARCHAR},
+					   #{businessId,jdbcType=VARCHAR},
+					   #{businessType,jdbcType=VARCHAR},
+					   #{url,jdbcType=VARCHAR}
+					  )
+	</update>
+	<select id="queryOrderContract" resultMap="queryOrderContractMap" parameterType="java.lang.String">
+		select * from T_ORDER_CONTRACT t where t.order_id = #{orderId,jdbcType=VARCHAR}
+	</select>
+	<select id="queryQuoteInfo" resultMap="queryQuoteInfoMap" parameterType="java.lang.String">
+		select * from T_QUOTE_INFO t where t.order_id = #{orderId,jdbcType=VARCHAR}
+	</select>
+	<select id="queryImageInfo" resultMap="queryImageInfoMap" parameterType="java.lang.String">
+		select t.*, t.rowid from T_IMAGE_INFO t where t.business_type = #{param2} and t.business_id =  #{param1}
+	</select>
+	<update id="updataQuoteInfo" parameterType="com.avic.supplier.models.SupplierQuoteInfo">
+		<if test="quoteAttachmentPath == null or quoteAttachmentPath == ''">
+				update T_QUOTE_INFO set 
+					BUY_COMPANY = #{buyCompany,jdbcType=VARCHAR}, 
+					CONTACT_NAME = #{contactName,jdbcType=VARCHAR},
+					CONTACT_TEL = #{contactTel,jdbcType=VARCHAR}, 
+					CONTACT_FAX = #{contactFax,jdbcType=VARCHAR}, 
+					QUOTE_DATE = to_date(#{quoteDate,jdbcType=VARCHAR},'yyyy-mm-dd'), 
+					SEND_PERSON = #{sendPerson,jdbcType=VARCHAR}, 
+					SEND_PERSON_TEL = #{sendPersonTel,jdbcType=VARCHAR}, 
+					SEND_PERSON_FAX = #{sendPersonFax,jdbcType=VARCHAR}
+				where ORDER_ID = #{orderId,jdbcType=VARCHAR}
+				and   SUP_ID =  #{supId,jdbcType=VARCHAR}
+		</if>
+	
+		<if test="quoteAttachmentPath != null and quoteAttachmentPath != ''">
+			merge into T_QUOTE_INFO t
+			USING DUAL
+			ON (t.SUP_ID = #{supId,jdbcType=VARCHAR} and t.ORDER_ID = #{orderId,jdbcType=VARCHAR} )
+		When matched then
+			update  set 
+					BUY_COMPANY = #{buyCompany,jdbcType=VARCHAR}, 
+					CONTACT_NAME = #{contactName,jdbcType=VARCHAR},
+					CONTACT_TEL = #{contactTel,jdbcType=VARCHAR}, 
+					CONTACT_FAX = #{contactFax,jdbcType=VARCHAR}, 
+					QUOTE_DATE = to_date(#{quoteDate,jdbcType=VARCHAR},'yyyy-mm-dd'), 
+					SEND_PERSON = #{sendPerson,jdbcType=VARCHAR}, 
+					SEND_PERSON_TEL = #{sendPersonTel,jdbcType=VARCHAR}, 
+					SEND_PERSON_FAX = #{sendPersonFax,jdbcType=VARCHAR},
+					QUOTE_ATTACHMENT_PATH = #{quoteAttachmentPath,jdbcType=VARCHAR},
+					FILE_NAME = #{fileName,jdbcType=VARCHAR}
+		When not matched then
+			insert 
+			  (ID,
+			   ORDER_ID,
+			   BUY_COMPANY,
+			   CONTACT_NAME,
+			   CONTACT_TEL,
+			   CONTACT_FAX,
+			   QUOTE_DATE,
+			   SEND_PERSON,
+			   SEND_PERSON_TEL,
+			   SEND_PERSON_FAX,
+			   SUP_ID,
+			   QUOTE_ATTACHMENT_PATH,
+			   FILE_NAME)
+			values
+			  (#{id,jdbcType=VARCHAR}, 
+			   #{orderId,jdbcType=VARCHAR}, 
+			   #{buyCompany,jdbcType=VARCHAR}, 
+			   #{contactName,jdbcType=VARCHAR},
+			   #{contactTel,jdbcType=VARCHAR}, 
+			   #{contactFax,jdbcType=VARCHAR}, 
+			   to_date(#{quoteDate,jdbcType=VARCHAR},'yyyy-mm-dd'), 
+			   #{sendPerson,jdbcType=VARCHAR}, 
+			   #{sendPersonTel,jdbcType=VARCHAR}, 
+			   #{sendPersonFax,jdbcType=VARCHAR}, 
+			   #{supId,jdbcType=VARCHAR}, 
+			   #{quoteAttachmentPath,jdbcType=VARCHAR},
+			   #{fileName,jdbcType=VARCHAR}
+			   )
+		</if>
+	</update>
+</mapper>

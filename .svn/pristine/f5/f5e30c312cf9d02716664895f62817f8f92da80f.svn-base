@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="marketAddress" type="com.avic.management.models.MarketAddress" />
+		<typeAlias alias="supInfo" type="com.avic.management.models.SupInfo" />
+		<typeAlias alias="supArea" type="com.avic.management.models.SupArea" />
+		<typeAlias alias="invoice" type="com.avic.management.models.Invoice" />
+		<typeAlias alias="supGoods" type="com.avic.management.models.SupGoods" />
+		<typeAlias alias="productCompare" type="com.avic.management.models.ProductCompare" />
+		<typeAlias alias="PayFlow" type="com.avic.management.models.PayFlow" />
+		<typeAlias alias="audit" type="com.avic.management.models.Audit" />
+		<typeAlias alias="management" type="com.avic.management.models.Management" />
+		<typeAlias alias="exchange" type="com.avic.management.models.Exchange" />
+		<typeAlias alias="code" type="com.avic.management.models.CodeList" />
+		<typeAlias alias="SettleData" type="com.avic.management.models.SettleData" />
+		<typeAlias alias="refound" type="com.avic.management.models.Refound" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/management/mappers/mybatis/MarketAddressMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/SupInfoMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/SupAreaMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/CommonMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/InvoiceMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/SupGoodsMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/ProductCompareMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/OrderExchangeMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/AuditMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/PayFlowMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/ManagementMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/ExchangeMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/CodeListMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/SettleMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/OrderRefoundMapper.xml" />
+		<mapper resource="com/avic/management/mappers/mybatis/RefoundMapper.xml" />
+	</mappers>
+</configuration>

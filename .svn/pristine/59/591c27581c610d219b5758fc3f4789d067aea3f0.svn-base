@@ -1,0 +1,105 @@
+package com.avic.market.controllers.bid;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.avic.market.models.BidProjSubject;
+import com.avic.market.models.BidProject;
+import com.avic.market.services.BidProjectService;
+import com.avic.market.services.CodeListService;
+import com.avic.market.services.UserService;
+import com.avic.supervise.models.Order;
+import com.avic.supplier.utils.NewExcel;
+
+@Controller
+@RequestMapping("/bid/notice")
+public class NoticeController {
+    protected static final Log logger = LogFactory.getLog(IndexController.class);
+
+    @Autowired
+    BidProjectService bidProjectService;
+
+    @Autowired
+    CodeListService codeListService;
+
+    @Autowired
+    UserService userService;
+
+    @RequestMapping("")
+    public String index(@RequestParam("projId") String projId, Map<String, Object> map) {
+        logger.info("电子竞价-公告");
+
+        BidProject proj = bidProjectService.getProjectById(projId);
+
+        if (proj == null || proj.getNoticeStatus() != 2) {
+            throw new IllegalArgumentException("没有该公告");
+        }
+
+        proj.setBidCatName(codeListService.getCodeText("BID_CAT", proj.getBidCat()));
+        proj.setCurrencyName(codeListService.getCodeText("CURRENCY", proj.getCurrency()));
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(proj.getBidStartTime());
+        c.add(Calendar.HOUR, -1);
+
+        proj.setClarifyEndTime(c.getTime());
+
+        map.put("proj", proj);
+        map.put("subjects", bidProjectService.getSubjects(projId));
+        map.put("user", userService.getUserById(proj.getUserId()));
+
+        return "bid/notice";
+    }
+
+    @RequestMapping("/export/subject")
+    public void exportSubject(@RequestParam("projId") String projId, HttpServletResponse resp) throws IOException {
+
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/x-download");
+
+        String filedisplay = "标的" + projId + ".xls";
+        filedisplay = URLEncoder.encode(filedisplay, "UTF-8");
+        resp.addHeader("Content-Disposition", "attachment;filename=" + filedisplay);
+
+        List<BidProjSubject> subjects = bidProjectService.getSubjects(projId);
+        
+        if (subjects != null) {
+
+            List<String> columnName = Arrays.asList(new String[] { "序号", "标的编号", "标的名称", "计量单位", "竞价数量", "说明" });
+
+            List<List<String>> values = new ArrayList<List<String>>();
+            int idx = 1;
+            for (BidProjSubject i : subjects) {
+                List<String> item = new ArrayList<String>();
+                item.add(String.valueOf(idx++));
+                item.add(i.getSubjectId());
+                item.add(i.getSubjectName());
+                item.add(i.getSubjectUnit());
+                item.add(String.valueOf(i.getSubjectNum()));
+                item.add(i.getIntro());
+                
+                values.add(item);
+            }
+            
+            
+            NewExcel.createExcel(resp, columnName, values);
+        }
+
+    }
+
+}

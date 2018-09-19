@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysCategory" type="com.avic.market.models.SysCategory" />
+		<typeAlias alias="SupCategory" type="com.avic.market.models.SupCategory" />
+		<typeAlias alias="CategoryRelation" type="com.avic.market.models.CategoryRelation" />
+		<typeAlias alias="Supplier" type="com.avic.market.models.Supplier" />
+		<typeAlias alias="Goods" type="com.avic.market.models.Goods" />
+		<typeAlias alias="CartItem" type="com.avic.market.models.CartItem" />
+		<typeAlias alias="Address" type="com.avic.market.models.Address" />
+		<typeAlias alias="Invoice" type="com.avic.market.models.Invoice" />
+		<typeAlias alias="SupArea" type="com.avic.market.models.SupArea" />
+		<typeAlias alias="Order" type="com.avic.market.models.Order" />
+		<typeAlias alias="VatInfo" type="com.avic.market.models.VatInfo" />
+		<typeAlias alias="PayFlow" type="com.avic.market.models.PayFlow" />
+		<typeAlias alias="SettleData" type="com.avic.market.models.SettleData" />
+		<typeAlias alias="OrderSnapshot" type="com.avic.market.models.OrderSnapshot" />
+		<typeAlias alias="TradeRecord" type="com.avic.market.models.TradeRecord" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/market/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SupplierMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/GoodsMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/CartMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/AddressMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/InvoiceMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/PayFlowMapper.xml" />
+		<mapper resource="com/avic/market/mappers/mybatis/SettleMapper.xml" />
+	</mappers>
+</configuration>
+
+

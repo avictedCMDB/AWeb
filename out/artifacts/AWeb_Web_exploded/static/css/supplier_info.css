@@ -1,0 +1,63 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .search_area {
+  background: #f6f4f5;
+  padding: 25px 0 15px 15px;
+  border: 1px solid #dfdfdf;
+}
+.info_section {
+	width: 590px;
+	margin: 0 auto;
+	margin-top: 40px;
+
+}
+.info_mian {
+	background: #f6f4f5;
+	width: 590px;
+	margin: 0 auto;
+	padding: 20px;
+}
+.left_box {
+	text-align: center;
+	width: 100px;
+	float: left;
+}
+.left_box .btn_up {
+	margin-top: 15px;
+}
+.left_box .img img {
+	width: 90px;
+	height: 90px;
+	overflow: hidden;
+}
+.right_box {
+	width: 430px;
+	margin-left: 20px;
+	float: left;
+	padding-top: 10px;
+}
+.right_box dl dt {
+	width: 80px;
+	float: left;
+	text-align: right;
+	line-height: 28px;
+}
+.right_box dl dd {
+	width: 330px;
+	float: left;
+	margin-left: 20px;
+}
+.btn_list {
+	text-align: center;
+	margin-top: 20px;
+}
+.btn_list button {
+	display: inline-block;
+	padding: 0 20px;
+}
+#contents .inner .input-append .gray {
+	background: #dfdfdf;
+	border: 1px solid #aaa;
+	height: 23px;
+	line-height: 23px;
+}

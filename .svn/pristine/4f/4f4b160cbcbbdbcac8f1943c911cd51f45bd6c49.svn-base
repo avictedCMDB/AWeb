@@ -1,0 +1,189 @@
+package com.avic.market.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.mappers.CategoryMapper;
+import com.avic.market.mappers.GoodsMapper;
+import com.avic.market.models.Goods;
+import com.avic.market.models.Price;
+import com.avic.market.models.TradeRecord;
+import com.avic.market.services.GoodsService;
+import com.avic.market.utils.DataUtil;
+
+@Service
+public class GoodsServiceImpl implements GoodsService {
+    protected static final Log logger = LogFactory.getLog(GoodsServiceImpl.class);
+
+    @Autowired
+    GoodsMapper goodsMapper;
+
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @Override
+    public List<Goods> searchGoods(int cat, String brand, int sup, String kw, int priceStart, int priceEnd, int order, int page, int size)
+            throws ServiceException {
+        logger.info("商品查询Service--cat[" + cat + "], brand[" + brand + "], kw[" + kw + "], price[" + priceStart + "," + priceEnd
+                + "], order[" + order + "], page[" + page + "], size[" + size + "]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+
+        return goodsMapper.queryGoodsList(cats[0], cats[1], brand, sup, kw, priceStart, priceEnd, order, start, end);
+    }
+
+    @Override
+    public List<Goods> searchProfGoods(int sup, int priceStart, int priceEnd, String brand, int order, int page, int size) throws ServiceException {
+        logger.info("专业市场商品查询Service-price[" + priceStart + "," + priceEnd + "], order[" + order + "], page[" + page + "], size[" + size + "]");
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+
+        return goodsMapper.queryProfGoodsList(sup, priceStart, priceEnd, brand, order, start, end);
+    }
+
+    @Override
+    public int getGoodsCount(int cat, String brand, int sup, String kw, int priceStart, int priceEnd) throws ServiceException {
+        logger.info("商品数量Service--cat[" + cat + "], brand[" + brand + "], kw[" + kw + "], price[" + priceStart + "," + priceEnd + "]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+
+        return goodsMapper.queryGoodsCount(cats[0], cats[1], brand, sup, kw, priceStart, priceEnd);
+    }
+
+    @Override
+    public int getProfGoodsCount(int sup, int priceStart, int priceEnd, String brand) throws ServiceException {
+        logger.info("专业市场商品数量Service--price[" + priceStart + "," + priceEnd + "]");
+
+        return goodsMapper.queryProfGoodsCount(sup, priceStart, priceEnd, brand);
+    }
+
+    @Override
+    public List<String> getGoodsBrand(int supId, int cat, String kw) throws ServiceException {
+        logger.info("获取商品品牌Service--supId[" + supId + "], cat[" + cat + "], kw[" + kw + "]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+
+        return goodsMapper.queryGoodsBrand(supId, cats[0], cats[1], kw);
+    }
+    @Override
+    public List<String> getProfGoodsBrand(int supId) throws ServiceException {
+        return goodsMapper.queryProfGoodsBrand(supId);
+    }
+
+    @Override
+    public Goods getGoodsDetail(int supId, String supGoodsId) throws ServiceException {
+        logger.info("获取商品详情Service--supId[" + supId + "], supGoodsId[" + supGoodsId + "]");
+        Goods goods = goodsMapper.queryGoodsById(supId, supGoodsId);
+        if (goods != null) {
+            goods.setImages(goodsMapper.queryGoodsImage(supId, supGoodsId));
+        }
+        return goods;
+    }
+
+    @Override
+    public Goods getGoodsSimple(int supId, String supGoodsId) throws ServiceException {
+        logger.info("获取商品简要信息Service--supId[" + supId + "], supGoodsId[" + supGoodsId + "]");
+        return goodsMapper.queryGoodsById(supId, supGoodsId);
+    }
+
+    @Override
+    public void updateGoodsPrice(Price price) throws ServiceException {
+        logger.info("更新商品价格Service");
+        try {
+            goodsMapper.updateGoodsPrice(price);
+        } catch (Exception e) {
+            logger.error("更新商品价格失败", e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void updateGoodsStatus(int supId, String supGoodsId, int status) throws ServiceException {
+        logger.info("更新商品状态Service");
+        try {
+            goodsMapper.updateGoodsStatus(supId, supGoodsId, status);
+        } catch (Exception e) {
+            logger.error("更新商品状态失败", e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Goods> getGoodsListByIds(int supId, List<String> ids) throws ServiceException {
+        logger.info("批量查询商品基本信息");
+        return goodsMapper.queryGoodsByIds(supId, ids);
+    }
+
+    @Transactional
+    @Override
+    public void updateGoodsSaleNum(int supId, String supGoodsId, int num) throws ServiceException {
+        logger.info("更新商品销量Service-supId[" + supId + "], supGoodsId[" + supGoodsId + "]");
+
+        try {
+            int count = goodsMapper.querySaleNumCount(supId, supGoodsId);
+            if (count > 0) {
+                goodsMapper.updateGoodsSaleNum(supId, supGoodsId, num);
+            } else {
+                goodsMapper.insertGoodsSaleNum(supId, supGoodsId, num);
+            }
+        } catch (Exception e) {
+            logger.error("更新商品销量失败", e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public int getTradeRecordCount(int supId, String supGoodsId) throws ServiceException {
+        logger.info("商品交易记录数量Service--supId[" + supId + "], supGoodsId[" + supGoodsId + "]");
+
+        return goodsMapper.queryTradeRecordCount(supId, supGoodsId);
+    }
+
+    @Override
+    public List<TradeRecord> getTradeRecordList(int supId, String supGoodsId, int page, int size) throws ServiceException {
+        logger.info("商品查询Service--supId[" + supId + "], supGoodsId[" + supGoodsId + "], page[" + page + "], size[" + size + "]");
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int start = (page - 1) * size + 1;
+        int end = start + size - 1;
+
+        return goodsMapper.queryTradeRecordList(supId, supGoodsId, start, end);
+    }
+
+    @Override
+    public List<Goods> getHotGoods(int cat, int size) throws ServiceException {
+        logger.info("热门商品查询Service--cat[" + cat + "], size[" + size + "]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+
+        return goodsMapper.queryHotGoods(cats[0], cats[1], size);
+    }
+
+    @Override
+    public List<Goods> getProfHotGoods(int size) throws ServiceException {
+        logger.info("热门专业市场查询Service--size["+size+"]");
+        
+        return goodsMapper.queryProfHotGoods(size);
+    }
+}

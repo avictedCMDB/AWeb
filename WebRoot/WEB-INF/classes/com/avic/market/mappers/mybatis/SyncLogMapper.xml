@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.SyncLogMapper">
+	
+	<insert id="insertSyncLog">
+		 insert into T_SUP_SYNC_LOG (SUP_ID, SUP_GOODS_ID, TYPE, STATUS, ERROR_MSG, CREATE_DATE)
+		 values (#{supId,jdbcType=VARCHAR}, #{supGoodsId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, sysdate)
+	</insert>
+	
+</mapper>

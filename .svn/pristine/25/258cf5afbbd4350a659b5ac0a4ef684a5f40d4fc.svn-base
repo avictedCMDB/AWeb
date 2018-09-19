@@ -1,0 +1,33 @@
+log4j.rootLogger=info,error,stdout
+log4j.logger.com.avic=applog,errorlog
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d %p  %m%n
+
+log4j.appender.applog=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.applog.file=c\:/logs/avic/aweb_app.log
+log4j.appender.applog.DatePattern='.'yyyy-MM-dd
+log4j.appender.applog.layout=org.apache.log4j.PatternLayout
+log4j.appender.applog.layout.ConversionPattern=%d{yyyy-MM-ddHH\:mm\:ss}\#%5p\#[%t](%F\:%L)-%m%n
+log4j.appender.applog.Threshold = ERROR
+log4j.appender.applog.append=true
+
+log4j.appender.errorlog=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.errorlog.file=c\:/logs/avic/aweb_error.log
+log4j.appender.errorlog.DatePattern='.'yyyy-MM-dd
+log4j.appender.errorlog.layout=org.apache.log4j.PatternLayout
+log4j.appender.errorlog.layout.ConversionPattern=%d{yyyy-MM-dd HH\:mm\:ss}\#%5p\#[%t](%F\:%L)-%m%n 
+log4j.appender.errorlog.Threshold = ERROR
+log4j.appender.errorlog.append=true
+
+
+###\u663e\u793aSQL\u8bed\u53e5\u90e8\u5206
+log4j.logger.com.ibatis=DEBUG
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=DEBUG
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner=DEBUG
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=DEBUG
+log4j.logger.java.sql.Connection=DEBUG
+log4j.logger.java.sql.Statement=DEBUG
+log4j.logger.java.sql.PreparedStatement=DEBUG
+

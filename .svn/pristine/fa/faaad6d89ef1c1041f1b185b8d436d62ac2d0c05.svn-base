@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierProjectMapper">
+
+	<resultMap type="com.avic.supplier.models.SupplierProject" id="SupplierProjectMap">
+		<result column="PROJ_ID" 		property="projId" 			jdbcType="VARCHAR"/>
+		<result column="PROJ_NAME" 		property="projName" 		jdbcType="VARCHAR"/>
+		<result column="COMPANYNAME" 	property="compName" 		jdbcType="VARCHAR"/>
+		<result column="PROJ_TYPE" 		property="projType" 		jdbcType="VARCHAR"/>
+		<result column="PROJ_STATUS" 	property="projStatus" 		jdbcType="VARCHAR"/>
+		<result column="BID_START_TIME" property="bidStartTime" 	jdbcType="VARCHAR"/>
+		<result column="AUDIT_STATUS" 	property="auditStatus" 		jdbcType="VARCHAR"/>
+		<result column="JOIN_END_TIME" 	property="joinEndTime" 		jdbcType="VARCHAR"/>
+		<result column="SUP_CODE" 		property="supCode" 		jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectProject" resultMap="SupplierProjectMap">
+		SELECT * FROM (
+			SELECT 
+				B.PROJ_ID, 
+				B.PROJ_NAME, 
+				B.PROJ_TYPE, 
+				B.PROJ_STATUS,
+				B.BID_START_TIME, 
+				C.AUDIT_STATUS, 
+				D.COMPANYNAME, 
+				ROWNUM RN 
+				FROM BID_PROJECT B 
+				LEFT JOIN BID_PROJ_SUPPLIER C ON B.PROJ_ID = C.PROJ_ID
+				LEFT JOIN USERS D ON D.USERID = B.USER_ID
+				WHERE 1=1 
+				<if test="projType != null and projType != ''">
+					<if test="projType == 1">
+						AND (B.PROJ_TYPE = 1 AND C.PROJ_ID IS NOT NULL)
+					</if>
+					<if test="projType != 1">
+						AND (B.PROJ_TYPE = #{projType} OR (B.PROJ_TYPE = 1 AND C.AUDIT_STATUS IS NOT NULL))
+					</if>
+				</if>
+				<if test="projType == null or projType == ''">
+					AND (B.PROJ_TYPE != 1 OR (B.PROJ_TYPE = 1 AND C.AUDIT_STATUS IS NOT NULL))
+				</if>
+				<if test="type == 'public'">
+					AND B.PROJ_STATUS = 2
+					<if test="auditStatus == null or auditStatus == ''">
+						AND (C.AUDIT_STATUS != 2 OR C.AUDIT_STATUS IS NULL)
+					</if>
+					<if test="auditStatus != null and auditStatus != ''">
+						<if test="auditStatus == 0">
+							AND C.AUDIT_STATUS IS NULL
+						</if>
+						<if test="auditStatus != 0">
+							AND C.AUDIT_STATUS = #{auditStatus}
+						</if>
+					</if>
+				</if>
+				<if test="type == 'underway'">
+					<if test="auditStatus != null and auditStatus != ''">
+						AND B.PROJ_STATUS = #{auditStatus}
+					</if>
+					<if test="auditStatus == null or auditStatus == ''">
+						AND (B.PROJ_STATUS = 2 OR B.PROJ_STATUS = 3)
+					</if>
+					AND C.AUDIT_STATUS = 2
+				</if>
+		
+				<if test="type == 'over'">
+					AND B.PROJ_STATUS > 3
+				</if>
+				
+				<if test="compName != null and compName != ''">
+					AND D.COMPANYNAME LIKE CONCAT(CONCAT('%',#{compName}),'%')
+				</if>
+				<if test="projId != null and projId != ''">
+					AND B.PROJ_ID LIKE CONCAT(CONCAT('%',#{projId}),'%')
+				</if>
+				<if test="startTime != null and startTime != ''">
+					AND B.BID_START_TIME &gt;= to_date(CONCAT(#{startTime},'00:00:00'),'yyyy-mm-ddhh24:mi:ss')
+				</if>
+				<if test="endTime != null and endTime != ''">
+					AND B.BID_START_TIME &lt;= to_date(CONCAT(#{endTime},'23:59:59'),'yyyy-mm-ddhh24:mi:ss')
+				</if>
+				ORDER BY B.BID_START_TIME DESC
+		) 
+		WHERE RN BETWEEN #{start,jdbcType=INTEGER} AND #{end,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectProjectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM BID_PROJECT B 
+		LEFT JOIN BID_PROJ_SUPPLIER C ON B.PROJ_ID = C.PROJ_ID
+		LEFT JOIN USERS D ON D.USERID = B.USER_ID
+		WHERE 1=1 
+		<if test="projType != null and projType != ''">
+			<if test="projType == 1">
+				AND (B.PROJ_TYPE = 1 AND C.PROJ_ID IS NOT NULL)
+			</if>
+			<if test="projType != 1">
+				AND (B.PROJ_TYPE = #{projType} OR (B.PROJ_TYPE = 1 AND C.AUDIT_STATUS IS NOT NULL))
+			</if>
+		</if>
+		<if test="projType == null or projType == ''">
+			AND (B.PROJ_TYPE != 1 OR (B.PROJ_TYPE = 1 AND C.AUDIT_STATUS IS NOT NULL))
+		</if>
+		<if test="type == 'public'">
+			AND B.PROJ_STATUS = 2
+			<if test="auditStatus == null or auditStatus == ''">
+				AND (C.AUDIT_STATUS != 2 OR C.AUDIT_STATUS IS NULL)
+			</if>
+			<if test="auditStatus != null and auditStatus != ''">
+				<if test="auditStatus == 0">
+					AND C.AUDIT_STATUS IS NULL
+				</if>
+				<if test="auditStatus != 0">
+					AND C.AUDIT_STATUS = #{auditStatus}
+				</if>
+			</if>
+		</if>
+		<if test="type == 'underway'">
+			<if test="auditStatus != null and auditStatus != ''">
+				AND B.PROJ_STATUS = #{auditStatus}
+			</if>
+			<if test="auditStatus == null or auditStatus == ''">
+				AND (B.PROJ_STATUS = 2 OR B.PROJ_STATUS = 3)
+			</if>
+			AND C.AUDIT_STATUS = 2
+		</if>
+
+		<if test="type == 'over'">
+			AND B.PROJ_STATUS > 3
+		</if>
+				
+		<if test="compName != null and compName != ''">
+			AND D.COMPANYNAME LIKE CONCAT(CONCAT('%',#{compName}),'%')
+		</if>
+		<if test="projId != null and projId != ''">
+			AND B.PROJ_ID LIKE CONCAT(CONCAT('%',#{projId}),'%')
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND B.BID_START_TIME &gt;= to_date(CONCAT(#{startTime},'00:00:00'),'yyyy-mm-ddhh24:mi:ss')
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND B.BID_START_TIME &lt;= to_date(CONCAT(#{endTime},'23:59:59'),'yyyy-mm-ddhh24:mi:ss')
+		</if>
+	</select>
+
+	<insert id="insertBidProjSupplierByProjIdWithSupId">
+		insert into bid_proj_supplier (
+			proj_id, sup_code, join_type, 
+			audit_status, join_time
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{supId,jdbcType=VARCHAR}, 2,
+			1, sysdate
+		)
+	</insert>
+
+	<select id="selectProjectByProjIdAndSupCode" resultMap="SupplierProjectMap">
+		SELECT 
+			B.PROJ_ID, 
+			B.PROJ_NAME, 
+			B.PROJ_TYPE, 
+			B.PROJ_STATUS,
+			B.BID_START_TIME, 
+			C.AUDIT_STATUS, 
+			D.COMPANYNAME,
+  			C.SUP_CODE,
+      		B.JOIN_END_TIME	
+		FROM BID_PROJECT B 
+			LEFT JOIN BID_PROJ_SUPPLIER C ON B.PROJ_ID = C.PROJ_ID
+			LEFT JOIN USERS D ON D.USERID = B.USER_ID
+		WHERE 1=1 
+		AND B.PROJ_ID = #{projId}
+		AND C.SUP_CODE = #{supCode}
+	</select>
+	
+	
+	<select id="selectProjectByProjId" resultMap="SupplierProjectMap">
+		SELECT 
+			B.PROJ_ID, 
+			B.PROJ_NAME, 
+			B.PROJ_TYPE, 
+			B.PROJ_STATUS,
+			B.BID_START_TIME, 
+      		B.JOIN_END_TIME	
+		FROM BID_PROJECT B 
+		WHERE 1=1 
+		AND B.PROJ_ID = #{projId}
+	</select>
+
+</mapper>

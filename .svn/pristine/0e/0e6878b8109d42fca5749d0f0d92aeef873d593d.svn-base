@@ -1,0 +1,11 @@
+function query(action){
+	
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+	
+}
+function queryFast(action,status){
+	$("#orderStatus").val(status);
+	document.getElementById("queryForm").action=action;
+	document.getElementById("queryForm").submit();
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="User" type="com.avic.supervise.models.User" />
+		<typeAlias alias="Order" type="com.avic.supervise.models.Order" />
+		<typeAlias alias="OrderSnapshot" type="com.avic.supervise.models.OrderSnapshot" />
+		<typeAlias alias="SupInfo" type="com.avic.supervise.models.SupInfo" />
+		<typeAlias alias="CodeList" type="com.avic.supervise.models.CodeList" />
+		<typeAlias alias="Goods" type="com.avic.supervise.models.Goods" />
+		<typeAlias alias="TradeRecord" type="com.avic.supervise.models.TradeRecord" />
+		<typeAlias alias="Invoice" type="com.avic.supervise.models.Invoice" />
+		<typeAlias alias="Refund" type="com.avic.supervise.models.Refund" />
+		<typeAlias alias="RefundGoods" type="com.avic.supervise.models.RefundGoods" />
+		<typeAlias alias="PayFlow" type="com.avic.supervise.models.PayFlow" />
+		<typeAlias alias="SettleData" type="com.avic.supervise.models.SettleData" />
+		<typeAlias alias="VatInfo" type="com.avic.supervise.models.VatInfo" />
+		<typeAlias alias="SettleRecord" type="com.avic.supervise.models.SettleRecord" />
+		<typeAlias alias="SupArea" type="com.avic.supervise.models.SupArea" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/supervise/mappers/mybatis/UserMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/OrderMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/SupMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/CodeListMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/GoodsMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/InvoiceMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/RefundMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/PayFlowMapper.xml" />
+		<mapper resource="com/avic/supervise/mappers/mybatis/SettleMapper.xml" />
+	</mappers>
+</configuration>
+
+

@@ -1,0 +1,75 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/tlds/tag.tld" prefix="mc"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>商品需求管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/css/supplier_list.css" rel="stylesheet"/>
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/special.js"></script>
+</head>
+
+<body>
+<input type="hidden" id="path" value="${pageContext.request.contextPath}"/>
+  <div id="vat_info">
+  <div class="inner">
+    <div class="add_title clearfix">供应商<a href="#"><i class="fa fa-close"></i></a></div>
+    <div class="main_inner">
+      <div class="list_area clearfix">
+      
+      
+      <c:forEach var="sup" items="${sups}" varStatus="status">
+          <div class="section_area">
+              <h2>${sup.supName}<span style="margin-right:50px;float:right; font-size:14px;">报价单下载：<a href="${pageContext.request.contextPath}/management/specialGoods/downloadSpecial?specialPath=${sup.path}">${sup.fileName}</a></span></h2>
+	      <!-- <div id="matter_section">
+	      	<div class="search_result section"> -->
+	          <table border="0">
+	            <tr>
+	              <th width="40"><input type="checkbox" id="checkAll${sup.supID}" onclick="checkAll(${sup.supID});"/></th>
+	              <th width="155">商品名称</th>
+	              <th width="125">型号</th>
+	              <th width="100">品牌</th>
+	              <th width="150">材质</th>
+	              <th width="100">价格</th>
+	              <!-- <th width="100" class="last">操作</th> -->
+	            </tr>
+	             <c:forEach var="supGood" items="${supGoods}" varStatus="status">
+		             <c:if test="${supGood.supID == sup.supID}">
+		             	<tr>
+			              <td><input name="supGoodsParams${sup.supID}" type="checkbox" value="${supGood.supID},${supGood.supGoodsID},1" onclick="addSup(${sup.supID});"/></td>
+			              <td>${supGood.goodsName}</td>
+			              <td>${supGood.goodsModel}</td>
+			              <td>${supGood.brandName}</td>
+			              <td>${supGood.goodsStuff}</td>  
+			              <td><fmt:formatNumber value="${supGood.salePrice}" pattern="#0.00#"></fmt:formatNumber></td>              
+			            </tr>
+		             </c:if>
+	            </c:forEach>
+	          </table>
+	          
+	       </div>
+	     </c:forEach>
+	       
+       </div>
+       <div class="btn_list">
+          <button class="btn btn-default blue" onclick="addCart();">添加购物车</button>
+          <button class="btn btn-default gray" onclick="cancle();">返回</button>
+       </div>
+    </div>
+    </div>
+</div>
+</body> 
+</html>

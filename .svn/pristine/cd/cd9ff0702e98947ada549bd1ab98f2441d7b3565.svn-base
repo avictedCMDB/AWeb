@@ -1,0 +1,13 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.models.Order;
+import com.avic.market.models.OrderSnapshot;
+
+public interface OrderService {
+    public void addOrder(Order order) throws ServiceException;
+    public String getOrderIndex() throws ServiceException;
+    public Order getOrderDetail(String orderId) throws ServiceException;
+}

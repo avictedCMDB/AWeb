@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.OrderMapper">
+	<resultMap id="orderResultMap" type="Order">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+		<result column="order_time" property="orderTime" jdbcType="DATE" />
+		<result column="review_time" property="reviewTime" jdbcType="DATE" />
+		<result column="review_remark" property="reviewRemark" jdbcType="VARCHAR" />
+		<result column="pay_time" property="payTime" jdbcType="DATE" />
+		<result column="order_amount" property="orderAmount" jdbcType="DOUBLE" />
+		<result column="order_amount_init" property="orderAmountInit" jdbcType="DOUBLE" />
+		<result column="refund_price" property="refundPrice" jdbcType="DOUBLE" />
+		<result column="express_type" property="expressType" jdbcType="INTEGER" />
+		<result column="addr_prov" property="addrProv" jdbcType="INTEGER" />
+		<result column="addr_city" property="addrCity" jdbcType="INTEGER" />
+		<result column="addr_dist" property="addrDist" jdbcType="INTEGER" />
+		<result column="addr_town" property="addrTown" jdbcType="INTEGER" />
+		<result column="addr_detail" property="addrDetail" jdbcType="VARCHAR" />
+		<result column="addr_all" property="addrAll" jdbcType="VARCHAR" />
+		<result column="addr_name" property="addrName" jdbcType="VARCHAR" />
+		<result column="addr_zip" property="addrZip" jdbcType="VARCHAR" />
+		<result column="addr_phone" property="addrPhone" jdbcType="VARCHAR" />
+		<result column="addr_tel" property="addrTel" jdbcType="VARCHAR" />
+		<result column="invoice_type" property="invoiceType" jdbcType="INTEGER" />
+		<result column="invoice_flag" property="invoiceFlag" jdbcType="INTEGER" />
+		<result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="invoice_company" property="invoiceCompany" jdbcType="VARCHAR" />
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR" />
+		<result column="decide_reason" property="decideReason" jdbcType="VARCHAR" />
+		<result column="addr_email" property="addrEmail" jdbcType="VARCHAR" />
+		<result column="sup_order_id" property="supOrderId" jdbcType="VARCHAR" />
+		<result column="sup_name" property="supName" jdbcType="VARCHAR" />
+		<result column="order_status_name" property="orderStatusName" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyName" jdbcType="VARCHAR" />
+		<result column="buy_type" property="buyType" jdbcType="INTEGER" />
+		<result column="sup_express_code" property="supExpressCode" jdbcType="VARCHAR" />
+		<result column="sup_express_name" property="supExpressName" jdbcType="VARCHAR" />
+		<result column="sup_type" property="supType" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="snapshotResultMap" type="OrderSnapshot">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<id column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<id column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="goods_price_init" property="goodsPriceInit" jdbcType="DOUBLE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="refund_status" property="refundStatus" jdbcType="INTEGER" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+		<result column="goods_model" property="goodsModel" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="snapshotDelResultMap" type="OrderSnapshot">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<id column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<id column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="goods_price_init" property="goodsPriceInit" jdbcType="DOUBLE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="refund_status" property="refundStatus" jdbcType="INTEGER" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+		<result column="goods_model" property="goodsModel" jdbcType="VARCHAR" />
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="orderContractResultMap" type="com.avic.management.models.OrderContract">
+		<result column="contract_code" property="contract_code" jdbcType="VARCHAR" /> 
+		<result column="order_id" property="order_id" jdbcType="VARCHAR" /> 
+		<result column="contract_name" property="contract_name" jdbcType="VARCHAR" /> 
+		<result column="sup_name" property="sup_name" jdbcType="VARCHAR" /> 
+		<result column="sign_date" property="sign_date" jdbcType="VARCHAR" /> 
+		<result column="contract_price" property="contract_price" jdbcType="VARCHAR" /> 
+		<result column="buy_type" property="buy_type" jdbcType="VARCHAR" /> 
+		<result column="contract_attachment_path" property="contract_attachment_path" jdbcType="VARCHAR" /> 
+		<result column="create_date" property="create_date" jdbcType="VARCHAR" /> 
+		<result column="remark" property="remark" jdbcType="VARCHAR" /> 
+		<result column="a_param" property="a_param" jdbcType="VARCHAR" /> 
+		<result column="b_param " property="b_param" jdbcType="VARCHAR" /> 
+		<result column="user_id" property="user_id" jdbcType="VARCHAR" /> 
+		<result column="user_name" property="user_name" jdbcType="VARCHAR" /> 
+	</resultMap>
+	<select id="queryManageOrderCount" resultType="java.lang.Integer">	
+		select count(1) 
+		  from t_order a, users c, t_sup_info b
+		 where a.user_id = c.userid
+		   and a.sup_id = b.sup_id
+		   and c.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+		<if test="companyName != null and companyName != ''">
+		   and c.companyname like '%'||#{companyName}||'%'
+		</if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and order_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and order_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		<if test="orderStatus > -1">
+		   and order_status = #{orderStatus}
+		</if>
+		<if test="supId > 0">
+		   and a.sup_id = #{supId}
+		</if> 
+		<if test="supType > -1">
+		   and b.sup_type = #{supType}
+		</if> 
+		<if test="orderId != null and orderId != ''">
+		   and a.order_id like '%'||#{orderId}||'%'
+		</if>
+		<if test="goodsName != null and goodsName != ''">
+		   and exists (
+		   	   select 1 
+		   	     from t_order_snapshot b 
+		   	    where a.order_id = b.order_id 
+		   	      and b.goods_name like '%'||#{goodsName}||'%'
+		   	   )
+		 </if>
+	</select>
+	<select id="queryManageOrderList" resultMap="orderResultMap">	
+		    select x.*, 
+		          (select nvl(sum(refound_price), 0) from t_order_refound e where e.order_id = x.order_id and e.refound_status = '5') as refund_price 
+		      from (
+			      select row_number() over (order by order_time desc) rn, 
+			             a.sup_order_id, 
+			             order_id, 
+			             a.sup_id, 
+			             a.buy_type, 
+			             order_amount, 
+			             order_amount_init, 
+			             to_char(order_time,'YYYY-mm-dd') order_time, 
+			             order_status, 
+			             b.sup_name, 
+			             c.companyname, 
+			             d.codetext as order_status_name,
+	               		 a.sup_express_code,
+	               		 a.sup_express_name,
+	               		 tsi.sup_type
+				  from t_order a, t_sup_info b, users c, codelist d, t_sup_info tsi
+				 where a.sup_id = b.sup_id
+				   and a.user_id = c.userid
+	               and a.order_status = d.codevalue
+	               and a.sup_id = tsi.sup_id
+	               and d.codelisttype = 'ORDER_STATUS'
+			       and c.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+			<if test="companyName != null and companyName != ''">
+			   and c.companyname like '%'||#{companyName}||'%'
+			</if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and order_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and order_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+			<if test="orderStatus > -1">
+			   and order_status = #{orderStatus}
+			</if>
+			<if test="supId > 0">
+			   and a.sup_id = #{supId}
+			</if> 
+			<if test="supType > -1">
+			   and b.sup_type = #{supType}
+			</if> 
+			<if test="orderId != null and orderId != ''">
+			   and a.order_id like '%'||#{orderId}||'%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+			   and exists (
+			   	   select 1 
+			   	     from t_order_snapshot b 
+			   	    where a.order_id = b.order_id 
+			   	      and b.goods_name like '%'||#{goodsName}||'%'
+			   	   )
+			 </if>
+		) x 
+		where x.rn between #{start} and #{end}
+	</select>
+
+	<select id="getManageOrderListAllData" resultMap="orderResultMap">	
+		select * from (
+			select row_number() over (order by order_time desc) rn, order_id, a.sup_id, a.buy_type, order_amount, order_amount_init, to_char(order_time,'YYYY-mm-dd') order_time, order_status, b.sup_name, c.companyname, d.codetext as order_status_name
+			  from t_order a, t_sup_info b, users c, codelist d
+			 where a.sup_id = b.sup_id
+			   and a.user_id = c.userid
+               and a.order_status = d.codevalue
+               and d.codelisttype = 'ORDER_STATUS'
+			   and c.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+			<if test="companyName != null and companyName != ''">
+			   and c.companyname like '%'||#{companyName}||'%'
+			</if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and order_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and order_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+			<if test="orderStatus > -1">
+			   and order_status = #{orderStatus}
+			</if>
+			<if test="supId > 0">
+			   and a.sup_id = #{supId}
+			</if> 
+			<if test="supType > -1">
+			   and b.sup_type = #{supType}
+			</if> 
+			<if test="orderId != null and orderId != ''">
+			   and a.order_id like '%'||#{orderId}||'%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+			   and exists (
+			   	   select 1 
+			   	     from t_order_snapshot b 
+			   	    where a.order_id = b.order_id 
+			   	      and b.goods_name like '%'||#{goodsName}||'%'
+			   	   )
+			 </if>
+		) x 
+	</select>
+	
+	
+	<select id="queryManageOrderStat" resultMap="orderResultMap">	
+			select sum(order_amount) order_amount, sum(order_amount_init) order_amount_init
+			  from t_order a, t_sup_info b, users c
+			 where a.sup_id = b.sup_id
+			   and a.user_id = c.userid
+			 and c.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+			<if test="companyName != null and companyName != ''">
+			   and c.companyname like '%'||#{companyName}||'%'
+			</if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and order_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and order_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+			<if test="orderStatus > -1">
+			   and order_status = #{orderStatus}
+			</if>
+			<if test="orderStatus == -1">
+			   and order_status in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20)
+			</if>
+			<if test="supId > 0">
+			   and a.sup_id = #{supId}
+			</if> 
+			<if test="supType > -1">
+			   and b.sup_type = #{supType}
+			</if> 
+			<if test="orderId != null and orderId != ''">
+			   and a.order_id like '%'||#{orderId}||'%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+			   and exists (
+			   	   select 1 
+			   	     from t_order_snapshot b 
+			   	    where a.order_id = b.order_id 
+			   	      and b.goods_name like '%'||#{goodsName}||'%'
+			   	   )
+			 </if>
+	</select>
+	
+	<select id="queryManageOrderRefund" resultType="java.lang.Double">	
+			select nvl(sum(refound_price), 0)
+			  from t_order a, t_sup_info b, users c, t_order_refound d
+			 where a.sup_id = b.sup_id
+			   and a.user_id = c.userid
+			   and a.order_id = d.order_id
+			   and d.refound_status = '5'
+			   and c.companyid in (select k.company_code from t_company_info k  start with k.company_code = #{companyId,jdbcType=VARCHAR} connect by prior k.company_code = k.parent_company_id)
+			<if test="companyName != null and companyName != ''">
+			   and c.companyname like '%'||#{companyName}||'%'
+			</if>
+		 <if test="timeStart != null and timeStart != ''">
+		   and a.order_time &gt;= to_date(#{timeStart}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+		 <if test="timeEnd != null and timeEnd != ''">
+		   and a.order_time &lt;= to_date(#{timeEnd}, 'yyyy-MM-dd HH24:mi:ss')
+		 </if>
+			<if test="orderStatus > -1">
+			   and a.order_status = #{orderStatus}
+			</if>
+			   and a.order_status in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20)
+			<if test="supId > 0">
+			   and a.sup_id = #{supId}
+			</if> 
+			<if test="supType > -1">
+			   and b.sup_type = #{supType}
+			</if> 
+			<if test="orderId != null and orderId != ''">
+			   and a.order_id like '%'||#{orderId}||'%'
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+			   and exists (
+			   	   select 1 
+			   	     from t_order_snapshot b 
+			   	    where a.order_id = b.order_id 
+			   	      and b.goods_name like '%'||#{goodsName}||'%'
+			   	   )
+			 </if>
+	</select>
+	
+	<select id="queryMultiOrderSnapshot" resultMap="snapshotResultMap">	
+		select a.*, b.sup_type from t_order_snapshot a, t_sup_info b where a.sup_id = b.sup_id and order_id in 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+		order by order_id
+	</select>
+	<select id="queryInvoiceSnapshot" resultMap="snapshotResultMap">	
+		select order_id, goods_name, goods_price, goods_price_init,
+		buy_num - (select nvl(sum(refound_amount), 0) from t_order_refound b, t_refound_goods c where b.refound_id = c.refound_id and b.order_id = a.order_id and b.refound_status = '5' and c.sup_id = a.sup_id and a.sup_goods_id = c.sup_goods_id) as buy_num
+		from t_order_snapshot a
+		where order_id in 
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+		order by order_id
+	</select>
+	<select id="queryOrderDetail" resultMap="orderResultMap">
+	select * from t_order where order_id = #{orderId}
+	</select>
+	
+	<select id="queryOrderSnapshot" resultMap="snapshotDelResultMap">
+	select t.ORDER_ID,
+       t.SUP_ID,
+       t.SUP_GOODS_ID,
+       t.GOODS_NAME,
+       t.IMAGE_PATH,
+       t.GOODS_PRICE_INIT GOODS_PRICE,
+       t.BUY_NUM,
+       t.REFUND_STATUS,
+       t.EXCHANGE_STATUS,
+       t.GOODS_PRICE_INIT,
+       s.goods_Model,
+       s.brand_name,
+       b.sup_type
+  from t_order_snapshot t,t_sup_goods s, t_sup_info b
+  where t.sup_goods_id = s.sup_goods_id
+  and t.sup_id = b.sup_id
+  and   order_id = #{orderId}
+	</select>
+	<update id="updateOrderStatus">
+		update t_order set order_status = #{status} where order_id = #{orderId}
+	</update>
+	
+	<select id="queryOrderImage" resultType="java.lang.String">
+	select url from t_image_info where business_id = #{orderId} and business_type = 0
+	</select>
+	
+	<delete id="deleteOrderById">
+		delete from t_order where order_id = #{orderId}
+	</delete>
+	<delete id="deleteOrderSnapshot">
+		delete from t_order_snapshot where order_id = #{orderId}
+	</delete>
+	<select id="queryOrderContract" resultMap="orderContractResultMap">
+		select contract_code,
+		       order_id,
+		       contract_name,
+		       sup_name,
+		       sign_date,
+		       contract_price,
+		       buy_type,
+		       contract_attachment_path,
+		       t.create_date,
+		       remark,
+		       a_param,
+		       b_param,
+		       t.user_id,
+		       u.companyname user_name
+		  from t_order_contract t,users u
+		  where order_id = #{orderId}
+		  and t.user_id = u.userid
+	</select>
+</mapper>

@@ -1,0 +1,114 @@
+package com.avic.management.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.Audit;
+import com.avic.management.models.Invoice;
+import com.avic.management.models.OrderSnapshot;
+import com.avic.management.services.AuditService;
+import com.avic.management.services.CommonService;
+import com.avic.management.services.InvoiceService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/audit")
+public class AuditController {
+    protected static final Log logger = LogFactory.getLog(AuditController.class);
+    
+    @Autowired
+    CommonService commonService;
+    @Autowired
+    AuditService auditService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map,HttpSession httpSession) {
+        logger.info("订单审核管理首页");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.CHECK);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+        String companyID = user.getCompanyId();
+        Audit audit = new Audit();
+        audit.setOrderStatus("1");//待审核订单
+        audit.setCompanyID(companyID);
+        int orderCount = auditService.queryAuditsCount(audit);
+        map.put("orderCount",orderCount );
+        return "audit/management_auditor";
+    }
+    
+    @RequestMapping("/auditorAudit")
+    public String auditorAudit(@ModelAttribute("audit") Audit audit,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("订单审核管理列表");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.CHECK);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		String companyId = user.getCompanyId();
+        List<Audit> audits = new ArrayList<Audit>();
+        audit.setCompanyID(companyId);
+        String tempStatus = audit.getOrderStatus();
+        if("".equals(audit.getOrderStatus())||audit.getOrderStatus()==null){
+        	audit.setOrderStatus("1");  //待审核订单
+        }
+        if("-1".equals(audit.getOrderStatus())){
+        	audit.setOrderStatus("");  //待审核订单
+        }
+        //获得商品名称模糊查询得到的订单id集合，添加到查询订单条件中
+        List<OrderSnapshot> orders = new ArrayList<OrderSnapshot>();
+        orders = auditService.queryGoodsSnapshotOfLikeGoodsName(audit);
+        
+        List<String> orderIDs = new ArrayList<String>();
+        if(orders.size()>0 && orders != null){
+        	for (OrderSnapshot orderID : orders) {
+            	orderIDs.add(orderID.getOrderId());
+    		}
+        }else{
+        	orderIDs.add("-9999");
+        }
+        audit.setOrderIDs(orderIDs);
+        audits = auditService.queryAudits(audit);
+        for (Audit order : audits) {
+			List<OrderSnapshot> orderSnapshots = new ArrayList<OrderSnapshot>();
+			OrderSnapshot os = new OrderSnapshot();
+			os.setOrderId(order.getOrderID());
+			orderSnapshots = auditService.queryGoodsSnapshotByOrderID(os);
+			order.setOrderSnapshots(orderSnapshots);
+		}
+        audit.setOrderStatus(tempStatus);
+        map.put("searchAudit", audit);
+        map.put("audits", audits);
+        return "audit/management_auditor_audit";
+    }
+    
+    @RequestMapping("/confirm")
+    public String auditorAuditCheck(Map<String, Object> map,@RequestParam("orderID")String orderID,@RequestParam("searchFlg")String searchFlg) {
+        logger.info("订单审核");
+//        map.put("invoices", );
+        return "audit/management_auditor_audit_confirm";
+    }
+}

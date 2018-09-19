@@ -1,0 +1,101 @@
+package com.avic.management.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.management.models.Invoice;
+import com.avic.management.services.CommonService;
+import com.avic.management.services.InvoiceService;
+
+@Controller
+@RequestMapping("/invoice")
+public class InvoiceController {
+    protected static final Log logger = LogFactory.getLog(InvoiceController.class);
+    
+    @Autowired
+    InvoiceService invoiceService;
+    @Autowired
+    CommonService commonService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("发票管理");
+        List<Invoice> invoices = new ArrayList<Invoice>();
+        invoices = invoiceService.queryInvoices();
+        map.put("invoices", invoices);
+        return "management_invoice";
+    }
+    
+    @RequestMapping("/addInvoicePage")
+    public String showAddInvoicePage() {
+        logger.info("跳转添加发票信息页面");
+        return "management_invoice_add";
+    }
+    
+    @RequestMapping("/udpateInvoicePage/{invoiceID}")
+    public String showUpdateInvoicePage(Map<String, Object> map,@PathVariable("invoiceID")String invoiceID) {
+        logger.info("跳转修改发票信息页面");
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceID(invoiceID);
+        invoice = invoiceService.queryInvoiceByInvoiceID(invoice);
+        map.put("invoice", invoice);
+        return "management_invoice_add";
+    }
+    
+    @RequestMapping("/add")
+    public String addInvoice(@ModelAttribute("invoice") Invoice invoice,HttpSession httpSession) {
+        logger.info("添加发票信息");
+        String invoiceID = commonService.queryIndex();
+        //从session获取userid
+    	String userID = (String) httpSession.getAttribute("login_user");
+        invoice.setInvoiceID(invoiceID);
+        invoice.setUserID(userID);
+        invoiceService.addInvoice(invoice);
+        if("1".equals(invoice.getIfDefault())){
+        	Invoice in = new Invoice();
+        	in.setInvoiceID(invoiceID);
+    		invoiceService.setOtherDefault(in);
+    	}
+        return "redirect:/management/invoice";
+    }
+    @RequestMapping("/udpate")
+    public String updateInvoice(@ModelAttribute("invoice") Invoice invoice) {
+        logger.info("修改发票信息");
+        invoiceService.updateInvoice(invoice);
+        if("1".equals(invoice.getIfDefault())){
+        	Invoice in = new Invoice();
+        	in.setInvoiceID(invoice.getInvoiceID());
+    		invoiceService.setOtherDefault(in);
+    	}
+        return "redirect:/management/invoice";
+    }
+    @RequestMapping("/delete/{invoiceID}")
+    public String deleteAddress(Map<String, Object> map,@PathVariable("invoiceID")String invoiceID) {
+        logger.info("删除发票信息");
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceID(invoiceID);
+        invoiceService.deleteInvoice(invoice);
+        return "redirect:/management/invoice";
+    }
+    
+    @RequestMapping("/setDefault/{invoiceID}")
+    public String setDefault(Map<String, Object> map,@PathVariable("invoiceID")String invoiceID) {
+        logger.info("设置默认发票");
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceID(invoiceID);
+        invoiceService.setDefault(invoice);
+        invoiceService.setOtherDefault(invoice);
+        return "redirect:/management/invoice";
+    }
+}

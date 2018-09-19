@@ -1,0 +1,28 @@
+package com.avic.market.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.market.mappers.SupplierMapper;
+import com.avic.market.models.Supplier;
+import com.avic.market.services.SupplierService;
+
+@Service
+public class SupplierServiceImpl implements SupplierService {
+    
+    @Autowired
+    SupplierMapper supplierMapper;
+
+    @Override
+    public List<Supplier> getNewTraSup() {
+        return supplierMapper.queryNewTraSup();
+    }
+
+    @Override
+    public List<Supplier> getRecommandTraSup() {
+        return supplierMapper.queryRecommandTraSup();
+    }
+
+}

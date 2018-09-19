@@ -1,0 +1,32 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.market.models.BidProjMateriel;
+import com.avic.market.models.BidProjSubject;
+import com.avic.market.models.BidProjSupplier;
+import com.avic.market.models.BidProject;
+
+public interface BidProjectService {
+    public int getProjectCount(String projName, String addrProv, String companyId, String bidCat);
+    public List<BidProject> getProjectList(String projName, String addrProv, String companyId, String bidCat, int order, int page, int size);
+    
+    public List<BidProject> getRecommProject();
+    public List<BidProject> getExpiringProject();
+    
+    public int getNoticeCount(String projName, String addrProv, String companyId, String bidCat);
+    public List<BidProject> getNoticeList(String projName, String addrProv, String companyId, String bidCat, int page, int size);
+    
+    public BidProject getProjectById(String projId);
+    public List<BidProjSubject> getSubjects(String projId);
+
+    public int getResultCount(String projName, String addrProv, String companyId, String bidCat, int projStatus);
+    public List<BidProject> getResultList(String projName, String addrProv, String companyId, String bidCat, int projStatus, int page, int size);
+    
+    public BidProjSupplier getAwardSupplier(String projId);
+    
+    public List<BidProjMateriel> getSubjectMtr(String projId, String subjectId);
+
+    public int queryAllProjectCount();
+    public int queryAllProjectAmount();
+}

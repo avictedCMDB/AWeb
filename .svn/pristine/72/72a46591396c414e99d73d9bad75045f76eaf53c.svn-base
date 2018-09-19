@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SupCategory" type="com.avic.supplier.models.SupCategory" />
+		<typeAlias alias="SupplierAddress" type="com.avic.supplier.models.SupplierAddress" />
+		<typeAlias alias="SupplierExpress" type="com.avic.supplier.models.SupplierExpress" />
+		<typeAlias alias="SupplierGoodsInfo" type="com.avic.supplier.models.SupplierGoodsInfo" />
+		<typeAlias alias="SupArea" type="com.avic.supplier.models.SupArea" />
+		<typeAlias alias="SupplierUser" type="com.avic.supplier.models.SupplierUser" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/avic/supplier/mappers/mybatis/CategoryMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierAddressMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierExpressMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierGoodsInfoMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupAreaMapper.xml" />
+		<mapper resource="com/avic/supplier/mappers/mybatis/SupplierUserMapper.xml" />
+	</mappers>
+</configuration>
+
+

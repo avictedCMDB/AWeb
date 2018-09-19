@@ -1,0 +1,218 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="专业市场" name="title" />
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/profession-list.css" rel="stylesheet">
+	<script type="text/javascript">
+	function toggleBrand() {
+		var ul = $("#brand_ul");
+		if (ul.attr("data-org-height")) {
+			if (ul.attr("data-expanded") == "true") {
+				ul.height(72);
+				ul.attr("data-expanded", "false");
+			} else {
+				ul.height(ul.attr("data-org-height"));
+				ul.attr("data-expanded", "true");
+			}
+		}
+	}
+		
+		$(function () {
+
+			
+			$(".goods-compare-btn").click(function () {
+				var sid = $(this).attr("data-sid");
+				var gid = $(this).attr("data-gid");
+				compareAdd(sid, gid);
+			});
+			
+			$(".cart-add-btn").click(function () {
+				var sid = $(this).attr("data-sid");
+				var gid = $(this).attr("data-gid");
+				
+				async('${pageContext.request.contextPath}/market/cart/add', {sid:sid, gid:gid, num:1}, function (msg) {
+					setCartNum(msg.result);
+					alert("添加购物车成功");
+				});
+			});
+		});
+	</script>
+	</head>
+
+	<body>
+		<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+			<div id="nav_area">
+			<div class="inner clearfix" style="z-index:999;">
+				<jsp:include page="../categorys.jsp" />
+			</div>
+    <!--#nav_area-->
+  </div>
+			<div id="contents">
+				<div class="inner">
+				<div class="breadcrumb">
+					<ul>
+						<li><a href="${pageContext.request.contextPath}">首页</a><span>&gt;</span></li>
+							<li><a href="${pageContext.request.contextPath}/market/goods/prof">专业市场</a><span>&gt;</span></li>
+						
+					</ul>
+					<!--.breadcrumb-->
+				</div>
+
+					<div id="product_list" class="clearfix">
+					<c:if test="${!empty hot}">
+                       <div id="hotsale" class="clearfix">
+                         <div class="title_hot">
+                           热卖推荐
+                         </div>
+                         <div class="hot_list clearfix">
+                         <c:forEach varStatus="sta" var="item" items="${hot}">
+                           <dl class="dl-horizontal">
+                             <dt style="margin-top:8px;"><a href="${pageContext.request.contextPath}/market/goods/show?gid=${item.supGoodsId}&sid=${item.supId}">
+                             <img src="${pageContext.request.contextPath}${item.imagePath == null ? '/static/img/img-profession.jpg' : item.imagePath}" width="96px" height="78px" />
+                             </a></dt>
+                             <dd>
+                               <div class="name"><a style="height:35px; display:block; overflow:hidden;" href="${pageContext.request.contextPath}/market/goods/show?gid=${item.supGoodsId}&sid=${item.supId}">${item.goodsName}</a></div>
+                               <div class="price">￥${item.agreePrice }</div>
+                               <div class="btn_list"><button type="button" data-sid="${item.supId}" data-gid="${item.supGoodsId}" class="btn btn-default cart-add-btn">加入购物车</button></div>
+                             </dd>
+                           </dl>
+                         </c:forEach>
+                         </div>
+                       </div>
+                       </c:if>
+                       
+						<div id="contact_main">
+							<p>
+							搜索到<strong class="font-color-red font-16">${total}</strong>件相关商品
+							</p>
+							<div id="brands_price">
+								<c:if test="${!empty supList}">
+								<div class="brands clearfix">
+									<div class="sl_key">供应商</div>
+									<div class="sl_value clearfix">
+										<ul style="overflow:hidden;" id="sup_ul">
+											<c:forEach var="item" items="${supList}" varStatus="sta">
+											<c:if test="${item.supType == 1}">
+												<li style=" width:auto;" <c:if test="${item.supId == sup}">class="active"</c:if>><a
+													href="${pageContext.request.contextPath}/market/goods/prof?price=${price}&brand=${fn:escapeXml(searchBrand)}&sup=${item.supId == sup ? '' : item.supId}&o=${order}">${fn:escapeXml(item.supName)}</a></li>
+											</c:if>
+											</c:forEach>
+										</ul>
+										<div class="clearfix"></div>
+										<div class="btn_more">
+											<a href="javascript:void(0);"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-more.gif" alt=""></a>
+										</div>
+									</div>
+								</div>
+								</c:if>
+								
+								<c:if test="${!empty brandList}">
+								<div class="brands clearfix">
+									<div class="sl_key">品牌</div>
+									<div class="sl_value clearfix">
+										<ul style="overflow:hidden;" id="brand_ul">
+											<c:forEach var="item" items="${brandList}" varStatus="sta">
+												<li style=" width:auto;" <c:if test="${item == searchBrand}">class="active"</c:if>><a
+													href="${pageContext.request.contextPath}/market/goods/prof?price=${price}&brand=${item == searchBrand ? '' : fn:escapeXml(item)}&sup=${sup}&o=${order}">${fn:escapeXml(item)}</a></li>
+											</c:forEach>
+										</ul>
+										<div class="clearfix"></div>
+										<div class="btn_more">
+											<a href="javascript:void(0);" onclick="toggleBrand();"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-more.gif" alt=""></a>
+										</div>
+									</div>
+								</div>
+								</c:if>
+
+							<div class="brands clearfix">
+								<div class="sl_key">价格</div>
+								<div class="sl_value clearfix">
+									<ul>
+										<li <c:if test="${price == '0,99'}">class="active"</c:if> style="width:auto;"><a
+											href="${pageContext.request.contextPath}/market/goods/prof?price=${price == '0,99' ? '' : '0,99'}&brand=${fn:escapeXml(searchBrand)}&sup=${sup}&o=${order}">0-99</a></li>
+										<li <c:if test="${price == '100,999'}">class="active"</c:if> style="width:auto;"><a
+											href="${pageContext.request.contextPath}/market/goods/prof?price=${price == '100,999' ? '' : '100,999'}&brand=${fn:escapeXml(searchBrand)}&sup=${sup}&o=${order}">100-999</a></li>
+										<li <c:if test="${price == '1000,4999'}">class="active"</c:if> style="width:auto;"><a
+											href="${pageContext.request.contextPath}/market/goods/prof?price=${price == '1000,4999' ? '' : '1000,4999'}&brand=${fn:escapeXml(searchBrand)}&sup=${sup}&o=${order}">1000-4999</a></li>
+										<li <c:if test="${price == '5000,0'}">class="active"</c:if> style="width:auto;"><a
+											href="${pageContext.request.contextPath}/market/goods/prof?price=${price == '5000,0' ? '' : '5000,0'}&brand=${fn:escapeXml(searchBrand)}&sup=${sup}&o=${order}">5000以上</a></li>
+									</ul>
+								</div>
+							</div>
+								<!--#brands-->
+							</div>
+							<div id="sort_row">
+								<ul class="clearfix">
+									<li><a href="javascript:;"
+										 class="active"><img src="${pageContext.request.contextPath}/static/img/product-list/btn-list.gif" alt="列表"></a></li>
+									<li><a
+										href="${pageContext.request.contextPath}/market/goods/prof?price=${price}&brand=${fn:escapeXml(searchBrand)}&sup=${sup}&o=${order > 0 ? 0 : 1}"
+										<c:if test="${order > 0}"> class="active"</c:if>><img src="${pageContext.request.contextPath}/static/img/product-list/btn-price.gif" alt="价格"></a></li>
+								</ul>
+							</div>
+
+							<div class="tab02" id="table_list">
+								<table>
+									<tr>
+										<th width="300">商品名称</th>
+										<th>品牌</th>
+										<th>招采价</th>
+										<th>销量</th>
+										<th>供应商</th>
+										<th width="250">操作</th>
+									</tr>
+									<c:forEach var="item" items="${list}" varStatus="sta">
+										<tr>
+											<td class="left_align"><a href="${pageContext.request.contextPath}/market/goods/show?gid=${item.supGoodsId}&sid=${item.supId}">${fn:escapeXml(item.goodsName)}</a></td>
+											<td>${fn:escapeXml(item.brandName)}</td>
+											<td class="price">${item.agreePrice}</td>
+											<td>${item.saleNum }</td>
+											<td>${dataCache.getSupplierName(item.supId)}</td>
+											<td style="text-align:right;">
+												<ul class="clearfix">
+													<li><button type="button" data-sid="${item.supId}" data-gid="${item.supGoodsId}" class="btn btn-default table_btn cart-add-btn">
+															<i class="fa fa-shopping-cart shopping"></i>加入购物车
+														</button></li>
+													<li><button type="button" data-sid="${item.supId}" data-gid="${item.supGoodsId}" class="btn btn-default table_btn goods-compare-btn">
+															<i class="fa fa-exchange"></i>比对
+														</button></li>
+												</ul>
+											</td>
+										</tr>
+									</c:forEach>
+								</table>
+							</div>
+						<jsp:include page="compare.jsp" />
+						<jsp:include page="../page.jsp" />
+							</div>
+							<!--#contact_main-->
+						</div>
+						<!--#product_list-->
+					</div>
+					<!--.inner-->
+				</div>
+				<!--#contents-->
+			</div>
+		<jsp:include page="../footer.jsp" />
+			<!--.page-wrapper-->
+		</div>
+	<script type="text/javascript">
+		var brandHeight = $("#brand_ul").height();
+		if (brandHeight > 72) {
+			$("#brand_ul").height(72);
+			$("#brand_ul").attr("data-org-height", brandHeight);
+		}
+
+		$(".breadcrumb ul li span").last().hide();
+	</script>
+	</body>
+
+</html>

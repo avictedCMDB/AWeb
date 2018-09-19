@@ -1,0 +1,73 @@
+package com.avic.supplier.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.supplier.models.SupplierGoodsImage;
+import com.avic.supplier.models.SupplierImageInfo;
+import com.avic.supplier.models.SupplierOffStandRequire;
+import com.avic.supplier.services.SupplierGoodsInfoService;
+import com.avic.supplier.services.SupplierOffStandRequireService;
+import com.avic.supplier.services.SupplierOrderService;
+
+@Controller
+@RequestMapping("/offStandRequire")
+public class SupplierOffStandRequireController {
+	
+	protected static final Log logger = LogFactory
+	.getLog(SupplierOffStandRequireController.class);
+	
+	@Autowired
+	SupplierOrderService supplierOrderService;
+	
+	@Autowired
+	SupplierOffStandRequireService supplierOffStandRequireService;
+	
+	@Autowired
+	SupplierGoodsInfoService supplierGoodsInfoService;
+	
+	@RequestMapping("")
+	public String index(Map<String, Object> map,@ModelAttribute("supplierOffStandRequire") SupplierOffStandRequire supplierOffStandRequire,
+    		HttpSession httpSession,HttpServletRequest request) throws UnsupportedEncodingException {
+		String supId = httpSession.getAttribute(SessionKeys.SUP_ID).toString();
+		supplierOffStandRequire.setSupId(supId);
+		List<SupplierOffStandRequire> supplierOffStandRequireList = supplierOffStandRequireService.querySupplierOffStandRequiret(supplierOffStandRequire);
+		//图片信息
+		for (int i = 0; i < supplierOffStandRequireList.size(); i++) {
+			SupplierOffStandRequire item = supplierOffStandRequireList.get(i);
+			List<SupplierImageInfo> images = supplierOrderService.queryImageInfo(item.getId(),"8");
+			supplierOffStandRequireList.get(i).setImageList(images);
+		}
+		map.put("supplierOffStandRequireList", supplierOffStandRequireList);
+		//分页信息
+        String page = String.valueOf(supplierOffStandRequire.getPage());
+        int total = supplierOffStandRequireService.querySupplierOffStandRequiretCount(supplierOffStandRequire);
+        int pages = (int) Math.ceil((double) total / supplierOffStandRequire.getPageSize());
+        map.put("page", page);
+        map.put("total", total);
+        map.put("pages", pages);
+        map.put("pageAction","supplier/offStandRequire?"
+        		+ "&goodsDescNew="+URLEncoder.encode((supplierOffStandRequire.getGoodsDescNew() == null ?"":supplierOffStandRequire.getGoodsDescNew()),"GBK")
+        		+ "&status="+(supplierOffStandRequire.getStatus() == null ?"":supplierOffStandRequire.getStatus())
+        		+ "&createDateStar="+(supplierOffStandRequire.getCreateDateStar() == null ?"":supplierOffStandRequire.getCreateDateStar())
+        		+ "&createDateEnd="+(supplierOffStandRequire.getCreateDateEnd() == null ?"":supplierOffStandRequire.getCreateDateEnd())
+                + "&page=%PAGE%");
+		map.put("supplierOffStandRequire", supplierOffStandRequire);
+		return "order/supplier_nonstandard";
+	}
+
+}

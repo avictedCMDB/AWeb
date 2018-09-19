@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SupInfoMapper">
+	<resultMap id="supInfoMap" type="com.avic.management.models.SupInfo">
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" /> 
+		<result column="SUP_CODE" property="supCode" jdbcType="VARCHAR" /> 
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="AUTH_USER" property="authUser" jdbcType="VARCHAR" />
+		<result column="AUTH_PASS" property="authPass" jdbcType="VARCHAR" />
+		<result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+		<result column="CONTACT_NUM" property="contactNum" jdbcType="VARCHAR" />
+		<result column="CONTACT_PERSON" property="contactPerson" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="querySupInfos" resultMap="supInfoMap">
+		SELECT TSI.SUP_ID,
+		       TSI.SUP_NAME,
+		       TSI.AUTH_USER,
+		       TSI.AUTH_PASS,
+		       TSI.COMPANY_CODE
+		  FROM T_SUP_INFO TSI
+		 WHERE IF_VALID = '1'
+	</select>
+	
+	<select id="querySupInfosBySupType" resultMap="supInfoMap" parameterType="com.avic.management.models.SupInfo">
+		SELECT TSI.SUP_ID,
+		       TSI.SUP_NAME,
+		       TSI.AUTH_USER,
+		       TSI.AUTH_PASS,
+		       TSI.COMPANY_CODE
+		  FROM T_SUP_INFO TSI
+		 WHERE IF_VALID = '1'
+		   AND TSI.SUP_TYPE = #{supType,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="querySupInfosTelBySupID" resultMap="supInfoMap" parameterType="com.avic.management.models.SupInfo">
+		SELECT TSI.SUP_ID,
+		       TSI.SUP_NAME,
+		       TSI.SUP_TYPE,
+		       TSI.CONTACT_NUM
+		  FROM T_SUP_INFO TSI
+		 WHERE 1=1
+ 			<if test="supIDS != null and supIDS.size > 0">
+			  	AND TSI.SUP_ID IN
+			  	<foreach item="item" index="index" collection="supIDS" open="(" separator="," close=")">         
+			  		#{item}   
+			  	</foreach> 
+			</if>
+	</select>
+	
+	<select id="queryBidSupInfoCount" resultType="java.lang.Integer">
+		SELECT count(1)
+		  FROM T_SUP_INFO TSI
+		 WHERE SUP_TYPE = 1
+		   AND IF_VALID = '1'
+ 			<if test="supCode != null and supCode != ''">
+			  	AND SUP_CODE LIKE '%' || #{supCode} || '%'
+			</if>
+ 			<if test="supName != null and supName != ''">
+			  	AND SUP_NAME LIKE '%' || #{supName} || '%'
+			</if>
+ 			<if test="contactPerson != null and contactPerson != ''">
+			  	AND CONTACT_PERSON LIKE '%' || #{contactPerson} || '%'
+			</if>
+ 			<if test="contactNum != null and contactNum != ''">
+			  	AND CONTACT_NUME LIKE '%' || #{contactNum} || '%'
+			</if>
+	</select>
+	<select id="queryBidSupInfoList" resultMap="supInfoMap">
+	select * from (
+		SELECT rownum rn,
+			   TSI.SUP_ID,
+			   TSI.SUP_CODE,
+		       TSI.SUP_NAME,
+		       TSI.SUP_TYPE,
+		       TSI.CONTACT_NUM,
+		       TSI.CONTACT_PERSON,
+		       TSI.EMAIL
+		  FROM T_SUP_INFO TSI
+		 WHERE SUP_TYPE = 1
+		   AND IF_VALID = '1'
+ 			<if test="supCode != null and supCode != ''">
+			  	AND SUP_CODE LIKE '%' || #{supCode} || '%'
+			</if>
+ 			<if test="supName != null and supName != ''">
+			  	AND SUP_NAME LIKE '%' || #{supName} || '%'
+			</if>
+ 			<if test="contactPerson != null and contactPerson != ''">
+			  	AND CONTACT_PERSON LIKE '%' || #{contactPerson} || '%'
+			</if>
+ 			<if test="contactNum != null and contactNum != ''">
+			  	AND CONTACT_NUME LIKE '%' || #{contactNum} || '%'
+			</if>
+		) x 
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	
+	<select id="querySupInfoByCode" resultMap="supInfoMap">
+		SELECT *
+		  FROM T_SUP_INFO 
+		 WHERE sup_code = #{supCode}
+	</select>
+</mapper>

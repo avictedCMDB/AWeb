@@ -1,0 +1,282 @@
+package com.avic.supervise.controllers;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.supervise.models.Goods;
+import com.avic.supervise.models.Order;
+import com.avic.supervise.services.CodeListService;
+import com.avic.supervise.services.GoodsService;
+import com.avic.supervise.services.OrderService;
+import com.avic.supervise.services.SupService;
+import com.avic.supplier.utils.NewExcel;
+
+@Controller
+@RequestMapping("/order")
+public class OrderController {
+    protected static final Log logger = LogFactory.getLog(OrderController.class);
+
+    static final int PAGE_SIZE = 10;
+    
+    @Autowired
+    SupService supService;
+    @Autowired
+    CodeListService codeListService;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    GoodsService goodsService;
+    
+    @RequestMapping("/list")
+    public String list(HttpServletRequest req, Map<String, Object> map) {
+        
+        String supId = req.getParameter("supId");
+        String orderId = req.getParameter("orderId");
+        String companyName = req.getParameter("companyName");
+        String goodsName = req.getParameter("goodsName");
+        String timeStart = req.getParameter("timeStart");
+        String timeEnd = req.getParameter("timeEnd");
+        String orderStatus = req.getParameter("orderStatus");
+        String page = req.getParameter("page");
+        
+        logger.info("订单管理");
+        
+        int supIdInt = 0;
+        if (StringUtils.isNumeric(supId)) {
+            supIdInt = Integer.parseInt(supId);
+        }
+        
+        int orderStatusInt = -1;
+
+        if (StringUtils.isNumeric(orderStatus)) {
+            orderStatusInt = Integer.parseInt(orderStatus);
+        }
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        
+        int total = orderService.getManageOrderCount(supIdInt, orderId, goodsName, companyName, timeStart, timeEnd, orderStatusInt);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            List<Order> orders = orderService.getManageOrderList(supIdInt, orderId, goodsName, companyName, timeStart, timeEnd, orderStatusInt, pageNum, PAGE_SIZE);
+            map.put("list", orders);
+            map.put("stat", orderService.getManageOrderStat(supIdInt, orderId, goodsName, companyName, timeStart, timeEnd, orderStatusInt));
+        }
+        map.put("supId", supIdInt);
+        map.put("orderId", orderId);
+        map.put("companyName", companyName);
+        map.put("goodsName", goodsName);
+        map.put("timeStart", timeStart);
+        map.put("timeEnd", timeEnd);
+        map.put("orderStatus", orderStatusInt);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+
+        if (goodsName == null) {
+            goodsName = "";
+        }
+        if (companyName == null) {
+            companyName = "";
+        }
+        if (orderId == null) {
+            orderId = "";
+        }
+        if (timeStart == null) {
+            timeStart = "";
+        }
+        if (timeEnd == null) {
+            timeEnd = "";
+        }
+
+        try {
+            map.put("pageAction",
+                    "supervise/order/list?supId=" + supIdInt + "&orderId=" + orderId + "&goodsName=" + URLEncoder.encode(goodsName, "GBK")
+                            + "&orderStatus=" + orderStatusInt + "&timeStart="+timeStart + "&timeEnd="+timeEnd+"&companyName="+URLEncoder.encode(companyName, "GBK")+"&page=%PAGE%");
+        } catch (UnsupportedEncodingException e) {
+        }
+        map.put("sups", supService.getSupList());
+        map.put("codes", codeListService.getCodeList("ORDER_STATUS"));
+        return "order/list";
+    }
+
+    @RequestMapping("/downloadExcel")
+    public void downloadExcel(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+
+    	req.setCharacterEncoding("UTF-8");
+    	resp.setCharacterEncoding("UTF-8");
+    	resp.setContentType("application/x-download");
+
+    	String filedisplay = "订单详情.xls";
+    	filedisplay = URLEncoder.encode(filedisplay, "UTF-8");
+    	resp.addHeader("Content-Disposition", "attachment;filename="+ filedisplay);
+    	
+    	String supId = req.getParameter("supId");
+    	String orderId = req.getParameter("orderId");
+    	String companyName = req.getParameter("companyName");
+    	String goodsName = req.getParameter("goodsName");
+    	String timeStart = req.getParameter("timeStart");
+    	String timeEnd = req.getParameter("timeEnd");
+    	String orderStatus = req.getParameter("orderStatus");
+
+    	logger.info("订单管理");
+    	
+    	int supIdInt = 0;
+    	if (StringUtils.isNumeric(supId)) {
+    		supIdInt = Integer.parseInt(supId);
+    	}
+    	
+    	int orderStatusInt = -1;
+    	
+    	if (StringUtils.isNumeric(orderStatus)) {
+    		orderStatusInt = Integer.parseInt(orderStatus);
+    	}
+    	
+    	int total = orderService.getManageOrderCount(supIdInt, orderId, goodsName, companyName, timeStart, timeEnd, orderStatusInt);
+    	
+    	if (total > 0) {
+    		List<Order> orders = orderService.getManageOrderListAllData(supIdInt, orderId, goodsName, companyName, timeStart, timeEnd, orderStatusInt);
+    		//调用导出excel共同方法
+    		NewExcel exl = new NewExcel();
+    		//行标题
+    		List<String> columnName = Arrays.asList(new String[] {"订单编号","供应商","采购单位","采购类型","采购利润","合计","订单状态"});
+    		//为excel内容转化数据
+    		List<List<String>> values = transformDataForExcel(orders);
+    		exl.createExcel(resp, columnName, values);
+    	}
+    }
+    
+    public List<List<String>> transformDataForExcel(List<Order> ordersList){
+    	List<List<String>> reList = new ArrayList<List<String>>();
+    	for(int i=0;i<ordersList.size();i++){
+    		Order order_tmp = (Order) ordersList.get(i);
+    		List<String> subList = new ArrayList<String>();
+    		subList.add(order_tmp.getOrderId());
+    		subList.add(order_tmp.getSupName());
+    		subList.add(order_tmp.getCompanyName());
+    		String buyTypeName = "正常采购";
+    		if(order_tmp.getBuyType()==1){
+    			buyTypeName = "企业自采";
+    		}
+    		subList.add(buyTypeName);
+    		String profit = ""+new BigDecimal((order_tmp.getOrderAmount()-order_tmp.getOrderAmountInit())).setScale(2,BigDecimal.ROUND_HALF_UP);
+    		subList.add(profit);
+    		String amount = ""+new BigDecimal(order_tmp.getOrderAmount()).setScale(2,BigDecimal.ROUND_HALF_UP);
+    		subList.add(amount);
+    		subList.add(order_tmp.getOrderStatusName());
+    		
+    		reList.add(subList);
+    	}
+    	return reList;
+    }
+
+    @RequestMapping("/detail")
+    public String detail(HttpServletRequest req, Map<String, Object> map) {
+        // 订单编号
+        String o = req.getParameter("o");
+        
+        String t = req.getParameter("t");
+        map.put("t", t);
+
+        logger.info("订单详情-o["+o+"]");
+        
+        Order order = orderService.getOrderDetail(o);
+        
+
+        map.put("order", order);
+        
+        
+        return "order/detail";
+    }
+
+    @RequestMapping("/goods")
+    public String goods(HttpServletRequest req, Map<String, Object> map) {
+     // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid)) {
+            throw new PageNotFoundException();
+        }
+        String t = req.getParameter("t");
+        map.put("t", t);
+
+        logger.info("商品详情Controller-sid[" + sid + "], gid[" + gid + "]");
+
+        Goods goods = goodsService.getGoodsDetail(Integer.parseInt(sid), gid);
+        if (goods == null) {
+            return "order/goods_fail";
+        }
+
+        map.put("goods", goods);
+        map.put("supName", supService.getSupName(goods.getSupId()));
+
+        return "order/goods";
+    }
+    @RequestMapping("/goods/trade")
+    public String goodsTradeRecord(HttpServletRequest req, Map<String, Object> map) {
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        // 页码
+        String page = req.getParameter("page");
+        
+
+        logger.info("商品交易记录Controller-sid["+sid+"], gid["+gid+"], page[" + page + "]");
+
+        if (StringUtils.isEmpty(gid) || !StringUtils.isNumeric(sid)) {
+            logger.info("商品交易记录Controller-参数无效-sid["+sid+"], gid["+gid+"], page[" + page + "]");
+            return "goods/trade";
+        }
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        
+        int total = goodsService.getTradeRecordCount(Integer.parseInt(sid), gid);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            map.put("list", goodsService.getTradeRecordList(Integer.parseInt(sid), gid, pageNum, PAGE_SIZE));
+        }
+        
+        map.put("total", total);
+        map.put("page", pageNum);
+        map.put("pageAction", "supervise/order/goods/trade?sid="+sid+"&gid="+gid+"&page=%PAGE%");
+        map.put("pages", pages);
+        return "order/trade";
+    }
+}

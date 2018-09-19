@@ -1,0 +1,199 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%
+	String path = request.getContextPath();
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>地址管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_replace.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/managementOrderExchange.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="#"><span class="fa fa-user"></span>经办人用户</a><span>|</span></li>
+        <li><a href="#">采购管理中心</a><span>|</span></li>
+        <li><a href="#">超市首页 </a><span>|</span></li>
+        <li><a href="#">登录</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="${pageContext.request.contextPath}/static/img/management/logo-management.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner">
+    	<h2>换货明细</h2>
+    	<div class="replace_step"> 
+	    	<ul class="image_list">
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="1" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step02.gif" alt="2" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step03.gif" alt="3" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step04.gif" alt="4" /></li>
+	    	</ul>
+	    	
+	    	<ul class="text_step">
+	    		<li>采购人换货</li>
+	    		<li class="confirm_step">供应商确认</li>
+	    		<li class="sale_step">采购人发货</li>
+	    		<li class="receipt_step">供应商收货确认</li>
+	    	</ul>	      
+	    	<!--.replace_step-->	
+      </div>
+      
+      <h3>换货单基本信息</h3>
+      <div class="order_details">
+      	<div class="order_row">
+	      	<label>订单编号：</label>
+	      	<span class="order_name"><a href="<%=path %>/market/order/detail?o=${order.order_id}">${order.order_id}</a></span>
+	      	<label>供应商名称：</label>
+	      	<span class="order_name"><a href="#">${order.sup_name}</a></span>
+	      	<label>采购人联系人：</label>
+	      	<span>${order.addr_name}</span>
+	      	<label>采购人联系电话：</label>
+	      	<span>${order.addr_phone}</span>
+      	</div>
+      	<dl>
+	      	<dt>备注：</dt>
+	      	<dd><textarea type="text" name="remark" class="form-control"></textarea></dd>
+      	</dl>
+      	<dl>
+	      	<dt>附件：</dt>
+	      	<dd><button type="button" class="btn btn-default red">上传</button></dd>
+      	</dl>
+      	<!--.order_details-->		
+      </div>
+      
+      <h3>商品信息</h3>
+      <div class="search_result">
+      	<table>
+   			<tr>
+    			<th width="40"><input type="checkbox" id="allchecked" value=""></th>
+    			<th width="390" colspan="2">商品名称</th>
+    			<th width="110">可换货数量</th>
+    			<th width="120">单价（元）</th>
+    			<th width="110">换货数量</th>
+    			<th width="120">换货金额(元)</th>
+    			<th width="200">换货原因</th>
+    			<th width="80">操作</th>
+   			</tr>
+   			<tr class="company">
+    			<td colspan="9"><button type="button" onclick="gotoSelectGoodsPage('${pageContext.request.contextPath}','${order.order_id}');" class="btn btn-default red">选择商品</button></td>
+   			</tr>
+			<tr>
+    			<td class="left_line"><input type="checkbox" name="number"></td>
+    			<td width="77"><p class="img_pro"><a href="#"><img src="img/management/img-keyboard01_01.jpg" alt="" /></a></p></td>
+    			<td class="link_area"><a href="#">罗技 Logitech 有线键鼠套装 MK200</a></td>
+    			<td>4</td>
+    			<td class="price">91.14</td>
+    			<td>
+    				<div class="input-group input-group-num">
+						<span class="input-group-btn">
+						<button class="btn btn-default input-group-addon" type="button">-</button>
+						</span>
+						<input id="after" class="form-control" type="text" max="10" min="1" value="2">
+						<span class="input-group-btn">
+						<button class="btn btn-default input-group-addon" type="button">+</button>
+						</span>
+					</div>
+    			</td>
+    			<td class="price">182.8</td>
+    			<td><input class="form-control" type="text"></td>
+    			<td class="right_line">
+    				<a href="#">查看</a>
+						<a href="#">删除</a>
+    			</td>
+   			</tr>
+   			<tr class="company">
+    			<td colspan="9"><label>换货总数量：</label><span>0</span><label>换货总金额：</label><span>0.00</span></td>
+   			</tr>
+	    	</table>
+	    	
+	    	<div class="confirm_area">
+   				<ul>
+		            <li><button type="button" class="btn btn-default red">提交</button></li>
+		            <li><button type="button" class="btn btn-default gray">返回</button></li>
+	          	</ul>
+	    	</div>
+      <!--.search_result-->			
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="${pageContext.request.contextPath}/static/img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

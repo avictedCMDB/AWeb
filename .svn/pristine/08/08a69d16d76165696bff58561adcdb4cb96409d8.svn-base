@@ -1,0 +1,47 @@
+function searchCompany(supID){
+	var path = $("#path").val();
+//	var companyName = $("#companyName").val();
+//	var companyCode = $("#companyCode").val();
+//	window.location.href = "${pageContext.request.contextPath}/supervise/companyInfo?companyName="+companyName+"&companyCode="+companyCode;
+	document.getElementById("companyForm").action=path+"/supervise/companyInfo";
+	document.getElementById("companyForm").submit();
+}
+
+function clean(){
+	$("#companyName").val("");
+ 	$("#companyCode").val("");
+}
+
+function addCompanyInfo(id){
+	var path = $("#path").val();
+	if(id!=""&&id!=null){
+		window.location.href = path+"/supervise/companyInfo/initEditCompany?id="+id;
+	}else{
+		window.location.href = path+"/supervise/companyInfo/initEditCompany";
+	}
+}
+
+function editCompanyInfo(type){
+	var path = $("#path").val();
+	var companyCode = $("#companyCode").val();
+	var companyName = $("#companyName").val();
+	if(companyCode==""||companyCode==null){
+		alert("请输入公司编号!");
+		return;
+	}
+	if(companyName==""||companyName==null){
+		alert("请输入公司名称!");
+		return;
+	}
+	if(type=="1"){
+		document.getElementById("companyInfoForm").action=path+"/supervise/companyInfo/addCompanyInfo";
+	}else{
+		document.getElementById("companyInfoForm").action=path+"/supervise/companyInfo/updCompanyInfo";
+	}
+	document.getElementById("companyInfoForm").submit();
+}
+
+function cancle(){
+	var path = $("#path").val();
+	window.location.href = path+"/supervise/companyInfo";
+}

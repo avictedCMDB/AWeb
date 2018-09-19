@@ -1,0 +1,16 @@
+package com.avic.supplier.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierUser;
+
+
+@Repository
+public interface SupplierUserMapper {
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public SupplierUser queryLoginUser(SupplierUser supplierUser);
+
+}

@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>发票管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_invoice.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/invoice.js"></script>
+</head>
+<body>
+<input id="path" type="hidden" value="${pageContext.request.contextPath}">
+<div class="page-wrapper">
+   <jsp:include page="header.jsp" />  
+  <div id="contents">
+    <div class="inner details">
+      <h2>新增发票</h2>
+      <div id="info_invoice">
+      	<div class="private_detail">
+	      <form class="form-horizontal" action="" method="post" id="editInvoiceForm">
+		      <input type="hidden" id="invoiceID" value="${invoice.invoiceID}"/>
+		      <input id="ifDefault" name="ifDefault" type="hidden" value="${invoice.ifDefault}"/>
+		      <input id="invoiceContent" name="invoiceContent" type="hidden" value="${invoice.invoiceContent}">
+	      	  <div class="form-group clearfix">
+	            <label for="name" class="control-label">发票抬头:</label>
+	            <input type="text" class="form-control detail" id="companyName" name="companyName" value="${invoice.companyName}">
+	          </div>
+	          <div class="form-group clearfix">
+	            <label for="name" class="control-label">发票内容:</label>
+	            <div class="list_section invoice_list detail clearfix">
+	              <ul class="clearfix" id="invoiceContentUL">
+	                <li><a href="javascript:void(0);" id="invoiceContent0" <c:if test="${empty invoice.invoiceFlag || invoice.invoiceFlag == '0'}"> class="active"</c:if> onclick="chooseInvoiceFlg(0);">明细</a></li>
+	                <%-- <li><a href="javascript:void(0);" id="invoiceContent1" <c:if test="${invoice.invoiceFlag == '1'}"> class="disabled btn"</c:if> onclick="chooseInvoiceFlg(1);">办公用品</a></li>
+	                <li><a href="javascript:void(0);" id="invoiceContent2" <c:if test="${invoice.invoiceFlag == '2'}"> class="disabled btn"</c:if> onclick="chooseInvoiceFlg(2);">电脑配件</a></li>
+	                <li><a href="javascript:void(0);" id="invoiceContent3" <c:if test="${invoice.invoiceFlag == '3'}"> class="disabled btn"</c:if> onclick="chooseInvoiceFlg(3);">耗材</a></li> --%>
+	              </ul>
+	              <p><input type="checkbox" id="setDefaultCB" <c:if test="${invoice.ifDefault == '1'}">checked</c:if>>设置为默认发票</p>
+	            </div>
+	          </div>
+	        </form> 
+	        <div class="btn_add btn_middle">
+	          <ul>
+	            <li><button  type="button" class="btn btn-default blue" onclick="saveInvoice();">保存发票信息</button></li>
+	            <li><button  type="button" class="btn btn-default gray" onclick="cancle();">取消</button></li>
+	          </ul>
+	        </div>
+        </div>
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+<jsp:include page="footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

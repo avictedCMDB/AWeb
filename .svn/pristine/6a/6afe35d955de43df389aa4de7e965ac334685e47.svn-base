@@ -1,0 +1,131 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>个人中心|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_exchange.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.min1.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/userInfo.js"></script>
+<style type="text/css"> 
+/*密码强度*/
+.pw-strength {clear: both;position: relative;top: 8px;width: 180px;}
+.pw-bar{background: url(../static/img/pwd-1.png) no-repeat;height: 14px;overflow: hidden;width: 179px;}
+.pw-bar-on{background:  url(../static/img/pwd-2.png) no-repeat; width:0px; height:14px;position: absolute;top: 1px;left: 2px;transition: width .5s 
+ ease-in;-moz-transition: width .5s ease-in;-webkit-transition: width .5s ease-in;-o-transition: width .5s ease-in;}
+.pw-weak .pw-defule{ width:0px;}
+.pw-weak .pw-bar-on {width: 60px;}
+.pw-medium .pw-bar-on {width: 120px;}
+.pw-strong .pw-bar-on {width: 179px;}
+.pw-txt {padding-top: 2px;width: 180px;overflow: hidden;}
+.pw-txt span {color: #707070;float: left;font-size: 12px;text-align: center;width: 58px;}</style>
+<script type="text/javascript"> 
+$(function(){ 
+	$('#newPassword').keyup(function () { 
+		var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g"); 
+		var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g"); 
+		var enoughRegex = new RegExp("(?=.{6,}).*", "g"); 
+	
+		if (false == enoughRegex.test($(this).val())) { 
+			$('#level').removeClass('pw-weak'); 
+			$('#level').removeClass('pw-medium'); 
+			$('#level').removeClass('pw-strong'); 
+			$('#level').addClass(' pw-defule'); 
+			
+		} 
+		else if (strongRegex.test($(this).val())) { 
+			$('#level').removeClass('pw-weak'); 
+			$('#level').removeClass('pw-medium'); 
+			$('#level').removeClass('pw-strong'); 
+			$('#level').addClass(' pw-strong'); 
+
+		} 
+		else if (mediumRegex.test($(this).val())) { 
+			$('#level').removeClass('pw-weak'); 
+			$('#level').removeClass('pw-medium'); 
+			$('#level').removeClass('pw-strong'); 
+			$('#level').addClass(' pw-medium'); 
+		
+		} 
+		else { 
+			$('#level').removeClass('pw-weak'); 
+			$('#level').removeClass('pw-medium'); 
+			$('#level').removeClass('pw-strong'); 
+			$('#level').addClass('pw-weak'); 
+		} 
+		return true; 
+	}); 
+}) 
+</script>
+</head>
+<body>
+<div class="page-wrapper">
+  <jsp:include page="header.jsp" />  
+  <div id="contents">
+    <div class="inner">
+      <jsp:include page="left_menu.jsp">
+		  <jsp:param name="menu" value="changepwd" />
+	  </jsp:include>
+      
+      <div id="matter_section">
+      <input id="path" type="hidden" value="${pageContext.request.contextPath}">
+      	<h2>修改密码</h2>
+      	      <form id="changePasswordForm"  method="post">
+	      <div class="add_details">
+			        <dl class="clearfix">
+			          <dt><span class="red_remind">*</span>旧密码：</dt>
+			          <dd><input id="oldPassword" name="oldPassword" type="password" maxlength="16" class="form-control"></dd>
+			        </dl>
+			        <dl class="clearfix">
+			          <dt><span class="red_remind">*</span>新密码：</dt>
+			          <dd>
+			          	<input id="newPassword" name="newPassword" type="password" maxlength="16" class="form-control">
+			          	<div id="level" class="pw-strength">           	
+							<div class="pw-bar"></div>
+							<div class="pw-bar-on"></div>
+							<div class="pw-txt">
+							<span>弱</span>
+							<span>中</span>
+							<span>强</span>
+							</div>
+						</div>	
+			          </dd>
+			        </dl>
+			        <dl class="clearfix">
+			          <dt><span class="red_remind">*</span>确认密码：</dt>
+			          <dd>
+			          	<input id="confirmPassword" name="confirmPassword" type="password" maxlength="16" class="form-control">
+			          </dd>
+			        	
+			        </dl>
+			        <div class="btn_add btn_middle">
+			          <ul>
+			            <li><button type="button" class="btn btn-default red" onclick="updatePassword();">确认</button></li>
+			          </ul>
+			        </div>
+	      </div>
+      </form>
+      	
+        <jsp:include page="page.jsp" />
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <jsp:include page="footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

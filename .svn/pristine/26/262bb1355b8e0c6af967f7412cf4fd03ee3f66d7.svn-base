@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.UserMapper">
+	<resultMap id="userMap" type="com.avic.passport.models.User">
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR" /> 
+		<result column="USERNAME" property="userName" jdbcType="VARCHAR" />
+		<result column="USERID" property="userId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectUserByPassword" resultType="java.lang.Integer" parameterType="com.avic.passport.models.User">
+			select count(1) 
+			  from users
+			 where username = #{userName,jdbcType=VARCHAR}
+			   and password = #{password,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="changePassword" parameterType="com.avic.passport.models.User">
+		UPDATE USERS
+		   SET PASSWORD = #{password,jdbcType=VARCHAR}
+		 WHERE USERNAME = #{userName,jdbcType=VARCHAR}
+		    OR USERID = #{userId,jdbcType=VARCHAR}
+	</update>
+	
+</mapper>

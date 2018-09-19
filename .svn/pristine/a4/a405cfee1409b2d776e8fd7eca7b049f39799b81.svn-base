@@ -1,0 +1,29 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.mappers.OrderExchangeMapper;
+import com.avic.management.models.OrderExchangeBean;
+import com.avic.management.services.OrderExchangeService;
+
+@Service
+public class OrderExchangeServiceImpl implements OrderExchangeService {
+    protected static final Log logger = LogFactory.getLog(OrderExchangeServiceImpl.class);
+
+    @Autowired
+    OrderExchangeMapper orderExchangeMapper;
+
+	@Override
+	public OrderExchangeBean getOrderDetail(String order_id) {
+		return orderExchangeMapper.getOrderDetail(order_id);
+	}
+
+	public List<OrderExchangeBean> orderSelectDoInit(OrderExchangeBean oeBean) {
+		return orderExchangeMapper.orderSelectDoInit(oeBean);
+	}
+}

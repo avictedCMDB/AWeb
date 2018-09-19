@@ -1,0 +1,52 @@
+package com.avic.supplier.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierExchangeMapper;
+import com.avic.supplier.models.SupplierCodeList;
+import com.avic.supplier.models.SupplierExchange;
+import com.avic.supplier.services.SupplierExchangeService;
+
+@Service
+public class SupplierExchangeServiceImpl implements SupplierExchangeService{
+	
+    protected static final Log logger = LogFactory.getLog(SupplierExchangeServiceImpl.class);
+    
+    @Autowired
+    SupplierExchangeMapper supplierExchangeMapper;
+	
+	
+	@Override
+	public List<SupplierExchange> queryExchangeOrderList(
+			SupplierExchange supplierExchange) {
+		return supplierExchangeMapper.queryExchangeOrderList(supplierExchange);
+	}
+
+	@Override
+	public List<SupplierCodeList> queryExchangeOrderStatusList() {
+		return supplierExchangeMapper.queryExchangeOrderStatusList();
+	}
+
+	@Override
+	public List<SupplierExchange> queryExchangeOrderDetailed(
+			SupplierExchange supplierExchange) {
+		return supplierExchangeMapper.queryExchangeOrderDetailed(supplierExchange);
+	}
+
+	@Override
+	public void updateExchangeOrderStatus(SupplierExchange supplierExchange) {
+		supplierExchangeMapper.updateExchangeOrderStatus(supplierExchange);
+	}
+
+	@Override
+	public SupplierExchange queryDetailed(SupplierExchange supplierExchange) {
+		return supplierExchangeMapper.queryDetailed(supplierExchange);
+	}
+	
+
+}

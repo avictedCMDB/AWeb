@@ -1,0 +1,263 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="商品详情" name="title" />
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/product-detail.css" rel="stylesheet">
+
+	<script type="text/javascript">
+		$(function() {
+			$(".small_pic").click(function() {
+				$("#big_pic").attr("src", $(this).attr("src"));
+			});
+			
+			$(".btn_reduce").click(function () {
+				var num = $("#q_num").text();
+				if (num > 1) {
+					num --;
+					$("#q_num").text(num);
+					
+					if (num == 1) {
+						$(this).css("color", "#cdccca");
+					}
+				}
+			});
+			
+			$(".btn_add").click(function () {
+				var num = $("#q_num").text();
+					num ++;
+					if (num < 1000000) {
+						$("#q_num").text(num);
+					}
+					
+					if (num > 1) {
+						$(".btn_reduce").css("color", "#3a3c39");
+					}
+			});
+			
+			$("#product_detail #nav ul li").click(function () {
+				var selected = $("#product_detail #nav ul .select");
+				selected.removeClass("select");
+				$("#" + selected.attr("data-tab")).hide();
+				$(this).addClass("select");
+				var tab = $(this).attr("data-tab");
+				$("#" + tab).show();
+				
+			});
+			
+			$("#tab02 table.Ptable").addClass("tableStyle01");
+			$("#tab02 table.Ptable").width(1018);
+			
+			
+
+			$("#goods_compare").click(function () {
+				compareAdd(${goods.supId}, '${goods.supGoodsId}');
+			});
+			
+
+			$("#cart_btn").click(function () {
+				
+				async('${pageContext.request.contextPath}/market/cart/add', {sid:${goods.supId}, gid:'${goods.supGoodsId}', num:$("#q_num").text()}, function (msg) {
+					setCartNum(msg.result);
+					alert("添加购物车成功");
+				});
+			});
+			
+			$("#order_btn").click(function () {
+				window.location.href="${pageContext.request.contextPath}/market/order/confirm?type=1&ids=" + "${goods.supId}_${goods.supGoodsId}_" + $("#q_num").text();
+			});
+			
+			$("#trade_btn").click(function () {
+				if ($("#tab03").find("table").size() == 0) {
+					loadTradeRecord("${pageContext.request.contextPath}/market/goods/trade?sid=${goods.supId}&gid=${goods.supGoodsId}&page=1");
+				}
+			});
+			
+
+			<c:if test="${error != null}">
+			alert("${error}");
+			</c:if>
+		});
+		
+		var loadTradeRecord = function (url) {
+			if (loading) return;
+			$("#tab03").find("table").remove();
+			$("#tab03").find("#flip").remove();
+			$("#data_empty").show();
+			loading = true;
+			$.ajax({
+				url:url,
+				type:"GET",
+				success:function (msg) {
+					loading = false;
+					$("#data_empty").hide();
+					$("#tab03").find("table").remove();
+					$("#tab03").append(msg);
+					$("#tab03 #flip ul li a").each(function () {
+						$(this).attr("data-url", $(this).attr("href"));
+						$(this).attr("href", "javascript:void(0);");
+						$(this).click(function () {
+							var url = $(this).attr("data-url");
+							loadTradeRecord(url);
+						});
+					});
+					
+				},
+				error:function () {
+					loading = false;
+					alert("操作失败，请重试");
+				}
+			});
+		}
+	</script>
+</head>
+
+<body>
+	<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+		<div id="nav_area">
+			<div class="inner clearfix">
+				<jsp:include page="../categorys.jsp" />
+			</div>
+			<!--#nav_area-->
+		</div>
+		<div id="contents">
+			<div class="inner">
+				<div class="breadcrumb">
+					<ul>
+						<li><a href="${pageContext.request.contextPath}">首页</a><span>&gt;</span></li>
+							<c:if test="${sup.supType == 1}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/prof">专业市场</a><span></span></li>
+							</c:if>
+							<c:if test="${sup.supType == 0}">
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat1}">${dataCache.getCategoryName(cat1)}</a><span>&gt;</span></li>
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat2}">${dataCache.getCategoryName(cat2)}</a><span>&gt;</span></li>
+						<li><a href="${pageContext.request.contextPath}/market/goods/search?cat=${cat3}">${dataCache.getCategoryName(cat3)}</a><span></span></li>
+							</c:if>
+					</ul>
+					<!--.breadcrumb-->
+				</div>
+
+				<div id="product_main">
+					<div id="product_intro" class="clearfix">
+						<div id="preview">
+							<div class="photo">
+							<c:if test="${sup.supType == 1}">
+								<img src="${pageContext.request.contextPath}${goods.imagePath == null ? '/static/img/img-profession.jpg' : goods.imagePath}" alt="" width="350px" height="350px" id="big_pic">
+							</c:if>
+							<c:if test="${sup.supType == 0}">
+								<img src="${goods.imagePath}" alt="" width="350px" height="350px" id="big_pic">
+							</c:if>
+							</div>
+							<div class="spec_list">
+								<ul class="clearfix">
+									<c:forEach var="item" items="${goods.images}" varStatus="sta">
+										<li style="cursor:pointer;" <c:if test="${sta.last}">class="last"</c:if>><img class="small_pic" src="${item}" alt="" width="44px" height="44px"></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</div>
+						<div id="item_info">
+							<h1 style="margin-right:60px; word-break:break-all; word-wrap:break-word;">${fn:escapeXml(goods.goodsName) }</h1>
+							<div id="summary">
+								<dl id="summary_price" class="clearfix">
+									<dt>市场价</dt>
+									<dd class="general">
+										￥<span>${goods.salePrice}</span>
+									</dd>
+									<dt>招采价</dt>
+									<dd class="preferential">￥${goods.agreePrice}</dd>
+								</dl>
+								<dl id="comment_count" class="clearfix">
+									<dt>价格优惠率：</dt>
+									<dd class="font-color-red">
+										<fmt:formatNumber value="${1-goods.agreePrice/goods.salePrice }" type="percent" />
+									</dd>
+								</dl>
+								<dl id="choose" class="clearfix">
+									<dt>品 牌：</dt>
+									<dd>${goods.brandName == null ? '-' : goods.brandName }</dd>
+									<dt>型 号：</dt>
+									<dd>${goods.goodsModel == null ? '-' : goods.goodsModel }</dd>
+									<dt>产地：</dt>
+									<dd>${goods.productArea == null ? '-' : goods.productArea }</dd>
+									<dt class="pt-10">购买数量：</dt>
+									<dd>
+										<p id="quantity">
+											<a href="javascript:void(0);"><span class="btn_reduce">-</span></a><b style="font-weight:normal;" id="q_num">1</b><a href="javascript:void(0);"><span class="btn_add">+</span></a>
+										</p>
+									</dd>
+								</dl>
+								<ul id="btn_list" class="clearfix">
+									<li><a href="#" id="order_btn"><img src="${pageContext.request.contextPath}/static/img/product-detail/btn-order.gif" alt="立即下单"></a></li>
+									<li><a href="javascript:void(0);" id="cart_btn"><img src="${pageContext.request.contextPath}/static/img/product-detail/btn-shopping-cart.gif" alt="加入购物车"></a></li>
+								</ul>
+								<ul id="other" class="clearfix">
+									<li><img src="${pageContext.request.contextPath}/static/img/product-detail/icon-star.gif" alt="">收藏商品<!-- （20938人气）  --></li>
+									<li><img src="${pageContext.request.contextPath}/static/img/product-detail/icon-report.gif" alt="">举报</li>
+								</ul>
+								<div id="compare_map">
+									<a href="javascript:void(0);" id="goods_compare"><img src="${pageContext.request.contextPath}/static/img/product-detail/btn-compare-min.gif" alt="对比"></a>
+								</div>
+							</div>
+						</div>
+						<div id="ext_info">
+							<h2>${sup.supName}</h2>
+							<dl id="contact">
+								<dt class="font-16 font-color-red">客服电话</dt>
+								<dd>400-610-160转121820</dd>
+							</dl>
+							<dl id="other_shop">
+								<dt class="font-16">经营此商品的其它商户</dt>
+								<dd>
+									<ul>
+										<li><a href="#">其他品牌</a></li>
+										<li><a href="#">其他品牌</a></li>
+										<li><a href="#">其他品牌</a></li>
+									</ul>
+								</dd>
+							</dl>
+						</div>
+						<!--#product_intro-->
+					</div>
+					<div id="product_detail" class="clearfix">
+						<div id="nav" class="clearfix">
+							<ul>
+								<li class="select" data-tab="tab01"><a href="javascript:void(0);">商品详情</a></li>
+								<li data-tab="tab02"><a href="javascript:void(0);">商品参数</a></li>
+								<li data-tab="tab03"><a href="javascript:void(0);" id="trade_btn">商品成交价格</a></li>
+							</ul>
+						</div>
+						<div id="tab01">
+							${goods.goodsDesc }
+							<!--#tab01-->
+						</div>
+						<div id="tab02">
+							${goods.goodsParam }
+							<!--#tab02-->
+						</div>
+						<div id="tab03">
+							<div id="data_empty" style="text-align:center;">加载中...</div>
+							<!--#tab03-->
+						</div>
+						<jsp:include page="compare.jsp" />
+						<!--#product_detail-->
+					</div>
+					<!--#product_main-->
+				</div>
+				<!--.inner-->
+			</div>
+			<!--#contents-->
+		</div>
+		<jsp:include page="../footer.jsp" />
+		<!--.page-wrapper-->
+	</div>
+</body>
+
+</html>

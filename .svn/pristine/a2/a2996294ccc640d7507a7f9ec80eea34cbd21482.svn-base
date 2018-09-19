@@ -1,0 +1,53 @@
+
+function search(){
+	var path= $("#path").val();
+	var orderID = $("#orderID").val();
+	var serviceStatus =$("#serviceStatus").val();
+	var exchangeOrRefound = $("#exchangeOrRefound").val();
+	var url = path;
+	if(exchangeOrRefound=="1"){
+		url = url + "/management/services/refoundServices?orderID="+orderID+"&serviceStatus="+serviceStatus;
+	}else{
+		url = url + "/management/services/exchangeServices?orderID="+orderID+"&serviceStatus="+serviceStatus;
+	}
+	window.location.href = url;
+}
+
+function auditCancle(serviceID,goodsPrice,goodsPriceInit,goodsNum,supID,typeID,supGoodsID){
+	var path = $("#path").val();
+	var orderID = $("#orderID").val();
+	var serviceStatus =$("#serviceStatus").val();
+	var exchangeOrRefound = $("#exchangeOrRefound").val();
+	$.ajax({
+        type: "POST",
+        url: path+"/management/services/auditCancle",
+        contentType:"application/x-www-form-urlencoded; charset=utf-8", 
+        data: {
+        	exchangeOrRefound:exchangeOrRefound,
+        	serviceID:serviceID,
+        	goodsPrice:goodsPrice,
+        	goodsPriceInit:goodsPriceInit,
+        	exchangeNum:goodsNum,
+        	refoundNum:goodsNum,
+        	supID:supID,
+        	typeID:typeID,
+        	supGoodsID:supGoodsID
+        },
+        success: function(data) {
+        	if("success"==data){
+    			alert("成功取消服务单！");
+    		}else{
+    			alert("取消服务单失败！");
+    		}
+        	
+        	var url = path;
+        	if(exchangeOrRefound=="1"){
+        		url = url + "/management/services/refoundServices?orderID="+orderID+"&serviceStatus="+serviceStatus;
+        	}else{
+        		url = url + "/management/services/exchangeServices?orderID="+orderID+"&serviceStatus="+serviceStatus;
+        	}
+        	window.opener.location.href=url;
+    		window.close();
+        }
+    });
+}

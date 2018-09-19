@@ -1,0 +1,48 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*结算单生效*/
+h3.title_h3 {
+  border-left: 5px solid #db433d;
+  font-size: 16px;
+  padding-left: 10px;
+  color: #db433d;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+.info_detail {
+	background: #f6f4f5 none repeat scroll 0 0;
+    border: 1px solid #dfdfdf;
+    margin: 20px auto 0;
+    padding: 10px 0 5px 35px;
+    width: 990px;
+}
+.info_detail label {
+	 width: 108px;
+	 text-align: right;
+}
+.info_detail span {
+	min-width: 100px;
+	display: inline-block;
+	color: #4798ed;
+}
+table.details {
+	width: 100%;
+	margin-top: 0;
+}
+table.details tr td.price {
+	color: red;
+	text-align: right;
+}
+p.sum {
+	text-align: right;
+	margin-top: 10px;
+	margin-right: 20px;
+}
+p.sum span {
+	color: red;
+}
+.btn_area {
+	text-align: center;
+	margin: 30px 0;
+}

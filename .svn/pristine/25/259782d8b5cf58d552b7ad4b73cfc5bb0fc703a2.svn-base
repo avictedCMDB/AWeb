@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjectMapper">
+	<resultMap id="bidProjectMap" type="com.avic.management.models.BidProject">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="proj_name" property="projName" jdbcType="VARCHAR" />
+		<result column="bid_cat" property="bidCat" jdbcType="VARCHAR" />
+		<result column="proj_type" property="projType" jdbcType="INTEGER" />
+		<result column="decide_type" property="decideType" jdbcType="INTEGER" />
+		<result column="currency" property="currency" jdbcType="VARCHAR" />
+		<result column="exchange_rate" property="exchangeRate" jdbcType="VARCHAR" />
+		<result column="min_tender" property="minTender" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="quota_type" property="quotaType" jdbcType="INTEGER" />
+		<result column="quota_limit_type" property="quotaLimitType" jdbcType="INTEGER" />
+		<result column="quota_limit_num" property="quotaLimitNum" jdbcType="INTEGER" />
+		<result column="split_type" property="splitType" jdbcType="INTEGER" />
+		<result column="proj_status" property="projStatus" jdbcType="INTEGER" />
+		<result column="trial_end_time" property="trialEndTime" jdbcType="TIMESTAMP" />
+		<result column="join_end_time" property="joinEndTime" jdbcType="TIMESTAMP" />
+		<result column="bid_start_time" property="bidStartTime" jdbcType="TIMESTAMP" />
+		<result column="bid_duration" property="bidDuration" jdbcType="INTEGER" />
+		<result column="timeout_interval" property="timeoutInterval" jdbcType="INTEGER" />
+		<result column="min_incr_type" property="minIncrType" jdbcType="INTEGER" />
+		<result column="min_incr_val" property="minIncrVal" jdbcType="INTEGER" />
+		<result column="quota_decr_limit" property="quotaDecrLimit" jdbcType="INTEGER" />
+		<result column="times_limit_type" property="timesLimitType" jdbcType="INTEGER" />
+		<result column="times_limit_num" property="timesLimitNum" jdbcType="INTEGER" />
+		<result column="accept_type" property="acceptType" jdbcType="INTEGER" />
+		<result column="tender_price" property="tenderPrice" jdbcType="INTEGER" />
+		<result column="bid_bond" property="bidBond" jdbcType="INTEGER" />
+		<result column="bidder_qual" property="bidderQual" jdbcType="VARCHAR" />
+		<result column="bid_invitation" property="bidInvitation" jdbcType="VARCHAR" />
+		<result column="bid_time_rule" property="bidTimeRule" jdbcType="VARCHAR" />
+		<result column="bid_quota_rule" property="bidQuotaRule" jdbcType="VARCHAR" />
+		<result column="caution" property="caution" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="publish_quota" property="publishQuota" jdbcType="INTEGER" />
+		<result column="notice_status" property="noticeStatus" jdbcType="INTEGER" />
+		<result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+		<result column="bid_cat_name" property="bidCatName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertProject">
+		insert into bid_project (
+			proj_id, proj_name, bid_cat, proj_type, decide_type, 
+			currency, exchange_rate, min_tender, user_id, company_id, 
+			quota_type, quota_limit_type, quota_limit_num, split_type, proj_status, 
+			trial_end_time, join_end_time, bid_start_time, bid_duration, publish_quota,
+			timeout_interval, min_incr_type, min_incr_val, quota_decr_limit, times_limit_type,
+			times_limit_num, accept_type, tender_price, bid_bond, bidder_qual,
+			bid_invitation, bid_time_rule, bid_quota_rule, caution, remark, 
+			create_time, notice_status	
+			<if test="projStatus == 2">, publish_time</if>		
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{projName,jdbcType=VARCHAR}, #{bidCat,jdbcType=VARCHAR}, #{projType,jdbcType=INTEGER}, #{decideType,jdbcType=INTEGER},
+			#{currency,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=VARCHAR}, #{minTender,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
+			#{quotaType,jdbcType=INTEGER}, #{quotaLimitType,jdbcType=INTEGER}, #{quotaLimitNum,jdbcType=INTEGER}, #{splitType,jdbcType=INTEGER}, #{projStatus,jdbcType=INTEGER},
+			#{trialEndTime,jdbcType=TIMESTAMP}, #{joinEndTime,jdbcType=TIMESTAMP}, #{bidStartTime,jdbcType=TIMESTAMP}, #{bidDuration,jdbcType=INTEGER}, #{publishQuota,jdbcType=INTEGER},
+			#{timeoutInterval,jdbcType=INTEGER}, #{minIncrType,jdbcType=INTEGER}, #{minIncrVal,jdbcType=INTEGER}, #{quotaDecrLimit,jdbcType=INTEGER}, #{timesLimitType,jdbcType=INTEGER},
+			#{timesLimitNum,jdbcType=INTEGER}, #{acceptType,jdbcType=INTEGER}, #{tenderPrice,jdbcType=INTEGER}, #{bidBond,jdbcType=INTEGER}, #{bidderQual,jdbcType=VARCHAR},
+			#{bidInvitation,jdbcType=VARCHAR}, #{bidTimeRule,jdbcType=VARCHAR}, #{bidQuotaRule,jdbcType=VARCHAR}, #{caution,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+			sysdate, #{noticeStatus,jdbcType=INTEGER}
+			<if test="projStatus == 2">, sysdate</if>		
+		)
+	</insert>
+	
+	<select id="queryProjectCount" resultType="java.lang.Integer">
+		select count(1) from bid_project
+		where proj_status in  
+		<foreach collection="status" index="index" item="item" open="(" separator="," close=")"> 
+            #{item} 
+        </foreach> 
+        <if test="projId != null and projId != ''">
+        	and proj_id = #{projId}
+        </if> 
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+        <if test="createTime != null and createTime != ''">
+        	and to_char(create_time,'YYYY-MM-DD') = #{createTime}
+        </if> 
+	</select>
+	
+	
+	<select id="queryProjectList" resultMap="bidProjectMap">
+	select x.* from (
+		select rownum rn, proj_id, proj_name, (select codetext from codelist b where b.codevalue = bid_project.bid_cat and b.codelisttype = 'BID_CAT') bid_cat_name, bid_start_time, proj_status 
+		from bid_project
+		where proj_status in  
+		<foreach collection="status" index="index" item="item" open="(" separator="," close=")"> 
+            #{item} 
+        </foreach> 
+        <if test="projId != null and projId != ''">
+        	and proj_id = #{projId}
+        </if> 
+        <if test="projName != null and projName != ''">
+        	and proj_name like '%'||#{projName}||'%'
+        </if>
+        <if test="bidCat != null and bidCat != ''">
+        	and bid_cat = #{bidCat}
+        </if> 
+        <if test="createTime != null and createTime != ''">
+        	and to_char(create_time,'YYYY-MM-DD') = #{createTime}
+        </if> 
+        ) x
+		where x.rn between #{start} and #{end}
+	</select>
+</mapper>

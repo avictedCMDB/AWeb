@@ -1,0 +1,34 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.SupInfo;
+
+public interface SupInfoService {
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public List<SupInfo> querySupInfos();
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public List<SupInfo> querySupInfosBySupType(SupInfo supInfo);
+	/**
+	 * 查询供应商电话
+	 * @return 
+	 */
+	public List<SupInfo> querySupInfosTelBySupID(SupInfo supInfo);
+
+    /**
+     * 查询竞价供应商
+     * @param supInfo
+     * @return
+     */
+	public int queryBidSupInfoCount(String compId, String supCode, String supName, String contactPerson, String contactNum);
+    public List<SupInfo> queryBidSupInfoList(String compId, String supCode, String supName, String contactPerson, String contactNum, int page, int size);
+    public SupInfo querySupInfoByCode(String supCode);
+    
+    public List<SupInfo> querySupInfosTelBySupCode(List<String> codes);
+}

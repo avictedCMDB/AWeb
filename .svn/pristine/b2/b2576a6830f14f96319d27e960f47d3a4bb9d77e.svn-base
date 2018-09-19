@@ -1,0 +1,15 @@
+package com.avic.management.mappers;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.SupGoods;
+
+@Repository
+public interface SupGoodsMapper {
+	/**
+	 * 查询商品信息
+	 * @return 
+	 */
+	public SupGoods queryGoods(SupGoods supGoods);
+	
+}

@@ -1,0 +1,67 @@
+package com.avic.market.utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.avic.market.mappers.CategoryMapper;
+import com.avic.market.models.SysCategory;
+
+public class CategoryCache {
+    protected static final Log logger = LogFactory.getLog(CategoryCache.class);
+
+    @Autowired
+    CategoryMapper categoryMapper;
+    
+    private static List<SysCategory> CATEGORY_TREE = null;
+    private static Map<Integer, String> CATEGORY_MAP = new HashMap<Integer, String>();
+    
+    public void init () {
+        logger.info("加载系统分类树缓存...");
+        loadTree();
+    }
+    
+    private void loadTree() {
+
+        List<SysCategory> list = categoryMapper.querySysCatTree();
+        
+        List<SysCategory> tree = new ArrayList<SysCategory>();
+        
+        SysCategory level1 = null, level2 = null;
+        
+        for (SysCategory i : list) {
+            CATEGORY_MAP.put(i.getSysCatId(), i.getSysCatName());
+            if (i.getSysCatLevel() == 1) {
+                level1 = i;
+                level1.setChildCategory(new ArrayList<SysCategory>());
+                tree.add(level1);
+            } else if (i.getSysCatLevel() == 2) {
+                level2 = i;
+                level2.setChildCategory(new ArrayList<SysCategory>());
+                level1.getChildCategory().add(level2);
+            } else {
+                level2.getChildCategory().add(i);
+            }
+        }
+        
+        CATEGORY_TREE = tree;
+    }
+    
+    public List<SysCategory> getCategoryTree() {
+
+        if (CATEGORY_TREE == null) {
+            loadTree();
+        }
+        
+        return CATEGORY_TREE;
+    }
+    
+    public String getCategoryName(int cat) {
+        return CATEGORY_MAP.get(cat);
+    }
+}

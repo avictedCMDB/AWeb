@@ -1,0 +1,198 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>地址管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_invoice.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/managementInvoice.js"></script>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="javascript:void(0);"><span class="fa fa-user"></span>${sessionScope.login_user.userNameCN}</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/management/finance/index">采购管理中心</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}">超市首页 </a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/passport/login/logout">退出</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="${pageContext.request.contextPath}/static/img/management/logo-management.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner">
+    	
+    	<div class="page-wrapper">
+		<div id="side_navi">
+    		<dl>
+    			<dt class="tlt_merchandise">商品比对管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="${pageContext.request.contextPath}/management/compare"><span class="fa fa-caret-right"></span>商品比对管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_information">信息管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="${pageContext.request.contextPath}/management/address"><span class="fa fa-caret-right"></span>地址管理</a></li>
+    					<li class="active"><a href="${pageContext.request.contextPath}/management/invoice"><span class="fa fa-caret-right"></span>发票管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_transaction">交易管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>购物车管理</a></li>
+    					<li><a href="${pageContext.request.contextPath}/management/order"><span class="fa fa-caret-right"></span>订单管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_reeturns">退换货管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd>
+    				<ul>
+    					<li><a href="${pageContext.request.contextPath}/management/exchange"><span class="fa fa-caret-right"></span>换货管理</a></li>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>退货管理</a></li>
+    				</ul>
+    			</dd>
+    			<dt class="tlt_receipt">收货管理<span class="fa fa-caret-square-o-down"></span></dt>
+    			<dd class="last_child">
+    				<ul>
+    					<li><a href="#"><span class="fa fa-caret-right"></span>收货管理</a></li>
+    				</ul>
+    			</dd>
+    		</dl>
+    		<!--#side_navi-->
+    	</div>
+<!--.page-wrapper--></div> 
+      
+      <div id="matter_section">
+      	<h2>发票管理</h2>
+      	<div class="btn-list section clearfix btn_add">
+          <ul>
+            <li><button type="button" class="btn btn-default red" onclick="showAddInvoice();">新增发票</button></li>
+          </ul>
+        <!--.search_area--></div>
+      	<div class="search_result">
+          <table border="0">
+          	<tr>
+              <th width="300">付款单位名称</th>
+              <th width="300">税务登记号</th>
+              <th>发票内容</th>
+              <th>是否默认</th>
+              <th width="120">操作</th>
+            </tr>
+           <c:forEach var="invoice" items="${invoices}" varStatus="status">
+            <tr>
+              <td class="address">${invoice.companyName}</td>
+              <td>${invoice.invocieNum}</td>
+              <td>${invoice.invoiceContent}</td>
+              <c:choose>
+				<c:when test="${invoice.ifDefault == '1'}">  
+					 <td>是</td>
+				</c:when>
+				<c:otherwise> 
+					 <td>否</td>
+				</c:otherwise>
+			  </c:choose>
+              <td>
+              	<a href="${pageContext.request.contextPath}/management/invoice/udpateInvoicePage/${invoice.invoiceID}">修改</a>&nbsp;|&nbsp;
+              	<a href="${pageContext.request.contextPath}/management/invoice/delete/${invoice.invoiceID}">删除</a>
+              	<c:if test="${invoice.ifDefault == '0'}">
+              		&nbsp;|&nbsp;<a href="${pageContext.request.contextPath}/management/invoice/setDefault/${invoice.invoiceID}">设置默认</a>
+              	</c:if> 
+              </td>
+            </tr>
+           </c:forEach>
+          </table>
+        <!--.search_result--></div>
+      	<div class="page">
+          <ul class="pagination">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li class="active"><a href="#">3</a></li>
+            <li>...</li>
+            <li><a href="#">99</a></li>
+            <li><a href="#">100</a></li>
+            <li><a href="#">&raquo;</a></li>
+          </ul>
+        </div>
+      <!--#matter_section-->	
+      </div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="${pageContext.request.contextPath}/static/img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

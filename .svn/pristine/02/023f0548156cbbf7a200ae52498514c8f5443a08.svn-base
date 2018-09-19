@@ -1,0 +1,147 @@
+package com.avic.supplier.services.impl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierExchangeMapper;
+import com.avic.supplier.mappers.SupplierOrderMapper;
+import com.avic.supplier.mappers.SupplierReturnMapper;
+import com.avic.supplier.models.SupplierExchange;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.models.SupplierReturn;
+import com.avic.supplier.services.SupplierOrderService;
+@Service
+public class SupplierOrderServiceImpl implements SupplierOrderService {
+
+	@Autowired
+    SupplierOrderMapper supplierOrderMapper;
+	
+    @Autowired
+    SupplierExchangeMapper supplierExchangeMapper;
+    
+    @Autowired
+    SupplierReturnMapper supplierReturnMapper;
+	
+	@Override
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder) {
+		List<SupplierOrder> orderList= supplierOrderMapper.queryOrderList(supplierOrder);
+		List<SupplierOrder> resultList = new ArrayList<SupplierOrder>();
+		if (orderList.isEmpty()) {
+			resultList = orderList;
+		}else {
+			// order去重复
+			Map<String, String> orderIdMap = new HashMap<String, String>();
+			for (int i = 0; i < orderList.size(); i++) {
+				orderIdMap.put(orderList.get(i).getOrderId(), "");
+			}
+			// 重新组织数据
+			for (String orderId : orderIdMap.keySet()) {
+				SupplierOrder order = new SupplierOrder();
+				String status = "";
+				order.setSubOrderList(new ArrayList<SupplierOrder>());
+				for (int j = 0; j < orderList.size(); j++) {
+					if (orderId.equals(orderList.get(j).getOrderId())) {
+						order.setOrderId(orderList.get(j).getOrderId());
+						order.setOrderAmount(orderList.get(j).getOrderAmount());
+						order.setSupName(orderList.get(j).getSupName());
+						order.setOrderTime(orderList.get(j).getOrderTime());
+						// 转化订单状态
+						if (Integer.valueOf(orderList.get(j).getOrderStatus()) >= 7 && !"15".equals(orderList.get(j).getOrderStatus()) && !"16".equals(orderList.get(j).getOrderStatus())) {
+							orderList.get(j).setOrderStatusName("订单完成");
+						}
+						// 判断是否有退货商品
+						if (!"3".equals(status) && !"1".equals(status)) {
+							SupplierExchange supplierExchange = new SupplierExchange();
+							supplierExchange.setSupId(supplierOrder.getSupId());
+							supplierExchange.setOrderId(orderList.get(j).getOrderId());
+							List<SupplierExchange> supplierExchangeList = supplierExchangeMapper.queryExchangeOrderList(supplierExchange);
+							for (int i = 0; i < supplierExchangeList.size(); i++) {
+								supplierExchange.setExchangeId(supplierExchangeList.get(i).getExchangeId());
+								List<SupplierExchange> supplierExchangeItem= supplierExchangeMapper.queryExchangeOrderDetailed(supplierExchange);
+								for (int k = 0; k < supplierExchangeItem.size(); k++) {
+									if (orderList.get(j).getSupGoodsId().equals(supplierExchangeItem.get(k).getSupGoodsId())) {
+										if ("2".equals(status)) {
+											status = "3";
+										}else {
+											status = "1";
+										}
+										break;
+									}
+								}
+							}
+						}
+						if ("1".equals(status) || "".equals(status)) {
+							// 判断是或否有换货商品
+							SupplierReturn supplierReturn = new SupplierReturn();
+							supplierReturn.setSupId(supplierOrder.getSupId());
+							supplierReturn.setOrderId(orderList.get(j).getOrderId());
+							List<SupplierReturn> supplierReturnList = supplierReturnMapper.queryRerurnOrderList(supplierReturn);
+							for (int i = 0; i < supplierReturnList.size(); i++) {
+								supplierReturn.setRefoundId(supplierReturnList.get(i).getRefoundId());
+								List<SupplierReturn> supplierReturnItem = supplierReturnMapper.queryReturnOrderDetailed(supplierReturn);
+								for (int k = 0; k < supplierReturnItem.size(); k++) {
+									if (orderList.get(j).getSupGoodsId().equals(supplierReturnItem.get(k).getSupGoodsId())) {
+										if ("1".equals(status)) {
+											status = "3";
+										}else {
+											status = "2";
+										}
+										break;
+									}
+								}
+							}
+						}
+						
+						//判断
+						if (!"".equals(status)) {
+							orderList.get(j).setOrderStatusName(status);
+						}
+						order.getSubOrderList().add(orderList.get(j));
+					}
+				}
+				order.setOrderStatusName(status);
+				order.setSubCount(order.getSubOrderList().size());
+				resultList.add(order);
+			}
+		}
+		//排序
+		Collections.sort(resultList, new Comparator<SupplierOrder>() {
+
+			@Override
+			public int compare(SupplierOrder o1, SupplierOrder o2) {
+				if (o1.getOrderTime().compareTo(o2.getOrderTime()) == 0) {
+					return 0;
+				}else if(o1.getOrderTime().compareTo(o2.getOrderTime()) > 0){
+					return -1;
+				}else{
+					return 1;
+				}
+				
+			}
+		});
+		return resultList;
+	}
+	@Override
+	public List<SupplierOrder> queryOrderStatusList() {
+		return supplierOrderMapper.queryOrderStatusList();
+	}
+	@Override
+	public Integer queryOrderListCount(SupplierOrder supplierOrder) {
+		return supplierOrderMapper.queryOrderListCount(supplierOrder);
+	}
+	@Override
+	public void updataOrderStatus(SupplierOrder supplierOrder) {
+		supplierOrderMapper.updateOrderStatus(supplierOrder);
+	}
+	@Override
+	public void updataOrderPrice(SupplierOrder supplierOrder) {
+		supplierOrderMapper.updataOrderPrice(supplierOrder);
+	}
+}

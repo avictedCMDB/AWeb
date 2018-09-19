@@ -1,0 +1,123 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.common.shortMessage.ShortMessageUtils;
+import com.avic.common.utils.CommonFileUtils;
+import com.avic.management.mappers.OrderExchangeMapper;
+import com.avic.management.mappers.OrderRefoundMapper;
+import com.avic.management.models.OrderRefoundBean;
+import com.avic.management.services.OrderRefoundService;
+
+@Service
+public class OrderRefoundServiceImpl implements OrderRefoundService {
+    protected static final Log logger = LogFactory.getLog(OrderRefoundServiceImpl.class);
+
+    @Autowired
+    OrderRefoundMapper orderRefoundMapper;
+    
+    @Autowired
+    OrderExchangeMapper orderExchangeMapper;
+
+	@Override
+	public OrderRefoundBean getOrderDetail(String order_id) {
+		return orderRefoundMapper.getOrderDetail(order_id);
+	}
+
+	@Override
+	public List<OrderRefoundBean> orderSelectDoInit(OrderRefoundBean oeBean) {
+		return orderRefoundMapper.orderSelectDoInit(oeBean);
+	}
+
+	@Override
+	public List<OrderRefoundBean> orderSelectMainDoInit(OrderRefoundBean oeBean) {
+		return orderRefoundMapper.orderSelectMainDoInit(oeBean);
+	}
+
+	@Override
+	@Transactional
+	public String doSaveInTables(List<OrderRefoundBean> oeBeanList, 
+			Map<String, String> paramMap) throws ServiceException {
+		OrderRefoundBean oeBean = new OrderRefoundBean();
+		String sup_goods_ids = "";
+		String result = "ok";
+		try {
+			//1.更新订单表状态为申请换货
+			oeBean.setOrder_id(paramMap.get("order_id"));
+			orderRefoundMapper.updateT_ORDER(oeBean);
+			//2.插入换货主表
+			String refound_id = (orderRefoundMapper.getRefoundId()).getRefound_id();
+			oeBean.setRefound_id(refound_id);
+			oeBean.setSup_id(paramMap.get("sup_id"));
+			oeBean.setRemark(paramMap.get("remark"));
+			oeBean.setRefound_amount(paramMap.get("refound_amount"));
+			oeBean.setRefound_price(paramMap.get("refound_price"));
+			oeBean.setUser_id(paramMap.get("user_id"));
+			oeBean.setRefound_price_init(paramMap.get("refound_price_init"));
+			orderRefoundMapper.InsertT_ORDER_REFOUND(oeBean);
+			//3.插入换货商品表记录
+			for(int i=0;i<oeBeanList.size();i++){
+				OrderRefoundBean tmpBean = (OrderRefoundBean) oeBeanList.get(i);
+				tmpBean.setOrder_id(paramMap.get("order_id"));
+				tmpBean.setSup_id(paramMap.get("sup_id"));
+				tmpBean.setRefound_id(refound_id);
+				orderRefoundMapper.InsertT_REFOUND_GOODS(tmpBean);
+				
+				if(i==0){
+					sup_goods_ids = tmpBean.getSup_goods_id();
+				}else{
+					sup_goods_ids += "','" + tmpBean.getSup_goods_id();
+				}
+			}
+			if(sup_goods_ids!=null && !"".equals(sup_goods_ids)){
+				sup_goods_ids = "'"+sup_goods_ids+"'";
+			}
+			//4.更新订单快照表商品的退货状态
+			oeBean.setSup_goods_id(sup_goods_ids);
+			orderRefoundMapper.updateT_ORDER_SNAPSHOT(oeBean);
+			
+//			5.插入附件图片表(如果上传了图片)
+			int imgCount = NumberUtils.toInt(paramMap.get("imgCount"));
+			if(imgCount>0){
+				String[] imgPaths = paramMap.get("imgPaths").split(",");
+				for(int i=0;i<imgCount;i++){
+					oeBean.setUrl(imgPaths[i]);
+					orderRefoundMapper.InsertT_IMAGE_INFO(oeBean);
+				}
+			}
+			
+//			6.以短信的形式告诉供应商
+			String contact_num = orderExchangeMapper.getContact_num(oeBean.getSup_id());//获取供应商联系电话（字段中存多个电话会以逗号分隔）
+			String cns[] = {};
+			if(contact_num!=null && !"".equals(contact_num)){
+				if(contact_num.indexOf(",")>0){
+					cns = contact_num.split(",");
+				}else{
+					cns = new String[1];
+					cns[0] = contact_num;
+				}
+				
+				String path = OrderExchangeServiceImpl.class.getResource("/").getPath();
+				String websiteURL = (path.replace("/build/classes", "").replace("%20"," ").replace("classes/", "") + "message.properties");
+				StringBuffer msg = new StringBuffer();
+				String subMsg1 = CommonFileUtils.getMsg(websiteURL,"refundInfo1");
+				String subMsg2 = CommonFileUtils.getMsg(websiteURL,"refundInfo2");
+				msg.append(subMsg1).append(oeBean.getOrder_id()).append(subMsg2);
+				ShortMessageUtils.sendSMS(cns, msg.toString());
+			}
+		} catch (Exception e) {
+			result="error";
+			throw new ServiceException(e);
+		}
+		return result;
+	}
+}

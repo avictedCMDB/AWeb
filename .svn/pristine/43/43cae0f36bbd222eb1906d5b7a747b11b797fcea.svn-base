@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.ProductCompareMapper">
+	<resultMap id="productCompareMap" type="com.avic.management.models.ProductCompare">
+		<result column="COMPARE_ID" property="compareID" jdbcType="VARCHAR" /> 
+		<result column="C_SUP_ONE_ID" property="supOneID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_ONE_ID" property="supGoodsOneID" jdbcType="VARCHAR" />
+		<result column="C_SUP_TWO_ID" property="supTwoID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_TWO_ID" property="supGoodsTwoID" jdbcType="VARCHAR" />
+		<result column="C_SUP_THREE_ID" property="supThreeID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_THREE_ID" property="supGoodsThreeID" jdbcType="VARCHAR" />
+		<result column="C_SUP_FOUR_ID" property="supFourID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_FOUR_ID" property="supGoodsFourID" jdbcType="VARCHAR" />
+		<result column="C_SUP_CHECKED_ID" property="supCheckedID" jdbcType="VARCHAR" />
+		<result column="C_SUP_GOODS_CHECKED_ID" property="supGoodsCheckedID" jdbcType="VARCHAR" />
+		<result column="C_PRO_CHECKED_REASON" property="proCheckedReason" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="VARCHAR" />
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryProductCompares" resultMap="productCompareMap" parameterType="com.avic.management.models.ProductCompare">
+		SELECT * FROM (
+			              SELECT TPC.COMPARE_ID,
+					             TPC.C_SUP_ONE_ID,
+					             TPC.C_SUP_GOODS_ONE_ID,
+					             TPC.C_SUP_TWO_ID,
+					             TPC.C_SUP_GOODS_TWO_ID,
+					             TPC.C_SUP_THREE_ID,
+					             TPC.C_SUP_GOODS_THREE_ID,
+					             TPC.C_SUP_FOUR_ID,
+					             TPC.C_SUP_GOODS_FOUR_ID,
+					             TPC.C_SUP_CHECKED_ID,
+					             TPC.C_SUP_GOODS_CHECKED_ID,
+					             TPC.C_PRO_CHECKED_REASON,
+					             TSG.IMAGE_PATH,
+					             TSG.GOODS_NAME,
+					             TSG.AGREE_PRICE,
+					             TSI.SUP_NAME
+					        FROM T_PRODUCT_COMPARE_INFO TPC
+					   LEFT JOIN T_SUP_GOODS TSG
+					          ON TSG.SUP_GOODS_ID = TPC.C_SUP_GOODS_CHECKED_ID
+					   LEFT JOIN T_SUP_INFO TSI
+					          ON TPC.C_SUP_CHECKED_ID = TSI.SUP_ID   
+						   WHERE 1=1
+			 <if test="startTime != '' and startTime != null">
+			 	AND TO_CHAR(TPC.UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{startTime,jdbcType=VARCHAR}
+			 </if>
+			 <if test="endTime != '' and endTime != null">
+			 	AND TO_CHAR(TPC.UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{endTime,jdbcType=VARCHAR}
+			 </if>
+			 <if test="searchGoodsName != '' and searchGoodsName != null">
+			 	AND TSG.GOODS_NAME LIKE CONCAT(CONCAT('%',#{searchGoodsName,jdbcType=VARCHAR}),'%')
+			 </if>
+			 <if test="searchSupName != '' and searchSupName != null">
+			 	AND TSI.SUP_NAME LIKE CONCAT(CONCAT('%',#{searchSupName,jdbcType=VARCHAR}),'%') 
+			 </if>
+			 ) R
+   		<!-- WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER} -->
+	</select>
+	
+	<select id="queryProductCompare" resultMap="productCompareMap" parameterType="com.avic.management.models.ProductCompare">
+		SELECT TPC.COMPARE_ID,
+		       TPC.C_SUP_ONE_ID,
+		       TPC.C_SUP_GOODS_ONE_ID,
+		       TPC.C_SUP_TWO_ID,
+		       TPC.C_SUP_GOODS_TWO_ID,
+		       TPC.C_SUP_THREE_ID,
+		       TPC.C_SUP_GOODS_THREE_ID,
+		       TPC.C_SUP_FOUR_ID,
+		       TPC.C_SUP_GOODS_FOUR_ID,
+		       TPC.C_SUP_CHECKED_ID,
+		       TPC.C_SUP_GOODS_CHECKED_ID,
+		       TPC.C_PRO_CHECKED_REASON
+		  FROM T_PRODUCT_COMPARE_INFO TPC
+		 WHERE TPC.COMPARE_ID = #{compareID,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="addProductCompare" parameterType="com.avic.management.models.ProductCompare">
+		INSERT INTO T_PRODUCT_COMPARE_INFO TPCI
+	            (
+		              TPCI.COMPARE_ID,
+		              TPCI.C_SUP_ONE_ID,
+		              TPCI.C_SUP_GOODS_ONE_ID,
+		              TPCI.C_SUP_TWO_ID,
+		              TPCI.C_SUP_GOODS_TWO_ID,
+		              TPCI.C_SUP_THREE_ID,
+		              TPCI.C_SUP_GOODS_THREE_ID,
+		              TPCI.C_SUP_FOUR_ID,
+		              TPCI.C_SUP_GOODS_FOUR_ID,
+		              TPCI.C_SUP_CHECKED_ID,
+		              TPCI.C_SUP_GOODS_CHECKED_ID,
+		              TPCI.C_PRO_CHECKED_REASON,
+		              TPCI.CREATE_DATE,
+		              TPCI.UPDATE_DATE,
+		              TPCI.OPERATION_STATUS
+	            )
+	     VALUES
+	            (
+	            
+	            	#{compareID,jdbcType=VARCHAR},
+	            	#{supOneID},
+	            	#{supGoodsOneID,jdbcType=VARCHAR},
+	            	#{supTwoID},
+	            	#{supGoodsTwoID,jdbcType=VARCHAR},
+	            	#{supThreeID},
+	            	#{supGoodsThreeID,jdbcType=VARCHAR},
+	            	#{supFourID},
+	            	#{supGoodsFourID,jdbcType=VARCHAR},
+	            	#{supCheckedID},
+	            	#{supGoodsCheckedID,jdbcType=VARCHAR},
+	            	#{proCheckedReason,jdbcType=VARCHAR},
+	            	sysdate,
+	            	sysdate,
+	            	'1'
+	            )
+	</insert>
+	
+	<update id="updateProductCompare" parameterType="com.avic.management.models.ProductCompare">
+		UPDATE T_PRODUCT_COMPARE_INFO
+		   SET C_SUP_CHECKED_ID = #{supCheckedID,jdbcType=VARCHAR},
+		       C_SUP_GOODS_CHECKED_ID = #{supGoodsCheckedID,jdbcType=VARCHAR},
+		       C_PRO_CHECKED_REASON = #{proCheckedReason,jdbcType=VARCHAR},
+		       UPDATE_DATE = sysdate,
+		       OPERATION_STATUS = '2'
+		 WHERE COMPARE_ID = #{compareID,jdbcType=VARCHAR}
+	</update>
+</mapper>

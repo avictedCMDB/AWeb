@@ -1,0 +1,187 @@
+package com.avic.market.controllers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.utils.Permission;
+import com.avic.market.cpi.CpiService;
+import com.avic.market.models.Address;
+import com.avic.market.models.CartItem;
+import com.avic.market.models.Price;
+import com.avic.market.services.AddressService;
+import com.avic.market.services.CartService;
+import com.avic.market.services.GoodsService;
+import com.avic.market.services.OrderService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/order")
+public class OrderController {
+    protected static final Log logger = LogFactory.getLog(OrderController.class);
+    
+    @Autowired
+    OrderService orderService;
+    
+    @Autowired
+    CpiService cpiService;
+    
+    @Autowired
+    AddressService addressService;
+    
+    @Autowired
+    GoodsService goodsService;
+    
+    @Autowired
+    CartService cartService;
+    
+    @RequestMapping("/confirm")
+    public String confirm(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = Permission.check(session, UserRole.BUY);
+        // 编号：supId_supGoodsId_num, ...
+        String ids = req.getParameter("ids");
+        logger.info("生成订单Controller-ids["+ids+"]");
+
+        if (StringUtils.isEmpty(ids)) {
+            logger.info("生成订单Controller-参数无效-ids["+ids+"]");
+            map.put("error", "参数无效");
+            return "forward:/market/cart/list";
+        }
+        
+        int supId = 0;
+        
+        Map<String, Integer> skuNum = new HashMap<String, Integer>();
+        
+        List<String> errors = new ArrayList<String>();
+        
+        for (String i : ids.split(",")) {
+            String[] seg = i.split("_");
+            if (seg.length != 3 || !StringUtils.isNumeric(seg[0]) || !StringUtils.isNumeric(seg[2])) {
+                logger.info("生成订单Controller-参数无效-ids["+ids+"]");
+                map.put("error", "参数无效");
+                return "forward:/market/cart/list";
+            }
+            
+            if (supId == 0) {
+                supId = Integer.parseInt(seg[0]);
+            } else if (supId != Integer.parseInt(seg[0])) {
+                map.put("error", "请选择同一个供应商的商品下单");
+                return "forward:/market/cart/list";
+            }
+            
+            skuNum.put(seg[1], Integer.parseInt(seg[2]));
+        }
+        
+        List<String> skus = new ArrayList<String>(skuNum.keySet());
+        
+        List<CartItem> goods = cartService.getCartGoodsByIds(user.getUserId(), supId, skus);
+        logger.info("生成订单-状态校验");
+
+        Map<String, Integer> status = null;
+        try {
+            status = cpiService.getGoodsStatus(supId, skus);
+        } catch (Exception e) {
+            logger.info("生成订单-状态校验异常");
+            map.put("error", "供应商连接异常，无法获得商品状态信息");
+            return "forward:/market/cart/list";
+        }
+
+
+        for (CartItem i : goods) {
+            if (status.get(i.getSupGoodsId()) != 1) {
+                errors.add("商品【"+i.getGoodsName()+"】已下架");
+                goodsService.updateGoodsStatus(supId, i.getSupGoodsId(), 0);
+            }
+            
+            // 加入数量
+            i.setBuyNum(skuNum.get(i.getSupGoodsId()));
+        }
+        
+        if (errors.size() > 0) {
+            logger.info("生成订单-状态校验失败");
+            map.put("error", "下单失败：\\n" + StringUtils.join(errors, "\\n"));
+            return "forward:/market/cart/list";
+        }
+        
+        logger.info("生成订单-库存校验");
+        
+
+        Address addr = addressService.getDefaultAddress(user.getUserId(), supId);
+        List<String> area = null;
+        if (addr != null) {
+            area = new ArrayList<String>();
+            area.add(addr.getAreaLevelOne());
+            area.add(addr.getAreaLevelTwo());
+            area.add(addr.getAreaLevelThree());
+            if (!StringUtils.isEmpty(addr.getAreaLevelFour())) {
+                area.add(addr.getAreaLevelFour());
+            }
+        }
+        Map<String, Integer> stocks = null;
+        try {
+            stocks = cpiService.getGoodsStock(supId, skus, area);
+        } catch (Exception e) {
+            logger.info("生成订单-库存校验失败");
+            map.put("error", "供应商连接异常，无法获得库存信息");
+            return "forward:/market/cart/list";
+        }
+        
+        for (CartItem i : goods) {
+            if (stocks.get(i.getSupGoodsId()) == null || i.getBuyNum() > stocks.get(i.getSupGoodsId())) {
+                errors.add("商品【"+i.getGoodsName()+"】库存不足");
+            } else if (i.getCompare() < 1) {
+                errors.add("商品【"+i.getGoodsName()+"】未对比");
+            }
+        }
+        
+        if (errors.size() > 0) {
+            logger.info("生成订单-库存校验失败");
+            map.put("error", "下单失败：\\n" + StringUtils.join(errors, "\\n"));
+            return "forward:/market/cart/list";
+        }
+        
+        logger.info("生成订单-价格校验");
+
+        Map<String, Price> prices = null;
+        try {
+            prices = cpiService.getGoodsPrice(supId, skus);
+        } catch (Exception e) {
+            logger.info("生成订单-价格校验异常");
+            map.put("error", "供应商连接异常，无法获得商品价格信息");
+            return "forward:/market/cart/list";
+        }
+
+
+        for (CartItem i : goods) {
+            Price p = prices.get(i.getSupGoodsId());
+            if (p == null || p.getAgreePrice() != i.getAgreePrice()) {
+                errors.add("商品【"+i.getGoodsName()+"】价格发生变化");
+                p.setSupId(supId);
+                p.setSupGoodsId(i.getSupGoodsId());
+                goodsService.updateGoodsPrice(p);
+            }
+        }
+        
+        if (errors.size() > 0) {
+            logger.info("生成订单-价格校验失败");
+            map.put("error", "下单失败：\\n" + StringUtils.join(errors, "\\n"));
+            return "forward:/market/cart/list";
+        }
+        
+        map.put("goods", goods);
+        
+        return "order/order";
+    }
+}

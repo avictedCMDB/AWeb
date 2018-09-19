@@ -1,0 +1,227 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section .remind_area ul li dl dt {
+	width: auto;
+	padding: 0 10px;
+}
+#matter_section .search_area {
+  background: #f6f4f5;
+  padding: 25px 0 15px 15px;
+  border: 1px solid #dfdfdf;
+}
+#matter_section .search_area dl {
+	float: left;
+	font-size: 12px;
+	margin-bottom: 10px;
+	margin-right: 30px;
+}
+#matter_section .search_area dl.last {
+	margin-right: 0;
+}
+#matter_section .search_area dl dt {
+	float: left;
+	line-height: 25px;
+	margin-right: 5px;
+	width: 65px;
+	text-align: right;
+}
+#matter_section .search_area dl dd {
+	float: left;
+}
+#matter_section ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 8px;
+}
+#matter_section .special_input {
+	border-right: none;
+}
+#matter_section .form-control {
+	height: 28px;
+	width: 215px;
+	font-size: 12px;
+}
+#matter_section .input-group-addon {
+	height: 28px;
+	padding: 7px 5px 5px 0px;
+	border-left: none;
+	background: #fff;
+	cursor: pointer;
+	display: inline-table;
+}
+#matter_section .btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.red {
+	background: #db433d;
+	color: #fff;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+.search_result {
+	padding-top: 15px;
+}
+.state_list {
+	margin-bottom: 15px;
+	overflow: hidden;
+}
+.state_list ul li a {
+	display: block;
+	width: 90px;
+	text-align: center;
+	border: 1px solid #dfdfdf;
+}
+.state_list ul li.active a,
+.state_list ul li a:hover {
+	background: #db433d;
+	color: #fff;
+}
+
+
+.search_result table {
+	width: 950px;
+}
+.search_result table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+}
+.search_result table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.search_result table tr td {
+	border:1px solid #dfdfdf;
+	padding: 10px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.search_result table tr td a {
+	word-break: break-all;
+}
+.search_result table tr td.right_none {
+	border-right: none;
+}
+.search_result table tr td.left_none {
+	border-left: none;
+	text-align: left;
+	color: #4798ed;
+}
+.search_result table tr.company td {
+	border: none;
+	font-weight: bold;
+}
+.search_result table tr td a {
+	margin-right: 5px;
+	color: #4798ed;
+}
+.search_result table tr td a:hover {
+	text-decoration: underline;
+}
+.search_result table tr.company td span{
+	font-weight: 100;
+}
+.img_pro {
+	border:1px solid #dfdfdf;
+	margin-bottom: 0;
+}
+.price {
+	color: #db433d;
+}
+.search_result table tr td.price,
+.search_result table tr td.num {
+	vertical-align: middle;
+}
+#matter_section .search_result table tr.company td ul li.right_box {
+	float: right;
+	margin-left: 30px;
+}
+select.form-control {
+	padding: 0;
+	font-size: 12px;
+}
+.search_result table tr td.payment a {
+	display: block;
+	text-align: left;
+}
+.search_result table tr td.payment a span {
+	color: #db433d;
+	margin-right:5px;
+}
+/*审核按钮点击*/
+.section_inner {
+	width: 550px;
+	margin: 0 auto;
+}
+.confirm_pro {
+	margin: 0 auto;
+    width: 600px;
+}
+.confirm_pro h2{
+    background: #db433d none repeat scroll 0 0;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-top: 0;
+    padding: 5px 0;
+    text-align: center;
+}
+.confirm_pro h3 {
+    border-left: 5px solid #db433d;
+    color: #db433d;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 0;
+    padding-left: 10px;
+}
+.confirm_pro .btn {
+	padding: 0 20px;
+	height: 28px;
+}
+.confirm_pro .btn_list {
+	text-align: center;
+}
+.confirm_pro dl {
+	margin-bottom: 10px;
+}
+.confirm_pro label {
+	padding: 0;
+}
+.confirm_pro ul {
+	display: inline-block;
+}
+.confirm_pro ul li {
+	float: left;
+	margin: 10px;
+}
+.confirm_pro .dl-horizontal {
+	width: 550px;
+	overflow: hidden;
+}
+.confirm_pro .dl-horizontal dt {
+	width: 150px;
+	float: left;
+	text-align: right;
+}
+.confirm_pro .dl-horizontal dd {
+	width: 380px;
+	float: left;
+	margin-left: 20px;
+}
+.confirm_pro .dl-horizontal dd textarea {
+	max-width: 380px;
+}

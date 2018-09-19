@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+#matter_section h2 {
+    border-bottom: 1px solid #dfdfdf;
+    color: #0091dc;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+#matter_section .list_inner {
+	padding-bottom: 20px;
+}
+.step_section .form-group {
+	margin-bottom: 0px;
+}
+.red {
+	color: #ff4200;
+}
+.table_area tr.red a {
+	color: #ff4200;
+}
+.table_area tr.red  a:hover {
+	text-decoration: underline;
+}
+.modal-body .table_area {
+	margin-top: 0;
+}
+p.red {
+	text-align: right;
+	margin-top: 5px;
+}
+.step_section .form-group.special_group01 .input_area {
+	width: auto;
+}
+.input-append {
+    margin-top: 0px;
+}
+.check_special {
+	float: left;
+}
+.step_section .form-group.special_group01 .input_area.input_area_special {
+	float: left;
+	width: 400px;
+	margin-left: 20px;
+}
+.chart_img {
+	margin-top: 20px;
+	text-align: center;
+	width: 100%;
+}
+.chart_area {
+	padding: 20px 0;
+}
+.chart_area h4 {
+	background: url("../img/bid/icon-circle.gif") no-repeat left center;
+    font-size: 16px;
+    margin-top: 0;
+    padding-left: 15px;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.ContractMapper">
+	<resultMap id="contractMap" type="com.avic.supervise.models.Contract">
+	</resultMap>
+
+	<!-- 查询合同 -->
+	<select id="queryContract" resultMap="contractMap">
+		
+		select * from (
+		select r.*,rownum rn from (SELECT contract_code,
+		       busi_id,
+		       sup_name,
+		       to_char(sign_date,'yyyy-mm-dd') sign_date, 
+		       BUSI_TYPE
+		  FROM V_COMTRACT_INFO t1
+		WHERE 1=1 
+		<if test="busi_id != null and busi_id != ''">
+		<![CDATA[ AND T1.busi_id LIKE '%' || #{busi_id} || '%' ]]>
+		</if>
+		<if test="contract_code != null and contract_code != ''">
+		<![CDATA[ AND T1.contract_code LIKE '%' || #{contract_code} || '%' ]]>
+		</if>
+		<if test="busi_type != null and busi_type != ''">
+		<![CDATA[ AND T1.BUSI_TYPE = #{busi_type}  ]]>
+		</if>
+		<if test="begin_date != null and begin_date != ''">
+		<![CDATA[ AND T1.sign_date >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="end_date != null and end_date != ''">
+		<![CDATA[ AND T1.sign_date <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+	  	ORDER BY T1.sign_date )R
+	  	)WHERE RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryContractCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.Contract">
+		SELECT count(1)
+		  FROM V_COMTRACT_INFO t1
+		WHERE 1=1 
+		<if test="busi_id != null and busi_id != ''">
+		<![CDATA[ AND T1.busi_id LIKE '%' || #{busi_id} || '%' ]]>
+		</if>
+		<if test="contract_code != null and contract_code != ''">
+		<![CDATA[ AND T1.contract_code LIKE '%' || #{contract_code} || '%' ]]>
+		</if>
+		<if test="busi_type != null and busi_type != ''">
+		<![CDATA[ AND T1.BUSI_TYPE = #{busi_type} ]]>
+		</if>
+		<if test="begin_date != null and begin_date != ''">
+		<![CDATA[ AND T1.sign_date >= to_date(#{begin_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+		<if test="end_date != null and end_date != ''">
+		<![CDATA[ AND T1.sign_date <= to_date(#{end_date}, 'yyyy-MM-dd HH24:mi:ss') ]]>
+		</if>
+	</select>
+	
+	<select id="getOrderStatusList" resultMap="contractMap">
+		SELECT T1.CODETEXT ORDER_STATUS_NAME,T1.CODEVALUE ORDER_STATUS FROM CODELIST T1
+		WHERE T1.CODELISTTYPE='ORDER_STATUS'
+		ORDER BY (T1.CODEVALUE+0)
+	</select>
+	
+	<select id="getFilePath" resultType="java.lang.String">
+		SELECT T1.CONTRACT_ATTACHMENT_PATH FROM T_ORDER_CONTRACT T1
+		WHERE T1.CONTRACT_CODE = #{sup_name}
+	</select>
+</mapper>

@@ -1,0 +1,36 @@
+package com.avic.supplier.services;
+
+import java.util.List;
+
+import com.avic.supplier.models.SupplierImageInfo;
+import com.avic.supplier.models.SupplierOrder;
+import com.avic.supplier.models.SupplierOrderContract;
+import com.avic.supplier.models.SupplierQuoteInfo;
+
+public interface SupplierOrderService {
+	
+	public List<SupplierOrder> queryOrderList(SupplierOrder supplierOrder);
+	
+	public Integer queryOrderListCount(SupplierOrder supplierOrder);
+	
+	public List<SupplierOrder> queryOrderStatusList();
+	
+	public void updataOrderStatus(SupplierOrder supplierOrder) ;
+	
+	public void updataOrderPrice(SupplierOrder supplierOrder) ;
+	
+	public void updataQuoteInfo(SupplierQuoteInfo supplierQuoteInfo) ;
+	
+	public String queryContactNum(String orderId);
+	
+	public void insertContract(SupplierOrderContract supplierOrderContract);
+	
+	public void insertImageInfo(SupplierImageInfo supplierImageInfo);
+	
+	public SupplierOrderContract queryOrderContract(String orderId);
+	
+	public List<SupplierQuoteInfo> queryQuoteInfo(String orderId);
+	
+	public List<SupplierImageInfo> queryImageInfo(String contractCode,String businessType);
+
+}

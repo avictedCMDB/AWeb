@@ -1,0 +1,39 @@
+package com.avic.supervise.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supervise.mappers.SupMapper;
+import com.avic.supervise.models.SupInfo;
+import com.avic.supervise.services.SupService;
+
+@Service
+public class SupServiceImpl implements SupService {
+    
+    @Autowired
+    SupMapper supMapper;
+    
+    private static List<SupInfo> list = null;
+
+    @Override
+    public List<SupInfo> getSupList() {
+        if (list == null) {
+            list = supMapper.querySupInfoList();
+        }
+        return list;
+    }
+    
+    @Override
+    public String getSupName(int supId) {
+        for (SupInfo i : getSupList()) {
+            if (i.getSupId() == supId) {
+                return i.getSupName();
+            }
+        }
+        
+        return null;
+    }
+
+}

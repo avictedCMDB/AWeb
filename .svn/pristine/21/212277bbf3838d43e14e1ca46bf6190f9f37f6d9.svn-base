@@ -1,0 +1,29 @@
+package com.avic.management.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.Order;
+import com.avic.management.models.OrderSnapshot;
+
+@Repository
+public interface OrderMapper {
+	/**
+	 * 查询订单信息
+	 */
+	public List<Order> queryOrders(Order order);
+	
+	/**
+	 * 获取订单状态列表
+	 */
+	public List<Order> getOrderStatusList();
+	
+	// ===========================================================================
+	//                         财务支付管理使用
+    // ===========================================================================
+	public int queryPaymentOrderCount(@Param("companyId") String companyId, @Param("supId") int supId, @Param("orderId") String orderId, @Param("orderStatus") int orderStatus, @Param("goodsName") String goodsName);
+    public List<Order> queryPaymentOrderList(@Param("companyId") String companyId, @Param("supId") int supId, @Param("orderId") String orderId, @Param("orderStatus") int orderStatus, @Param("goodsName") String goodsName, @Param("start") int start, @Param("end") int end);
+    public List<OrderSnapshot> queryPaymentOrderSnapshot(@Param("list") List<String> orderIds);
+}

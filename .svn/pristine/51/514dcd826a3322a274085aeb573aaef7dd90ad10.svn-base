@@ -1,0 +1,12 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.models.Goods;
+
+public interface GoodsService {
+    public List<Goods> searchGoods(int cat, String brand, String kw, int priceStart, int priceEnd, int order, int page, int size) throws ServiceException;
+    public int getGoodsCount(int cat, String brand, String kw, int priceStart, int priceEnd) throws ServiceException;
+    public List<String> getGoodsBrand(int cat, String kw) throws ServiceException;
+}

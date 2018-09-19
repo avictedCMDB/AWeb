@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.OrderRefoundMapper">
+	<resultMap id="orderRefoundMap" type="com.avic.management.models.OrderRefoundBean">
+	</resultMap>
+	
+	<select id="getOrderDetail" parameterType="String" resultMap="orderRefoundMap">
+	SELECT T1.ORDER_ID,T1.SUP_ID,T2.SUP_NAME,T1.ADDR_NAME,T1.ADDR_PHONE 
+	FROM T_ORDER T1 
+	LEFT OUTER JOIN T_SUP_INFO T2 ON T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID = #{order_id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="orderSelectDoInit" parameterType="com.avic.management.models.OrderRefoundBean" resultMap="orderRefoundMap">
+	SELECT T1.ORDER_ID,T1.SUP_ID,T2.SUP_GOODS_ID,T2.IMAGE_PATH,
+	T2.GOODS_NAME,T2.GOODS_PRICE,FUNC_CALC_EXCHANGE_NUM(T1.ORDER_ID,T2.SUP_GOODS_ID) BUY_NUM FROM T_ORDER T1 
+	LEFT OUTER JOIN T_ORDER_SNAPSHOT T2 ON T1.ORDER_ID=T2.ORDER_ID AND T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID=#{order_id,jdbcType=VARCHAR}
+	<if test="goods_name != null and goods_name != ''">
+		<![CDATA[ AND T2.GOODS_NAME LIKE '%' || #{goods_name} || '%' ]]>
+	</if>
+	</select>
+	
+	<select id="orderSelectMainDoInit" parameterType="com.avic.management.models.OrderRefoundBean" resultMap="orderRefoundMap">
+	SELECT T1.ORDER_ID,T1.SUP_ID,T2.SUP_GOODS_ID,T2.IMAGE_PATH,T2.BUY_NUM BUY_NUM_SHOW,
+	T2.GOODS_NAME,T2.GOODS_PRICE,FUNC_CALC_EXCHANGE_NUM(T1.ORDER_ID,T2.SUP_GOODS_ID) BUY_NUM FROM T_ORDER T1 
+	LEFT OUTER JOIN T_ORDER_SNAPSHOT T2 ON T1.ORDER_ID=T2.ORDER_ID AND T1.SUP_ID=T2.SUP_ID 
+	WHERE T1.ORDER_ID=#{order_id,jdbcType=VARCHAR}
+		AND T2.SUP_GOODS_ID IN (${sup_goods_id})
+	</select>
+	
+	<select id="getRefoundId" resultMap="orderRefoundMap">
+	SELECT 'T' || to_char(sysdate,'yyyyMMddHH24miss') || replace(lpad(common_index.nextval,6,'0'),'','0') REFOUND_ID FROM DUAL
+	</select>
+	
+	<update id="updateT_ORDER" parameterType="com.avic.management.models.OrderRefoundBean">
+	UPDATE T_ORDER T1 
+	SET T1.ORDER_STATUS=7 
+	WHERE T1.ORDER_ID=#{order_id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="InsertT_ORDER_REFOUND" parameterType="com.avic.management.models.OrderRefoundBean">
+    INSERT INTO T_ORDER_REFOUND(
+    	REFOUND_ID,SUP_ID,REFOUND_DATE,REFOUND_STATUS,REMARK,ORDER_ID,
+    	REFOUND_AMOUNT,REFOUND_PRICE,USER_ID)
+	VALUES(
+		#{refound_id,jdbcType=VARCHAR},
+		#{sup_id,jdbcType=VARCHAR},
+		sysdate,
+		0,
+		#{remark,jdbcType=VARCHAR},
+		#{order_id,jdbcType=VARCHAR},
+		#{refound_amount,jdbcType=VARCHAR},
+		#{refound_price,jdbcType=VARCHAR},
+		#{user_id,jdbcType=VARCHAR}
+	)
+	</insert>
+	
+	<insert id="InsertT_REFOUND_GOODS" parameterType="com.avic.management.models.OrderRefoundBean">
+    INSERT INTO T_REFOUND_GOODS(
+    	REFOUND_ID,SUP_GOODS_ID,REFOUND_NUM,REFOUND_REASON,SUP_ID)
+	VALUES(
+		#{refound_id,jdbcType=VARCHAR},
+		#{sup_goods_id,jdbcType=VARCHAR},
+		#{buy_num,jdbcType=VARCHAR},
+		#{refound_reason,jdbcType=VARCHAR},
+		#{sup_id,jdbcType=VARCHAR}
+	)
+	</insert>
+	
+	<update id="updateT_ORDER_SNAPSHOT" parameterType="com.avic.management.models.OrderRefoundBean">
+	UPDATE T_ORDER_SNAPSHOT T1 
+	SET T1.REFUND_STATUS=1 
+	WHERE T1.SUP_GOODS_ID IN (${sup_goods_id}) 
+	AND T1.ORDER_ID=#{order_id,jdbcType=VARCHAR} 
+	AND T1.SUP_ID=#{sup_id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="InsertT_IMAGE_INFO" parameterType="com.avic.management.models.OrderExchangeBean">
+    INSERT INTO T_IMAGE_INFO(ID, BUSINESS_ID, BUSINESS_TYPE, URL)
+	VALUES(
+		IMAGE_INDEX.NEXTVAL,
+		#{refound_id,jdbcType=VARCHAR},
+		'1',
+		#{url,jdbcType=VARCHAR}
+	)
+	</insert>
+</mapper>

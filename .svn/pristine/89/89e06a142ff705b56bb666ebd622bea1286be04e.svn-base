@@ -1,0 +1,174 @@
+var timer;
+var actionPath;
+
+//校验图片大小和格式
+$(document).ready(function(){	
+	var myt = document.getElementById('file'); 
+	myt.onchange =function(){
+   	   //更新上传路径到input-text控件显示
+	   $('#photoCover').val($(this).val());
+	   
+	   var filepath = $("input[id='file']").val();
+	   
+	   var file_size = 0;
+	   if ($.browser.msie) {
+	       var img = new Image();
+	       img.src = filepath;
+	       if (img.fileSize > 0) {
+	           if (img.fileSize > 4 * 1024 * 1024) {
+	               img_check_show("上传文件大小不能超过4M！");
+	               return false;
+	           }
+	       }
+	   } else {
+	       file_size = this.files[0].size;
+	       var size = file_size / 1024;
+	       if (size > 4096) {
+	           img_check_show("上传文件大小不能超过4M！");
+	           return false;
+	       }
+	   }
+	   $("#img_check").html("");
+	   $("#img_check").hide();
+	   return true;
+	}
+});
+
+function img_check_show(str){
+	$("#img_check").html(str);
+	$("#img_check").show();
+}
+
+function startListener(){
+	var xmlhttp;
+	try{
+		//IE 5.0 
+		xmlhttp = new ActiveXObject('Msxm12.XMLHTTP');
+	}catch(e){
+		try{
+			//IE 5.5 及更高版本
+			xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		}catch(e){
+			try{
+				//其他浏览器
+				xmlhttp = new XMLHttpRequest();
+			}catch(e){}
+		}
+	}
+	var progressStatusText = document.getElementById("progressBar");
+	var params = "&imgCount=" + $('#imgCount').val()+"&mark='"+$('#mark').val()+"'";
+	xmlhttp.open("get",actionPath+"/UploadServlet?uploadStatus=true"+params,true);
+	/**此处Header设置非常重要，必须设置Content-type类型，负责会报错误
+	*/
+	 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	 xmlhttp.onreadystatechange = function(){
+		if(xmlhttp.readyState == 4){
+			if(xmlhttp.status == 200){
+				progressStatusText.innerHTML = "";
+				progressStatusText.innerHTML = xmlhttp.responseText;
+				var temp = xmlhttp.responseText.indexOf("hiddenPath_");
+				if (temp > 0){
+					var imgCount = $("#imgCount").val();
+					var imgSort = Number(imgCount)+1;
+					var imgPath = $('#hiddenPath_'+imgSort).val();
+					window.clearTimeout(timer);
+					//添加缩略图
+					$("#imgCount").val(imgSort);
+					$("#realCount").val(Number($("#realCount").val())+1);
+					 var extStart = imgPath.lastIndexOf(".");
+					 var ext = imgPath.substring(extStart, imgPath.length).toUpperCase();
+					 var imgHtml="";
+					 if (ext != ".BMP" && ext != ".PNG" && ext != ".GIF" && ext != ".JPG" && ext != ".JPEG") {
+						 var es = $("#photoCover").val().lastIndexOf("\\");
+						 var e = $("#photoCover").val().substring(es+1, imgPath.length);
+						 imgHtml = "<li id='imgli_"+imgSort+"'><a class='preview' id='imgUpload_"+imgSort+"' href='"+actionPath+"/management/specialGoods/downloadSpecialFile?specialAttachmentPath="+imgPath+"'><span style='font-size:16px'>"+e+"</span></a><a href='javascript:void(0);' onclick='deleteImg("+imgSort+");'><img src='"+actionPath+"/static/img/icon-close_blue.png' /></a></li>";
+						 
+					 }else{
+						 imgHtml = "<li id='imgli_"+imgSort+"'><a class='preview' id='imgUpload_"+imgSort+"' href='"+actionPath+imgPath+"'><img src='"+actionPath+imgPath+"'></a><a href='javascript:void(0);' onclick='deleteImg("+imgSort+");'><img src='"+actionPath+"/static/img/icon-close_blue.png' /></a></li>";
+					 }
+					
+					$("#imgUl").append(imgHtml);
+					$('#imgli_'+imgSort).append($('#hiddenPath_'+imgSort));
+					setClickFunction('imgUpload_'+imgSort);
+				}else{
+					timer = window.setTimeout(startListener,1000);
+				}
+			}
+		}
+	}
+	xmlhttp.send(null);
+	//供应商特殊处理
+	if($('#mark').val() == 'sup'){
+		if($('#updateImg') != undefined){
+			$('#updateImg').hide();
+		}
+	}
+}
+
+function setClickFunction(objId){
+	$("#"+objId).imgbox();
+}
+
+function deleteImg(imgSort){
+	//删除图片是为隐藏域赋值
+	$('#delImgName').val($('#hiddenPath_'+imgSort).val());
+	//上传图片按钮submit触发
+	$('#imgli_'+imgSort).remove();
+	var realCount = Number($("#realCount").val());
+	if(realCount>0){
+		realCount = realCount-1;
+		$("#realCount").val(realCount);
+	}
+	$('#cancelUploadButton').click();
+}
+
+function startUpload(path,fm){
+	var params = "?imgCount=" + fm['imgCount'].value+"&delImgName="+fm['delImgName'].value+"&mark="+fm['mark'].value+"";
+	if(fm.action.indexOf("?")>0){
+		fm.action = fm.action.substring(0,fm.action.indexOf("?"))+params;
+	}else{
+		fm.action = fm.action + params;
+	}
+	var err_str = $("#img_check").html();
+	if(err_str!=null && err_str!="" && err_str!=undefined){//图片大小格式校验不通过
+		return false;
+	}else{
+		actionPath = path;
+	    timer = window.setTimeout(startListener,1000);
+		return true;//执行提交
+	}
+}
+
+//删除图片
+function cancelUpload(path){
+	var xmlhttp;
+	try{
+	//IE 5.0 
+		xmlhttp = new ActiveXObject('Msxm12.XMLHTTP');
+	}catch(e){
+		try{
+		//IE 5.5 及更高版本
+			xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		}catch(e){
+			try{
+			//其他浏览器
+				xmlhttp = new XMLHttpRequest();
+			}catch(e){}
+		}
+	}
+	var progressStatusText = document.getElementById("progressBar");
+	var params = "&imgCount=" + $('#imgCount').val()+"&mark="+$('#mark').val()+"&delImgName="+encodeURI(encodeURI($('#delImgName').val()));
+	xmlhttp.open("get",path+"/UploadServlet?cancel=true"+params,true);
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	//xmlhttp.setRequestHeader("Content-type", "multipart/form-data");
+	xmlhttp.onreadystatechange = function(){
+		if(xmlhttp.readyState == 4){
+			if(xmlhttp.status == 200){
+			progressStatusText.innerHTML = "";
+			progressStatusText.innerHTML = xmlhttp.responseText;
+			}
+		}
+	}
+	xmlhttp.send(null);
+	return false;
+}

@@ -1,0 +1,92 @@
+package com.avic.supervise.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.mappers.OrderMapper;
+import com.avic.supervise.mappers.RefundMapper;
+import com.avic.supervise.models.Refund;
+import com.avic.supervise.models.RefundGoods;
+import com.avic.supervise.services.RefundService;
+
+@Service
+public class RefundServiceImpl implements RefundService {
+    
+    @Autowired
+    RefundMapper refundMapper;
+    @Autowired
+    OrderMapper orderMapper;
+
+    @Override
+    public List<Refund> getRefundList(String timeStart, String timeEnd, String refundId, String supId, String orderId, String refundStatus,
+            int page, int size) throws ServiceException {
+        
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+        return refundMapper.queryRefundList(timeStart, timeEnd, refundId, supId, orderId, refundStatus, start, end);
+    }
+
+    @Override
+    public int getRefundCount(String timeStart, String timeEnd, String refundId, String supId, String orderId, String refundStatus)
+            throws ServiceException {
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+        return refundMapper.queryRefundCount(timeStart, timeEnd, refundId, supId, orderId, refundStatus);
+    }
+    
+    @Override
+    public Refund getRefundStat(String timeStart, String timeEnd, String refundId, String supId, String orderId, String refundStatus)
+            throws ServiceException {
+        if (!StringUtils.isEmpty(timeStart)) {
+            timeStart += " 00:00:00";
+        }
+        
+        if (!StringUtils.isEmpty(timeEnd)) {
+            timeEnd += " 23:59:59";
+        }
+        return refundMapper.queryRefundStat(timeStart, timeEnd, refundId, supId, orderId, refundStatus);
+    }
+
+    @Override
+    public Refund getRefundDetail(String refundId) throws ServiceException {
+        return refundMapper.queryRefundDetail(refundId);
+    }
+    
+    @Override
+    public List<RefundGoods> getRefundGoods(String refundId, String orderId) throws ServiceException {
+        return refundMapper.queryRefundGoods(refundId, orderId);
+    }
+    
+    @Override
+    public void updateRefundStatus(String refundId, String orderId) throws ServiceException {
+
+        try {
+            refundMapper.updateRefundStatus(refundId);
+            orderMapper.updateOrderStatus(orderId, 13);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+}

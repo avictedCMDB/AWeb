@@ -1,0 +1,24 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.Count;
+import com.avic.supervise.models.Invoice;
+
+@Repository
+public interface CountMapper {
+	/**
+	 * 查询统计供应商数据
+	 * @return 
+	 */
+	public List<Count> queryCountBySupID(Count count);
+	
+	/**
+	 * 查询统计企业单位数据
+	 * @return 
+	 */
+	public List<Count> queryCountByCompanyID(Count count);
+}

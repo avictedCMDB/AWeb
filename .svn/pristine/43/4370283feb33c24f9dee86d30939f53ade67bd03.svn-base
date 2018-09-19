@@ -1,0 +1,98 @@
+@charset "utf-8";
+/* CSS Document */
+
+#matter_section {
+	float: right;
+	width: 950px;
+}
+#matter_section h2 {
+  padding: 0 0 5px;
+  margin-bottom: 25px;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  border-bottom: 1px solid #dfdfdf;
+}
+#matter_section .remind_area {
+  background: #f6f4f5;
+  padding: 25px 0 25px 35px;
+  border: 1px solid #dfdfdf;
+}
+#matter_section .remind_area ul:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+#matter_section .remind_area ul li {
+	float: left;
+	width: 280px;
+	margin: 0 40px 0 0;
+	padding: 0;
+}
+#matter_section .remind_area ul li.reeturns_list {
+	width: 250px;
+	margin: 0 10px 0 0;
+}
+#matter_section .remind_area ul li dl {
+	margin: 0;
+	padding: 0;
+}
+#matter_section .remind_area ul li dl:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+#matter_section .remind_area ul li dl dt {
+	float: left;
+	width: 88px;
+	height: 28px;
+	background: #dc433d;
+	margin: 0 10px 0 0;
+	font-size: 16px;
+	line-height: 28px;
+	color: #fff;
+	text-align: center;
+	display: block;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+#matter_section .remind_area ul li dl dd {
+	float: left;
+	padding: 4px 0 0;
+	margin: 0 10px 0 0;
+	color: #4698ee;
+}
+#matter_section .remind_area ul li dl dd span {
+	color: #db413f;
+	font-weight: bold;
+}
+#matter_section .manage_photo {
+	margin: 100px 0 50px;
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

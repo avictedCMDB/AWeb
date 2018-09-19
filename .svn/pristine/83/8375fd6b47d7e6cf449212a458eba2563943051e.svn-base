@@ -1,0 +1,188 @@
+package com.avic.supervise.models;
+
+import java.io.Serializable;
+
+public class Contract implements Serializable {
+	private static final long serialVersionUID = 3985698666921770928L;
+	
+	private	String	sup_name	;	//	供应商名称
+	private	String	order_id	;	//	订单编码
+	private	String	contract_name	;	//	订单名称
+	private	String	begin_date	;	//	查询开始时间
+	private	String	end_date	;	//	查询结束时间
+	private	String	order_status	;	//	订单状态
+	private	String	order_status_name	;	//	订单状态名称
+	private	String	contract_code	;	//	合同编号
+	private	String	create_date	;	//	创建时间
+	private	String	buy_type	;	//	采购方式
+	private	String	sign_date	;	//	合同签订时间
+	private	String	contract_attachment_path	;	//	合同附件地址
+	private String companyID;
+	
+	private String busi_id;
+	
+	private String busi_type;
+	
+
+	public String getContract_attachment_path() {
+		return contract_attachment_path;
+	}
+
+	public void setContract_attachment_path(String contract_attachment_path) {
+		this.contract_attachment_path = contract_attachment_path;
+	}
+
+	public String getOrder_status_name() {
+		return order_status_name;
+	}
+
+	public void setOrder_status_name(String order_status_name) {
+		this.order_status_name = order_status_name;
+	}
+
+	public String getSign_date() {
+		return sign_date;
+	}
+
+	public void setSign_date(String sign_date) {
+		this.sign_date = sign_date;
+	}
+
+	public String getBuy_type() {
+		return buy_type;
+	}
+
+	public void setBuy_type(String buy_type) {
+		this.buy_type = buy_type;
+	}
+
+	public String getContract_code() {
+		return contract_code;
+	}
+
+	public void setContract_code(String contract_code) {
+		this.contract_code = contract_code;
+	}
+
+	public String getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
+	}
+
+	public String getOrder_status() {
+		return order_status;
+	}
+
+	public void setOrder_status(String order_status) {
+		this.order_status = order_status;
+	}
+
+	public String getContract_name() {
+		return contract_name;
+	}
+
+	public void setContract_name(String contract_name) {
+		this.contract_name = contract_name;
+	}
+
+	public String getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
+	}
+
+	public String getSup_name() {
+		return sup_name;
+	}
+
+	public void setSup_name(String sup_name) {
+		this.sup_name = sup_name;
+	}
+
+	public String getBegin_date() {
+		return begin_date;
+	}
+
+	public void setBegin_date(String begin_date) {
+		this.begin_date = begin_date;
+	}
+
+	public String getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
+	}
+
+
+	public String getCompanyID() {
+		return companyID;
+	}
+
+	public void setCompanyID(String companyID) {
+		this.companyID = companyID;
+	}
+	
+
+	private int page = 1;
+	private int pageSize = 10;
+	@SuppressWarnings("unused")
+	private int pageFrom; // 开始数
+	@SuppressWarnings("unused")
+	private int pageTo;
+	
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getPageFrom() {
+		return (this.page - 1) * this.pageSize + 1;
+	}
+
+	public void setPageFrom(int pageFrom) {
+		this.pageFrom = pageFrom;
+	}
+
+	public int getPageTo() {
+		return this.page * this.pageSize;
+	}
+
+	public void setPageTo(int pageTo) {
+		this.pageTo = pageTo;
+	}
+
+	public String getBusi_id() {
+		return busi_id;
+	}
+
+	public void setBusi_id(String busi_id) {
+		this.busi_id = busi_id;
+	}
+
+	public String getBusi_type() {
+		return busi_type;
+	}
+
+	public void setBusi_type(String busi_type) {
+		this.busi_type = busi_type;
+	}
+	
+}

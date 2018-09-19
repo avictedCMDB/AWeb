@@ -1,0 +1,429 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合同管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/bid_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/bid_contract_management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/my97DatePicker/My97DatePicker/WdatePicker.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/date.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/bid/management/common.js"></script>
+<script type="text/javascript">
+$(function () {
+	$(".submit-btn").click(function () {
+		var contractRemark = $.trim($("#contract_remark").val());
+		if (contractRemark == "") {
+			alert("请填写意见");
+			return false;
+		}
+		
+		if (confirm("是否确认" + $(this).text() + "?")) {
+
+			async('${pageContext.request.contextPath}/management/bid/contract/audit/submit', {projId:'${sup.projId}', supCode:'${sup.supCode}', contractStatus:$(this).attr("data-val"), contractRemark:contractRemark}, function (msg) {
+				alert("提交成功");
+				history.go(-1);
+			});
+		}
+	});
+	
+	$("#gen_btn").click(function () {
+		var contract_id = $.trim($("#contract_id").val());
+		var proj_id = $.trim($("#proj_id").val());
+		var a_company_name = $.trim($("#a_company_name").val());
+		var a_address = $.trim($("#a_address").val());
+		var a_postcode = $.trim($("#a_postcode").val());
+		var a_phone = $.trim($("#a_phone").val());
+		var a_fax = $.trim($("#a_fax").val());
+		var a_title = $.trim($("#a_title").val());
+		var a_bank = $.trim($("#a_bank").val());
+		var a_account = $.trim($("#a_account").val());
+		var a_tax = $.trim($("#a_tax").val());
+		var a_sign = $.trim($("#a_sign").val());
+		
+		if (a_company_name == "") {
+			alert("请输入单位名称");
+			return false;
+		}
+		if (a_address == "") {
+			alert("请输入地址");
+			return false;
+		}
+		if (a_postcode == "") {
+			alert("请输入邮编");
+			return false;
+		} else if (!/^[0-9-]+$/.test(a_postcode)) {
+			alert("请输入正确的邮编");
+			return;
+		}
+		if (a_phone == "") {
+			alert("请输入电话");
+			return false;
+		} else if (!/^[0-9-]+$/.test(a_phone)) {
+			alert("请输入正确的电话号码");
+			return;
+		}
+		if (a_fax == "") {
+			alert("请输入传真");
+			return false;
+		} else if (!/^[0-9-]+$/.test(a_fax)) {
+			alert("请输入正确的传真号码");
+			return;
+		}
+		if (a_title == "") {
+			alert("请输入发票抬头");
+			return false;
+		}
+		if (a_bank == "") {
+			alert("请输入开户行");
+			return false;
+		}
+		if (a_account == "") {
+			alert("请输入账号");
+			return false;
+		} else if (!/^[0-9]+$/.test(a_account)) {
+			alert("请输入正确的银行账号");
+			return;
+		}
+		if (a_tax == "") {
+			alert("请输入税号");
+			return false;
+		}
+		else if (!/^[0-9]+$/.test(a_tax)) {
+			alert("请输入正确的税号");
+			return;
+		}
+		if (a_sign == "") {
+			alert("请输入甲方签名");
+			return false;
+		}
+		
+
+		async('${pageContext.request.contextPath}/management/bid/contract/gen/submit', {
+			contractId:contract_id,
+			projId:proj_id,
+			aCompanyName:a_company_name,
+			aAddress:a_address,
+			aPostcode:a_postcode,
+			aPhone:a_phone,
+			aFax:a_fax,
+			aTitle:a_title,
+			aBank:a_bank,
+			aAccount:a_account,
+			aTax:a_tax,
+			aSign:a_sign
+		}, function (msg) {
+			alert("提交成功");
+			history.go(-1);
+		});
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <jsp:include page="../header.jsp" />  
+  
+  <div id="contents">
+    <div class="inner">
+      
+      <jsp:include page="../left_menu.jsp"/>
+      <input type="hidden" id="contract_id" value="${no }"/>
+      <input type="hidden" id="proj_id" value="${proj.projId }"/>
+
+      <div id="matter_section">
+              <h2>电子采购合同</h2>
+              <div class="section list_notice">
+                  <h3>1、合同信息</h3>
+                  <div class="notice_inner">
+                    <table class="info">
+                      <tr>
+                        <th width="200">合同编号</th>
+                        
+                        <td>${contract == null ? no : contract.contractId}</td>
+                      </tr>
+                      <tr>
+                        <th>甲方</th>
+                        <td>${user.companyName }</td>
+                      </tr>
+                      <tr>
+                        <th>乙方</th>
+                        <td>${sup.supName }</td>
+                      </tr>
+                      <tr>
+                        <th>项目名称</th>
+                        <td>${proj.projName }</td>
+                      </tr>
+                      <tr>
+                        <th>项目编号</th>
+                        <td>${proj.projId }</td>
+                      </tr>
+                      <tr>
+                        <th>合同总价</th>
+                        <td>${sup.realCurrentQuota }元</td>
+                      </tr>
+                      <tr>
+                        <th>供货地点</th>
+                        <td>${addr }</td>
+                      </tr>
+                      <c:if test="${contract != null and contract.signTime != null }">
+                      <tr>
+                        <th>签订时间</th>
+                        <td><fmt:formatDate value="${contract.signTime }" pattern="yyyy-MM-dd"/></td>
+                      </tr>
+                      </c:if>
+                    </table>
+                  </div>
+                  <h4>一、交货时间</h4>
+                  <p>乙方收到合同全款后 5（五）个工作日内交货。交货地点由甲方指定。<br />
+                  注：收货单位应在乙方提供的《收货单》上加盖单位公章或由本合同中指定的收货经办人本人签收。<br />
+                  非在收货后五日内就设备质量问题或交付设备与合同规定的不符提出异议、并经乙方确认属实的,甲方不得退回设备。</p>
+                  <h4>二、违约责任</h4>
+                  <p>1、 乙方逾期供货，每逾期一天支付甲方货款总额2‰（千分之二）的违约金，违约金累计不超过合同总额的5％（百分之五）。</p>
+                  <p>2、 甲方逾期付款，每逾期一天支付乙方货款总额2‰（千分之二）的违约金，违约金累计不超过合同总额的5％（百分之五）。</p>
+                  <p>3、 甲方拒收设备或拖延收货超过5个工作日的（受不可抗力因素影响的除外），视为甲方单方解除合同，需向乙方支付合同总额50%（百分之五十）的违约金。乙方从甲方支付的货款中扣除该违约金后，应将剩余款项退还甲方。</p>
+                  <h4>三、维护服务</h4>
+                  <p>维护期限自设备交付之日起壹年。甲方原因不能按时收货不影响维护服务期的计算。</p>
+                  <h4>四、验收</h4>
+				  <p>甲方对设备质量、数量、规格等有异议需于甲方收到设备后的5（五）日内提出，未于上述期间提出书面异议的，视为验收合格。</p>
+                  <h4>五、争议的解决办法</h4>
+                  <p>在本合同履行过程中如发生争议，双方应当协商解决。双方不愿协商解决或者协商不成的，双方商定，由原告所在地人民法院管辖。</p>
+                  <h4>六、合同生效</h4>
+                  <p>本合同自双方签字盖章后即生效。本合同一式两份，双方各执一份，具有同等法律效力。</p>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>2、合同商品清单</h3>
+                  <div class="notice_inner">
+                    <table>
+                          <tr>
+                            <th width="60">序号</th>
+							<th width="100">商品名称</th>
+                            <th width="100">品牌</th>
+                            <th width="100">规格型号</th>                          
+                            <th width="50">数量</th>
+                            <th width="70">单位</th>
+							<th width="150">售后服务</th>
+                          </tr>
+                          <c:forEach var="i" varStatus="sta" items="${mtrs}">
+                          <tr>
+                            <td>${sta.index + 1 }</td>
+							<td>${i.materName }</td>
+                            <td>${i.materBrand }</td>
+                            <td>${i.materModel }</td>
+                            <td>${i.materNum }</td>
+                            <td>${i.materUnit }</td>
+                            <td class="left">${i.saleService }</td>
+                          </tr>
+                          </c:forEach>
+                      </table>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="section list_notice">
+                  <h3>3、付款说明</h3>
+                  <c:if test="${contract == null or sup.contractStatus == 1}">
+                  <div class="notice_inner">
+                    <p class="pay_info">甲方应在本合同生效后3（三）个工作日内向乙方支付全款。</p>
+                    <p class="pay_info blue_text">甲方的开票信息为：</p>
+                    <table class="info">
+                      <tr>
+                        <th width="200">单位名称</th>
+                        <td colspan="3"><input type="text" id="a_company_name" class="form-control" value="${contract == null ? comp.companyName : contract.aCompanyName }"></td>
+                      </tr>
+                      <tr>
+                        <th>地址</th>
+                        <td><input type="text" class="form-control" id="a_address" value="${contract == null ? comp.address : contract.aAddress }"></td>
+                        <th width="200">邮编</th>
+                        <td><input type="text" class="form-control" id="a_postcode" value="${contract.aPostcode }"></td>
+                      </tr>
+                      <tr>
+                        <th>电话</th>
+                        <td><input type="text" class="form-control" id="a_phone" value="${contract == null ? comp.contactIphone : contract.aPhone }"></td>
+                        <th>传真</th>
+                        <td><input type="text" class="form-control" id="a_fax" value="${contract == null ? comp.contactFax : contract.aFax }"></td>
+                      </tr>
+					  <tr>
+                        <th>发票抬头</th>
+                        <td colspan="3"><input type="text" class="form-control" id="a_title" value="${contract.aTitle }"></td>
+                      </tr>
+                      <tr>
+                        <th>开户行</th>
+                        <td colspan="3"><input type="text" class="form-control" id="a_bank" value="${contract == null ? comp.bankName : contract.aBank }"></td>
+                      </tr>
+                      <tr>
+                        <th>账号</th>
+                        <td colspan="3"><input type="text" class="form-control" id="a_account" value="${contract == null ? comp.bankCode : contract.aAccount }"></td>
+                      </tr>
+                      <tr>
+                        <th>税号</th>
+                        <td colspan="3"><input type="text" class="form-control" id="a_tax" value="${contract == null ? comp.taxCode : contract.aTax }"></td>
+                      </tr>
+                    </table>
+					 <p class="pay_info blue_text">乙方基本信息为：</p>
+                    <table class="info">
+                      <tr>
+                        <th width="200">单位名称</th>
+                        <td colspan="3"><input type="text" class="form-control" value="${contract.bCompanyName }" disabled="disabled"></td>
+                      </tr>
+                      <tr>
+                        <th>地址</th>
+                        <td><input type="text" class="form-control" value="${contract.bAddress }" disabled="disabled"></td>
+                        <th width="200">邮编</th>
+                        <td><input type="text" class="form-control" value="${contract.bPostcode }" disabled="disabled"></td>
+                      </tr>
+                      <tr>
+                        <th>电话</th>
+                        <td><input type="text" class="form-control" value="${contract.bPhone }" disabled="disabled"></td>
+                        <th>传真</th>
+                        <td><input type="text" class="form-control" value="${contract.bFax }" disabled="disabled"></td>
+                      </tr>
+                      <tr>
+                        <th>开户行</th>
+                        <td colspan="3"><input type="text" class="form-control" value="${contract.bBank }" disabled="disabled"></td>
+                      </tr>
+                      <tr>
+                        <th>账号</th>
+                        <td colspan="3"><input type="text" class="form-control" value="${contract.bAccount }" disabled="disabled"></td>
+                      </tr>
+                      <tr>
+                        <th>税号</th>
+                        <td colspan="3"><input type="text" class="form-control" value="${contract.bTax }" disabled="disabled"></td>
+                      </tr>
+                    </table>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="signo clearfix">
+                <dl class="clearfix">
+                  <dt>甲方签名：</dt>
+                  <dd><input type="text" class="form-control" id="a_sign" value="${contract.aSign }"></dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt>乙方签名：</dt>
+                  <dd><input type="text" class="form-control" value="${contract.bSign }" disabled="disabled"></dd>
+                </dl>
+                
+                </c:if>
+                
+                <c:if test="${sup.contractStatus != 1 }">
+                	<div class="notice_inner">
+                    <p class="pay_info">甲方应在本合同生效后3（三）个工作日内向乙方支付全款。</p>
+                    <p class="pay_info blue_text">甲方的开票信息为：</p>
+                    <table class="info">
+                      <tr>
+                        <th width="200">单位名称</th>
+                        <td colspan="3">${contract.aCompanyName }</td>
+                      </tr>
+                      <tr>
+                        <th>地址</th>
+                        <td>${contract.aAddress }</td>
+                        <th width="200">邮编</th>
+                        <td>${contract.aPostcode }</td>
+                      </tr>
+                      <tr>
+                        <th>电话</th>
+                        <td>${contract.aPhone }</td>
+                        <th>传真</th>
+                        <td>${contract.aFax }</td>
+                      </tr>
+					  <tr>
+                        <th>发票抬头</th>
+                        <td colspan="3">${contract.aTitle }</td>
+                      </tr>
+                      <tr>
+                        <th>开户行</th>
+                        <td colspan="3">${contract.aBank }</td>
+                      </tr>
+                      <tr>
+                        <th>账号</th>
+                        <td colspan="3">${contract.aAccount }</td>
+                      </tr>
+                      <tr>
+                        <th>税号</th>
+                        <td colspan="3">${contract.aTax }</td>
+                      </tr>
+                    </table>
+					 <p class="pay_info blue_text">乙方基本信息为：</p>
+                    <table class="info">
+                      <tr>
+                        <th width="200">单位名称</th>
+                        <td colspan="3">${contract.bCompanyName }</td>
+                      </tr>
+                      <tr>
+                        <th>地址</th>
+                        <td>${contract.bAddress }</td>
+                        <th width="200">邮编</th>
+                        <td>${contract.bPostcode }</td>
+                      </tr>
+                      <tr>
+                        <th>电话</th>
+                        <td>${contract.bPhone }</td>
+                        <th>传真</th>
+                        <td>${contract.bFax }</td>
+                      </tr>
+                      <tr>
+                        <th>开户行</th>
+                        <td colspan="3">${contract.bBank }</td>
+                      </tr>
+                      <tr>
+                        <th>账号</th>
+                        <td colspan="3">${contract.bAccount }</td>
+                      </tr>
+                      <tr>
+                        <th>税号</th>
+                        <td colspan="3">${contract.bTax }</td>
+                      </tr>
+                    </table>
+                  </div>
+              <!--.list_notice--></div>
+              <div class="signo clearfix">
+                <dl class="clearfix">
+                  <dt>甲方签名：</dt>
+                  <dd>${contract.aSign }</dd>
+                </dl>
+                <dl class="clearfix">
+                  <dt>乙方签名：</dt>
+                  <dd>${contract.bSign }</dd>
+                </dl>
+                </c:if>
+              </div>
+              <c:if test="${sup.contractStatus == 2 }">
+            <div class="section list_notice suggestion">
+              <h3>审核意见</h3>
+              <textarea class="form-control" id="contract_remark"></textarea>
+            </div>
+            </c:if>
+			<div class="submit_btn">
+                 <ul>
+                 <c:if test="${contract == null }">
+                    <li><button class="btn btn-default blue" id="gen_btn">生成电子合同</button></li>
+				</c:if>
+              <c:if test="${sup.contractStatus == 2 }">
+                    <li><button class="btn btn-default blue submit-btn" data-val="3">归档</button></li>
+                    <li><button class="btn btn-default gray_cart submit-btn" data-val="4">退回供应商</button></li>
+              </c:if>
+                    <li><button class="btn btn-default gray_cart" onclick="history.go(-1);">返回</button></li>
+                 </ul>
+              </div>
+            </div>
+              
+          <!--#matter_section--></div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <jsp:include page="../footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

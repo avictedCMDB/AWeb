@@ -1,0 +1,85 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/tlds/tag.tld" prefix="mc"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>商品需求管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/profession_special_goods.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/imgbox.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/professionSpecialGoods.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/imgUpload.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.imgbox.pack.js"></script>
+</head>
+
+<body>
+<input type="hidden" id="path" name="path" value="${pageContext.request.contextPath}"/>
+<input type="hidden" id="sup_id" name="sup_id" value=""/>
+<input type="hidden" id="new_sup_id" name="new_sup_id" value=""/>
+<div class="page-wrapper">
+	<jsp:include page="header.jsp"/>
+  
+  <div id="contents">
+    <div class="inner">
+	  <jsp:include page="left_menu.jsp">
+		  <jsp:param name="menu" value="offStandardRequire" />
+	  </jsp:include>
+	  
+      <div id="matter_section">
+      	<h2>发布商品需求</h2>
+      	<div id="info_list">
+          <div class="section_inner">
+              <dl class="clearfix">
+                  <dt>商品描述：</dt>
+                  <dd><textarea id="goods_desc_new" name="goods_desc_new" class="form-control" rows="3"></textarea></dd>
+              </dl>
+              <dl class="clearfix special">
+                  <dt>商品图纸：</dt>
+                  <dd>
+					<mc:ImgUploadTag mark='ask'></mc:ImgUploadTag>
+					  支持的图片格式为jpg/jpeg/png/gif/bmp/pdf，单个图片需小于2M。
+                  </dd>
+              </dl>
+              <dl class="clearfix">
+                  <dt>选择供应商：</dt>
+                  <dd>
+                      <ul class="tab_list">
+						<c:if test="${isShowBtn1 == 1}">
+                         <li><a href="javascript:void(0);" onclick="gotoSelectSupPage(1)">合作供应商</a></li>
+						</c:if>
+                         <li><a href="javascript:void(0);" onclick="gotoSelectSupPage(2)">平台其他供应商</a></li>
+                      </ul>
+                      <ul class="list_inner clearfix">
+                      </ul>
+                  </dd>
+              </dl>
+              <div class="btn_list">
+          <ul class="list-inline clearfix">
+            <li><button type="button" onclick="doSave('${pageContext.request.contextPath}');" class="btn btn-default add_btn">提交</button></li>
+            <li><button type="button" onclick="window.location.href='${pageContext.request.contextPath}'+'/management/specialGoods/offStandardRequirePage';" class="btn btn-default add_btn">取消</button></li>
+          </ul>
+        </div>
+          </div>
+      </div>
+      <!--#matter_section--></div>
+    <!--.inner--></div>
+  <!--#contents--></div>
+  
+  <jsp:include page="footer.jsp"/>
+<!--.page-wrapper--></div>
+</body>
+</html>

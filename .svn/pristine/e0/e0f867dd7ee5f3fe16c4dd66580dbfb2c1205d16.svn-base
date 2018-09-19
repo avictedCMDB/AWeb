@@ -1,0 +1,125 @@
+package com.avic.market.models;
+
+public class Address {
+    private String addressId;
+    private String name;
+    private String areaLevelOne;
+    private String areaLevelOneName;
+    private String areaLevelTwo;
+    private String areaLevelTwoName;
+    private String areaLevelThree;
+    private String areaLevelThreeName;
+    private String areaLevelFour;
+    private String areaLevelFourName;
+    private String supId;
+    private String tel;
+    private String addressDetail;
+    private String phone;
+    private String zipCode;
+    private String userId;
+    private String ifDefault;
+    public String getAddressId() {
+        return addressId;
+    }
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getAreaLevelOne() {
+        return areaLevelOne;
+    }
+    public void setAreaLevelOne(String areaLevelOne) {
+        this.areaLevelOne = areaLevelOne;
+    }
+    public String getAreaLevelTwo() {
+        return areaLevelTwo;
+    }
+    public void setAreaLevelTwo(String areaLevelTwo) {
+        this.areaLevelTwo = areaLevelTwo;
+    }
+    public String getAreaLevelThree() {
+        return areaLevelThree;
+    }
+    public void setAreaLevelThree(String areaLevelThree) {
+        this.areaLevelThree = areaLevelThree;
+    }
+    public String getAreaLevelFour() {
+        return areaLevelFour;
+    }
+    public void setAreaLevelFour(String areaLevelFour) {
+        this.areaLevelFour = areaLevelFour;
+    }
+    public String getSupId() {
+        return supId;
+    }
+    public void setSupId(String supId) {
+        this.supId = supId;
+    }
+    public String getTel() {
+        return tel;
+    }
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+    public String getAddressDetail() {
+        return addressDetail;
+    }
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getZipCode() {
+        return zipCode;
+    }
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public String getIfDefault() {
+        return ifDefault;
+    }
+    public void setIfDefault(String ifDefault) {
+        this.ifDefault = ifDefault;
+    }
+    public String getAreaLevelOneName() {
+        return areaLevelOneName;
+    }
+    public void setAreaLevelOneName(String areaLevelOneName) {
+        this.areaLevelOneName = areaLevelOneName;
+    }
+    public String getAreaLevelTwoName() {
+        return areaLevelTwoName;
+    }
+    public void setAreaLevelTwoName(String areaLevelTwoName) {
+        this.areaLevelTwoName = areaLevelTwoName;
+    }
+    public String getAreaLevelThreeName() {
+        return areaLevelThreeName;
+    }
+    public void setAreaLevelThreeName(String areaLevelThreeName) {
+        this.areaLevelThreeName = areaLevelThreeName;
+    }
+    public String getAreaLevelFourName() {
+        return areaLevelFourName;
+    }
+    public void setAreaLevelFourName(String areaLevelFourName) {
+        this.areaLevelFourName = areaLevelFourName;
+    }
+
+    
+}

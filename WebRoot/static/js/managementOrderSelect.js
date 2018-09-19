@@ -1,0 +1,75 @@
+$(document).ready(function(){
+	doInit();
+	
+	$('#allchecked').click(function(){
+		var allcheck = $("#allchecked").is(':checked');
+		$('input[name="subCheckbox"]').prop('checked',allcheck);
+	});
+});
+
+function doInit(){
+	var path = $('#path').val();
+	var order_id = $('#order_id').val();
+	var goods_name = $('#goods_name').val();
+	var url=path+"/management/orderExchange/orderSelectData?order_id="+order_id+"&goods_name="+goods_name;
+
+	$.ajax({
+	    url: url,
+	    type: "POST",
+	    contentType : 'application/json;charset=gbk', //设置请求头信息
+	    dataType:"json",
+	    success: function(dataJson){
+	    	var strHtml = getSelectedGoodsHtml(dataJson,path);
+			$("tr[id^='tr_']").each(function(){
+				this.remove();
+			});
+			
+			$('#title_tr').after(strHtml);
+	    },
+	    error: function(res){
+            alert('系统忙，请稍后再试。');
+        }
+	});
+}
+
+function getSelectedGoodsHtml(dataJson,path){
+	var strArr = new Array();
+	if(dataJson!=null && dataJson!="" && dataJson !=undefined){
+		$(dataJson).each(function (i) {
+			var goodsDetailUrl = path+"/market/goods/show?sid="+this.sup_id+"&gid="+this.sup_goods_id;
+			strArr.push("<tr id='tr_"+this.sup_goods_id+"'>");
+		      strArr.push("<td><input type='checkbox' name='subCheckbox' value='"+this.sup_goods_id+"'></td>");
+		      strArr.push("<td>"+(i+1)+"</td>");
+		      strArr.push("<td class='right_none' width='57'><p class='img_pro'><img style='height: 55px;width: 55px;' src='"+this.image_path+"' /></p></td>");
+		      strArr.push("<td class='left_none'>"+this.goods_name+"</td>");
+		      strArr.push("<td>"+this.buy_num+"</td>");
+		      strArr.push("<td class='price'>"+this.goods_price+"</td>");
+		    strArr.push("</tr>");
+	    });
+	    
+	    return strArr.join("");
+    }else{
+    	return "";
+    }
+}
+
+function doConfirm(){
+	var spCodesTemp = "";
+	$('input:checkbox[name=subCheckbox]:checked').each(function(i){
+		if(0==i){
+			spCodesTemp = $(this).val();
+		}else{
+			spCodesTemp += ("','"+$(this).val());
+		}
+	});
+	if(spCodesTemp!=null && spCodesTemp!=''){
+		spCodesTemp = "'"+spCodesTemp+"'";
+	}
+	
+	if(window.opener){
+		var fWindowText1 = window.opener.document.getElementById("sup_goods_id");
+		fWindowText1.value = spCodesTemp;
+		window.opener.childCallParentMethod();
+    }
+	window.close();
+}

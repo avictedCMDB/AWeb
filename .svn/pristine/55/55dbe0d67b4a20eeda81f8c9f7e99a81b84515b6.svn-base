@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.BidSupplierQuotaMapper">
+	<resultMap id="bidSupplierQuotaMap" type="BidSupplierQuota">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="sup_code" property="supCode" jdbcType="VARCHAR" />
+		<result column="quota_round" property="quotaRound" jdbcType="INTEGER" />
+		<result column="bid_num" property="bidNum" jdbcType="VARCHAR" />
+		<result column="quota_num" property="quotaNum" jdbcType="INTEGER" />
+		<result column="quota_time" property="quotaTime" jdbcType="TIMESTAMP" />
+		<result column="quota_type" property="quotaType" jdbcType="INTEGER" />
+		<result column="timeout_flag" property="timeoutFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	<select id="querySupplierQuota" resultMap="bidSupplierQuotaMap">
+		select *
+		from bid_supplier_quota 
+		where sup_code = #{supCode} and proj_id = #{projId} and quota_type = #{quotaType}
+		order by quota_time desc
+	</select>
+	
+	<select id="queryTrialQuotaRank" resultMap="bidSupplierQuotaMap">
+		select bid_num, trial_current_quota quota_num, sup_code, (
+				select quota_time from bid_supplier_quota a 
+				where a.quota_type = 1 and a.proj_id = bid_proj_supplier.proj_id
+				and a.sup_code = bid_proj_supplier.sup_code
+				and a.quota_round = bid_proj_supplier.trial_quota_round) quota_time
+		from bid_proj_supplier 
+		where proj_id = #{projId} and trial_current_quota &gt; 0
+		order by trial_current_quota asc
+	</select>
+	
+	<select id="queryRealQuotaRank" resultMap="bidSupplierQuotaMap">
+		select bid_num, real_current_quota quota_num, sup_code, (
+				select quota_time from bid_supplier_quota a 
+				where a.quota_type = 2 and a.proj_id = bid_proj_supplier.proj_id
+				and a.sup_code = bid_proj_supplier.sup_code
+				and a.quota_round = bid_proj_supplier.real_quota_round) quota_time
+		from bid_proj_supplier 
+		where proj_id = #{projId} and real_current_quota &gt; 0
+		order by real_current_quota asc
+	</select>
+	
+	<insert id="insertSupplierQuota">
+		insert into bid_supplier_quota (
+			proj_id, sup_code, quota_round, bid_num, 
+			quota_num, quota_time, quota_type, timeout_flag
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{supCode,jdbcType=VARCHAR}, #{quotaRound,jdbcType=INTEGER}, #{bidNum,jdbcType=VARCHAR},
+			#{quotaNum,jdbcType=INTEGER}, sysdate, #{quotaType,jdbcType=INTEGER}, #{timeoutFlag,jdbcType=INTEGER}
+		)
+	</insert>
+	
+</mapper>

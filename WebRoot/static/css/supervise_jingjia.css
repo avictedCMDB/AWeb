@@ -1,0 +1,141 @@
+#matter_section .search_area {
+  background: #f6f4f5;
+  padding: 25px 0 15px 15px;
+  border: 1px solid #dfdfdf;
+}
+#matter_section .search_area dl {
+	float: left;
+	font-size: 12px;
+	margin-bottom: 10px;
+	margin-right: 30px;
+}
+#matter_section .search_area dl.last {
+	margin-right: 0;
+}
+#matter_section .search_area dl dt {
+	float: left;
+	line-height: 25px;
+	margin-right: 5px;
+	width: 90px;
+	text-align: right;
+}
+#matter_section .search_area dl dd {
+	float: left;
+	width: 192px;
+}
+#matter_section ul li {
+	float: left;
+	line-height: 25px;
+	margin-right: 9px;
+}
+#matter_section .special_input {
+	border-right: none;
+}
+#matter_section .form-control {
+	height: 28px;
+}
+#matter_section .input-group-addon {
+	height: 28px;
+	padding: 6px 5px 5px 0px;
+	border-left: none;
+	background: #fff;
+	cursor: pointer;
+	display: inline-table;
+}
+.btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+.red {
+	background: #0091dc;
+	color: #fff;
+}
+.gray {
+	background: #666666;
+	color: #fff;
+}
+.btn_list {
+	text-align: right;
+}
+.btn_list ul {
+	display: inline-block;
+}
+#matter_section .special_input {
+    border-right: medium none;
+	width: 140px;
+}
+#matter_section ul li.last {
+	margin-right: 0;
+}
+#matter_section .search_area dl dd.special_list {
+	width: auto;
+}
+#matter_section .search_area dl dd.special_list select {
+	float: left;
+	width: 242px;
+	margin-right: 5px;
+}
+#matter_section .state_list ul li.delete {
+	float: right;
+}
+.red_text {
+	color: #ff4200;
+}
+.align_right {
+	text-align: right;
+	margin-top: 20px;
+}
+.search_result table tr td a {
+    color: #4798ed;
+    margin-right: 5px;
+}
+.search_result table tr td {
+	text-align: center;
+}
+.search_result table tr td.left-list {
+	text-align: left;
+}
+
+/*添加框样式*/
+.modal-header {
+    background: #0091dc;
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+    padding: 10px;
+}
+.modal-header .close {
+    color: #fff;
+}
+.modal-body .form-group {
+    margin: 0;
+    margin-bottom: 0px;
+    float: none;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.modal-body .form-group label.title {
+	padding-right: 5px;
+	float: left;
+	line-height: 28px;
+}
+.modal-body .form-group .input_area {
+	float: left;
+	display: inline-block;
+	
+}
+.form-group .btn {
+	float: left;
+	margin-left: 10px;
+}
+.form-group .form-control {
+	width: 410px;
+	float: left;
+}
+.modal-body .search_result table {
+	width: 100%;
+}
+.modal-body .search_result table tr td.center-list {
+	text-align: center;
+}

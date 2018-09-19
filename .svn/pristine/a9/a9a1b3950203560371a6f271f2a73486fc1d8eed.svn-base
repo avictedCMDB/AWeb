@@ -1,0 +1,32 @@
+package com.avic.supervise.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.SupplierRecommend;
+
+@Repository
+public interface SupplierRecommendMapper {
+	/**
+	 *查询推荐供应商
+	 * @return 
+	 */
+	public List<SupplierRecommend> querySupplierRecommends(SupplierRecommend supplierRecommend);
+	/**
+	 *查询推荐供应商数量
+	 * @return 
+	 */
+	public int querySupplierRecommendsCount(SupplierRecommend supplierRecommend);
+	/**
+	 *取消推荐供应商
+	 * @return 
+	 */
+	public void setIfRecommend(SupplierRecommend supplierRecommend);
+	
+	/**
+	 *查询推荐供应商
+	 * @return 
+	 */
+	public SupplierRecommend getSupInfoBySupID(SupplierRecommend supplierRecommend);
+}

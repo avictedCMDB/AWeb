@@ -1,0 +1,131 @@
+package com.avic.supervise.services.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supervise.mappers.RoleMapper;
+import com.avic.supervise.models.Menu;
+import com.avic.supervise.models.Node;
+import com.avic.supervise.models.Role;
+import com.avic.supervise.models.User;
+import com.avic.supervise.services.RoleService;
+
+
+
+
+@Service
+public class RoleServiceImpl implements RoleService{
+	
+	@Autowired
+	RoleMapper roleMapper;
+
+	@Override
+	public List<Role> queryRoleList(Role role) {
+		return roleMapper.queryRoleList(role);
+	}
+
+	@Override
+	public Integer queryRoleListCount(Role role) {
+		return roleMapper.queryRoleListCount(role);
+	}
+
+	@Override
+	public void roleExchange(Role role, String type) {
+		if ("1".equals(type)) {
+			SimpleDateFormat sdf =   new SimpleDateFormat( "yyyyMMddHHmmss");
+			String roleId = sdf.format(new Date());
+			Random random = new Random();
+			roleId= roleId + String.valueOf(random.nextInt(899999)+100000);
+			role.setId(roleId);
+			roleMapper.inserRole(role);
+		}else {
+			roleMapper.updateRole(role);
+		}
+	}
+
+	@Override
+	public String roleDelete(String roleId) {
+		String msg = "0";
+		Integer roleUserCount = roleMapper.queryRoleUserCount(roleId);
+		if (roleUserCount != 0) {
+			return "1";
+		}else {
+			roleMapper.deleteRole(roleId);
+		}
+		return msg;
+	}
+
+	@Override
+	public List<Node> queryMenu(String roleId,String systemFlag,String roleIds) {
+		List<Menu> menuList = roleMapper.queryMenu(systemFlag,roleIds);
+		List<Menu> roleList = roleMapper.queryRoleMenu(roleId);
+		for (int i = 0; i < menuList.size(); i++) {
+			for (int j = 0; j < roleList.size(); j++) {
+				if (menuList.get(i).getMenuId().equals(roleList.get(j).getMenuId())) {
+					menuList.get(i).setIsChecked("1");
+				}
+			}
+		}
+		// 节点列表（散列表，用于临时存储节点对象）
+		HashMap nodeList = new HashMap();
+		// 根据结果集构造节点列表（存入散列表）
+		for (Iterator it = menuList.iterator(); it.hasNext();) {
+			Menu dataRecord = (Menu) it.next();
+			Node node = new Node();
+			node.id = dataRecord.getMenuId();
+			node.text = dataRecord.getName();
+			node.parentId = dataRecord.getParentId();
+			node.isCheck = dataRecord.getIsChecked();
+			node.menuLevel = dataRecord.getMenuLevel();
+			nodeList.put(node.id, node);
+		}
+		// 构造无序的多叉树
+		Set entrySet = nodeList.entrySet();
+		List<Node> rootList =  new ArrayList<Node>();
+		for (Iterator it = entrySet.iterator(); it.hasNext();) {
+			Node node = (Node) ((Map.Entry) it.next()).getValue();
+			if (node.parentId == null || node.parentId.equals("-1")) {
+				rootList.add(node);
+			} else {
+				((Node) nodeList.get(node.parentId)).addChild(node);
+			}
+		}
+		for (int i = 0; i < rootList.size(); i++) {
+			rootList.get(i).sortChildren();
+		}
+		return rootList;
+	}
+
+	@Override
+	public void deployUserRole(String roleId, String menuIds) {
+		
+		//删除角色
+		roleMapper.deleteRoleMenu(roleId);
+		//插入新角色
+		String menuId[] = menuIds.split(",");
+		for (int i = 0; i < menuId.length; i++) {
+			SimpleDateFormat sdf =   new SimpleDateFormat( "yyyyMMddHHmmss");
+			String id = sdf.format(new Date());
+			Random random = new Random();
+			id= id + String.valueOf(random.nextInt(899999)+100000);
+			roleMapper.insertRoleMenu(id, roleId, menuId[i]);
+		}
+		
+	}
+
+	@Override
+	public String querySystemFlag(String parentRole) {
+		return roleMapper.querySystemFlag(parentRole);
+	}
+
+}

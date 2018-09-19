@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierOrderMapper">
+	<resultMap id="queryOrderMap" type="com.avic.supplier.models.SupplierOrder"/>
+	<resultMap id="queryOrderStatusMap" type="com.avic.management.models.SupplierOrder"/>
+	<select id="queryOrderList" resultMap="queryOrderMap" parameterType="com.avic.supplier.models.SupplierOrder">
+		select * from SUP_USERS t where t.SUP_ENABLED = '0' and SUP_NAME = #{supName} and SUP_PASSWORD = #{supPassword}
+	</select>
+	<select id="queryOrderStatusList" resultMap="queryOrderStatusMap" parameterType="com.avic.supplier.models.SupplierOrder">
+		select codetext order_status,codevalue order_status_code from codelist t where t.codelisttype = 'ORDER_STATUS'
+	</select>
+</mapper>

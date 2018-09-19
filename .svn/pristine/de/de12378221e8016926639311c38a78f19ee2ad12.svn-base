@@ -1,0 +1,4 @@
+function doInit(){
+	document.getElementById("editInvoiceForm").action="/AWeb/management/invoice/add";
+	document.getElementById("editInvoiceForm").submit();
+}

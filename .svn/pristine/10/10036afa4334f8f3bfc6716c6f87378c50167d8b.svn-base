@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.InvoiceMapper">
+	<resultMap id="invoiceMap" type="com.avic.management.models.Invoice">
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" /> 
+		<result column="INVOICE_NUM" property="invocieNum" jdbcType="VARCHAR" />
+		<result column="INVOICE_FLAG" property="invoiceFlag" jdbcType="VARCHAR" />
+		<result column="INVOICE_CONTENT" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="IF_DEFAULT" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="INVOICE_ID" property="invoiceID" jdbcType="VARCHAR" />
+		<result column="INVOICE_NUM" property="invoiceNum" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<select id="queryInvoices" resultMap="invoiceMap" parameterType="com.avic.management.models.Invoice">
+	SELECT * FROM (
+		SELECT ROWNUM AS RN,
+			   TI.COMPANY_NAME,
+		       <!-- TI.INVOICE_NUM, -->
+		       TI.INVOICE_FLAG,
+		       TI.INVOICE_CONTENT,
+		       TI.IF_DEFAULT,
+		       TI.USER_ID,
+		       TI.INVOICE_ID,
+		       TI.INVOICE_NUM
+		  FROM T_INVOICE TI
+		 WHERE TI.USER_ID = #{userID,jdbcType=VARCHAR}
+		 ) R
+   		 WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryInvoiceCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.Invoice">
+		SELECT COUNT(1)
+		  FROM T_INVOICE TI
+		 WHERE TI.USER_ID = #{userID,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryInvoiceByInvoiceID" parameterType="com.avic.management.models.Invoice" resultMap="invoiceMap">
+		SELECT TI.COMPANY_NAME,
+		       <!-- TI.INVOICE_NUM, -->
+		       TI.INVOICE_FLAG,
+		       TI.INVOICE_CONTENT,
+		       TI.IF_DEFAULT,
+		       TI.USER_ID,
+		       TI.INVOICE_ID,
+		       TI.INVOICE_NUM
+		  FROM T_INVOICE TI
+		 WHERE TI.INVOICE_ID = #{invoiceID,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="addInvoice" parameterType="com.avic.management.models.Invoice">
+		INSERT INTO T_INVOICE
+            (
+              COMPANY_NAME,
+              <!-- INVOICE_NUM, -->
+              INVOICE_FLAG,
+              INVOICE_CONTENT,
+              IF_DEFAULT,
+              USER_ID,
+              INVOICE_ID,
+              INVOICE_NUM
+            )
+    VALUES
+            (
+            	#{companyName,jdbcType=VARCHAR},
+            	<!-- #{invocieNum,jdbcType=VARCHAR}, -->
+            	#{invoiceFlag,jdbcType=VARCHAR},
+            	#{invoiceContent,jdbcType=VARCHAR},
+            	#{ifDefault,jdbcType=VARCHAR},
+            	#{userID,jdbcType=VARCHAR},
+            	#{invoiceID,jdbcType=VARCHAR},
+            	#{invoiceNum,jdbcType=VARCHAR}
+            )
+            	
+	</insert>
+	
+	<update id="updateInvoice" parameterType="com.avic.management.models.Invoice">
+		UPDATE T_INVOICE
+		   SET COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+		       <!-- INVOICE_NUM = #{invocieNum,jdbcType=VARCHAR}, -->
+		       INVOICE_FLAG = #{invoiceFlag,jdbcType=VARCHAR},
+		       INVOICE_CONTENT = #{invoiceContent,jdbcType=VARCHAR},
+		       INVOICE_NUM = #{invoiceNum,jdbcType=VARCHAR},
+		       IF_DEFAULT = #{ifDefault,jdbcType=VARCHAR}
+		 WHERE INVOICE_ID = #{invoiceID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="setDefault" parameterType="com.avic.management.models.Invoice">
+		update T_INVOICE
+		   set IF_DEFAULT = '1'
+		 where INVOICE_ID = #{invoiceID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="setOtherDefault" parameterType="com.avic.management.models.Invoice">
+		update T_INVOICE
+		   set IF_DEFAULT = '0'
+		 where INVOICE_ID != #{invoiceID,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteInvoice"  parameterType="com.avic.management.models.Invoice">
+		DELETE  FROM T_INVOICE
+      		   WHERE INVOICE_ID = #{invoiceID,jdbcType=VARCHAR}
+	</delete>
+</mapper>

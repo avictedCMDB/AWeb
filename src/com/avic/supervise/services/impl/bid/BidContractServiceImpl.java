@@ -1,0 +1,48 @@
+package com.avic.supervise.services.impl.bid;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.models.BidContract;
+import com.avic.management.models.BidContractFile;
+import com.avic.supervise.mappers.BidContractMapper;
+import com.avic.supervise.mappers.bid.BidContractFileMapper;
+import com.avic.supervise.mappers.bid.BidProjSupplierMapper;
+import com.avic.supervise.services.bid.BidContractService;
+
+
+
+@Service
+public class BidContractServiceImpl implements BidContractService {
+
+    @Autowired
+    BidContractFileMapper bidContractFileMapper;
+    
+    @Autowired
+    BidProjSupplierMapper bidProjSupplierMapper;
+    
+    @Autowired
+    BidContractMapper bidContractMapper;
+    
+    @Override
+    public List<BidContractFile> queryContractFileList(String projId, String supCode) {
+        return bidContractFileMapper.queryContractFileList(projId, supCode);
+    }
+
+    @Override
+    public BidContractFile queryContractFileById(String projId, String supCode, String fileId) {
+        return bidContractFileMapper.queryContractFileById(projId, supCode, fileId);
+    }
+    
+    @Override
+    public void updateContractStatus(String projId, String supCode, int contractStatus, String contractRemark) {
+        bidProjSupplierMapper.updateSupplierContractStatus(projId, supCode, contractStatus, contractRemark);
+    }
+    
+    @Override
+    public BidContract queryContractByProj(String projId, String supCode) {
+        return bidContractMapper.queryContractByProj(projId, supCode);
+    }
+}

@@ -1,0 +1,28 @@
+package com.avic.supplier.services.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.supplier.mappers.SupplierOffStandRequireMapper;
+import com.avic.supplier.models.SupplierOffStandRequire;
+import com.avic.supplier.services.SupplierOffStandRequireService;
+
+@Service
+public class SupplierOffStandRequireServiceImpl implements SupplierOffStandRequireService{
+	@Autowired
+	SupplierOffStandRequireMapper supplierOffStandRequireMapper;
+
+	@Override
+	public List<SupplierOffStandRequire> querySupplierOffStandRequiret(
+			SupplierOffStandRequire supplierOffStandRequire) {
+		return supplierOffStandRequireMapper.querySupplierOffStandRequiret(supplierOffStandRequire);
+	}
+
+	@Override
+	public Integer querySupplierOffStandRequiretCount(
+			SupplierOffStandRequire supplierOffStandRequire) {
+		return supplierOffStandRequireMapper.querySupplierOffStandRequiretCount(supplierOffStandRequire);
+	}
+}

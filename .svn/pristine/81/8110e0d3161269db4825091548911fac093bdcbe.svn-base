@@ -1,0 +1,61 @@
+package com.avic.market.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.mappers.GoodsMapper;
+import com.avic.market.models.Goods;
+import com.avic.market.services.GoodsService;
+import com.avic.market.utils.DataUtil;
+
+@Service
+public class GoodsServiceImpl implements GoodsService {
+    protected static final Log logger = LogFactory.getLog(GoodsServiceImpl.class);
+    
+    @Autowired
+    GoodsMapper goodsMapper;
+
+    @Override
+    public List<Goods> searchGoods(int cat, String brand, String kw, int priceStart, int priceEnd, int order, int page, int size) throws ServiceException {
+        logger.info("商品查询Service--cat["+cat+"], brand["+brand+"], kw["+kw+"], price["+priceStart+","+priceEnd+"], order["+order+"], page["+page+"], size["+size+"]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+        
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+        
+        
+        return goodsMapper.queryGoodsList(cats[0], cats[1], brand, kw, priceStart, priceEnd, order, start, end);
+    }
+
+    
+    @Override
+    public int getGoodsCount(int cat, String brand, String kw, int priceStart, int priceEnd) throws ServiceException {
+        logger.info("商品数量Service--cat["+cat+"], brand["+brand+"], kw["+kw+"], price["+priceStart+","+priceEnd+"]");
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+        
+        return goodsMapper.queryGoodsCount(cats[0], cats[1], brand, kw, priceStart, priceEnd);
+    }
+    
+    @Override
+    public List<String> getGoodsBrand(int cat, String kw) throws ServiceException {
+        logger.info("获取商品品牌Service--cat["+cat+"], kw["+kw+"]");
+        
+
+        int[] cats = DataUtil.generateCategoryRange(cat);
+        
+        
+        return goodsMapper.queryGoodsBrand(cats[0], cats[1], kw);
+    }
+}

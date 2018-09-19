@@ -1,0 +1,25 @@
+package com.avic.management.services;
+
+import java.util.List;
+import java.util.Map;
+
+import com.avic.management.models.OrderExchangeBean;
+import com.avic.management.models.SpecialGoodsBean;
+
+public interface SpecialGoodsService {
+	/**
+	 * 获取供应商列表
+	 */
+	public List<SpecialGoodsBean> supSelectDoInitData(SpecialGoodsBean sgBean);
+	
+	/**
+	 * 换货主页获取订单商品列表
+	 */
+	public List<OrderExchangeBean> orderSelectMainDoInit(OrderExchangeBean oeBean);
+	
+	
+	/**
+	 * 保存换货信息
+	 */
+	public String doSaveInTables(List<OrderExchangeBean> oeBeanList,Map<String, String> paramMap);
+}

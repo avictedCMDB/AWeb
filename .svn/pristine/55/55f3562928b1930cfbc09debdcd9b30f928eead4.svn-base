@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjSubjectMapper">
+	<resultMap id="bidProjSubjectMap" type="com.avic.management.models.BidProjSubject">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="subject_id" property="subjectId" jdbcType="VARCHAR" /> 
+		<result column="subject_name" property="subjectName" jdbcType="VARCHAR" /> 
+		<result column="subject_num" property="subjectNum" jdbcType="INTEGER" />
+		<result column="subject_unit" property="subjectUnit" jdbcType="VARCHAR" /> 
+		<result column="intro" property="intro" jdbcType="VARCHAR" /> 
+	</resultMap>
+	<resultMap id="bidSubjectMtrMap" type="com.avic.management.models.BidSubjectMtr">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="subject_id" property="subjectId" jdbcType="VARCHAR" /> 
+		<result column="mater_seq" property="materSeq" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<insert id="insertProjSubject">
+		insert into bid_proj_subject (
+			proj_id, subject_id, subject_name, subject_num, subject_unit, intro
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{subjectId,jdbcType=VARCHAR}, #{subjectName,jdbcType=VARCHAR}, 
+			#{subjectNum,jdbcType=INTEGER}, #{subjectUnit,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	
+	<insert id="insertSubjectMtr">
+		insert into bid_subject_mtr (
+			proj_id, subject_id, mater_seq
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{subjectId,jdbcType=VARCHAR}, #{materSeq,jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<delete id="deleteSubjectByProjId">
+		delete from bid_proj_subject where proj_id = #{projId}
+	</delete>
+	
+	<delete id="deleteSubjectMtrByProjId">
+		delete from bid_subject_mtr where proj_id = #{projId}
+	</delete>
+	
+	
+	<select id="querySubjectListByProj" resultMap="bidProjSubjectMap">
+		select * from bid_proj_subject where proj_id = #{projId}
+	</select>
+	
+	<select id="querySubjectMtrListBySubject" resultMap="bidSubjectMtrMap">
+		select * from bid_subject_mtr where proj_id = #{projId} and subject_id = #{subjectId}
+	</select>
+</mapper>

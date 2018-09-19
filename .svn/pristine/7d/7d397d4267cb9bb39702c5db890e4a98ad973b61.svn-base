@@ -1,0 +1,22 @@
+package com.avic.supervise.models;
+
+import java.io.Serializable;
+
+public class Company implements Serializable{
+	private static final long serialVersionUID = -7755142517962013334L;
+	private String companyID;
+    private String companyName;
+	public String getCompanyID() {
+		return companyID;
+	}
+	public void setCompanyID(String companyID) {
+		this.companyID = companyID;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+    
+}

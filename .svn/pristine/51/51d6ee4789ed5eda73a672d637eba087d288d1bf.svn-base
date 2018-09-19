@@ -1,0 +1,11 @@
+package com.avic.management.services;
+
+import com.avic.management.models.SupGoods;
+
+public interface SupGoodsService {
+	/**
+	 * 查询商品信息
+	 * @return 
+	 */
+	public SupGoods queryGoods(SupGoods supGoods);
+}

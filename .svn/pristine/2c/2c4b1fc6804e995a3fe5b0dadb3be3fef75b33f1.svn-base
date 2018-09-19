@@ -1,0 +1,77 @@
+package com.avic.supervise.models;
+
+public class Invoice {
+    private String orderId;
+    private double orderAmount;
+    private int goodsNum;
+    private String invoiceCompany;
+    private String invoiceStatus;
+    private String expressName;
+    private String expressCode;
+    private String invoiceNum;
+    private int invoiceFlag;
+    private String invoiceContent;
+    
+    public String getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+    public double getOrderAmount() {
+        return orderAmount;
+    }
+    public void setOrderAmount(double orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+    public int getGoodsNum() {
+        return goodsNum;
+    }
+    public void setGoodsNum(int goodsNum) {
+        this.goodsNum = goodsNum;
+    }
+    public String getInvoiceCompany() {
+        return invoiceCompany;
+    }
+    public void setInvoiceCompany(String invoiceCompany) {
+        this.invoiceCompany = invoiceCompany;
+    }
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
+    public String getInvoiceNum() {
+        return invoiceNum;
+    }
+    public void setInvoiceNum(String invoiceNum) {
+        this.invoiceNum = invoiceNum;
+    }
+    public int getInvoiceFlag() {
+        return invoiceFlag;
+    }
+    public void setInvoiceFlag(int invoiceFlag) {
+        this.invoiceFlag = invoiceFlag;
+    }
+    public String getInvoiceContent() {
+        return invoiceContent;
+    }
+    public void setInvoiceContent(String invoiceContent) {
+        this.invoiceContent = invoiceContent;
+    }
+    public String getExpressName() {
+        return expressName;
+    }
+    public void setExpressName(String expressName) {
+        this.expressName = expressName;
+    }
+    public String getExpressCode() {
+        return expressCode;
+    }
+    public void setExpressCode(String expressCode) {
+        this.expressCode = expressCode;
+    }
+    
+    
+}

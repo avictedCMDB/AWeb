@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.OrderMapper">
+	<resultMap id="orderMap" type="com.avic.management.models.Order">
+		<result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" /> 
+		<result column="INVOICE_NUM" property="invocieNum" jdbcType="VARCHAR" />
+		<result column="INVOICE_FLAG" property="invoiceFlag" jdbcType="VARCHAR" />
+		<result column="INVOICE_CONTENT" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="IF_DEFAULT" property="ifDefault" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="INVOICE_ID" property="invoiceID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryOrders" resultMap="orderMap">
+	SELECT * FROM (
+		SELECT TI.COMPANY_NAME,
+		       TI.INVOICE_NUM,
+		       TI.INVOICE_FLAG,
+		       TI.INVOICE_CONTENT,
+		       TI.IF_DEFAULT,
+		       TI.USER_ID,
+		       TI.INVOICE_ID
+		  FROM T_INVOICE TI) R
+   		<!-- WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER} -->
+	</select>
+</mapper>

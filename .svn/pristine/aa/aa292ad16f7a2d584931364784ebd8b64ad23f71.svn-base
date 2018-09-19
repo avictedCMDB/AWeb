@@ -1,0 +1,35 @@
+package com.avic.management.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.management.models.Order;
+import com.avic.management.services.CommonService;
+import com.avic.management.services.OrderService;
+
+@Controller
+@RequestMapping("/order")
+public class OrderController {
+    protected static final Log logger = LogFactory.getLog(OrderController.class);
+    
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    CommonService commonService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map) {
+        logger.info("∂©µ•≤È—Ø");
+        List<Order> orders = new ArrayList<Order>();
+        orders = orderService.queryOrders();
+        map.put("invoices", orders);
+        return "management_order";
+    }
+}

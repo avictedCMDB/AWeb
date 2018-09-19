@@ -1,0 +1,12 @@
+package com.avic.supervise.mappers;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supervise.models.User;
+
+
+@Repository
+public interface UserMapper {
+    public User queryUserByName(@Param("userName") String userName);
+}

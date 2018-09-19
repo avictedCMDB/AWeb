@@ -1,0 +1,14 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.Exchange;
+import com.avic.management.models.Invoice;
+
+public interface ExchangeService {
+	/**
+	 * 查询换货单列表
+	 * @return 
+	 */
+	public List<Exchange> queryExchange(Exchange exchange);
+}

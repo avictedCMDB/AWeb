@@ -1,0 +1,28 @@
+connection1.driverClass=oracle.jdbc.driver.OracleDriver
+connection1.jdbcUrl=jdbc:oracle:thin:@127.0.0.1:1521:XE
+connection1.username=AVIC
+connection1.password=AVIC
+connection1.initialPoolSize=2
+connection1.minPoolSize=1
+connection1.maxPoolSize=5
+connection1.acquireIncrement=1
+connection1.maxIdleTime=0
+connection1.maxStatements=0
+
+invoice.title=\u4E2D\u822A\u6280\u56FD\u9645\u7ECF\u8D38\u53D1\u5C55\u6709\u9650\u516C\u53F8
+
+# ========================================================
+# China Pay Test 
+# ========================================================
+chinapay.mer.id=000001604120541
+chinapay.url.pay=http://newpayment-test.chinapay.com/CTITS/service/rest/page/nref/000000000017/0/0/0/0/0
+chinapay.url.refund=http://newpayment-test.chinapay.com/CTITS/service/rest/forward/syn/000000000065/0/0/0/0/0
+# ========================================================
+# China Pay Production 
+# ========================================================
+#chinapay.mer.id=
+#chinapay.url.pay=https://payment.chinapay.com/CTITS/service/rest/page/nref/000000000017/0/0/0/0/0
+#chinapay.url.refund=https://payment.chinapay.com/CTITS/service/rest/forward/syn/000000000065/0/0/0/0/0
+chinapay.callback.page=http://home.blade.cf:18080/AWeb/management/finance/callback/page
+chinapay.callback.notify=http\://home.blade.cf\:18080/AWeb/management/finance/callback/notify
+chinapay.callback.refund=http\://home.blade.cf\:18080/AWeb/management/finance/callback/refund

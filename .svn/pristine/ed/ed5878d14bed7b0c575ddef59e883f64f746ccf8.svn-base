@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.BidProjMaterielMapper">
+	<resultMap id="bidProjMaterielMap" type="com.avic.management.models.BidProjMateriel">
+		<result column="proj_id" property="projId" jdbcType="VARCHAR" /> 
+		<result column="mater_seq" property="materSeq" jdbcType="INTEGER" />
+		<result column="mater_name" property="materName" jdbcType="VARCHAR" /> 
+		<result column="mater_num" property="materNum" jdbcType="INTEGER" /> 
+		<result column="mater_unit" property="materUnit" jdbcType="VARCHAR" /> 
+		<result column="mater_brand" property="materBrand" jdbcType="VARCHAR" /> 
+		<result column="mater_model" property="materModel" jdbcType="VARCHAR" />
+		<result column="if_standard" property="ifStandard" jdbcType="VARCHAR" /> 
+		<result column="sale_service" property="saleService" jdbcType="VARCHAR" /> 
+		<result column="spec_conf" property="specConf" jdbcType="VARCHAR" /> 
+		<result column="subject_name" property="subjectName" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<insert id="insertProjMateriel">
+		insert into bid_proj_materiel (
+			proj_id, mater_seq, mater_name, mater_num, mater_unit, 
+			mater_brand, mater_model, if_standard, sale_service, spec_conf
+		) values (
+			#{projId,jdbcType=VARCHAR}, #{materSeq,jdbcType=INTEGER}, #{materName,jdbcType=VARCHAR}, #{materNum,jdbcType=INTEGER}, #{materUnit,jdbcType=VARCHAR},
+			#{materBrand,jdbcType=VARCHAR}, #{materModel,jdbcType=VARCHAR}, #{ifStandard,jdbcType=VARCHAR}, #{saleService,jdbcType=VARCHAR}, #{specConf,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="queryHistoryMaterielCount" resultType="java.lang.Integer">
+		select count(distinct(mater_name || mater_brand || mater_model)) from bid_proj_materiel
+		where
+		exists (select 1 from bid_project b where bid_proj_materiel.proj_id = b.proj_id and b.user_id = #{userId})
+			<if test="name != null and name != ''">
+		  	and mater_name like '%' || #{name} || '%'
+		</if>
+	</select>
+	
+	<select id="queryHistoryMaterielList" resultMap="bidProjMaterielMap">
+		select x.* from (
+			select rownum rn, mater_name, mater_brand, mater_model, mater_num, mater_unit, sale_service, spec_conf, if_standard
+			from bid_proj_materiel 
+			where proj_id || mater_seq in (
+				select max(proj_id || mater_seq) 
+				from bid_proj_materiel 
+				where 
+				exists (select 1 from bid_project b where bid_proj_materiel.proj_id = b.proj_id and b.user_id = #{userId})
+	 			<if test="name != null and name != ''">
+				  	and mater_name like '%' || #{name} || '%'
+				</if>
+				group by mater_name, mater_brand, mater_model
+			)
+		) x 
+		where x.rn between #{start} and #{end}
+	</select>
+	
+	<delete id="deleteByProjId">
+		delete from bid_proj_materiel where proj_id = #{projId}
+	</delete>
+	
+	<select id="queryListByProj" resultMap="bidProjMaterielMap">
+		select a.*, c.subject_name 
+		from bid_proj_materiel a, bid_subject_mtr b, bid_proj_subject c 
+		where a.proj_id = b.proj_id and a.mater_seq = b.mater_seq 
+		and b.proj_id = c.proj_id and b.subject_id = c.subject_id 
+		and a.proj_id = #{projId}
+	</select>
+</mapper>

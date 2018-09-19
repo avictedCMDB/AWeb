@@ -1,0 +1,27 @@
+package com.avic.management.services.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.management.mappers.SupInfoMapper;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.SupInfoService;
+
+@Service
+public class SupInfoServiceImpl implements SupInfoService {
+    protected static final Log logger = LogFactory.getLog(SupInfoServiceImpl.class);
+
+    @Autowired
+    SupInfoMapper supInfoMapper;
+
+	@Override
+	public List<SupInfo> querySupInfos() {
+		return supInfoMapper.querySupInfos();
+	}
+
+
+}

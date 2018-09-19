@@ -1,0 +1,8 @@
+package com.avic.supervise.services;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.models.User;
+
+public interface UserService {
+    public User login(String username, String password) throws ServiceException;
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.AuditMapper">
+	<resultMap id="auditMap" type="com.avic.management.models.Audit">
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="ORDER_TIME" property="orderTime" jdbcType="VARCHAR" />
+		<result column="ORDER_STATUS" property="orderStatus" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="ORDER_STATUS_NAME" property="orderStatusName" jdbcType="VARCHAR" />
+		<result column="GOODS_AMOUNT" property="goodsAmount" jdbcType="VARCHAR" />
+		<result column="COMPANYID" property="companyID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="goodsSnapshotMap" type="com.avic.management.models.OrderSnapshot">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<id column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<id column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="refund_status" property="refundStatus" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="auditOrderMap" type="com.avic.management.models.AuditOrder">
+		<result column="ORDER_ID" property="orderID" jdbcType="VARCHAR" /> 
+		<result column="REVIEW_REMARK" property="reviewRemark" jdbcType="VARCHAR" />
+		<result column="REVIEW_TIME" property="reviewTime" jdbcType="INTEGER" />
+		<result column="REVIEW_RESULT" property="reviewResult" jdbcType="VARCHAR" />
+		<result column="REVIEW_PERSON" property="reviewPerson" jdbcType="VARCHAR" />
+		<result column="REVIEW_RESULT_NAME" property="reviewResultName" jdbcType="DOUBLE" />
+	</resultMap>
+	
+	<select id="queryAudits" parameterType="com.avic.management.models.Audit" resultMap="auditMap">
+	SELECT * FROM (
+		SELECT * FROM 
+		   (SELECT TOR.ORDER_ID,
+			       TOR.SUP_ID,
+			       TO_CHAR(TOR.Order_Time,'yyyy-MM-dd') AS ORDER_TIME,
+			       TOR.ORDER_STATUS,
+			       TOR.COMPANYID,
+			       TSI.SUP_NAME,
+			       CL.CODETEXT as ORDER_STATUS_NAME,
+			       TOR.ORDER_AMOUNT AS GOODS_AMOUNT
+			  FROM T_ORDER TOR
+			 LEFT JOIN T_SUP_INFO TSI
+			    ON (TOR.SUP_ID = TSI.SUP_ID)
+			 LEFT JOIN CODELIST  CL
+			    ON (TOR.ORDER_STATUS = CL.CODEVALUE AND CL.CODELISTTYPE = 'ORDER_STATUS'))AUT
+			WHERE 1=1
+			   <if test="orderStatus != null and orderStatus != ''">
+			  	AND AUT.ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyID != null and companyID != ''">
+			  	AND AUT.COMPANYID = #{companyID,jdbcType=VARCHAR}
+			  </if>
+			  <if test="startTime != null and startTime != ''">
+			  	AND AUT.ORDER_TIME &gt;= #{startTime,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endTime != null and endTime != ''">
+			  	AND AUT.ORDER_TIME &lt;= #{endTime,jdbcType=VARCHAR}
+			  </if>
+			  <if test="searchSupName != null and searchSupName != ''">
+			  	AND AUT.SUP_NAME = LIKE CONCAT('%',CONCAT(#{searchSupName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="searchOrderId != null and searchOrderId != ''">
+			  	AND AUT.ORDER_ID LIKE CONCAT('%',CONCAT(#{searchOrderId,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="orderIDs != null and orderIDs.size > 0">
+			  	AND AUT.ORDER_ID IN
+			  	<foreach item="item" index="index" collection="orderIDs" open="(" separator="," close=")">         
+			  		#{item}   
+			  	</foreach> 
+			  </if>
+		  ) R
+   		<!-- WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER} -->
+	</select>
+	
+	<select id="queryAuditsCount" parameterType="com.avic.management.models.Audit" resultType="java.lang.Integer">
+		   SELECT COUNT(*)
+			 FROM T_ORDER TOR
+			WHERE 1=1
+			 <if test="orderStatus != null and orderStatus != ''">
+			  	AND TOR.ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+			  </if>
+			  <if test="companyID != null and companyID != ''">
+			  	AND TOR.COMPANYID = #{companyID,jdbcType=VARCHAR}
+			  </if>
+	</select>
+	
+	
+	<select id="queryGoodsSnapshotByOrderID" parameterType="com.avic.management.models.OrderSnapshot" resultMap="goodsSnapshotMap">
+		SELECT TOS.ORDER_ID,
+		       TOS.SUP_ID,
+		       TOS.SUP_GOODS_ID,
+		       TOS.GOODS_NAME,
+		       TOS.IMAGE_PATH,
+		       TOS.GOODS_PRICE,
+		       TOS.BUY_NUM
+		  FROM T_ORDER_SNAPSHOT TOS
+		 WHERE TOS.ORDER_ID = #{orderId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryGoodsSnapshotOfLikeGoodsName" parameterType="com.avic.management.models.Audit" resultMap="goodsSnapshotMap">
+		SELECT TOS.ORDER_ID
+		  FROM T_ORDER_SNAPSHOT TOS
+		 WHERE TOS.GOODS_NAME LIKE CONCAT(CONCAT('%',#{searchGoodsName,jdbcType=VARCHAR}),'%')
+	</select>
+	
+	<select id="queryAuditOrderByOrderID" parameterType="com.avic.management.models.AuditOrder" resultMap="auditOrderMap">
+		    SELECT TORDER.ORDER_ID,
+		           TORDER.REVIEW_REMARK,
+		            to_char(TORDER.REVIEW_TIME,'yyyy-MM-dd') as REVIEW_TIME,
+		           TORDER.REVIEW_RESULT,
+		           TORDER.REVIEW_PERSON,
+		           CL.CODETEXT AS REVIEW_RESULT_NAME
+		      FROM T_ORDER TORDER 
+		 LEFT JOIN CODELIST CL 
+		        ON TORDER.REVIEW_RESULT = CL.CODEVALUE
+		       AND CL.CODELISTTYPE = 'EXCHANGE_STATUS'
+		     WHERE TORDER.ORDER_ID = #{orderID,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateAuditOrder" parameterType="com.avic.management.models.AuditOrder">
+		UPDATE T_ORDER 
+		   SET ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
+		       REVIEW_PERSON = #{reviewPerson,jdbcType=VARCHAR},
+		       REVIEW_RESULT = #{reviewResult,jdbcType=VARCHAR},
+		       REVIEW_TIME = SYSDATE,
+		       REVIEW_REMARK = #{reviewRemark,jdbcType=VARCHAR}
+		 WHERE ORDER_ID = #{orderID,jdbcType=VARCHAR}
+	</update>
+</mapper>

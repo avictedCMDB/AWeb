@@ -1,0 +1,258 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="../meta.jsp">
+	<jsp:param value="生成订单" name="title"/>
+	</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/order.css" rel="stylesheet">
+<script type="text/javascript">
+$(function () {
+	$(".express-type").click(function () {
+		$(".express-type.active").removeClass("active");
+		$(this).addClass("active");
+	});
+	$(".invoice-type").click(function () {
+		$(".invoice-type.active").removeClass("active");
+		$(this).addClass("active");
+	});
+	$(".invoice-content").click(function () {
+		$(".invoice-content.active").removeClass("active");
+		$(this).addClass("active");
+		
+		if ($(this).attr("data-invoice-content-type") == 2) {
+			$("#invoice_content").show();
+		} else {
+			$("#invoice_content").hide();
+		}
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+		<jsp:include page="../header.jsp" />
+  <div id="nav_area">
+    <div class="inner clearfix">
+				<jsp:include page="../categorys.jsp" />
+    </div>
+    <!--#nav_area--></div>
+  <div id="contents">
+    <div class="inner">
+      <div class="breadcrumb clearfix">
+        <ul>
+          <li><a href="${pageContext.request.contextPath}">首页</a><span>&gt;</span></li>
+          <li>生成订单</li>
+        </ul>
+        <!--.breadcrumb--> 
+      </div>
+      <div id="order_details">
+        <div class="section_main pro_info">
+          <h2>商品信息</h2>
+          <table>
+            <tr>
+              <th colspan="2">商品名称</th>
+              <th width="200">单价（元）</th>
+              <th width="200">数量（个）</th>
+              <th width="200">总价（元）</th>
+            </tr>
+            <c:forEach var="item" items="${goods}">
+            <tr>
+              <td class="left_align" width="77">
+                <p class="img_pro"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}"><img width="60px" height="60px" alt="" src="${item.imagePath}"></a></p>
+              </td>
+              <td class="left_align"><a href="${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}">${fn:escapeXml(item.goodsName)}</a></td>
+              <td><fmt:formatNumber value="${item.agreePrice}" pattern="#00.00#"></fmt:formatNumber></td>
+              <td>
+                <!--<div class="input-group input-group-num">
+                  <span class="input-group-addon">-</span>
+                  <input id="after" class="form-control" type="text" max="10" min="1" value="1">
+                  <span class="input-group-addon">+</span>
+                </div>-->
+                ${item.buyNum }
+              </td>
+              <td><fmt:formatNumber value="${item.agreePrice * item.buyNum}" pattern="#00.00#"></fmt:formatNumber></td>
+            </tr>
+            </c:forEach>
+          </table>
+        </div>
+        <div class="info_list section_main">
+          <h2>地址信息</h2>
+          <div class="icon_action">
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">配送要求</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="express-type active" data-express="1"><a href="javascript:void(0);">物流配送</a></li>
+                  <li class="express-type" data-express="2"><a href="javascript:void(0);">上门自取</a></li>
+                </ul>
+              </dd>
+            </dl>
+            <ul class="list-inline">
+              <li>
+                <div class="add_details">
+                  <div class="add_name">
+                    <p class="cus_name"><span class="prov">北京</span><span class="city">北京市</span><span>（</span><span class="name">李先生</span><span> 收）</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">朝阳区</span><span class="town"></span><span class="street">朝阳区慧忠路5号远大中心B座20层中航经贸</span><span class="phone">13811189077</span><span class="last"> </span></p>
+                  </div>
+                  <div class="selected_icon" style="display:none;"><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+              <li>
+                <div class="add_details">
+                  <div class="add_name">
+                    <p class="cus_name"><span class="prov">北京</span><span class="city">北京市</span><span>（</span><span class="name">李先生</span><span> 收）</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">朝阳区</span><span class="town"></span><span class="street">朝阳区慧忠路5号远大中心B座20层中航经贸</span><span class="phone">13811189077</span><span class="last"> </span></p>
+                  </div>
+                  <div class="selected_icon" style="display:none;"><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+            </ul>
+            <div class="add_address">
+              <div class="btn_add"><a href="#">新增收货地址</a></div>
+              <dl class="dl-horizontal">
+                <dt><span class="red">*</span>所在地区：</dt>
+                <dd class="clearfix">
+                  <select class="form-control city">
+                    <option>省份</option>
+                    <option>北京</option>
+                  </select>
+                  <select class="form-control city">
+                    <option>市</option>
+                    <option>北京</option>
+                  </select>
+                  <select class="form-control">
+                    <option>县区</option>
+                    <option>县区</option>
+                  </select>
+                </dd>
+                <dt><span class="red">*</span>详细地址：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt>邮政编码：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt><span class="red">*</span>收货人姓名：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt>手机号码：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt>电话号码：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt></dt>
+                <dd><button type="button" class="btn btn-default add_btn">添加</button></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <div class="info_list section_main">
+          <h2>发票信息</h2>
+          <div class="icon_action">
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">发票类型</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="invoice-type active" data-invoice-type="1"><a href="javascript:void(0);">普通发票</a></li>
+                  <li class="invoice-type" data-invoice-type="2"><a href="javascript:void(0);">增值税发票</a></li>
+                </ul>
+              </dd>
+            </dl>
+            <dl class="dl-horizontal clearfix">
+              <dt class="icon_title">发票内容</dt>
+              <dd>
+                <ul class="list-inline">
+                  <li class="invoice-content active" data-invoice-content-type="1"><a href="javascript:void(0);">明细</a></li>
+                  <li class="invoice-content" data-invoice-content-type="2"><a href="javascript:void(0);">自定义</a></li>
+                  <li style="display:none;" id="invoice_content"><input class="form-control" /><span class="red">*</span></li>
+                </ul>
+              </dd>
+            </dl>
+            <ul class="list-inline">
+              <li>
+                <div class="add_details">
+                  <div class="name">
+                    <p class="cus_name"><span class="company">付款单位名称</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">中航技国际经贸发展有限公司</span></p>
+                    <p class="cus_name"><span class="company">税务登记号</span><span>0000000000</span></p>
+                  </div>
+                  <div class="selected_icon" style="display:none;"><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+              <li>
+                <div class="add_details">
+                  <div class="name">
+                    <p class="cus_name"><span class="company">付款单位名称</span></p>
+                  </div>
+                  <div class="address">
+                    <p><span class="dist">中航技国际经贸发展有限公司</span></p>
+                    <p class="cus_name"><span class="company">税务登记号</span><span>0000000000</span></p>
+                  </div>
+                  <div class="selected_icon" style="display:none;"><img src="${pageContext.request.contextPath}/static/img/order/icon-select_big.png" /></div>
+                </div>
+              </li>
+            </ul>
+            <div class="add_address">
+              <div class="btn_add"><a href="#">新增发票模板</a></div>
+              <dl class="dl-horizontal">
+                <dt><span class="red">*</span>付款单位名称：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt>税务登记号：</dt>
+                <dd><input class="form-control" /></dd>
+                <dt></dt>
+                <dd><button type="button" class="btn btn-default add_btn">保存</button></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <div class="info_list section_main">
+          <h2>其他信息</h2>
+          <dl class="dl-horizontal reason">
+            <dt><span class="red">*</span>决策理由：</dt>
+            <dd><textarea class="form-control" rows="3"></textarea><span>限200字 </span></dd>
+          </dl>
+        </div>
+        <div class="section_main clearfix price_area">
+          <div class="gather_box">
+            <div class="gather_inner">
+              <p>
+                <span>实付款：</span>
+                <span class="symbol">￥</span>
+                <span class="price">84.91</span>
+               </p>
+               <p>
+                 <span>寄送至：</span>
+                 北京 北京市 朝阳区 朝阳区惠中路5号远大中心B座20层中航经贸
+               </p>
+               <p>
+                 <span>收货人：</span>
+                 李先生 13811189077
+               </p>
+             </div>
+           </div>
+        </div>
+        <div class="btn_list">
+          <ul class="list-inline">
+            <li><button type="button" class="btn btn-default add_btn">返回购物车</button></li>
+            <li><button type="button" class="btn btn-default add_btn">提交订单</button></li>
+          </ul>
+        </div>
+      <!--.order_details--></div>
+      
+      
+      
+      <!--.inner--> 
+    </div>
+    <!--#contents--> 
+  </div>
+	<jsp:include page="../footer.jsp" />
+  <!--.page-wrapper--> 
+</div>
+</body>
+</html>

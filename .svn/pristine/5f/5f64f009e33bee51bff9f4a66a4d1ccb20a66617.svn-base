@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.EnterpriseMapper">
+	<resultMap id="enterpriseMap" type="com.avic.management.models.Enterprise">
+		<result column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="GOODS_ID" property="goodsID" jdbcType="VARCHAR" />
+		<result column="GOODS_NUM" property="goodsNum" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE_BEFORE" property="goodsPriceBefore" jdbcType="VARCHAR" />
+		<result column="GOODS_PRICE_AFTER" property="goodsPriceAfter" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_DATE" property="enquiryDate" jdbcType="VARCHAR" />
+		<result column="SUPER_OFFER_DATE" property="superOfferDate" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="ENQUIRY_STATUS" property="enquiryStatus" jdbcType="VARCHAR" />
+		<result column="CONTACT_TEL" property="contactTel" jdbcType="VARCHAR" />
+		<result column="PRICE_VALID_DATE" property="priceValidDate" jdbcType="VARCHAR" />
+		<result column="CONTACT_NAME" property="contactName" jdbcType="VARCHAR" />
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryEnterprises" parameterType="com.avic.management.models.Enterprise" resultMap="enterpriseMap">
+		SELECT * FROM ( 
+		   SELECT ROWNUM AS RN,EGOODS.* FROM 
+		       ( SELECT TEG.ID,
+		           TEG.GOODS_ID,
+		           TEG.GOODS_NUM,
+		           TEG.GOODS_PRICE_BEFORE,
+		           TEG.GOODS_PRICE_AFTER,
+		           to_char(TEG.ENQUIRY_DATE,'yyyy-mm-dd') AS ENQUIRY_DATE,
+		           TEG.ENQUIRY_DATE AS ED,
+		           to_char(TEG.SUPER_OFFER_DATE,'yyyy-mm-dd') AS SUPER_OFFER_DATE,
+		           TEG.SUPER_OFFER_DATE AS SOD,
+		           TEG.SUP_ID,
+		           TEG.ENQUIRY_STATUS,
+		           TEG.CONTACT_TEL,
+		           to_char(TEG.PRICE_VALID_DATE,'yyyy-mm-dd') AS PRICE_VALID_DATE,
+		           TEG.PRICE_VALID_DATE AS PVD,
+		           TEG.CONTACT_NAME,
+		           TSI.SUP_NAME,
+		           TSG.GOODS_NAME
+		      FROM T_ENQUIRY_GOODS TEG
+		 LEFT JOIN T_SUP_INFO TSI
+		        ON TEG.SUP_ID = TSI.SUP_ID
+		 LEFT JOIN T_SUP_GOODS TSG
+		        ON TEG.GOODS_ID = TSG.SUP_GOODS_ID) EGOODS
+		     WHERE 1=1
+		     <if test="goodsName != null and goodsName != ''">
+			  	AND EGOODS.GOODS_NAME LIKE CONCAT('%',CONCAT(#{goodsName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="startDate1 != null and startDate1 != ''">
+			  	AND concat(EGOODS.ED,'yyyy-mm-dd hh24:mi:ss') &gt;= #{startDate1,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate1 != null and endDate1 != ''">
+			  	AND to_char(EGOODS.ED,'yyyy-mm-dd hh24:mi:ss') &lt;= #{endDate1,jdbcType=VARCHAR}
+			  </if>
+			  <if test="startDate2 != null and startDate2 != ''">
+			  	AND to_char(EGOODS.SOD,'yyyy-mm-dd hh24:mi:ss') &gt;= #{startDate2,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate2 != null and endDate2 != ''">
+			  	AND to_char(EGOODS.SOD,'yyyy-mm-dd hh24:mi:ss') &lt;=#{endDate2,jdbcType=VARCHAR}
+			  </if>
+			  <if test="supName != null and supName != ''">
+			  	AND EGOODS.SUP_NAME LIKE CONCAT('%',CONCAT(#{supName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="enquiryStatus != null and enquiryStatus != ''">
+			  	AND EGOODS.ENQUIRY_STATUS = #{enquiryStatus,jdbcType=VARCHAR}
+			  </if>
+			   
+		  ) R
+   		WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryEnterpriseCount" parameterType="com.avic.management.models.Enterprise" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM (
+		SELECT * FROM ( 
+		    SELECT TEG.ID,
+		           TEG.GOODS_ID,
+		           TEG.GOODS_NUM,
+		           TEG.GOODS_PRICE_BEFORE,
+		           TEG.GOODS_PRICE_AFTER,
+		           TEG.ENQUIRY_DATE,
+		           TEG.SUPER_OFFER_DATE,
+		           TEG.SUP_ID,
+		           TEG.ENQUIRY_STATUS,
+		           TEG.CONTACT_TEL,
+		           TEG.PRICE_VALID_DATE,
+		           TEG.CONTACT_NAME,
+		           TSI.SUP_NAME,
+		           TSG.GOODS_NAME
+		      FROM T_ENQUIRY_GOODS TEG
+		 LEFT JOIN T_SUP_INFO TSI
+		        ON TEG.SUP_ID = TSI.SUP_ID
+		 LEFT JOIN T_SUP_GOODS TSG
+		        ON TEG.GOODS_ID = TSG.SUP_GOODS_ID) EGOODS
+		     WHERE 1=1
+		     <if test="goodsName != null and goodsName != ''">
+			  	AND EGOODS.GOODS_NAME LIKE CONCAT('%',CONCAT(#{goodsName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="startDate1 != null and startDate1 != ''">
+			  	AND to_char(EGOODS.ENQUIRY_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{startDate1,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate1 != null and endDate1 != ''">
+			  	AND to_char(EGOODS.ENQUIRY_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{endDate1,jdbcType=VARCHAR}
+			  </if>
+			  <if test="startDate2 != null and startDate2 != ''">
+			  	AND to_char(EGOODS.SUPER_OFFER_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{startDate2,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate2 != null and endDate2 != ''">
+			  	AND to_char(EGOODS.SUPER_OFFER_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{endDate2,jdbcType=VARCHAR}
+			  </if>
+			  <if test="supName != null and supName != ''">
+			  	AND EGOODS.SUP_NAME LIKE CONCAT('%',CONCAT(#{supName,jdbcType=VARCHAR},'%'))
+			  </if>
+			  <if test="enquiryStatus != null and enquiryStatus != ''">
+			  	AND EGOODS.ENQUIRY_STATUS = #{enquiryStatus,jdbcType=VARCHAR}
+			  </if>
+		  ) R
+	</select>
+	
+	<!-- 删除询价商品 -->
+	<delete id="deleteEnterpriseGood" parameterType="com.avic.management.models.Enterprise">
+	DELETE FROM T_ENQUIRY_GOODS TEG
+      WHERE TEG.ID = #{id,jdbcType=VARCHAR} 
+	</delete>
+</mapper>

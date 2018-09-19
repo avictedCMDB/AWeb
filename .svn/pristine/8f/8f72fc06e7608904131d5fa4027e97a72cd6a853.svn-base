@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierGoodsEnquiryMapper">
+	<resultMap id="supplierEnquiryMap" type="com.avic.supplier.models.SupplierGoodsEnquiry">
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR" /> 
+	</resultMap>
+	<select id="querySupplierInfoExt" resultMap="supplierEnquiryMap" parameterType="com.avic.supplier.models.SupplierGoodsEnquiry">
+
+	</select>
+	<update id="saveSupplierInfoExt">
+
+	</update>
+</mapper>

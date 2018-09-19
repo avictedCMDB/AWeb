@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.SupAreaMapper">
+	<resultMap id="supAreaMap" type="com.avic.management.models.SupArea">
+		<result column="SUP_AREA_ID" property="supAreaID" jdbcType="VARCHAR" /> 
+		<result column="SUP_AREA_NAME" property="supAreaName" jdbcType="VARCHAR" />
+		<result column="SUP_AREA_LEVEL" property="supAreaLevel" jdbcType="VARCHAR" />
+		<result column="SUP_PARENT_AREA" property="supParentArea" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询区域 -->
+	<select id="queryAreas" resultMap="supAreaMap" parameterType="com.avic.management.models.SupArea">
+		SELECT TSA.SUP_AREA_ID,
+		       TSA.SUP_AREA_NAME
+		  FROM T_SUP_AREA TSA
+		 WHERE TSA.SUP_AREA_LEVEL = '1'
+		   AND TSA.SUP_ID = #{supID,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据父ID查询区域 -->
+	<select id="querySubAreas" resultMap="supAreaMap" parameterType="com.avic.management.models.SupArea">
+		SELECT TSA.SUP_AREA_ID,
+		       TSA.SUP_AREA_NAME
+		  FROM T_SUP_AREA TSA
+		 WHERE TSA.SUP_PARENT_AREA = #{supParentArea,jdbcType=VARCHAR}
+		   AND TSA.SUP_ID = #{supID,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询所有区域 -->
+	<select id="queryAllAreas" resultMap="supAreaMap">
+		SELECT TSA.SUP_AREA_ID,
+		       TSA.SUP_AREA_NAME
+		  FROM T_SUP_AREA TSA
+		 WHERE TSA.SUP_ID = #{supId}
+	</select>
+</mapper>

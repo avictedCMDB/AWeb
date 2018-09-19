@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>找回密码|中航招标网</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/find_password.css" rel="stylesheet">
+<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/rollover.js"></script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_login">
+    <div class="inner clearfix">
+      <div class="logo">
+        <h1><img src="img/index_top/img-logo.png" alt="" /><span>找回密码</span></h1>
+      </div>
+      <div class="login_area">
+        <a href="#">注册</a>
+        <a href="#">登录</a>
+        <a href="#">帮助中心</a>
+      </div>
+      
+    </div>
+  </div>
+  <div id="contents">
+    <div class="inner clearfix">
+      <div id="step">
+          <ul class="image_list clearfix">
+            <li class="selected"><a href="#"><span class="num">1</span><span class="text">填写用户名</span></a></li>
+            <li><a href="#"><span class="num">2</span><span class="text">验证身份</span></a></li>
+            <li><a href="#"><span class="num">3</span><span class="text">设置新密码</span></a></li>
+            <li class="finish"><a href="#"><span class="num"><img src="img/login/icon-finish.png"></span><span class="text">完成</span></a></li>
+          </ul>
+          <div class="line"></div>
+        </div>
+        <div class="input_area">
+          <dl class="clearfix special">
+            <dt>用户名：</dt>
+            <dd>
+              <input class="form-control" placeholder="请填写注册时的用户名" type="text">
+              <span class="red remind">用户名不能为空</span>
+            </dd>
+          </dl>
+          <dl class="clearfix special">
+            <dt>手机号码：</dt>
+            <dd>
+              <input class="form-control" type="text">
+            </dd>
+          </dl>
+          <button class="btn blue">下一步</button>
+        </div>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

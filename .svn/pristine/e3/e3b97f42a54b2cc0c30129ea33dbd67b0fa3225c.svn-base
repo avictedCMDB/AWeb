@@ -1,0 +1,183 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<title>地址管理|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/manage_common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/management_exchange.css" rel="stylesheet"/>
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/my97DatePicker/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/exchange.js"></script>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header_top">
+    <div class="inner">
+       <ul class="social-links clearfix">
+        <li><a href="javascript:void(0);"><span class="fa fa-user"></span>${sessionScope.login_user.userNameCN}</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/management/finance/index">采购管理中心</a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}">超市首页 </a><span>|</span></li>
+        <li><a href="${pageContext.request.contextPath}/passport/login/logout">退出</a><span>|</span></li>
+        <li><a href="#">客户服务</a><span>|</span></li>
+        <li><a href="#">网站导航</a><span>|</span></li>
+       </ul>
+    <!--.inner--></div>
+  <!--#header_top--></div>
+  <div id="header">
+    <div class="inner clearfix">
+      <div class="logo">
+        <img src="${pageContext.request.contextPath}/static/img/management/logo-management.png" alt="中航招标网" />
+      </div>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control"><span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+        </div>
+      </div>
+      <div class="buy">
+        <button class="btn btn-default" type="button"><i class="fa fa-shopping-cart shopping"></i>我的购物车<i class="fa fa-angle-right arrow-right"></i></button></div>
+    <!--.inner--></div>
+  <!--#header--></div>
+  
+  
+  <div id="contents">
+    <div class="inner details">
+    <input type="hidden" value="${pageContext.request.contextPath}" id="path"/>
+      <h2>换货管理</h2>
+      <div class="replace_step"> 
+	    	<ul class="image_list">
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step01.gif" alt="1" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step02.gif" alt="2" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step03.gif" alt="3" /></li>
+	    		<li><img src="${pageContext.request.contextPath}/static/img/management/img-step04.gif" alt="4" /></li>
+	    	</ul>
+	    	
+	    	<ul class="text_step">
+	    		<li>采购人换货</li>
+	    		<li class="confirm_step">供应商确认</li>
+	    		<li class="sale_step">采购人发货</li>
+	    		<li class="receipt_step">供应商收货确认</li>
+	    	</ul>	      
+	    	<!--.replace_step-->	
+      </div>
+      <div class="section">
+        <h3>换货单基本信息</h3>
+        <div class="section_info">
+          <label>订单编号：</label>
+          <span>${exchange.orderID}</span>
+          <label>换货单编号： 	</label>
+          <span>${exchange.exchangeID}</span>
+          <label>采购单位名称：</label>
+          <span>${exchange.companyName}</span>
+          <label>采购人联系人：</label>
+          <span>${exchange.addrName}</span>
+          <label>采购人联系电话：</label>
+          <span>${exchange.addrPhone}</span>
+          <label>换货总数量：</label>
+          <span>${exchange.exchangeAmount}</span>
+        </div>
+        <div class="section_info">
+          <label>备注：</label>
+          <span>${exchange.remark}</span>
+        </div>
+        <div class="section_info">
+          <label>附件：</label>
+          <span></span>
+        </div>
+        <c:if test="${!empty exchange.exchangeExpressCodeSup && !empty exchange.exchangeExpressNameSup}">
+	        <div class="section_info">
+	          <label>快递单号：</label>
+	          <span>${exchange.exchangeExpressCodeSup}</span>
+	          <label>快递公司：</label>
+	          <span>${exchange.exchangeExpressNameSup}</span>
+	        </div>
+        </c:if>
+        
+      </div>
+      <div class="section detail_exchange">
+        <h3>换货单明细</h3>
+        <table border="0">
+          <tr>
+            <th width="40">序号</th>
+            <th colspan="2">商品名称</th>	
+            <th width="110">单价(元)</th>
+            <th width="110">换货数量</th>
+            <th width="110">退换金额</th>
+            <th width="200" class="last">换货原因</th>
+          </tr>
+          <c:forEach var="orderSnapshot" items="${exchange.orderSnapshots}" varStatus="status">
+	           <tr>
+	            <td>${status.index+1}</td>
+	            <td class="right_none" width="57"><p class="img_pro"><a href="#"><img src="${orderSnapshot.imagePath}" width="55px" height="55px"/></a></p></td>
+	            <td class="left_none"><a href="#">${orderSnapshot.goodsName}</a></td>
+	            <td class="price">${orderSnapshot.goodsPrice}</td>
+	            <td>${orderSnapshot.buyNum}</td>
+	            <td>${orderSnapshot.goodsPrice*orderSnapshot.buyNum}</td>
+	            <td>${orderSnapshot.exchangeReason}</td>
+	          </tr>
+          </c:forEach>
+        </table>
+      </div>
+      <div class="btn_close">
+        <button type="button" class="btn btn-default gray" onclick="closeExchange();">关闭</button>
+      </div>
+      
+    <!--.inner--></div>
+  <!--#contents--></div>
+  <div id="footer">
+    <div class="inner">
+      <div class="section clearfix">
+        <div class="tel"><img src="${pageContext.request.contextPath}/static/img/img-tel.png" alt="" /></div>
+        <div class="customer_service clearfix">
+          <dl>
+            <dt class="icon_shopping">购物指南</dt>
+            <dd>
+              <ul>
+                <li><a href="#">网上竞价采购</a></li>
+                <li><a href="#">网上直接采购</a></li>
+                <li><a href="#">支付帮助</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-delivery">配送帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">配送进度查询</a></li>
+                <li><a href="#">配送范围及运费</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="icon-other">其他帮助</dt>
+            <dd>
+              <ul>
+                <li><a href="#">地图导航</a></li>
+                <li><a href="#">客户服务</a></li>
+                <li><a href="#">常见问题</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <!--#footer--></div>
+  <div id="copy_right">
+    <div class="inner">
+      <p>版权信息：显示版权信息内容文字</p>
+    </div>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

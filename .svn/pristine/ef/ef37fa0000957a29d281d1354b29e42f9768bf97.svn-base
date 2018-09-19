@@ -1,0 +1,126 @@
+$(document).ready(function(){
+	$('#sul > li').click(function(){
+    	$(this).addClass('active').siblings().removeClass('active');
+    	var s_val = $(this).children().html();
+    	if(s_val=='全部'){
+    		$('#order_status').val('99');
+    	}else if(s_val=='待审核'){
+    		$('#order_status').val('1');
+    	}else if(s_val=='待收货'){
+    		$('#order_status').val('3');
+    	}else{
+    		$('#order_status').val('6');
+    	}
+    	clrVal();//tab页查询前先请所有查询条件
+    	doInit();
+	});
+});
+
+function doInit(){
+	document.getElementById("searchForm").action="/AWeb/management/order";
+	document.getElementById("searchForm").submit();
+}
+
+function gotoSelectGoodsPage(path,order_id){
+	var url = path+'/management/orderExchange/orderSelect?o='+order_id;
+	var result = window.showModalDialog(url,window,'dialogWidth:600px;dialogHeight:600px;status:no;');
+	
+	if(result!=null && result!='' && result!=undefined){
+		var url=path+"/management/orderExchange/orderSelectMain?order_id="+$('#order_id').val()+"&sup_goods_id="+result;
+        $.getJSON(url,function (dataJson) {
+            var strHtml = getSelectedGoodsHtml(dataJson);
+            $("tr[id^='tr_']").each(function(){
+            	this.remove();
+			});
+			$('#btn_tr').after(strHtml);
+			
+			//全选事件
+			$('#allchecked').click(function(){
+				var allcheck = $("#allchecked").is(':checked');
+				$('input[name="subCheckbox"]').prop('checked',allcheck);
+			});
+			
+			//$('#allchecked').click();
+        });
+	}
+}
+
+function getSelectedGoodsHtml(dataJson){
+	var strArr = new Array();
+	if(dataJson!=null && dataJson!="" && dataJson !=undefined){
+		$(dataJson).each(function () {
+			strArr.push("<tr id='tr_"+this.sup_goods_id+"'>");
+				strArr.push("<td class='left_line'><input type='checkbox' name='subCheckbox' value='"+this.sup_goods_id+"'></td>");
+				strArr.push("<td width='77'><p class='img_pro'><a href='#'><img style='height: 55px;width: 55px;' src='"+this.image_path+"'/></a></p></td>");
+				strArr.push("<td class='link_area'><a href='#'>"+this.goods_name+"</a></td>");
+				strArr.push("<td id='totalNum_"+this.sup_goods_id+"'>"+this.buy_num+"</td>");
+				strArr.push("<td id='singlePrice_"+this.sup_goods_id+"' class='price'>"+this.goods_price+"</td>");
+				strArr.push("<td>");
+					strArr.push("<div class='input-group input-group-num'>");
+					strArr.push("<input id='num_"+this.sup_goods_id+"' class='form-control' type='text' max='10' min='1' value='0' onchange=\"changeNum('"+this.sup_goods_id+"')\">");
+					strArr.push("</div>");
+				strArr.push("</td>");
+				strArr.push("<td id='price_"+this.sup_goods_id+"' class='price'>0</td>");
+				strArr.push("<td><input id='reason_"+this.sup_goods_id+"' maxlength='256' class='form-control' type='text'></td>");
+				strArr.push("<td class='right_line'>");
+					strArr.push("<a href='javascript:void(0);' onclick=\"removeGoods('"+this.sup_goods_id+"');\">删除</a>");
+				strArr.push("</td>");
+			strArr.push("</tr>");
+	    });
+	    return strArr.join("");
+    }else{
+    	return "";
+    }
+}
+
+function changeNum(sup_goods_id){
+	var num = $("#num_"+sup_goods_id).val();
+	if(num==null || num=="" || num==undefined || num<0){
+		$("#num_"+sup_goods_id).val('0');
+	}else{
+		var totalNum = $('#totalNum_'+sup_goods_id).html();
+		if(Number(totalNum)<Number(num)){//超过可换货总数时，值设置为0
+			$("#num_"+sup_goods_id).val('0');
+		}
+		var totalPrice = $('#singlePrice_'+sup_goods_id).html() * $('#num_'+sup_goods_id).val();
+		$('#price_'+sup_goods_id).html(totalPrice);
+	}
+}
+
+function removeGoods(sup_goods_id){
+	$('#tr_'+sup_goods_id).remove();
+}
+
+function getHhzsl(){
+	
+}
+
+function doSave(path){
+	var customerArray = new Array();
+	var checkObj = $('input:checkbox[name=subCheckbox]:checked');
+	checkObj.each(function(i){
+		var goodsId = $(this).val();
+		customerArray.push({sup_goods_id: goodsId, buy_num: $("#num_"+goodsId).val(), exchange_reason: $("#reason_"+goodsId).val()});
+	});
+	
+	if(checkObj.length==0){
+		alert('请先选择换货商品，再提交。');
+		return;
+	}
+	
+	$.ajax({
+	    url: path+"/management/orderExchange/doSave?remark="+$('#remark').val()+"&order_id="+$('#order_id').val()+"&sup_id="+$('#sup_id').val(),
+	    type: "POST",
+	    contentType : 'application/json;charset=gbk', //设置请求头信息
+	    dataType:"json",
+	    data: JSON.stringify(customerArray),    //将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+	    success: function(data){
+	    	if(data=='ok'){
+	    	alert('成功。');
+	    		//window.location.href=path+"/management/order";
+	    	}else{
+	    		alert('系统忙1，请稍后再试。');
+	    	}
+	    }
+	});	
+}

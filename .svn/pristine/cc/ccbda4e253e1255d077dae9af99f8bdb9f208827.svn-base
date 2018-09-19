@@ -1,0 +1,294 @@
+package com.avic.market.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.SessionKeys;
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.PageNotFoundException;
+import com.avic.common.utils.Permission;
+import com.avic.market.models.CompareItem;
+import com.avic.market.models.Goods;
+import com.avic.market.services.GoodsService;
+import com.avic.market.utils.DataCache;
+
+@Controller
+@RequestMapping("/goods")
+public class GoodsController {
+    protected static final Log logger = LogFactory.getLog(GoodsController.class);
+
+    private static final int PAGE_SIZE = 12;
+
+    @Autowired
+    GoodsService goodsService;
+
+    @Autowired
+    DataCache dataCache;
+
+    @RequestMapping("/search")
+    public String search(HttpServletRequest req, Map<String, Object> map) {
+        // 关键字
+        String q = req.getParameter("q");
+        // 分类
+        String cat = req.getParameter("cat");
+        // 品牌
+        String brand = req.getParameter("brand");
+        // 价格
+        String price = req.getParameter("price");
+        // 页码
+        String page = req.getParameter("p");
+        // 排序
+        String o = req.getParameter("o");
+        // 大小图
+        String view = req.getParameter("view");
+
+        logger.info("商品搜索Controller-q[" + q + "], cat[" + cat + "], brand[" + brand + "], price[" + price + "], p[" + page + "], o[" + o
+                + "]");
+
+        int catId = 0;
+
+        if (StringUtils.isNumeric(cat)) {
+            catId = Integer.parseInt(cat);
+        }
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+
+        if (brand == null) {
+            brand = "";
+        }
+
+        if (q == null) {
+            q = "";
+        }
+
+        int order = 0;
+
+        if (StringUtils.isNumeric(o)) {
+            order = Integer.parseInt(o);
+        }
+
+        int priceStart = 0, priceEnd = 0;
+
+        if (!StringUtils.isEmpty(price) && price.contains(",")) {
+            String[] sep = price.split(",", 2);
+            if (StringUtils.isNumeric(sep[0])) {
+                priceStart = Integer.parseInt(sep[0]);
+            }
+
+            if (StringUtils.isNumeric(sep[1])) {
+                priceEnd = Integer.parseInt(sep[1]);
+            }
+        }
+
+        int total = goodsService.getGoodsCount(catId, brand, q, priceStart, priceEnd);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            map.put("list", goodsService.searchGoods(catId, brand, q, priceStart, priceEnd, order, pageNum, PAGE_SIZE));
+        }
+
+        if (!"list".equals(view)) {
+            view = "pic";
+        }
+
+        map.put("searchBrand", brand);
+        map.put("cat", catId);
+        int cat1 = 0, cat2 = 0, cat3 = 0;
+        if (catId < 100) {
+            cat1 = catId;
+        } else if (catId < 10000) {
+            cat1 = catId / 100;
+            cat2 = catId;
+        } else {
+            cat1 = catId / 10000;
+            cat2 = catId / 100;
+            cat3 = catId;
+        }
+        map.put("cat1", cat1);
+        map.put("cat2", cat2);
+        map.put("cat3", cat3);
+        map.put("brandList", goodsService.getGoodsBrand(catId, q));
+        map.put("price", priceStart + "," + priceEnd);
+        map.put("total", total);
+        map.put("order", order);
+        map.put("view", view);
+        map.put("page", pageNum);
+        try {
+            map.put("pageAction",
+                    "market/goods/search?cat=" + catId + "&brand=" + URLEncoder.encode(brand, "GBK") + "&q=" + URLEncoder.encode(q, "GBK")
+                            + "&price=" + priceStart + "," + priceEnd + "&o=" + order + "&view=" + view + "&p=%PAGE%");
+        } catch (UnsupportedEncodingException e) {
+        }
+
+        map.put("pages", pages);
+        map.put("searchKeyword", q);
+
+        return "goods/list";
+    }
+
+    @RequestMapping("/show")
+    public String show(HttpServletRequest req, Map<String, Object> map) {
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid)) {
+            throw new PageNotFoundException();
+        }
+
+        logger.info("商品详情Controller-sid[" + sid + "], gid[" + gid + "]");
+
+        Goods goods = goodsService.getGoodsDetail(Integer.parseInt(sid), gid);
+        if (goods == null) {
+            throw new PageNotFoundException();
+        }
+
+        map.put("goods", goods);
+        int catId = dataCache.getSysCatId(goods.getSupId(), goods.getSupCatId());
+        int cat1 = 0, cat2 = 0, cat3 = 0;
+        cat1 = catId / 10000;
+        cat2 = catId / 100;
+        cat3 = catId;
+        map.put("cat1", cat1);
+        map.put("cat2", cat2);
+        map.put("cat3", cat3);
+
+        return "goods/detail";
+    }
+    
+    @RequestMapping("/compare/add")
+    @ResponseBody
+    public ResultObject compareAdd(HttpServletRequest req, HttpSession session) {
+        Permission.check(session, UserRole.BUY);
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        
+
+        logger.info("添加比对-sid["+sid+"], gid["+gid+"]");
+        
+        if (!StringUtils.isNumeric(sid) || StringUtils.isEmpty(gid)) {
+            logger.error("添加比对-参数无效-sid["+sid+"], gid["+gid+"]");
+            return new ResultObject(ResultObject.FAIL, "参数无效");
+        }
+        
+        Goods goods = goodsService.getGoodsSimple(Integer.parseInt(sid), gid);
+        
+        if (goods == null) {
+            return new ResultObject(ResultObject.FAIL, "商品无效或已下架");
+        }
+        goods.setSysCatId(dataCache.getSysCatId(goods.getSupId(), goods.getSupCatId()));
+        
+        List<CompareItem> items = (List<CompareItem>)session.getAttribute(SessionKeys.MARKET_COMPARE);
+        
+        if (items != null && items.size() > 0) {
+            // 已存在
+            for (CompareItem i : items) {
+                if (i.getSupId() == goods.getSupId() && i.getSupGoodsId().equals(goods.getSupGoodsId())) {
+                    return new ResultObject(ResultObject.OK, items);
+                }
+            }
+            // 不同类
+            if (items.get(0).getSysCatId() != goods.getSysCatId()) {
+                return new ResultObject(10, items);
+            }
+            // 已满
+            if (items.size() > 3) {
+                return new ResultObject(20, items);
+            }
+        } else {
+            items = new ArrayList<CompareItem>();
+            session.setAttribute(SessionKeys.MARKET_COMPARE, items);
+        }
+        
+        CompareItem item = new CompareItem();
+        item.setAgreePrice(goods.getAgreePrice());
+        item.setGoodsName(goods.getGoodsName());
+        item.setImagePath(goods.getImagePath());
+        item.setSupGoodsId(goods.getSupGoodsId());
+        item.setSupId(goods.getSupId());
+        item.setSysCatId(goods.getSysCatId());
+        
+        items.add(item);
+        
+        return new ResultObject(ResultObject.OK, items);
+    }
+
+    @RequestMapping("/compare/clear")
+    @ResponseBody
+    public ResultObject compareClear(HttpSession session) {
+        Permission.check(session, UserRole.BUY);
+        logger.info("清空比对");
+        
+        session.removeAttribute(SessionKeys.MARKET_COMPARE);
+        
+        return new ResultObject(ResultObject.OK, "");
+    }
+    
+    @RequestMapping("/trade")
+    public String trade(HttpServletRequest req, Map<String, Object> map) {
+        // 供应商编号
+        String sid = req.getParameter("sid");
+        // 商品编号
+        String gid = req.getParameter("gid");
+        // 页码
+        String page = req.getParameter("page");
+        
+
+        logger.info("商品交易记录Controller-sid["+sid+"], gid["+gid+"], page[" + page + "]");
+
+        if (StringUtils.isEmpty(gid) || !StringUtils.isNumeric(sid)) {
+            logger.info("商品交易记录Controller-参数无效-sid["+sid+"], gid["+gid+"], page[" + page + "]");
+            return "goods/trade";
+        }
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+        
+        int total = goodsService.getTradeRecordCount(Integer.parseInt(sid), gid);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            map.put("list", goodsService.getTradeRecordList(Integer.parseInt(sid), gid, pageNum, PAGE_SIZE));
+        }
+        
+        map.put("total", total);
+        map.put("page", pageNum);
+        map.put("pageAction", "market/goods/trade?sid="+sid+"&gid="+gid+"&page=%PAGE%");
+        map.put("pages", pages);
+        
+        return "goods/trade";
+    }
+}

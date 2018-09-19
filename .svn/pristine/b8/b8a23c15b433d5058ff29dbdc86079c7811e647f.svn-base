@@ -1,0 +1,50 @@
+package com.avic.market.services.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.mappers.CategoryMapper;
+import com.avic.market.models.SysCategory;
+import com.avic.market.services.CategoryService;
+
+@Service
+public class CategoryServiceImpl implements CategoryService {
+    protected static final Log logger = LogFactory.getLog(CategoryServiceImpl.class);
+
+    @Autowired
+    CategoryMapper categoryMapper;
+    
+    @Override
+    public List<SysCategory> getSysCatTree() throws ServiceException {
+        logger.info("查询系统分类树");
+        List<SysCategory> list = categoryMapper.querySysCatTree();
+        
+        List<SysCategory> tree = new ArrayList<SysCategory>();
+        
+        SysCategory level1 = null, level2 = null;
+        
+        for (SysCategory i : list) {
+            if (i.getSysCatLevel() == 1) {
+                level1 = i;
+                level1.setChildCategory(new ArrayList<SysCategory>());
+                tree.add(level1);
+            } else if (i.getSysCatLevel() == 2) {
+                level2 = i;
+                level2.setChildCategory(new ArrayList<SysCategory>());
+                level1.getChildCategory().add(level2);
+            } else {
+                level2.getChildCategory().add(i);
+            }
+        }
+        
+        
+        return tree;
+    }
+
+}

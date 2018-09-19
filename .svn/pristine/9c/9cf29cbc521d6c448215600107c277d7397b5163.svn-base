@@ -1,0 +1,105 @@
+@charset "utf-8";
+/* CSS Document */
+#contents .inner {
+	padding: 0;
+}
+#matter_section {
+	padding-bottom: 50px;
+	float:none;
+	margin: 0 auto;
+}
+#matter_section h2 {
+	font-size: 20px;
+	color: #0091dc;
+	border-bottom: 1px solid #dfdfdf;
+	text-align: center;
+	padding-bottom: 10px;
+	font-weight: bold;
+}
+.list_notice .form-group label.title,
+.step_section .form-group label.title {
+	float: none;
+	margin-bottom: 0;
+}
+.list_notice .form-group,
+.step_section .form-group {
+	margin-bottom: 0px;
+}
+#matter_section .list_inner {
+	padding: 10px 30px;
+}
+.list_notice {
+	padding: 0 20px 0px;
+	margin-top: 20px;
+}
+.list_notice h3 {
+	font-weight: bold;
+	font-size: 15px;
+	vertical-align: middle;
+	margin: 0;
+	line-height: 25px;
+	color: #0089d1;
+}
+.list_notice h3 img {
+	margin-right: 5px;
+	margin-top: -5px;
+	display: inline-block;
+}
+.list_notice .notice_inner {
+	padding: 5px 30px 0;
+}
+.list_notice .form-group a {
+	color: #0089d1;
+	text-decoration: underline;
+}
+.list_notice .form-group a:hover {
+	text-decoration: none;
+}
+.list_notice table {
+	width: 100%;
+	margin-top: 10px;	
+}
+.list_notice table tr td.left {
+	text-align: left;
+}
+.list_notice table tr th {
+	background: #dfdfdf;
+	border:1px solid #dfdfdf;
+	border-right: 1px solid #fff;
+	line-height: 28px;
+	text-align: center;
+	font-size: 12px;
+}
+.list_notice table tr th.last {
+	border-right: 1px solid #dfdfdf;
+}
+.list_notice table tr td {
+	border:1px solid #dfdfdf;
+	padding: 6px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: center;
+}
+.list_notice table tr td a {
+    color: #0089d1;
+    margin: 0 2px;
+}
+.list_notice table tr td a:hover {
+	color: #ff4200;
+}
+.other {
+	border: 1px solid #dfdfdf;
+	padding: 10px 20px;
+	width: 500px;
+	background: #f6f4f5;
+}
+.other p {
+	margin: 0;
+	margin-top: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.other p span {
+	margin-left: 10px;
+}

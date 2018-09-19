@@ -1,0 +1,27 @@
+#content .inner {
+	background: #fff;
+	padding:20px;
+}
+#header {
+	margin-bottom: 0px;
+	padding-top :15px;
+}
+.news_list {
+	border: 1px solid #dfdfdf;
+	padding: 10px 20px;
+}
+.news_list ul li {
+	border-bottom: 1px dashed #dfdfdf;
+	line-height: 40px;
+}
+.news_list ul li.last {
+	border-bottom: none;
+}
+.news_list ul li span {
+	float: right;
+}
+#matter_section ul.pagination  li {
+	float: left;
+	line-height: 25px;
+    margin-right: 8px;
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.SupplierRecommendMapper">
+	<resultMap id="supplierRecommendMap" type="com.avic.supervise.models.SupplierRecommend">
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" /> 
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" />
+		<result column="BEGIN_DATE" property="beginDate" jdbcType="VARCHAR" />
+		<result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
+		<result column="IF_RECOMMEND" property="ifRecommend" jdbcType="VARCHAR" />
+		<result column="SUP_IMAGE" property="supImage" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询推荐供应商 -->
+	<select id="querySupplierRecommends" resultMap="supplierRecommendMap">
+		 	SELECT TSI.SUP_ID,
+		           TSI.SUP_NAME,
+		           TO_CHAR(TSI.BEGIN_DATE,'yyyy-mm-dd') as BEGIN_DATE,
+		           TO_CHAR(TSI.END_DATE,'yyyy-mm-dd') as END_DATE,
+		           TSI.IF_RECOMMEND,
+		           TSIE.SUP_IMAGE
+		      FROM T_SUP_INFO TSI
+		 LEFT JOIN T_SUP_INFO_EXT TSIE
+		        ON (TSI.SUP_ID = TSIE.SUP_ID)
+		     WHERE TSI.SUP_TYPE = '1'
+     		   AND TSI.IF_VALID = '1'
+     		  <if test="supName != null and supName != ''">
+     		  	 AND TSI.SUP_NAME LIKE CONCAT('%',CONCAT(#{supName,jdbcType=VARCHAR},'%'))
+     		  </if>
+     		  <if test="beginDate != null and beginDate != ''">
+     		  	 AND TSI.BEGIN_DATE &lt;= TO_DATE(#{beginDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+     		  </if>
+     		  <if test="endDate != null and endDate != ''">
+     		  	 AND TSI.END_DATE &gt;= TO_DATE(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+     		  </if>
+     		   <if test="ifRecommend != null and ifRecommend != ''">
+     		  	 AND TSI.IF_RECOMMEND = #{ifRecommend,jdbcType=VARCHAR}
+     		  </if>
+ 		  ORDER BY TSI.RECOMMEND_DATE DESC
+	</select>
+	
+	<select id="querySupplierRecommendsCount" resultType="java.lang.Integer" parameterType="com.avic.supervise.models.SupplierRecommend">
+			SELECT COUNT(1)
+		      FROM T_SUP_INFO TSI
+		 LEFT JOIN T_SUP_INFO_EXT TSIE
+		        ON (TSI.SUP_ID = TSIE.SUP_ID)
+		     WHERE TSI.SUP_TYPE = '1'
+     		   AND TSI.IF_VALID = '1'
+     		  <if test="supName != null and supName != ''">
+     		  	 AND TSI.SUP_NAME LIKE CONCAT('%',CONCAT(#{supName,jdbcType=VARCHAR},'%'))
+     		  </if>
+     		  <if test="beginDate != null and beginDate != ''">
+     		  	 AND TSI.BEGIN_DATE &lt;= TO_DATE(#{beginDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+     		  </if>
+     		  <if test="endDate != null and endDate != ''">
+     		  	 AND TSI.END_DATE &gt;= TO_DATE(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
+     		  </if>
+     		   <if test="ifRecommend != null and ifRecommend != ''">
+     		  	 AND TSI.IF_RECOMMEND = #{ifRecommend,jdbcType=VARCHAR}
+     		  </if>
+	</select>
+	
+	<update id="setIfRecommend" parameterType="com.avic.supervise.models.SupplierRecommend">
+		UPDATE T_SUP_INFO 
+		   SET IF_RECOMMEND = '1'
+		 WHERE SUP_ID = #{supID,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询供应商信息 -->
+	<select id="getSupInfoBySupID" resultType="com.avic.supervise.models.SupplierRecommend" parameterType="com.avic.supervise.models.SupplierRecommend">
+		 	SELECT TSI.SUP_ID,
+		           TSI.SUP_NAME,
+		           TO_CHAR(TSI.BEGIN_DATE,'yyyy-mm-dd') as BEGIN_DATE,
+		           TO_CHAR(TSI.END_DATE,'yyyy-mm-dd') as END_DATE,
+		           TSI.IF_RECOMMEND,
+		           TSIE.SUP_IMAGE
+		      FROM T_SUP_INFO TSI
+		 LEFT JOIN T_SUP_INFO_EXT TSIE
+		        ON (TSI.SUP_ID = TSIE.SUP_ID)
+		     WHERE TSI.SUP_TYPE = '1'
+     		   AND TSI.IF_VALID = '1'
+     		   AND TSI.SUP_ID = #{supID,jdbcType=VARCHAR}
+	</select>
+</mapper>

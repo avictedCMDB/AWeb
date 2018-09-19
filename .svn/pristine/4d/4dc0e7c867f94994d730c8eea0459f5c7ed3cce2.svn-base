@@ -1,0 +1,26 @@
+package com.avic.market.services.impl;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.mappers.AddressMapper;
+import com.avic.market.models.Address;
+import com.avic.market.services.AddressService;
+
+@Service
+public class AddressServiceImpl implements AddressService {
+    protected static final Log logger = LogFactory.getLog(AddressServiceImpl.class);
+
+    @Autowired
+    AddressMapper addressMapper;
+    
+    @Override
+    public Address getDefaultAddress(String userId, int supId) throws ServiceException {
+        logger.info("获取默认地址Service-userId["+userId+"], supId["+supId+"]");
+        return addressMapper.queryDefaultAddress(userId, String.valueOf(supId));
+    }
+
+}

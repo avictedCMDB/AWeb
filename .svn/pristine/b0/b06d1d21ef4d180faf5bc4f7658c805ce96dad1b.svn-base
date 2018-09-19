@@ -1,0 +1,527 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<html>
+<jsp:include page="../head.jsp">
+	<jsp:param value="生成订单" name="title"/>
+</jsp:include>
+<body class="order-pay">
+
+<div id="app" v-show="load" style="display: none;">
+    <div class="header">
+        <i class="iconfont back" onclick="history.back();">&#xe615;</i>
+        <span>{{title}}</span>
+    </div>
+    <!-- INDEX -->
+   <div class="index" v-show="show.index">
+       <div class="address margin-top-10 bottom-img" onclick="location.hash = '#address';">
+           <div class="w">
+               <p class="con" v-if="!ads.empty">{{name}} {{phone}}</p>
+               <p class="info" v-if="!ads.empty"><span class="iconfont">&#xe600;</span>{{addressDetail}}</p>
+               <div class="addNewAddress" v-if="ads.empty">添加收货地址</div>
+				<i class="right iconfont">&#xe727;</i>
+           </div>
+       </div>
+       <div class="order-info margin-top-10" style="height: 110px;">
+           <div class="prod-info">
+               	<c:forEach var="item" items="${goods}" end="3">
+               		<img src="${item.imagePath}" onclick="location.href = '${pageContext.request.contextPath}/market/goods/show?sid=${item.supId}&gid=${item.supGoodsId}';"/>
+            	</c:forEach>
+            	<c:forEach var="item" items="${goods}">
+            		<input type="hidden" class="hidden-price" value="<fmt:formatNumber value="${item.agreePrice}" pattern="#0.00#"></fmt:formatNumber>"/>
+            	</c:forEach>
+               <span class="count">
+               <i class="iconfont"> <c:if test="${fn:length(goods) > 3}">&#xe634;</c:if></i>
+                <span>共${fn:length(goods)}件</span>
+            </span>
+               <i class="right iconfont">&#xe727;</i>
+           </div>
+           <!-- <div class="order-time">
+               预计配送时间：<span>2017-10-10[周四] 12:00:00</span>
+           </div> -->
+       </div>
+
+       <div class="select-item margin-top-10" onclick="location.hash = '#pay';">
+           支付方式
+           <span class="content">
+            线下支付
+        </span>
+           <i class="right iconfont">&#xe727;</i>
+       </div>
+       <div class="select-item margin-top-10" onclick="location.hash = '#bill';">
+           发票信息
+           <span class="content">
+            {{billType}}
+        </span>
+           <i class="right iconfont">&#xe727;</i>
+       </div>
+
+    <div class="bottom-op-index" v-show="show.index || show.address">
+        <a class="submit" id="submit_order">提交订单</a>
+        <a class="price">
+            合计:<span>￥00.00</span>
+        </a>
+    </div>
+   </div>
+    <!-- /INDEX -->
+    <!-- BILL -->
+    <div class="bill" v-show="show.bill">
+        <div class="bill-type margin-top-10">
+            <p>发票类型</p>
+            <div>
+                <a v-for="b in bills" :class="{'active' : b.active, 'disable' : b.disable}" @click="changeType(b)">{{b.name}}</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="bill-type margin-top-10">
+            <p>发票抬头</p>
+            <input type="text" v-model="billName"/>
+        </div>
+        <div class="bottom-op" @click="saveBill()">
+            确定
+        </div>
+    </div>
+    <!-- /BILL -->
+    <!-- PAY -->
+    <div class="pay" v-show="show.pay">
+        <div class="tip">
+            <p class="message">请选择线下或者电脑端完成支付</p>
+            <a href="#index">取消</a>
+        </div>
+    </div>
+    <!-- /PAY -->
+    <!-- ADDRESS -->
+    <div class="address" v-show="show.address">
+        <p class="hd">配送地址
+            <a class="right" href="#address/add" @click="addressId = address.id = address.name 	= address.phone = address.email = address.zip = address.detail = ''; fullAddress = '请选择收货地址' ;" style="color: #000; text-decoration: none;" @click="addressId = '';">+增加收货地址</a>
+        </p>
+        <div class="list">
+            <c:if test="${not empty address}">
+            	<c:forEach var="item" items="${address}">
+            		<div class="item" :class="{active : addressActive == '${item.addressId}'}" id="a_s_${item.addressId}">
+		                <i class="checkbox" @click="selectAdd('${item.addressId}'); name = '${item.name}', phone = '${item.phone}', addressDetail = '${item.areaLevelOneName}${item.areaLevelTwoName}${item.areaLevelThreeName}${item.areaLevelFourName}${fn:escapeXml(item.addressDetail)}';"></i>
+		                <p class="name" id="a_name_${item.addressId}">${item.name} ${item.phone}</p>
+		                <p class="info" id="a_info_${item.addressId}" style="width: 75%;">${item.areaLevelOneName}${item.areaLevelTwoName}${item.areaLevelThreeName}${item.areaLevelFourName}${fn:escapeXml(item.addressDetail)}</p>
+		                <i class="edit iconfont" @click="selectAds.level1.id = '${item.areaLevelOne}';selectAds.level2.id = '${item.areaLevelTwo}';selectAds.level3.id = '${item.areaLevelThree}';selectAds.level1.name = '${item.areaLevelOneName}';selectAds.level2.name = '${item.areaLevelTwoName}';selectAds.level3.name = '${item.areaLevelThreeName}';editAddress('${item.addressId}', '${item.name}', '${item.phone}', '${fn:escapeXml(item.addressDetail)}', '${item.zipCode}', '${item.email}', '${item.areaLevelOne}', '${item.areaLevelTwo}', '${item.areaLevelThree}');">&#xe6a1;</i>
+		            </div>
+            	</c:forEach>
+            	<div class="item" v-for="item in alist" :class="{active : addressActive == item.id}" :id="'a_s_' + item.id">
+	                <i class="checkbox" @click="selectAdd(item.id)"></i>
+	                <p class="name" :id="'a_name_' + item.id">{{item.name}} {{item.phone}}</p>
+	                <p class="info" :id="'a_info_' + item.id" style="width: 75%;">{{item.detail}}</p>
+	                <i class="edit iconfont" @click="editAddress(item.addressId, item.name, item.phone, item.d, item.zip, item.email)">&#xe6a1;</i>
+	            </div>
+            </c:if>
+        </div>
+    </div>
+    <!-- /ADDRESS -->
+    <!-- ADD ADDRESS -->
+    <div class="address-add" v-show="show.addressAdd">
+        <div class="form-wrap margin-top-10">
+            <div class="row">
+                <label>收货人</label>
+                <input type="text" placeholder="收货人姓名" v-model="address.name">
+            </div>
+            <div class="row">
+                <label>联系方式</label>
+                <input type="tel" placeholder="收货人手机号码" v-model="address.phone">
+            </div>
+            <div class="row">
+                <label>所在地区</label>
+                <input type="text" v-model="fullAddress" 
+                	readonly onclick="location.hash = '#address/add/select';">
+                <a class="right iconfont">&#xe727;</a>
+            </div>
+            <div class="row">
+                <label>邮政编码</label>
+                <input type="tel" placeholder="邮政编码" v-model="address.zip">
+            </div>
+            <div class="row">
+                <label>邮箱</label>
+                <input type="text" placeholder="邮箱" v-model="address.email">
+            </div>
+            <div class="row">
+                <label>详细地址</label>
+                <input type="text" placeholder="街道详细地址" v-model="address.detail">
+            </div>
+            <!-- <div class="row">
+                <label for="default-address">默认地址</label>
+                <input id="default-address" type="checkbox"/>
+            </div> -->
+        </div>
+        <div class="save-address" @click="saveAddress();">保存并使用</div>
+    </div>
+    <!-- /ADD ADDRESS -->
+
+    <!-- SELECT ADDRESS -->
+    <div class="select-address" v-show="show.addressAddSelect">
+        <div class="tab margin-top-10">
+            <a class="item" @click="changeTab(1);" :class="{active:selectAds.level1.active}">{{selectAds.level1.name}}</a>
+            <a class="item" @click="changeTab(2);"  :class="{active:selectAds.level2.active}">{{selectAds.level2.name}}</a>
+            <a class="item" @click="changeTab(3);" :class="{active:selectAds.level3.active}">{{selectAds.level3.name}}</a>
+        </div>
+			<div class="list" v-show="selectAds.level1.active">
+				<c:forEach varStatus="sta" var="item" items="${prov}">
+					<p class="item" data-id="${item.supAreaId}" @click="changeLevel1('${item.supAreaName}', '${item.supAreaId}');" 
+						:class="{'active' : selectAds.level1.id == ${item.supAreaId}}">${item.supAreaName}</p>
+				</c:forEach>
+			</div>
+			<div class="list" v-show="selectAds.level2.active">
+				<p class="item" v-for="i in level2" :class="{'active' : selectAds.level2.id == i.supAreaId}" 
+					@click="changeLevel2(i.supAreaName, i.supAreaId);">{{i.supAreaName}}</p>
+			</div>
+			<div class="list" v-show="selectAds.level3.active">
+				<p class="item" v-for="i in level3"
+					@click="changeLevel3(i.supAreaName, i.supAreaId);">{{i.supAreaName}}</p>
+			</div>
+		</div>
+    <!-- /SELECT ADDRESS -->
+		<form action="${pageContext.request.contextPath}/market/order/submit" method="post" id="submit_form">
+			<input type="hidden" id="ids_hidden" name="ids" value="${ids}" /> 
+			<input type="hidden" id="imgs_hidden" name="imgs" value="" /> 
+			<input type="hidden" id="express_type" name="express_type" value="1" /> 
+			<input type="hidden" id="address_id" name="address_id" value="" /> 
+			<input type="hidden" id="decide_reason" name="decide_reason" value="" /> 
+			<input type="hidden" id="pay_gate" name="pay_gate" value="0002" /> 
+			<input type="hidden" id="if_contract" name="if_contract" value="0" /> 
+			<input type="hidden" id="contract_name" name="contract_name" value="" /> 
+			<input type="hidden" id="sup_name" name="sup_name" value="" /> 
+			<input type="hidden" id="sign_date" name="sign_date" value="" /> 
+			<input type="hidden" id="contract_price" name="contract_price" value="" />
+			<input type="hidden" id="buy_type" name="buy_type" value="" /> 
+			<input type="hidden" id="remark" name="remark" value="" />
+			<c:choose>
+				<c:when test="${invoice != null }">
+					<input type="hidden" id="invoice_type" name="invoice_type" value="1" />
+					<input type="hidden" id="invoice_flag" name="invoice_flag" value="${invoice.invoiceFlag}" />
+					<input type="hidden" id="invoice_content" name="invoice_content" value="${invoice.invoiceContent}" />
+					<input type="hidden" id="invoice_company" name="invoice_company" value="${invoice.companyName}" />
+					<input type="hidden" id="invoice_num" name="invoice_num" value="" />
+					<input type="hidden" id="vat_receive_name" name="vat_receive_name" value="" />
+					<input type="hidden" id="vat_receive_tel" name="vat_receive_tel" value="" />
+					<input type="hidden" id="vat_receive_prov" name="vat_receive_prov" value="" />
+					<input type="hidden" id="vat_receive_city" name="vat_receive_city" value="" />
+					<input type="hidden" id="vat_receive_dist" name="vat_receive_dist" value="" />
+					<input type="hidden" id="vat_receive_detail" name="vat_receive_detail" value="" />
+				</c:when>
+				<c:when test="${invoice == null }">
+					<input type="hidden" id="invoice_type" name="invoice_type" value="1" />
+					<input type="hidden" id="invoice_flag" name="invoice_flag" value="1" />
+					<input type="hidden" id="invoice_content" name="invoice_content" value="" />
+					<input type="hidden" id="invoice_company" name="invoice_company" value="个人" />
+					<input type="hidden" id="invoice_num" name="invoice_num" value="" />
+					<input type="hidden" id="vat_receive_name" name="vat_receive_name" value="" />
+					<input type="hidden" id="vat_receive_tel" name="vat_receive_tel" value="" />
+					<input type="hidden" id="vat_receive_prov" name="vat_receive_prov" value="" />
+					<input type="hidden" id="vat_receive_city" name="vat_receive_city" value="" />
+					<input type="hidden" id="vat_receive_dist" name="vat_receive_dist" value="" />
+					<input type="hidden" id="vat_receive_detail" name="vat_receive_detail" value="" />
+				</c:when>
+				<c:when test="${vat != null and vat.auditStatus == '0' }">
+					<input type="hidden" id="invoice_type" name="invoice_type" value="2" />
+					<input type="hidden" id="invoice_flag" name="invoice_flag" value="" />
+					<input type="hidden" id="invoice_content" name="invoice_content" value="" />
+					<input type="hidden" id="invoice_company" name="invoice_company" value="" />
+					<input type="hidden" id="invoice_num" name="invoice_num" value="" />
+					<input type="hidden" id="vat_receive_name" name="vat_receive_name" value="${vat.vatReceiveName}" />
+					<input type="hidden" id="vat_receive_tel" name="vat_receive_tel" value="${vat.vatReceiveTel}" />
+					<input type="hidden" id="vat_receive_prov" name="vat_receive_prov" value="${vat.vatReceiveProv}" />
+					<input type="hidden" id="vat_receive_city" name="vat_receive_city" value="${vat.vatReceiveCity}" />
+					<input type="hidden" id="vat_receive_dist" name="vat_receive_dist" value="${vat.vatReceiveDist }" />
+					<input type="hidden" id="vat_receive_detail" name="vat_receive_detail" value="${vat.vatReceiveDetail }" />
+				</c:when>
+			</c:choose>
+		</form>
+	</div>
+
+<script type="text/javascript">
+	Vue.http.options.emulateJSON = true;
+	var supType = ${supType}, addressCheck;
+	var supId = '${supId}';
+    var app = new Vue({
+        el      : '#app',
+        data    : {
+            load    : false,
+            title   : '确认订单',
+            name    : '<c:if test="${not empty address}">${address[0].name}</c:if>',
+            phone   : '<c:if test="${not empty address}">${address[0].phone}</c:if>',
+            addressDetail : '<c:if test="${not empty address}">${address[0].areaLevelOneName}${address[0].areaLevelTwoName}${address[0].areaLevelThreeName}${address[0].areaLevelFourName}${fn:escapeXml(address[0].addressDetail)}</c:if>',
+            ads		: {
+            	empty	: ${empty address}
+            },
+            address		: {
+            	name	: '',
+            	phone	: '',
+                zip		: '',
+            	detail	: '',
+            	email	: ''
+            },
+            selectAds	: {
+            	level1	: {
+            		name	: '请选择',
+            		id		: '',
+            		active	: true
+            		
+            	},
+            	level2	: {
+            		name	: '',
+            		id		: '',
+            		active	: false
+            	},
+            	level3	: {
+            		name	: '',
+            		id		: '',
+            		active	: false
+            	}
+            },
+            fullAddress : '请选择收货地址',
+            level2	: [],
+            level3	: [],
+            show    : {
+                index   : true,
+                address : false,
+                pay     : false,
+                bill    : false,
+                addressAdd  : false,
+                addressAddSelect    : false
+            },
+            billName: '个人',
+            billType: '增值税普通发票',
+            bills   : [
+                {
+                    name    : '增值税普通发票',
+                    disable : false,
+                    active  : true,
+                    id		: 1
+                },
+                {
+                    name : '增值税专用发票',
+                    disable : true,
+                    active  : false,
+                    id		: 2
+                }/* ,
+                {
+                    name : '增值税发票',
+                    disable : false,
+                    active  : false
+                },
+                {
+                    name : '不开发票',
+                    disable : true,
+                    active  : false
+                } */
+            ],
+            alist	: [],
+            addressActive	: '<c:if test="${not empty address}">${address[0].addressId}</c:if>',
+            addressId		:  ''
+
+        },
+        methods : {
+        	changeLevel1: function (a, b) {
+        		this.selectAds.level1.name 	= a;
+        		this.selectAds.level1.id	= b;
+        		supId = 1;
+        		this.selectAds.level2.name = '加载中';
+            	this.$http.post('${pageContext.request.contextPath}/market/order/area', {supId: supId, parent: b}).then(function (res) {
+            		var data = res.body;
+            		if (data.status == 0 && data.result) {
+            			this.level2 = data.result;
+            			this.level3 = [];
+            		}
+            		this.selectAds.level2.name = '请选择';
+            		this.changeTab(2);
+            	});
+        	},
+        	changeLevel2: function (a, b) {
+        		this.selectAds.level2.name 	= a;
+        		this.selectAds.level2.id	= b;
+        		supId = 1;
+        		this.selectAds.level3.name = '加载中';
+            	this.$http.post('${pageContext.request.contextPath}/market/order/area', {supId: supId, parent: b}).then(function (res) {
+            		var data = res.body;
+            		if (data.status == 0 && data.result) {
+            			this.level3 = data.result;
+            		}
+            		this.selectAds.level3.name = '请选择';
+            		this.changeTab(3);
+            	});
+        	},
+        	changeLevel3: function (a, b) {
+        		this.selectAds.level3.name 	= a;
+        		this.selectAds.level3.id	= b;
+        		this.fullAddress = this.selectAds.level1.name + '-'  + this.selectAds.level2.name + '-' + this.selectAds.level3.name;
+        		history.go(-1);
+        	},
+        	changeType  : function (a) {
+                if (a.active || a.disable) return;
+                app.bills.map(function (b) {
+                    b.active = false;
+                });
+                a.active = true;
+            },
+            saveBill    : function () {
+                app.bills.map(function (b) {
+                    if (b.active) app.billType = b.name;
+                });
+                this.$http.post('${pageContext.request.contextPath}/market/order/invoice', {flag:1, content:'明细', company:this.billName, num:''}).then(function (res) {
+                	//console.log(res.body)
+                    location.hash = '#index';
+                });
+            },
+            changeTab	: function (a) {
+            	this.selectAds.level1.active = this.selectAds.level2.active = this.selectAds.level3.active = false;
+            	switch (a) {
+				case 1:
+					this.selectAds.level1.active = true;
+					break;
+				case 2:
+					this.selectAds.level2.active = true;
+					break;
+				case 3:
+					this.selectAds.level3.active = true;
+					break;
+				default:
+					break;
+				}
+            },
+            saveAddress	: function () {
+            	if (!this.address.name) {
+            		alert('请填写收货人姓名');
+            		return;
+            	}
+            	if (!/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(this.address.phone)) {
+            		alert('请输入正确的手机号！');
+            		return;
+            	}
+            	if (!this.selectAds.level1.id || !this.selectAds.level2.id || !this.selectAds.level3.id) {
+            		alert('请选择所在地区！');
+            		return;
+            	}
+            	if (!/^\d{6}$/.test(this.address.zip)) {
+            		alert('请输入正确的邮政编码！');
+            		return;
+            	}
+            	if (!/^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(this.address.email)) {
+            		alert('请输入正确的邮箱');
+            		return;
+            	} 
+            	if (!this.address.detail) {
+            		alert('请填写详细地址！');
+            		return;
+            	} 
+            	this.$http.post('${pageContext.request.contextPath}/market/order/address', 
+            			{aid : this.addressId,prov:this.selectAds.level1.id, city:this.selectAds.level2.id, dist:this.selectAds.level3.id, town:'', detail:this.address.detail, name:this.address.name, zip:this.address.zip, phone:this.address.phone, tel:'', email:this.address.email, supId:supId, alias:''}).then(function (res) {
+            		var data = res.body;
+            		if (data.status == 0) {
+            			if (this.addressId) {
+                			$('#a_name_' + data.result).text(this.address.name + ' ' + this.address.phone);
+                			$('#a_info_' + data.result).text(this.selectAds.level1.name + this.selectAds.level2.name + this.selectAds.level3.name + this.address.detail);
+                			this.addressActive = data.result;
+                			this.name = this.address.name;
+                			this.phone = this.address.phone;
+                			this.addressDetail = this.selectAds.level1.name + this.selectAds.level2.name + this.selectAds.level3.name + this.address.detail;
+            			} else {
+            				this.alist.push({
+                				id		: data.result,
+                				name	: this.address.name,
+                				phone	: this.address.phone,
+                				detail	: this.selectAds.level1.name + this.selectAds.level2.name + this.selectAds.level3.name + this.address.detail,
+                				zip		: this.address.zip,
+                				email	: this.address.email,
+                				d		: this.address.detail
+                			});
+            				this.addressActive = data.result;
+            				this.name = this.address.name;
+            				this.phone = this.address.phone;
+                			this.addressDetail = this.selectAds.level1.name + this.selectAds.level2.name + this.selectAds.level3.name + this.address.detail;
+            			}
+            			location.href = '#index';
+            		} else {
+            			alert(data.result);
+            		}
+            	});
+
+            },
+            selectAdd	: function (a) {
+            	this.addressActive = a;
+            	location.hash = '#index';
+            },
+            editAddress	: function (a, name, phone, detail, zip, email,l1, l2, l3) {
+            	this.fullAddress = this.selectAds.level1.name + '-'  + this.selectAds.level2.name + '-' + this.selectAds.level3.name;
+            	this.addressId = a;
+            	this.address.name 	= name;
+            	this.address.phone 	= phone;
+            	this.address.detail = detail;
+            	this.address.zip 	= zip;
+            	this.address.email	= email;
+            	location.href = '#address/add';
+            }
+        },
+        mounted: function () {
+            this.load = true;
+        }
+    });
+
+    window.addEventListener('hashchange', hashHandle, false);
+    function hashHandle() {
+        if (location.hash != '#pay') {
+            for (var k in app.show) {
+                app.show[k] = false;
+            }
+        }
+        switch (location.hash){
+            case '#index':
+                app.title = '确认订单';
+                app.show.index = true;
+                break;
+            case '#address':
+                app.title = '选择收货地址';
+                app.show.address = true;
+                break;
+            case '#address/add':
+                app.show.addressAdd = true;
+                app.title = '新增地址';
+                break;
+            case '#address/add/select':
+                app.show.addressAddSelect = true;
+                app.title = '地址选择';
+                break;
+            case '#pay':
+                app.show.pay = true;
+                break;
+            case '#bill':
+                app.title = '发票信息';
+                app.show.bill = true;
+                break;
+            default:
+                location.hash = 'index';
+                break;
+        }
+    }
+    hashHandle();
+$(function () {
+	var total = 0;
+	$(".hidden-price").each(function () {
+		total += parseFloat($(this).val());
+	});
+	$('.price span').text('￥' + total.toFixed(2));
+	$('#submit_order').click(function () {
+		if (!app.addressActive) {
+			alert('请选择收货地址！');
+			return;
+		}
+		$('#address_id').val(app.addressActive);
+		if (!app.billName) {
+			alert('请填写发票名头！');
+			return;
+		}
+		$('#invoice_company').val(app.billName);
+		
+		$('#submit_form').submit();
+	});
+});
+</script>
+</body>
+</html>

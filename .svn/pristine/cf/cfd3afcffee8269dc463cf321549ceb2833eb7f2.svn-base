@@ -1,0 +1,22 @@
+package com.avic.supplier.mappers;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierGoodsInfo;
+
+@Repository
+public interface SupplierGoodsInfoMapper {
+	/**
+	 * 查询商品信息一栏
+	 * @return 
+	 */
+	public List<SupplierGoodsInfo> querySupplierGoodsInfoList(SupplierGoodsInfo supplierGoodInfo);
+	
+	/**
+	 * 查询商品品牌
+	 * @return 
+	 */
+	public List<SupplierGoodsInfo> querySupplierGoodsInfoBrandNameList(SupplierGoodsInfo supplierGoodInfo);
+}

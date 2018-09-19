@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* CSS Document */
+.table_area {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+.table_area tr td,
+.table_area tr th {
+	text-align: left;
+	padding-left:10px;
+	padding-right:10px;
+}
+.table_area tr th {
+	border-bottom: 1px solid #fff;
+	background: #eee
+}
+.table_area tr th.last {
+	border-bottom: 1px solid #dfdfdf;
+	border-right: none;
+}
+
+.table_area tr td.name {
+	background: #dfdfdf;
+	text-align: center;
+	font-weight: bold;
+}
+.table_area tr td button {
+	line-height: 28px;
+	height: 28px;
+}
+.table_area tr td.last{
+	border-left: none;
+}
+.submit_btn ul li {
+	margin:5px ;
+}
+.result_inner {
+	margin-bottom: 30px;}
+
+.btn_list {
+	text-align: right;
+	padding-bottom: 15px;
+	padding-right: 10px;
+}
+.btn_list ul li {
+	display: inline-block;
+	margin-left: 10px;
+}
+

@@ -1,0 +1,39 @@
+package com.avic.supplier.controllers;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.avic.supplier.models.SupplierGoodsEnquiry;
+import com.avic.supplier.services.SupplierExpressService;
+import com.avic.supplier.services.SupplierGoodsEnquiryService;
+
+@Controller
+@RequestMapping("/goodsEnquiry")
+public class SupplierGoodsEnquiryController {
+	
+	protected static final Log logger = LogFactory.getLog(SupplierGoodsEnquiryController.class);
+	
+	@Autowired
+	SupplierGoodsEnquiryService supplierGoodsEnquiryService;
+	
+    @RequestMapping("")
+    public String index(Map<String, Object> map,HttpSession httpSession,
+    		@ModelAttribute("supplierGoodsEnquiry") SupplierGoodsEnquiry supplierGoodsEnquiry) {
+    	return "order/supplier_enquiry";
+    }
+
+    
+    @RequestMapping("/updateGoodsEnquiry")
+    public String updateGoodsEnquiry(Map<String, Object> map,HttpSession httpSession,
+    		@ModelAttribute("supplierGoodsEnquiry") SupplierGoodsEnquiry supplierGoodsEnquiry) {
+    	return "order/supplier_enquiry";
+    }
+}

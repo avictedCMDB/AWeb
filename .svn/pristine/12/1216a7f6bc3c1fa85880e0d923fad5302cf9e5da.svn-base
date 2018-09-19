@@ -1,0 +1,79 @@
+package com.avic.supervise.intercepters;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.SessionKeys;
+import com.avic.supervise.models.User;
+
+public class UserSessionInterceptor implements HandlerInterceptor {
+
+
+    @Override
+    public void afterCompletion(HttpServletRequest req,
+            HttpServletResponse res, Object action, Exception view)
+            throws Exception {
+
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest req, HttpServletResponse res,
+            Object action, ModelAndView view) throws Exception {
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+            HttpServletResponse response, Object action) throws Exception {
+        
+        HttpSession session = request.getSession();
+        
+        User user = (User) session.getAttribute(SessionKeys.LOGIN_SUPERVISE);
+
+        if (user == null) {
+            boolean json = false;
+    
+            if (action instanceof HandlerMethod) {
+                HandlerMethod handler = (HandlerMethod) action;
+                Method method = handler.getMethod();
+    
+                if (method.getAnnotation(ResponseBody.class) != null) {
+                    json = true;
+                }
+            }
+            
+    
+            PrintWriter out = null;
+            
+            ObjectMapper mapper = new ObjectMapper();
+            
+            if (json) {
+                response.setContentType("application/json; charset=gbk");
+                out = response.getWriter();
+                out.print(mapper.writeValueAsString(new ResultObject(-100, "ÓÃ»§Î´µÇÂ¼")));
+            } else {
+                //response.setContentType("text/html; charset=gbk");
+                //response.sendRedirect(request.getContextPath() + "/supervise/login");
+                response.setStatus(302); 
+                response.setHeader("Location", request.getContextPath() + "/supervise/login");
+            }
+
+            return false;
+        }
+        
+        return true;
+    }
+
+}

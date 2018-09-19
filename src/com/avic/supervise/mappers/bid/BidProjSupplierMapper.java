@@ -1,0 +1,42 @@
+package com.avic.supervise.mappers.bid;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.management.models.BidProjSupplier;
+
+@Repository
+public interface BidProjSupplierMapper {
+    public void insertProjSupplier(BidProjSupplier bidProjSupplier);
+    public void deleteByProjId(@Param("projId") String projId);
+    public List<BidProjSupplier> querySupInfoByProj(@Param("projId") String projId);
+    
+    public int querySupplierCount(@Param("userId") String userId, @Param("projId") String projId, @Param("projName") String projName, @Param("supName") String supName, @Param("publishTime") String publishTime, @Param("projType") int projType, @Param("auditStatus") int auditStatus);
+    public List<BidProjSupplier> querySupplierList(@Param("userId") String userId, @Param("projId") String projId, @Param("projName") String projName, @Param("supName") String supName, @Param("publishTime") String publishTime, @Param("projType") int projType, @Param("auditStatus") int auditStatus, @Param("start") int start, @Param("end") int end);
+    
+    public BidProjSupplier queryProjSupplier(@Param("projId") String projId, @Param("supCode") String supCode);
+    public void updateSupplierAudit(BidProjSupplier sup);
+    
+    public int queryBidNumCount(@Param("projId") String projId, @Param("bidNum") String bidNum);
+    
+    public List<BidProjSupplier> queryAuditPassSupByProj(@Param("projId") String projId, @Param("supName") String supName);
+    
+    public void updateSupplierTrialBan(@Param("projId") String projId, @Param("supCode") String supCode, @Param("ban") int ban);
+    public void updateSupplierRealBan(@Param("projId") String projId, @Param("supCode") String supCode, @Param("ban") int ban);
+    
+    public List<BidProjSupplier> queryQuateSupplier(@Param("projId") String projId);
+    public void updateSupplierAward(@Param("projId") String projId, @Param("supCode") String supCode);
+    public void updateSupplierObsolete(@Param("projId") String projId);
+    
+    public BidProjSupplier queryAwardSupplier(@Param("projId") String projId);
+    
+    public int querySupplierContractCount(@Param("userId") String userId, @Param("projId") String projId, @Param("projName") String projName, @Param("contractStatus") int contractStatus, @Param("startTime") String startTime, @Param("endTime") String endTime);
+    public List<BidProjSupplier> querySupplierContractList(@Param("userId") String userId, @Param("projId") String projId, @Param("projName") String projName, @Param("contractStatus") int contractStatus, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("start") int start, @Param("end") int end);
+    
+    public void updateSupplierContractStatus(@Param("projId") String projId, @Param("supCode") String supCode, @Param("contractStatus") int contractStatus, @Param("contractRemark") String contractRemark);
+    
+    public List<BidProjSupplier> queryTrialLoginSupplier(@Param("projId") String projId);
+    public List<BidProjSupplier> queryRealLoginSupplier(@Param("projId") String projId);
+}

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avic.supplier.mappers.SupplierReturnMapper">
+	<resultMap id="queryReturnOrderMap" type="com.avic.supplier.models.SupplierReturn">
+		<result column="REFOUND_ID" property="refoundId" jdbcType="VARCHAR"/>
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR"/>
+		<result column="Order_Id" property="orderId" jdbcType="VARCHAR"/>
+		<result column="companyname" property="companyname" jdbcType="VARCHAR"/>
+		<result column="refound_status_name" property="refoundStatusName" jdbcType="VARCHAR"/>
+		<result column="Refound_Status" property="refoundStatus" jdbcType="VARCHAR"/>
+		<result column="Refound_Date" property="refoundDate" jdbcType="VARCHAR"/>
+		<result column="Refound_Amount" property="refoundAmount" jdbcType="VARCHAR"/>
+		<result column="Refound_Price" property="refoundPrice" jdbcType="VARCHAR"/>
+		<result column="rn" property="rn" jdbcType="VARCHAR"/>
+		<result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+		<result column="ADDR_NAME" property="addrName" jdbcType="VARCHAR"/>
+		<result column="ADDR_PHONE" property="addrPhone" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="queryOrderReturnStatusMap" type="com.avic.supplier.models.SupplierCodeList"/>
+	<resultMap id="queryOrderReturnStatusDetailedMap" type="com.avic.supplier.models.SupplierReturn">
+		<result column="rn" property="rn" jdbcType="VARCHAR"/>
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
+		<result column="AGREE_PRICE" property="agreePrice" jdbcType="VARCHAR"/>
+		<result column="REFOUND_num" property="refoundNum" jdbcType="VARCHAR"/>
+		<result column="sum_REFOUND_price" property="sumRefoundPrice" jdbcType="VARCHAR"/>
+		<result column="REFOUND_reason" property="refoundReason" jdbcType="VARCHAR"/>
+		<result column="Buy_Num" property="buyNum" jdbcType="VARCHAR"/>
+		<result column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR"/>
+	</resultMap>
+		<select id="queryRerurnOrderList" parameterType="com.avic.supplier.models.SupplierReturn" resultMap="queryReturnOrderMap">
+	SELECT * FROM (
+			select T_ORDER_REFOUND.REFOUND_ID,
+			       T_ORDER_REFOUND.Order_Id,
+			       usertable.companyname,
+			       codelist.codetext refound_status_name,
+			       T_ORDER_REFOUND.Refound_Status,
+			       T_ORDER_REFOUND.Refound_Date,
+			       T_ORDER_REFOUND.Refound_Amount,
+			       T_ORDER_REFOUND.REFOUND_PRICE_INIT Refound_Price,
+			       T_ORDER_REFOUND.REMARK,
+			       x.ADDR_NAME,
+             	   x.ADDR_PHONE,
+			       rownum rn
+			  from T_ORDER_REFOUND, T_ORDER x, codelist, users usertable
+			 where T_ORDER_REFOUND.ORDER_ID = x.ORDER_ID
+			   and T_ORDER_REFOUND.REFOUND_STATUS = codelist.codevalue
+			   and codelist.codelisttype = 'REFUND_STATUS'
+			   and usertable.userid = x.user_id
+			   and T_ORDER_REFOUND.sup_id = #{supId}
+			 <if test="refoundId != null and refoundId != ''">
+                and T_ORDER_REFOUND.REFOUND_ID like  '%'|| #{refoundId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="orderId != null and orderId != ''">
+                and T_ORDER_REFOUND.order_id like '%'|| #{orderId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="refoundStatus != null and refoundStatus != ''">
+                and T_ORDER_REFOUND.Refound_Status = #{refoundStatus,jdbcType=VARCHAR}
+           	  </if>
+			   <if test="companyname != null and companyname != ''">
+                and usertable.companyname like '%'|| #{companyname,jdbcType=VARCHAR} || '%'
+           	  </if>
+           	  <if test="refoundDateStar != null and refoundDateStar != ''">
+				  AND TO_CHAR(T_ORDER_REFOUND.Refound_Date,'yyyy-MM-dd') &gt;= #{refoundDateStar,jdbcType=VARCHAR}
+				</if>
+				<if test="refoundDateEnd != null and refoundDateEnd != ''">
+				  AND TO_CHAR(T_ORDER_REFOUND.Refound_Date, 'yyyy-MM-dd') &lt;= #{refoundDateEnd,jdbcType=VARCHAR}
+				</if>
+				order by Refound_Date DESC
+	        ) R
+	     WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+			<select id="queryRerurnOrderListCount" parameterType="com.avic.supplier.models.SupplierReturn" resultType="java.lang.Integer">
+			select count(1)
+			  from T_ORDER_REFOUND, T_ORDER x, codelist, users usertable
+			 where T_ORDER_REFOUND.ORDER_ID = x.ORDER_ID
+			   and T_ORDER_REFOUND.REFOUND_STATUS = codelist.codevalue
+			   and codelist.codelisttype = 'REFUND_STATUS'
+			   and usertable.userid = x.user_id
+			   and T_ORDER_REFOUND.sup_id = #{supId}
+			 <if test="refoundId != null and refoundId != ''">
+                and T_ORDER_REFOUND.REFOUND_ID like  '%'|| #{refoundId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="orderId != null and orderId != ''">
+                and T_ORDER_REFOUND.order_id like '%'|| #{orderId,jdbcType=VARCHAR} || '%'
+           	  </if>
+			   <if test="refoundStatus != null and refoundStatus != ''">
+                and T_ORDER_REFOUND.Refound_Status = #{refoundStatus,jdbcType=VARCHAR}
+           	  </if>
+			   <if test="companyname != null and companyname != ''">
+                and usertable.companyname like '%'|| #{companyname,jdbcType=VARCHAR} || '%'
+           	  </if>
+           	  <if test="refoundDateStar != null and refoundDateStar != ''">
+				  AND TO_CHAR(T_ORDER_REFOUND.Refound_Date,'yyyy-MM-dd') &gt;= #{refoundDateStar,jdbcType=VARCHAR}
+				</if>
+				<if test="refoundDateEnd != null and refoundDateEnd != ''">
+				  AND TO_CHAR(T_ORDER_REFOUND.Refound_Date, 'yyyy-MM-dd') &lt;= #{refoundDateEnd,jdbcType=VARCHAR}
+				</if>
+	</select>
+	
+	<select id="queryReturnStatusList" resultMap="queryOrderReturnStatusMap" parameterType="com.avic.supplier.models.SupplierCodeList">
+		select codetext,codevalue from codelist t where t.codelisttype = 'REFUND_STATUS'
+	</select>
+	
+	<select id="queryReturnOrderDetailed" resultMap="queryOrderReturnStatusDetailedMap" parameterType="com.avic.supplier.models.SupplierReturn">
+		select rownum rn,
+		       T_ORDER_SNAPSHOT.goods_name,
+	           T_ORDER_SNAPSHOT.image_path,
+	           T_ORDER_SNAPSHOT.goods_price_init AGREE_PRICE,
+	           T_ORDER_SNAPSHOT.Buy_Num,
+	           T_ORDER_SNAPSHOT.sup_goods_id,
+	           T_REFOUND_GOODS.REFOUND_NUM,
+	           T_ORDER_SNAPSHOT.goods_price_init *
+	           T_REFOUND_GOODS.REFOUND_NUM sum_REFOUND_price,
+	           T_REFOUND_GOODS.REFOUND_REASON
+	      from T_ORDER_REFOUND, T_REFOUND_GOODS, T_ORDER_SNAPSHOT
+	     where T_ORDER_REFOUND.REFOUND_ID = T_REFOUND_GOODS.REFOUND_ID
+           and T_ORDER_REFOUND.order_id = T_ORDER_SNAPSHOT.order_id
+		   and T_ORDER_REFOUND.REFOUND_ID = #{refoundId,jdbcType=VARCHAR}
+		   and T_ORDER_REFOUND.SUP_ID = #{supId}
+	</select>
+	
+	<update id="updateReturnOrderStatus" parameterType="com.avic.supplier.models.SupplierReturn">
+		 update T_ORDER_REFOUND set Refound_Status = #{refoundStatus,jdbcType=VARCHAR}
+		 	
+		 	<if test="supCheckInfo != null and supCheckInfo != ''">
+		 		,SUP_CHECK_INFO = #{supCheckInfo,jdbcType=VARCHAR}
+           	</if>
+           	<if test="supplierAddressId != null and supplierAddressId != ''">
+           		,SUP_ADDRESS_ID = #{supplierAddressId,jdbcType=VARCHAR}
+           	</if>
+           	<if test="refoundStatus == 1 or refoundStatus == 2">
+           		,SUP_CHECK_DATA = sysdate 
+           	</if>
+           	<if test="refoundStatus == 4">
+           		,SUP_REVIEW_DATE = sysdate
+           	</if>
+		  where REFOUND_ID = #{refoundId,jdbcType=VARCHAR}
+	</update>
+</mapper>

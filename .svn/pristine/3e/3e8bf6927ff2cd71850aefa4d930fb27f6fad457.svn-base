@@ -1,0 +1,92 @@
+package com.avic.supervise.services.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.mappers.OrderMapper;
+import com.avic.supervise.models.Order;
+import com.avic.supervise.models.OrderSnapshot;
+import com.avic.supervise.services.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    OrderMapper orderMapper;
+    
+    @Override
+    public int getManageOrderCount(int supId, String orderId, String goodsName, String companyName, int time, int orderStatus)
+            throws ServiceException {
+        return orderMapper.queryManageOrderCount(supId, orderId, goodsName, companyName, time, orderStatus);
+    }
+
+    @Override
+    public List<Order> getManageOrderList(int supId, String orderId, String goodsName, String companyName, int time, int orderStatus,
+            int page, int size) throws ServiceException {
+        if (page < 1) {
+            page = 1;
+        }
+        
+        int start = (page - 1) * size + 1;
+        int end  = start + size - 1;
+        
+        
+        List<Order> list = orderMapper.queryManageOrderList(supId, orderId, goodsName, companyName, time, orderStatus, start, end);
+        
+        if (list != null) {
+            List<String> orderIds = new ArrayList<String>();
+            
+            for (Order i : list) {
+                orderIds.add(i.getOrderId());
+            }
+            
+            List<OrderSnapshot> snapshots = orderMapper.queryMultiOrderSnapshot(orderIds);
+            
+            Map<String, List<OrderSnapshot>> map = new HashMap<String, List<OrderSnapshot>>();
+            
+            for (OrderSnapshot i : snapshots) {
+                if (!map.containsKey(i.getOrderId())) {
+                    map.put(i.getOrderId(), new ArrayList<OrderSnapshot>());
+                }
+                
+                map.get(i.getOrderId()).add(i);
+            }
+            
+            for (Order i : list) {
+                i.setSnapshots(map.get(i.getOrderId()));
+            }
+        }
+        
+        
+        return list;
+    }
+    
+    @Override
+    public Order getOrderDetail(String orderId) throws ServiceException {
+        Order order = orderMapper.queryOrderDetail(orderId);
+        
+        if (order != null) {
+            order.setSnapshots(orderMapper.queryOrderSnapshot(orderId));
+            order.setImgs(orderMapper.queryOrderImage(orderId));
+        }
+        return order;
+    }
+
+    @Transactional
+    @Override
+    public void updateOrderStatus(String orderId, int status) throws ServiceException {
+
+        try {
+            orderMapper.updateOrderStatus(orderId, status);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+}

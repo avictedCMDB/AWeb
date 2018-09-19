@@ -1,0 +1,23 @@
+package com.avic.supplier.mappers;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.avic.supplier.models.SupplierUser;
+
+
+@Repository
+public interface SupplierUserMapper {
+	/**
+	 * 查询供应商信息
+	 * @return 
+	 */
+	public SupplierUser queryLoginUser(SupplierUser supplierUser);
+	
+	
+	public void updateSupPassWord(String password,String supId);
+
+	public SupplierUser queryUserById(@Param("userId") String userId);
+	
+	public SupplierUser queryCompUser(@Param("code") String code);
+}

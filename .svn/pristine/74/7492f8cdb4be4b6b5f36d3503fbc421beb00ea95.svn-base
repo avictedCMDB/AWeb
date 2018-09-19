@@ -1,0 +1,16 @@
+package com.avic.market.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.market.models.CartItem;
+
+public interface CartService {
+    public void addToCart(CartItem item) throws ServiceException;
+    public int countGoodsNum(String userId) throws ServiceException;
+    public List<CartItem> getCartGoodsList(String userId) throws ServiceException;
+    public void clearCart(String userId) throws ServiceException;
+    public void deleteCartGoods(List<CartItem> items) throws ServiceException;
+    public void updateCartNum(CartItem item) throws ServiceException;
+    public List<CartItem> getCartGoodsByIds(String userId, int supId, List<String> ids) throws ServiceException;
+}

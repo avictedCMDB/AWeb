@@ -1,0 +1,165 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<jsp:include page="../meta.jsp" >
+	<jsp:param value="查看订单" name="title"/>
+</jsp:include>
+<link href="${pageContext.request.contextPath}/static/css/supervise_order.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="page-wrapper">
+
+	<jsp:include page="../header.jsp" />
+  
+  <div id="contents">
+    <div class="inner">
+      <div id="order_details">
+        <div class="section_main pro_info">
+          <h2>商品信息</h2>
+          <table>
+            <tr>
+              <th colspan="2">商品名称</th>
+              <th width="200">单价（元）</th>
+              <th width="200">数量（个）</th>
+              <th width="200">总价（元）</th>
+            </tr>
+            <c:forEach varStatus="sta" var="item" items="${order.snapshots}">
+            <tr>
+              <td class="left_align" width="77">
+                <p class="img_pro"><a href="${pageContext.request.contextPath}/supervise/order/goods?sid=${item.supId}&gid=${item.supGoodsId}&t=${t}">
+                <c:if test="${item.supType == 1}">
+                <img width="55px" height="55px" src="${pageContext.request.contextPath}${item.imagePath == null ? '/static/img/img-profession.jpg' : item.imagePath}">
+				</c:if>
+				<c:if test="${item.supType == 0}">
+                <img width="55px" height="55px" src="${item.imagePath}">
+				</c:if>
+                </a></p>
+              </td>
+              <td class="left_align"><a href="${pageContext.request.contextPath}/supervise/order/goods?sid=${item.supId}&gid=${item.supGoodsId}&t=${t}">${item.goodsName}</a></td>
+              <c:if test="${t == '1'}">
+              <td><fmt:formatNumber value="${item.goodsPriceInit}" pattern="#0.00#"></fmt:formatNumber></td>
+              </c:if>
+              <c:if test="${t != '1'}">
+              <td><fmt:formatNumber value="${item.goodsPrice}" pattern="#0.00#"></fmt:formatNumber></td>
+              </c:if>
+              <td>${item.buyNum}</td>
+              <c:if test="${t == '1'}">
+              <td><fmt:formatNumber value="${item.goodsPriceInit * item.buyNum}" pattern="#0.00#"></fmt:formatNumber></td>
+              </c:if>
+              <c:if test="${t != '1'}">
+              <td><fmt:formatNumber value="${item.goodsPrice * item.buyNum}" pattern="#0.00#"></fmt:formatNumber></td>
+              </c:if>
+            </tr>
+            </c:forEach>
+          </table>
+        </div>
+        <div class="section_main clearfix section_inner">
+          <div class="special_area first">
+            <h2>地址信息</h2>
+            <div class="details_list">
+              <dl class="dl-horizontal">
+                <dt>配送要求：</dt>
+                <dd>${order.expressType == 1 ? '物流配送' : '上门自取'}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>配送地址：</dt>
+                <dd>${fn:escapeXml(order.addrDetail)}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>收件人姓名：</dt>
+                <dd>${order.addrName}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>联系电话：</dt>
+                <dd>${order.addrPhone == '' ? order.addrTel : order.addrPhone}</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="special_area">
+            <h2>发票信息</h2>
+            <div class="details_list">
+              <dl class="dl-horizontal">
+                <dt>发票类型：</dt>
+                <dd>${order.invoiceType == 1 ? '普通发票' : '增值发票'}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>发票内容：</dt>
+                <dd>${order.invoiceFlag == 1 ? '明细' : fn:escapeXml(order.invoiceContent)}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>付款单位：</dt>
+                <dd>${fn:escapeXml(order.invoiceCompany)}</dd>
+              </dl>
+              <dl class="dl-horizontal">
+                <dt>税务登记号：</dt>
+                <dd>${order.invoiceNum}</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="special_area">
+            <h2>其他信息</h2>
+            <div class="details_list">
+              <dl class="dl-horizontal">
+                <dd>${fn:escapeXml(order.decideReason)}</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="special_area last">
+            <h2>附件信息</h2>
+            <div class="details_list">
+              <ul>
+              <c:if test="${!empty order.imgs }">
+              <c:forEach var="i" items="${order.imgs }">
+                <li><img src="${pageContext.request.contextPath}/${i}" /></li>
+              </c:forEach>
+              </c:if>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="section_main clearfix price_area">
+          <div class="gather_box">
+            <div class="gather_inner">
+              <p>
+                <span>实付款：</span>
+                <span class="symbol">￥</span>
+              <c:if test="${t == '1'}">
+                <span class="price"><fmt:formatNumber value="${order.orderAmountInit}" pattern="#0.00#"></fmt:formatNumber></span>
+              </c:if>
+              <c:if test="${t != '1'}">
+                <span class="price"><fmt:formatNumber value="${order.orderAmount}" pattern="#0.00#"></fmt:formatNumber></span>
+              </c:if>
+               </p>
+               <p>
+                 <span>寄送至：</span>
+                 ${fn:escapeXml(order.addrAll)}
+               </p>
+               <p>
+                 <span>收货人：</span>
+                 ${order.addrName} ${order.addrPhone == '' ? order.addrTel : order.addrPhone}
+               </p>
+             </div>
+           </div>
+        </div>
+        <div class="btn_list">
+          <ul class="list-inline">
+            <li><button type="button" class="btn btn-default gray" onclick="history.go(-1);">返回</button></li>
+          </ul>
+        </div>
+      <!--.order_details--></div>
+      
+      
+      
+      <!--.inner--> 
+    </div>
+    <!--#contents--> 
+  </div>
+  <jsp:include page="../footer.jsp" />
+<!--.page-wrapper--></div>
+</body>
+</html>

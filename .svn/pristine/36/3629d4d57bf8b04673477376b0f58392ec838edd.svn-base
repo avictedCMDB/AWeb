@@ -1,0 +1,46 @@
+function search(){
+	var path = $("#path").val();
+	document.getElementById("searchForm").action=path+"/management/specialGoods/offStandardRequirePage";
+	document.getElementById("searchForm").submit();
+}
+
+function clear(){
+	$("#status").val("");
+	$("#supID").val(""); 
+	$("#goodsDescNew").val("");
+}
+
+function specialCheck(goodsID){
+	var iWidth=950;                          //弹出窗口的宽度; 
+    var iHeight=600;                         //弹出窗口的高度; 
+	var iTop = (window.screen.availHeight-30-iHeight)/2;       //获得窗口的垂直位置;
+	var iLeft = (window.screen.availWidth-10-iWidth)/2;           //获得窗口的水平位置;
+	var path = $("#path").val();
+	var url = path+"/management/specialGoods/specialCheck/"+goodsID;
+	window.open(url, 'newwindow', 'height='+iHeight+', width='+iWidth+', top='+iTop+', left='+iLeft+', toolbar=no, menubar=no, scrollbars=yes, resizable=no, location=no, status=no');
+}
+
+function addCart(supID,goodsID,supGoodsID){
+	var path = $("#path").val();
+	if(confirm("确认添加到购物车？")){
+		$.ajax({
+		     type: 'POST',
+		     url: path+"/management/enterprise/addCart",
+		     dataType: 'json',
+		     data:{  
+		    	 supID : supID,
+		    	 supGoodsID:goodsID,
+		    	 buyNum:1
+		     },  
+		     success: function(data) {  
+		    	if(data.status =="success" ){  
+		    		alert("已添加到购物车！"); 
+		    	}  
+		     },
+		     error : function() {  
+		    	 alert("异常！");  
+		     } 
+		});
+	}
+	
+}

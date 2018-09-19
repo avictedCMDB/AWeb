@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.SupplierOffStandRequireMapper">
+	<resultMap id="supplierOffStandRequireMap" type="com.avic.supplier.models.SupplierOffStandRequire">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="companyname" property="companyname" jdbcType="VARCHAR" /> 
+		<result column="GOODS_DESC_NEW" property="goodsDescNew" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supId" jdbcType="VARCHAR" /> 
+		<result column="STATUS" property="status" jdbcType="VARCHAR" /> 
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" /> 
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" /> 
+		<result column="GOODS_ID" property="goodsId" jdbcType="VARCHAR" /> 
+	</resultMap>
+	<!-- 查询首页统计数量 -->
+	<select id="querySupplierOffStandRequiret" resultMap="supplierOffStandRequireMap" parameterType="com.avic.supplier.models.SupplierOffStandRequire">
+		select * from (select A.* ,rownum rn from (select t.*,u.companyname from T_OFF_STANDARD_REQUIRE t,users u  
+									where t.user_id = u.userid
+									and   t.sup_id in (#{supId})
+									<if test="id != null and id != ''">
+										AND t.id = #{id,jdbcType=VARCHAR}
+									</if>
+									<if test="goodsDescNew != null and goodsDescNew != ''">
+										AND t.GOODS_DESC_NEW like '%'||#{goodsDescNew,jdbcType=VARCHAR}||'%'
+									</if>
+									<if test="status != null and status != ''">
+										AND t.STATUS = #{status,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateStar != null and createDateStar != ''">
+										AND TO_CHAR(CREATE_DATE,'yyyy-MM-dd') &gt;= #{createDateStar,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateEnd != null and createDateEnd != ''">
+										AND TO_CHAR(CREATE_DATE, 'yyyy-MM-dd') &lt;= #{createDateEnd,jdbcType=VARCHAR}
+									</if>
+									order by t.CREATE_DATE desc) A)R
+			WHERE RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+		
+	</select>
+	<select id="querySupplierOffStandRequiretCount" resultType="java.lang.Integer" parameterType="com.avic.supplier.models.SupplierOffStandRequire">
+		select count(1) from T_OFF_STANDARD_REQUIRE t,users u  
+									where t.user_id = u.userid
+									and   t.sup_id in (#{supId})
+									<if test="id != null and id != ''">
+										AND t.id = #{id,jdbcType=VARCHAR}
+									</if>
+									<if test="goodsDescNew != null and goodsDescNew != ''">
+										AND t.GOODS_DESC_NEW like '%'||#{goodsDescNew,jdbcType=VARCHAR}||'%'
+									</if>
+									<if test="status != null and status != ''">
+										AND t.STATUS = #{status,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateStar != null and createDateStar != ''">
+										AND TO_CHAR(CREATE_DATE,'yyyy-MM-dd') &gt;= #{createDateStar,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateEnd != null and createDateEnd != ''">
+										AND TO_CHAR(CREATE_DATE, 'yyyy-MM-dd') &lt;= #{createDateEnd,jdbcType=VARCHAR}
+									</if>
+									order by t.CREATE_DATE desc
+	</select>
+	<select id="queryGoods" resultType="java.lang.Integer" parameterType="com.avic.supplier.models.SupplierOffStandRequire">
+		select count(1) from T_OFF_STANDARD_REQUIRE t,users u  
+									where t.user_id = u.userid
+									and   t.sup_id in (#{supId})
+									<if test="id != null and id != ''">
+										AND t.id = #{id,jdbcType=VARCHAR}
+									</if>
+									<if test="goodsDescNew != null and goodsDescNew != ''">
+										AND t.GOODS_DESC_NEW like '%'||#{goodsDescNew,jdbcType=VARCHAR}||'%'
+									</if>
+									<if test="status != null and status != ''">
+										AND t.STATUS = #{status,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateStar != null and createDateStar != ''">
+										AND TO_CHAR(t.CREATE_DATEE,'yyyy-MM-dd') &gt;= #{createDateStar,jdbcType=VARCHAR}
+									</if>
+									<if test="createDateEnd != null and createDateEnd != ''">
+										AND TO_CHAR(t.CREATE_DATE, 'yyyy-MM-dd') &lt;= #{createDateEnd,jdbcType=VARCHAR}
+									</if>
+									order by t.CREATE_DATE desc
+	</select>
+	
+</mapper>

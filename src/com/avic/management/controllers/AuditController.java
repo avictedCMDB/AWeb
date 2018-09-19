@@ -1,0 +1,213 @@
+package com.avic.management.controllers;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.constants.UserRole;
+import com.avic.common.exceptions.NoPermissionException;
+import com.avic.common.exceptions.UserNotLoginException;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.Audit;
+import com.avic.management.models.AuditImageInfo;
+import com.avic.management.models.AuditOrder;
+import com.avic.management.models.Invoice;
+import com.avic.management.models.OrderSnapshot;
+import com.avic.management.models.ProductCompare;
+import com.avic.management.services.AuditService;
+import com.avic.management.services.CommonService;
+import com.avic.management.services.InvoiceService;
+import com.avic.management.services.ProductCompareService;
+import com.avic.passport.models.User;
+
+@Controller
+@RequestMapping("/audit")
+@Transactional
+public class AuditController {
+    protected static final Log logger = LogFactory.getLog(AuditController.class);
+    static final int PAGE_SIZE = 5; //每页显示多少条
+    @Autowired
+    CommonService commonService;
+    @Autowired
+    AuditService auditService;
+    @Autowired
+    ProductCompareService productCompareService;
+    
+    @RequestMapping("")
+    public String index(Map<String, Object> map,HttpSession httpSession) {
+        logger.info("订单审核管理首页");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.CHECK);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+        String companyID = user.getCompanyId();
+        Audit audit = new Audit();
+        audit.setOrderStatus("1");//待审核订单
+        audit.setCompanyID(companyID);
+        int orderCount = auditService.queryAuditsCount(audit);
+        map.put("orderCount",orderCount );
+        return "audit/management_auditor";
+    }
+    
+    @RequestMapping("/auditorAudit")
+    public String auditorAudit(HttpServletRequest req,@ModelAttribute("audit") Audit audit,Map<String, Object> map,HttpSession httpSession) {
+        logger.info("订单审核管理列表");
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.CHECK);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		String page = req.getParameter("page");
+		
+		int pageNum = 1;
+		 
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+		String companyId = user.getCompanyId();
+        List<Audit> audits = new ArrayList<Audit>();
+        audit.setCompanyID(companyId);
+        String tempStatus = audit.getOrderStatus();
+        if("".equals(audit.getOrderStatus())||audit.getOrderStatus()==null){
+        	audit.setOrderStatus("1");  //待审核订单
+        }
+        if("-1".equals(audit.getOrderStatus())){
+        	audit.setOrderStatus("");  //待审核订单
+        }
+       
+        //获得商品名称模糊查询得到的订单id集合，添加到查询订单条件中
+        List<OrderSnapshot> orders = new ArrayList<OrderSnapshot>();
+        orders = auditService.queryGoodsSnapshotOfLikeGoodsName(audit);
+        
+        List<String> orderIDs = new ArrayList<String>();
+        if(orders.size()>0 && orders != null){
+        	for (OrderSnapshot orderID : orders) {
+            	orderIDs.add(orderID.getOrderId());
+    		}
+        }else{
+        	orderIDs.add("-9999");
+        }
+        audit.setOrderIDs(orderIDs);
+       //查询数量
+        int total = auditService.queryAuditCount(audit);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+        
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        audit.setPage(pageNum);
+        audit.setPageSize(PAGE_SIZE);
+        audits = auditService.queryAudits(audit);
+        ProductCompare pc = new ProductCompare();
+        for (Audit order : audits) {
+			List<OrderSnapshot> orderSnapshots = new ArrayList<OrderSnapshot>();
+			OrderSnapshot os = new OrderSnapshot();
+			os.setOrderId(order.getOrderID());
+			orderSnapshots = auditService.queryGoodsSnapshotByOrderID(os);
+			order.setOrderSnapshots(orderSnapshots);
+			pc.setOrderID(order.getOrderID());
+			int count = productCompareService.queryCompareIDSCountByOrderID(pc);
+			if(count>0){
+				order.setShowCompareFlg("1");
+			}else{
+				order.setShowCompareFlg("2");
+			}
+		}
+        audit.setOrderStatus(tempStatus);
+        map.put("searchAudit", audit);
+        map.put("audits", audits);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+        try {
+			map.put("pageAction","management/audit/auditorAudit?startTime=" + URLEncoder.encode(audit.getStartTime()==null?"":audit.getStartTime(), "GBK") 
+								+ "&endTime=" + URLEncoder.encode(audit.getEndTime()==null?"":audit.getEndTime(), "GBK")
+								+ "&orderStatus=" + URLEncoder.encode(audit.getOrderStatus()==null?"":audit.getOrderStatus(), "GBK")
+			                    + "&companyID=" + URLEncoder.encode(audit.getCompanyID()==null?"":audit.getCompanyID(), "GBK")
+			                    + "&searchSupName=" + URLEncoder.encode(audit.getSearchSupName()==null?"":audit.getSearchSupName(), "GBK")
+			                    + "&searchGoodsName=" + URLEncoder.encode(audit.getSearchGoodsName()==null?"":audit.getSearchGoodsName(), "GBK")
+			                    + "&searchOrderId=" + URLEncoder.encode(audit.getSearchOrderId()==null?"":audit.getSearchOrderId(), "GBK")+ "&page=%PAGE%");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        return "audit/management_auditor_audit";
+    }
+    
+    @RequestMapping("/confirm")
+    public String auditorAuditCheck(Map<String, Object> map,@RequestParam("orderID")String orderID,@RequestParam("searchFlg")String searchFlg,@RequestParam("orderStatus")String orderStatus) {
+        logger.info("订单审核");
+        List<AuditImageInfo> auditImages = new ArrayList<AuditImageInfo>();
+        AuditOrder auditOrder = new AuditOrder();
+        auditOrder.setOrderID(orderID);
+        if("2".equals(searchFlg)){
+        	auditOrder = auditService.queryAuditOrderByOrderID(auditOrder);
+        	//查询审核上传附件图片
+        	auditImages = auditService.queryAuditImages(auditOrder);
+        }
+        map.put("auditOrder", auditOrder);
+        map.put("auditImages", auditImages);
+        map.put("searchFlg", searchFlg);
+        map.put("orderStatus", orderStatus);
+        return "audit/management_auditor_audit_confirm";
+    }
+    
+    @RequestMapping("/auditConfirm")
+    @ResponseBody
+    public Object auditConfirm(@ModelAttribute("auditOrder") AuditOrder auditOrder,HttpSession httpSession) {
+        logger.info("订单审核");
+        Map<String, Object> map = new HashMap<String, Object>();
+        User user = new User();
+        try {
+        	user = Permission.check(httpSession, UserRole.CHECK);
+		} catch (UserNotLoginException e) {
+			return "redirect:/passport/login";
+		} catch (NoPermissionException e){
+			return "redirect:/passport/login";
+		}
+		AuditImageInfo auditImageInfo = new AuditImageInfo();
+		auditImageInfo.setBusinessID(auditOrder.getOrderID());
+		auditOrder.setReviewPerson(user.getUserName());
+        //修改审核状态 0通过  1拒绝
+        //修改订单状态 0 审核拒绝 15待支付
+        if("0".equals(auditOrder.getReviewResult())){
+        	auditOrder.setOrderStatus("15");
+        }else{
+        	auditOrder.setOrderStatus("0");
+        }
+        auditService.updateAuditOrder(auditOrder);
+        if(!"".equals(auditOrder.getImagePaths())&&auditOrder.getImagePaths()!=null){
+        	String []imagePaths = auditOrder.getImagePaths().split(",");
+            for (int i = 0; i < imagePaths.length; i++) {
+            	auditImageInfo.setUrl(imagePaths[i]);
+            	auditService.addAuditImages(auditImageInfo);
+    		}
+        }
+        return "success";
+    }
+}

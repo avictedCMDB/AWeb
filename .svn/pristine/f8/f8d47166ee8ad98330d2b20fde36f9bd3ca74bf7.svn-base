@@ -1,0 +1,13 @@
+package com.avic.supervise.services;
+
+import java.util.List;
+
+import com.avic.common.exceptions.ServiceException;
+import com.avic.supervise.models.Order;
+
+public interface OrderService {
+    public int getManageOrderCount(int supId, String orderId, String goodsName, String companyName, int time, int orderStatus) throws ServiceException;
+    public List<Order> getManageOrderList(int supId, String orderId, String goodsName, String companyName, int time, int orderStatus, int page, int size) throws ServiceException;
+    public Order getOrderDetail(String orderId) throws ServiceException;
+    public void updateOrderStatus(String orderId, int status) throws ServiceException;
+}

@@ -1,0 +1,580 @@
+package com.avic.management.controllers;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.avic.common.beans.ResultObject;
+import com.avic.common.constants.UserRole;
+import com.avic.common.utils.ConfigHolder;
+import com.avic.common.utils.Permission;
+import com.avic.management.models.Order;
+import com.avic.management.models.PayFlow;
+import com.avic.management.models.SettleData;
+import com.avic.management.models.SupInfo;
+import com.avic.management.services.OrderService;
+import com.avic.management.services.PayFlowService;
+import com.avic.management.services.SettleService;
+import com.avic.management.services.SupInfoService;
+import com.avic.market.cpi.CpiService;
+import com.avic.passport.models.User;
+import com.chinapay.secss.SecssUtil;
+
+/*
+ * 财务
+ */
+@Controller
+@RequestMapping("/finance")
+public class FinanceController {
+    protected static final Log logger = LogFactory.getLog(FinanceController.class);
+
+    static final int PAGE_SIZE = 10;
+
+    @Autowired
+    PayFlowService payFlowService;
+
+    @Autowired
+    ConfigHolder configHolder;
+    @Autowired
+    SettleService settleService;
+
+    @RequestMapping("/index")
+    public String index(HttpSession session, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        logger.info("财务管理-首页");
+        map.put("cnt", orderService.getPaymentOrderCount(user.getCompanyId(), 0, "", 15, ""));
+        return "finance/index";
+    }
+
+    @RequestMapping("/list")
+    public String list(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+
+        String supId = req.getParameter("supId");
+        String orderId = req.getParameter("orderId");
+        String orderStatus = req.getParameter("orderStatus");
+        String goodsName = req.getParameter("goodsName");
+        String page = req.getParameter("page");
+
+        if (!StringUtils.isNumeric(supId)) {
+            supId = "0";
+        }
+
+        if (!"2".equals(orderStatus) && !"15".equals(orderStatus)) {
+
+            orderStatus = "0";
+        }
+
+        int sid = Integer.parseInt(supId);
+        int status = Integer.parseInt(orderStatus);
+
+        int pageNum = 1;
+
+        if (StringUtils.isNumeric(page)) {
+            pageNum = Integer.parseInt(page);
+        }
+
+        logger.info("财务管理-列表");
+
+        List<SupInfo> si = getSupInfo();
+        int total = orderService.getPaymentOrderCount(user.getCompanyId(), sid, orderId, status, goodsName);
+
+        int pages = (int) Math.ceil((double) total / PAGE_SIZE);
+
+        if (pageNum > pages) {
+            pageNum = pages;
+        }
+        if (total > 0) {
+            List<Order> orders = orderService.getPaymentOrderList(user.getCompanyId(), sid, orderId, status, goodsName, pageNum, PAGE_SIZE);
+            for (Order i : orders) {
+                for (SupInfo s : si) {
+                    if (s.getSupID().equals(i.getSup_id())) {
+                        i.setSup_name(s.getSupName());
+                        break;
+                    }
+                }
+            }
+            map.put("list", orders);
+        }
+
+        map.put("sups", si);
+        map.put("supId", supId);
+        map.put("orderId", orderId);
+        map.put("orderStatus", orderStatus);
+        map.put("goodsName", goodsName);
+        map.put("page", pageNum);
+        map.put("total", total);
+        map.put("pages", pages);
+
+        if (goodsName == null) {
+            goodsName = "";
+        }
+        if (orderId == null) {
+            orderId = "";
+        }
+
+        try {
+            map.put("pageAction",
+                    "management/finance/list?supId=" + supId + "&orderId=" + orderId + "&goodsName=" + URLEncoder.encode(goodsName, "GBK")
+                            + "&orderStatus=" + orderStatus + "&page=%PAGE%");
+        } catch (UnsupportedEncodingException e) {
+        }
+
+        return "finance/list";
+    }
+
+    @RequestMapping("/pay")
+    public String pay(HttpServletRequest req, HttpSession session, Map<String, Object> map) {
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return "redirect:/passport/login";
+        }
+        // 订单编号
+        String o = req.getParameter("o");
+        // 支付方式
+        String t = req.getParameter("t");
+
+        if (StringUtils.isEmpty(o) || StringUtils.isEmpty(t)) {
+            map.put("error", "参数无效");
+            return "finance/pay";
+        }
+        
+        if (!"0001".equals(t) && !"0002".equals(t) && !"0004".equals(t)) {
+            t = "0001";
+        }
+
+        Order order = orderService.getOrderById(o);
+        if (order == null) {
+            map.put("error", "订单不存在");
+            return "finance/pay";
+        }
+
+        if (!order.getOrder_status().equals("15")) {
+            map.put("error", "订单不是待支付状态不能进行支付，请检查订单状态，如果已经支付请不要重复支付");
+            return "finance/pay";
+        }
+
+        // 订单号D20+11随机
+        String payFlowNo = order.getOrder_id() + RandomStringUtils.random(11, "0123456789");
+
+        Map<String, String> param = new HashMap<String, String>();
+
+        param.put("Version", "20140728");
+        param.put("MerId", configHolder.getConfig("chinapay.mer.id." + t));
+        param.put("MerOrderNo", payFlowNo);
+        String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        param.put("TranDate", date.substring(0, 8));
+        param.put("TranTime", date.substring(8));
+        param.put("OrderAmt", String.valueOf((int) (Float.parseFloat(order.getOrder_amount()) * 100)));
+        param.put("TranType", t);
+        param.put("BusiType", "0001");
+        param.put("MerPageUrl", configHolder.getConfig("chinapay.callback.page").replace("${module}", "management/finance"));
+        param.put("MerBgUrl", configHolder.getConfig("chinapay.callback.notify").replace("${module}", "management/finance"));
+        param.put("MerResv", order.getOrder_id());
+
+        SecssUtil s = new SecssUtil();
+        Properties p = new Properties();  
+        InputStream in = getClass().getClassLoader().getResourceAsStream("chinapay" + t + ".properties");
+        try {
+            p.load(in);
+            in.close();  
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }  
+        s.init(p);
+        s.sign(param);
+        param.put("Signature", s.getSign());
+
+        PayFlow payFlow = new PayFlow();
+        payFlow.setOrderId(order.getOrder_id());
+        payFlow.setPayAmount(Double.parseDouble(order.getOrder_amount()));
+        payFlow.setPayFlow(payFlowNo);
+        payFlow.setPayStatus(0);
+        payFlow.setPayType(1);
+        payFlow.setProcStatus(0);
+        payFlow.setRemark("发起订单支付");
+        payFlow.setPayGate(t);
+        try {
+            payFlow.setReqParam(new ObjectMapper().writeValueAsString(param));
+        } catch (Exception e) {
+        }
+
+        payFlowService.insertPayFlow(payFlow);
+
+        map.put("error", "");
+        map.put("form", param);
+        map.put("action", configHolder.getConfig("chinapay.url.pay"));
+
+        return "finance/pay";
+    }
+
+    @RequestMapping("/callback/{type:.*}")
+    public String callback(@PathVariable("type") String type, HttpServletRequest request, HttpServletResponse response, Map<String, Object> map) {
+        try {
+            request.setCharacterEncoding("utf-8");
+        } catch (UnsupportedEncodingException e) {
+        }
+        //response.setCharacterEncoding("utf-8");
+
+        Enumeration<String> requestNames = request.getParameterNames();
+        Map<String, String> resultMap = new HashMap<String, String>();
+        while (requestNames.hasMoreElements()) {
+            String name = requestNames.nextElement();
+            String value = request.getParameter(name);
+            if ("page".equals(type)) {
+                resultMap.put(name, value);
+            } else {
+                try {
+                    resultMap.put(name, URLDecoder.decode(value, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                }
+            }
+        }
+
+        SecssUtil s = new SecssUtil();
+        s.init();
+
+        s.verify(resultMap);
+
+        String error = null;
+
+        if ("00".equals(s.getErrCode())) {
+            String payFlowNo = resultMap.get("MerOrderNo");
+            PayFlow payFlow = null;
+            if (check(payFlowNo)) {
+                payFlow = payFlowService.getPayFlowByNo(payFlowNo);
+
+                if (payFlow != null) {
+
+                    if (payFlow.getPayStatus() != 1) {
+
+                        payFlow.setPayStatus(1);
+                        try {
+                            payFlow.setResParam(new ObjectMapper().writeValueAsString(resultMap));
+                        } catch (Exception e) {
+                        }
+
+
+                        if (type.equals("refund")) {
+
+//                            if (!order.getOrder_status().equals("16")) {
+//                                payFlow.setProcStatus(2);
+//                                payFlow.setRemark("订单不是退款中状态[" + order.getOrder_status() + "]");
+//                            } else {
+                                if ("0000".equals(resultMap.get("OrderStatus"))) {
+                                   // orderService.updateOrderStatus(order.getOrder_id(), 13);
+                                    payFlow.setRemark("订单退款成功");
+                                    payFlow.setProcStatus(1);
+                                } else {
+                                   // orderService.updateOrderStatus(order.getOrder_id(), 17);
+                                    payFlow.setProcStatus(2);
+                                    payFlow.setRemark("订单退款失败");
+                                }
+//                            }
+                        } else {
+                            Order order = orderService.getOrderById(payFlow.getOrderId());
+                            if ("0000".equals(resultMap.get("OrderStatus"))) {
+                                if (!order.getOrder_status().equals("15")) {
+                                    payFlow.setProcStatus(2);
+                                    payFlow.setRemark("订单不是待支付状态[" + order.getOrder_status() + "]");
+                                    error = "订单不是待支付状态[" + order.getOrder_status() + "]";
+                                } else {
+                                    orderService.updateOrderPayStatus(order.getOrder_id());
+                                    
+                                    SettleData settle = new SettleData();
+                                    settle.setBusiId(order.getOrder_id());
+                                    settle.setBusiType(1);
+                                    settle.setCompanyName(orderService.getUserCompanyName(order.getUser_id()));
+                                    settle.setSettleAmount(Double.parseDouble(order.getOrder_amount()));
+                                    settle.setSupId(Integer.parseInt(order.getSup_id()));
+                                    settle.setTotalNum(orderService.getGoodsSum(order.getOrder_id()));
+                                    
+                                    settleService.insertSettleData(settle);
+                                    
+                                    payFlow.setProcStatus(1);
+                                    payFlow.setRemark("订单支付成功");
+                                    try {
+                                        CpiService.getInstance().orderConfirm(Integer.parseInt(order.getSup_id()), order.getOrder_id(), order.getSup_order_id());
+                                    } catch (Exception e) {
+                                        payFlow.setProcStatus(2);
+                                        payFlow.setRemark("支付成功，但供应商确认订单失败");
+                                        error = "支付成功，但供应商确认订单失败";
+                                        logger.error("供应商确认订单失败", e);
+                                    }
+                                }
+                            } else {
+                                payFlow.setProcStatus(2);
+                                payFlow.setRemark("订单支付失败");
+                                error = "订单支付失败";
+                            }
+                        }
+
+                        payFlowService.updatePayFlow(payFlow);
+                    } else {
+                        if (payFlow.getProcStatus() == 2) {
+                            error = payFlow.getRemark();
+                        }
+                    }
+                } else {
+                    error = "支付流水无效";
+                }
+
+                release(payFlowNo);
+            } else {
+                payFlow = payFlowService.getPayFlowByNo(payFlowNo);
+                if (payFlow.getProcStatus() == 2) {
+                    error = payFlow.getRemark();
+                }
+            }
+
+            try {
+                if (type.equals("notify") || type.equals("refund")) {
+                    response.getWriter().write("success");
+                } else {
+                    if (error != null) {
+                        map.put("error", error);
+                        return "finance/pay_fail";
+                    } else {
+                        map.put("orderId", payFlow.getOrderId());
+                        map.put("payAmount", payFlow.getPayAmount());
+                        map.put("payGate", payFlow.getPayGate());
+                        return "finance/pay_success";
+                    }
+                }
+            } catch (IOException e) {
+            }
+        } else {
+            try {
+                if (type.equals("notify") || type.equals("refund")) {
+                    response.getWriter().write("fail");
+                } else {
+                    map.put("error", "支付失败");
+                    return "finance/pay_fail";
+                }
+            } catch (IOException e) {
+            }
+        }
+        
+        return null;
+    }
+
+    @RequestMapping("/refund")
+    @ResponseBody
+    public ResultObject refund(HttpServletRequest req, HttpSession session) {
+
+        User user = null;
+        try {
+            user = Permission.check(session, UserRole.PAY);
+        } catch (Exception e) {
+            return new ResultObject(ResultObject.FAIL, "未登录或无权限");
+        }
+
+        // 订单编号
+        String o = req.getParameter("o");
+
+        if (StringUtils.isEmpty(o)) {
+            return new ResultObject(ResultObject.FAIL, "参数无效");
+        }
+
+        Order order = orderService.getOrderById(o);
+        if (order == null) {
+            return new ResultObject(ResultObject.FAIL, "订单不存在");
+        }
+
+        if (!order.getOrder_status().equals("9")) {
+            return new ResultObject(ResultObject.FAIL, "订单不是待退款状态不能进行退款，请检查订单状态，如果已经退款请不要重复操作");
+        }
+        PayFlow payFlow = payFlowService.getPayFlowByOrderId(order.getOrder_id());
+
+        if (payFlow == null) {
+            return new ResultObject(ResultObject.FAIL, "未找到订单对应的支付流水");
+        }
+
+        // 订单号D20+11随机
+        String payFlowNo = order.getOrder_id() + RandomStringUtils.random(11, "0123456789");
+
+        Map<String, String> param = new HashMap<String, String>();
+
+        param.put("Version", "20140728");
+        param.put("MerId", configHolder.getConfig("chinapay.mer.id." + payFlow.getPayGate()));
+        param.put("MerOrderNo", payFlowNo);
+        String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        param.put("TranDate", date.substring(0, 8));
+        param.put("TranTime", date.substring(8));
+        param.put("OriOrderNo", payFlow.getPayFlow());
+        param.put("OriTranDate", new SimpleDateFormat("yyyyMMdd").format(payFlow.getCompleteTime()));
+        param.put("RefundAmt", String.valueOf((int) (payFlow.getPayAmount() * 100)));
+        param.put("TranType", "0401");
+        param.put("BusiType", "0001");
+        param.put("MerBgUrl", configHolder.getConfig("chinapay.callback.refund"));
+        param.put("MerResv", order.getOrder_id());
+
+        SecssUtil s = new SecssUtil();
+
+        Properties p = new Properties();  
+        InputStream in = getClass().getClassLoader().getResourceAsStream("chinapay" + payFlow.getPayGate() + ".properties");
+        try {
+            p.load(in);
+            in.close();  
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }  
+        s.init(p);
+        param.put("Signature", s.getSign());
+
+        PayFlow refund = new PayFlow();
+        refund.setOrderId(order.getOrder_id());
+        refund.setPayAmount(Double.parseDouble(order.getOrder_amount()));
+        refund.setPayFlow(payFlowNo);
+        refund.setPayStatus(0);
+        refund.setPayType(2);
+        refund.setProcStatus(0);
+        refund.setRemark("发起订单退款");
+        try {
+            refund.setReqParam(new ObjectMapper().writeValueAsString(param));
+        } catch (Exception e) {
+        }
+
+        payFlowService.insertPayFlow(refund);
+
+        CloseableHttpClient client = HttpClients.custom().build();
+        RequestConfig config = RequestConfig.custom().setSocketTimeout(1200000).setConnectTimeout(1200000).setAuthenticationEnabled(false)
+                .build();
+
+        HttpPost post = new HttpPost(configHolder.getConfig("chinapay.url.refund"));
+        post.setProtocolVersion(org.apache.http.HttpVersion.HTTP_1_1);
+        post.setConfig(config);
+
+        HttpEntity entity = null;
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+
+        for (Entry<String, String> i : param.entrySet()) {
+            pairs.add(new BasicNameValuePair(i.getKey(), i.getValue()));
+        }
+
+        entity = new UrlEncodedFormEntity(pairs, Consts.UTF_8);
+        if (entity != null) {
+            post.setEntity(entity);
+        }
+        CloseableHttpResponse res = null;
+        try {
+            res = client.execute(post);
+            HttpEntity ent = res.getEntity();
+            String content = EntityUtils.toString(ent);
+            EntityUtils.consume(ent);
+            Map<String, String> data = new HashMap<String, String>();
+            if (!StringUtils.isEmpty(content)) {
+                String[] strs = content.split("&");
+                for (String str : strs) {
+                    if (StringUtils.isEmpty(str)) {
+                        continue;
+                    }
+                    int index = str.indexOf("=");
+                    data.put(str.substring(0, index), str.substring(index + 1));
+                }
+            }
+            res.close();
+
+            if ("0000".equals(data.get("respCode")) || "1003".equals(data.get("respCode"))) {
+                // 退款中...
+                //orderService.updateOrderStatus(order.getOrder_id(), 16);
+                // 已退款
+                orderService.updateOrderStatus(order.getOrder_id(), 13);
+            } else {
+                return new ResultObject(ResultObject.FAIL, "联银退款失败[" + data.get("respMsg") + "]");
+            }
+
+            res.close();
+        } catch (Exception e) {
+            logger.error("联银退款失败", e);
+            return new ResultObject(ResultObject.FAIL, "联银退款失败");
+        } finally {
+            try {
+                client.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return new ResultObject(ResultObject.OK, "退款成功");
+    }
+
+    private List<String> locks = new ArrayList<String>();
+
+    private synchronized boolean check(String payFlow) {
+        if (locks.contains(payFlow)) {
+            return false;
+        }
+
+        locks.add(payFlow);
+        return true;
+    }
+
+    private synchronized void release(String payFlow) {
+        locks.remove(payFlow);
+    }
+
+    @Autowired
+    SupInfoService supInfoService;
+
+    @Autowired
+    OrderService orderService;
+
+    static List<SupInfo> sups;
+
+    private List<SupInfo> getSupInfo() {
+        if (sups == null) {
+            sups = supInfoService.querySupInfos();
+        }
+
+        return sups;
+    }
+}

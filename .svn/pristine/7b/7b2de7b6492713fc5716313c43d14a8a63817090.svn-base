@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supervise.mappers.RoleMapper">
+	<resultMap id="roleResultListMap" type="Role">
+		<id column="ID" property="id" jdbcType="VARCHAR" /> 
+		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+		<result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+		<result column="ROLE_ENAME" property="roleEname" jdbcType="VARCHAR" />
+		<result column="ROLE_TYPE" property="roleType" jdbcType="VARCHAR" />
+		<result column="DATA_SCOPE" property="dataScope" jdbcType="VARCHAR" />
+		<result column="IS_SYS" property="isSys" jdbcType="VARCHAR" />
+		<result column="IS_USEABLE" property="isUseable" jdbcType="VARCHAR" />
+		<result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE" property="updateDate" jdbcType="VARCHAR" />
+		<result column="REMARKS" property="remarks" jdbcType="VARCHAR" />
+		<result column="DEL_FLAG" property="delFlag" jdbcType="VARCHAR" />
+		<result column="system_Flag" property="systemFlag" jdbcType="VARCHAR" />
+		<result column="IF_PAY_ROLE" property="ifPayRole" jdbcType="VARCHAR" />
+		
+		
+	</resultMap>
+	<resultMap id="menuResultListMap" type="com.avic.supervise.models.Menu">
+		<result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+		<result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="MENU_LEVEL" property="menuLevel" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryRoleList" resultMap="roleResultListMap">
+		SELECT * FROM (
+		select c.*,rownum rn from (select t.* from (select * from t_role k 
+         start with k.id = #{parentRoleId,jdbcType=VARCHAR} connect by prior k.id = k.parent_role_id) t
+		where DEL_FLAG = '1'
+		<if test="isUseable != null and isUseable != ''">
+     		  and is_useable = #{isUseable,jdbcType=VARCHAR}
+     	</if>
+     	<if test="roleName != null and roleName != ''">
+     		  and ROLE_NAME LIKE CONCAT('%',CONCAT(#{roleName,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="id != null and id != ''">
+     		  and id = #{id,jdbcType=VARCHAR}
+     	</if>
+     	<if test="systemFlag != null and systemFlag != ''">
+     		  and system_Flag = #{systemFlag,jdbcType=VARCHAR}
+     	</if>
+     	<if test="ifPayRole != null and ifPayRole != ''">
+     		  and IF_PAY_ROLE = #{ifPayRole,jdbcType=VARCHAR}
+     	</if>
+     	order by CREATE_DATE desc) C
+     	)R
+ 		  WHERE R.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+		
+	</select>
+	<select id="queryRoleListCount" resultType="java.lang.Integer">
+		select Count(1) from (select * from t_role k 
+         start with k.id = #{parentRoleId,jdbcType=VARCHAR} connect by prior k.id = k.parent_role_id) t
+		where DEL_FLAG = '1'
+		<if test="isUseable != null and isUseable != ''">
+     		  and is_useable = #{isUseable,jdbcType=VARCHAR}
+     	</if>
+     	<if test="roleName != null and roleName != ''">
+     		  and ROLE_NAME LIKE CONCAT('%',CONCAT(#{roleName,jdbcType=VARCHAR},'%'))
+     	</if>
+     	<if test="id != null and id != ''">
+     		  and id = #{id,jdbcType=VARCHAR}
+     	</if>
+     	<if test="systemFlag != null and systemFlag != ''">
+     		  and system_Flag = #{systemFlag,jdbcType=VARCHAR}
+     	</if>
+     	<if test="ifPayRole != null and ifPayRole != ''">
+     		  and IF_PAY_ROLE = #{ifPayRole,jdbcType=VARCHAR}
+     	</if>
+	</select>
+	<select id="queryRoleUserCount" resultType="java.lang.Integer">
+		select count(1) from AUTHORITIES where authority = #{roleId,jdbcType=VARCHAR}
+	</select>
+	<insert id="inserRole">
+		insert into T_ROLE (id,ROLE_NAME,IS_USEABLE,REMARKS,CREATE_USER,CREATE_DATE,UPDATE_USER,UPDATE_DATE,system_Flag,IF_PAY_ROLE,PARENT_ROLE_ID)
+		values(#{id,jdbcType=VARCHAR},#{roleName,jdbcType=VARCHAR},#{isUseable,jdbcType=VARCHAR},#{remarks,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},sysdate,#{updateUser,jdbcType=VARCHAR},sysdate,#{systemFlag,jdbcType=VARCHAR},#{ifPayRole,jdbcType=VARCHAR},#{parentRoleId,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateRole">
+		update T_ROLE set ROLE_NAME = #{roleName,jdbcType=VARCHAR} , IS_USEABLE = #{isUseable,jdbcType=VARCHAR} , 
+		REMARKS = #{remarks,jdbcType=VARCHAR},UPDATE_USER= #{updateUser,jdbcType=VARCHAR} ,UPDATE_DATE = sysdate,
+		system_Flag = #{systemFlag,jdbcType=VARCHAR},IF_PAY_ROLE = #{ifPayRole,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteRole">
+		delete from T_ROLE where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="queryMenu" resultMap="menuResultListMap" parameterType="java.lang.String">
+		  select t.menu_id , t.name,t.parent_id ,t.MENU_LEVEL
+      from t_menu t ,t_role_menu r where system_Flag = #{param1,jdbcType=VARCHAR}
+      and r.role_id in (${param2})
+      and t.menu_id = r.menu_paht
+	</select>
+	<select id="queryRoleMenu" resultMap="menuResultListMap">
+		select menu_paht menu_id from T_ROLE_MENU t where t.role_id = #{roleId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteRoleMenu" >
+		delete from T_ROLE_MENU where role_id= #{roleId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertRoleMenu" >
+		insert into T_ROLE_MENU (id,role_id,menu_paht) values(#{param1,jdbcType=VARCHAR},#{param2,jdbcType=VARCHAR},#{param3,jdbcType=VARCHAR})
+	</insert>
+	
+</mapper>

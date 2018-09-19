@@ -1,0 +1,157 @@
+package com.avic.market.utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.avic.common.constants.SessionKeys;
+import com.avic.market.mappers.CartMapper;
+import com.avic.market.mappers.CategoryMapper;
+import com.avic.market.mappers.SupplierMapper;
+import com.avic.market.models.CategoryRelation;
+import com.avic.market.models.Supplier;
+import com.avic.market.models.SysCategory;
+import com.avic.passport.models.User;
+
+public class DataCache {
+    protected static final Log logger = LogFactory.getLog(DataCache.class);
+
+    @Autowired
+    CategoryMapper categoryMapper;
+    
+    @Autowired
+    SupplierMapper supplierMapper;
+    
+    @Autowired
+    CartMapper cartMapper;
+    
+    private static List<SysCategory> CATEGORY_TREE = null;
+    private static Map<Integer, String> CATEGORY_MAP = new HashMap<Integer, String>();
+    private static Map<Integer, String> SUPPLIER_MAP = new HashMap<Integer, String>();
+    private static List<Supplier> SUPPLIER_LIST = new ArrayList<Supplier>();
+    private static Map<String, Integer> CATEGORY_REL = new HashMap<String, Integer>();
+    
+    public void init () {
+        logger.info("加载系统分类缓存...");
+        loadCategory();
+        logger.info("加载系统分类对应关系缓存...");
+        loadCategoryRelation();
+        logger.info("加载系统供应商缓存...");
+        loadSupplier();
+    }
+    
+    private void loadCategory() {
+
+        List<SysCategory> list = categoryMapper.querySysCatTree();
+        
+        List<SysCategory> tree = new ArrayList<SysCategory>();
+        
+        SysCategory level1 = null, level2 = null;
+        
+        for (SysCategory i : list) {
+            CATEGORY_MAP.put(i.getSysCatId(), i.getSysCatName());
+            if (i.getSysCatLevel() == 1) {
+                level1 = i;
+                level1.setChildCategory(new ArrayList<SysCategory>());
+                tree.add(level1);
+            } else if (i.getSysCatLevel() == 2) {
+                level2 = i;
+                level2.setChildCategory(new ArrayList<SysCategory>());
+                level1.getChildCategory().add(level2);
+            } else {
+                level2.getChildCategory().add(i);
+            }
+        }
+        
+        CATEGORY_TREE = tree;
+    }
+    
+    public List<SysCategory> getSubCategoryList(int parent) {
+        for (SysCategory i : CATEGORY_TREE) {
+            if (i.getSysCatId() == parent) {
+                return i.getChildCategory();
+            }
+            
+            for (SysCategory j : i.getChildCategory()) {
+                if (j.getSysCatId() == parent) {
+                    return j.getChildCategory();
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    private void loadCategoryRelation() {
+        List<CategoryRelation> list = categoryMapper.queryCategoryRelation();
+        
+        for (CategoryRelation i : list) {
+            CATEGORY_REL.put(i.getSupId() + "-" + i.getSupCatId(), i.getSysCatId());
+        }
+    }
+    
+    private void loadSupplier() {
+        SUPPLIER_LIST = supplierMapper.querySupplierList();
+        
+        for (Supplier i : SUPPLIER_LIST) {
+            SUPPLIER_MAP.put(i.getSupId(), i.getSupName());
+        }
+    }
+    
+    public List<SysCategory> getCategoryTree() {
+
+        if (CATEGORY_TREE == null) {
+            loadCategory();
+        }
+        
+        return CATEGORY_TREE;
+    }
+    
+    public String getCategoryName(int cat) {
+        return CATEGORY_MAP.get(cat);
+    }
+    
+    public String getSupplierName(int sup) {
+        return SUPPLIER_MAP.get(sup);
+    }
+    
+    public List<Supplier> getSupplierList() {
+        return SUPPLIER_LIST;
+    }
+    
+    public Supplier getSupplier(int sup) {
+        for (Supplier i : SUPPLIER_LIST) {
+            if (i.getSupId() == sup) {
+                return i;
+            }
+        }
+        
+        return null;
+    }
+    
+    public int getSysCatId(int sup, int cat) {
+        if (!CATEGORY_REL.containsKey(sup + "-" + cat)) {
+            return 0;
+        }
+        return CATEGORY_REL.get(sup + "-" + cat);
+    }
+    
+    public int cartNum(HttpSession session) {
+        Integer i = (Integer)session.getAttribute(SessionKeys.CART_NUM);
+        User user = (User)session.getAttribute(SessionKeys.LOGIN_USER);
+        
+        if (i == null) {
+            i = cartMapper.queryCartGoodsNum(user.getUserId());
+            session.setAttribute(SessionKeys.CART_NUM, i);
+        }
+        
+        return i;
+    }
+}

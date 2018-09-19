@@ -1,0 +1,54 @@
+package com.avic.supplier.models;
+
+public class SupplierUser {
+	private String supId;
+	
+	private String supName;
+	
+	private String supPassword;
+	
+	private String supUsernamecn;
+	
+	private String supEnabled;
+
+	public String getSupId() {
+		return supId;
+	}
+
+	public void setSupId(String supId) {
+		this.supId = supId;
+	}
+
+	public String getSupName() {
+		return supName;
+	}
+
+	public void setSupName(String supName) {
+		this.supName = supName;
+	}
+
+	public String getSupPassword() {
+		return supPassword;
+	}
+
+	public void setSupPassword(String supPassword) {
+		this.supPassword = supPassword;
+	}
+
+	public String getSupUsernamecn() {
+		return supUsernamecn;
+	}
+
+	public void setSupUsernamecn(String supUsernamecn) {
+		this.supUsernamecn = supUsernamecn;
+	}
+
+	public String getSupEnabled() {
+		return supEnabled;
+	}
+
+	public void setSupEnabled(String supEnabled) {
+		this.supEnabled = supEnabled;
+	}
+	
+}

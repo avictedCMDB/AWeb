@@ -1,0 +1,86 @@
+<%@ page language="java" contentType="text/html; charset=gbk" pageEncoding="GBK"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录|中航招标网</title>
+<link href="${pageContext.request.contextPath}/static/css/bootstrap.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/common.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/login.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+<!-- Fontello CSS -->
+<link href="${pageContext.request.contextPath}/static/fonts/fontello/css/fontello.css" rel="stylesheet">
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/rollover.js"></script>
+<script type="text/javascript">
+$(function () {
+	$("#login_btn").click(function () {
+		var name = $("#loginName").val();
+		var pass = $("#loginPassword").val();
+		
+		if (name == '') {
+			alert("请输入用户名");
+			return;
+		}
+		
+		if (pass == '') {
+			alert("请输入密码");
+			return;
+		}
+		
+		$("#loginForm").submit();
+	});
+
+	<c:if test="${error != null}">
+		alert("${error}");
+	</c:if>
+	<c:if test="${href != null}">
+		window.location.href ="${pageContext.request.contextPath}/supplier/index";
+	</c:if>
+});
+</script>
+</head>
+
+<body>
+<div class="page-wrapper">
+  <div id="header_login">
+    <div class="inner">
+    </div>
+  </div>
+  <div id="contents">
+  	<form id="loginForm" action="${pageContext.request.contextPath}/supplier/login/submit" method="post">
+    <div class="inner clearfix">
+      <div class="img_left"><img src="${pageContext.request.contextPath}/static//img/login/bg-login.png" /></div>
+      <div class="login_box">
+        <h2><img src="${pageContext.request.contextPath}/static//img/login/title-login.png" alt="用户登录" /></h2>
+        <div class="login_inner">
+          <div class="inner_bottom">
+            <ul class="clearfix">
+              <li class="qrcode"><i class="fa fa-qrcode"></i><a href="#">二维码安全登录</a></li>
+              <li><i class="fa fa-credit-card"></i><a href="#">CA安全登录</a></li>
+            </ul>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user"></i></span>
+              <input type="text" class="form-control" id="loginName" name="loginName" value="${userName}"/>
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+              <input type="password" class="form-control" id="loginPassword" name="loginPassword"/>
+            </div>
+            <div class="forget"><p><a href="#">忘记密码？</a></p></div>
+            <div class="btn_area">
+              <button type="button" class="btn btn_login" id="login_btn">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+<!--.page-wrapper--></div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.supplier.mappers.CategoryMapper">
+	<resultMap id="supCatResultMap" type="SupCategory">
+		<id column="sup_cat_id" property="supCatId" jdbcType="INTEGER" /> 
+		<result column="sup_cat_name" property="supCatName" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryCatList" resultMap="supCatResultMap">
+		select 	*
+		  from 	t_sup_category
+		 where  sup_id = #{supId}
+	</select>
+	
+	<insert id="insertCategory" >
+		 insert into t_sup_category (sup_id, sup_cat_id, sup_cat_name)
+		 values (
+				#{supId,jdbcType=INTEGER},
+				#{supCatId,jdbcType=INTEGER},
+				#{supCatName,jdbcType=VARCHAR}
+				) 
+	</insert>
+	
+</mapper>

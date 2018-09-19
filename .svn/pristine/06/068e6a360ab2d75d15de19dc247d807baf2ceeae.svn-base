@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.management.mappers.OffStandardRequireMapper">
+	<resultMap id="offStandardRequireMap" type="com.avic.management.models.OffStandardRequire">
+		<result column="ID" property="ID" jdbcType="VARCHAR" /> 
+		<result column="GOODS_DESC_NEW" property="goodsDescNew" jdbcType="VARCHAR" />
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userID" jdbcType="VARCHAR" />
+		<result column="GOODS_URL" property="goodsURL" jdbcType="VARCHAR" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="VARCHAR" />
+		<result column="GOODS_NAME" property="goodsName" jdbcType="VARCHAR" />
+		<result column="IS_RELEASE" property="isRelease" jdbcType="VARCHAR" />
+		<result column="CLOSE_DATE" property="closeDate" jdbcType="VARCHAR" />
+		<result column="CANCEL_REASON" property="cancelReason" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="supGoodsMap" type="com.avic.management.models.SupGoods">
+		<result column="IMAGE_PATH" property="imagePath" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<resultMap id="supInfoMap" type="com.avic.management.models.SupInfo">
+		<result column="SUP_NAME" property="supName" jdbcType="VARCHAR" /> 
+		<result column="SUP_ID" property="supID" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<select id="queryOffStandardRequires" resultMap="offStandardRequireMap" parameterType="com.avic.management.models.OffStandardRequire">
+	  SELECT * FROM (	
+		SELECT  R.*,ROWNUM AS RN FROM (  
+		   SELECT ID,
+		          GOODS_DESC_NEW,
+		          SUP_ID,
+		          STATUS,
+		          USER_ID,
+		          GOODS_NAME,
+		          IS_RELEASE,
+		          TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') AS CLOSE_DATE,
+		          TO_CHAR(CREATE_DATE,'yyyy-MM-dd') AS CREATE_DATE,
+		          CANCEL_REASON
+		     FROM T_OFF_STANDARD_REQUIRE TOSR
+		    WHERE USER_ID = #{userID,jdbcType=VARCHAR}
+		    <if test="supID != null and supID != ''">
+		      AND instr(SUP_ID,#{supID,jdbcType=VARCHAR}) > 0
+		    </if>
+		    <if test="status != null and status != ''">
+		      AND STATUS = #{status,jdbcType=VARCHAR}
+		    </if>
+		    <if test="goodsDescNew != null and goodsDescNew != ''">
+		      AND GOODS_DESC_NEW LIKE CONCAT('%',CONCAT(#{goodsDescNew,jdbcType=VARCHAR},'%')) 
+		    </if> 
+		     <if test="goodsName != null and goodsName != ''">
+		      AND GOODS_NAME LIKE CONCAT('%',CONCAT(#{goodsName,jdbcType=VARCHAR},'%')) 
+		    </if> 
+		     <if test="isRelease != null and isRelease != ''">
+		      AND IS_RELEASE = #{isRelease,jdbcType=VARCHAR}
+		    </if> 
+		     <if test="closeDate != null and closeDate != ''">
+			  	AND TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') = #{closeDate,jdbcType=VARCHAR}
+			 </if>
+			 <if test="beginDate != null and beginDate != ''">
+			  	AND TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') &gt;= #{beginDate,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate != null and endDate != ''">
+			  	AND TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') &lt;= #{endDate,jdbcType=VARCHAR}
+			  </if>
+		     order by TOSR.CREATE_DATE desc
+		     ) R
+       ) T
+   		WHERE T.RN BETWEEN #{pageFrom,jdbcType=INTEGER} AND #{pageTo,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryOffStandardRequiresCount" resultType="java.lang.Integer" parameterType="com.avic.management.models.OffStandardRequire">
+		   SELECT Count(1)
+		     FROM T_OFF_STANDARD_REQUIRE TOSR
+		    WHERE USER_ID = #{userID,jdbcType=VARCHAR}
+		    <if test="supID != null and supID != ''">
+		      AND instr(SUP_ID,#{supID,jdbcType=VARCHAR}) > 0
+		    </if>
+		    <if test="status != null and status != ''">
+		      AND STATUS = #{status,jdbcType=VARCHAR}
+		    </if>
+		    <if test="goodsDescNew != null and goodsDescNew != ''">
+		      AND GOODS_DESC_NEW LIKE CONCAT('%',CONCAT(#{goodsDescNew,jdbcType=VARCHAR},'%'))
+		    </if>
+		    <if test="goodsName != null and goodsName != ''">
+		      AND GOODS_NAME LIKE CONCAT('%',CONCAT(#{goodsName,jdbcType=VARCHAR},'%')) 
+		    </if> 
+		     <if test="isRelease != null and isRelease != ''">
+		      AND IS_RELEASE = #{isRelease,jdbcType=VARCHAR}
+		    </if> 
+		     <if test="closeDate != null and closeDate != ''">
+			  	AND to_char(CLOSE_DATE,'yyyy-mm-dd') = #{closeDate,jdbcType=VARCHAR}
+			 </if>
+			  <if test="beginDate != null and beginDate != ''">
+			  	AND TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') &gt;= #{beginDate,jdbcType=VARCHAR}
+			  </if>
+			  <if test="endDate != null and endDate != ''">
+			  	AND TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') &lt;= #{endDate,jdbcType=VARCHAR}
+			  </if>
+	</select>
+	
+	
+	<select id="queryGoodsByGoodsIDS" parameterType="com.avic.management.models.OffStandardRequire" resultMap="supGoodsMap">
+		SELECT TSG.IMAGE_PATH
+		  FROM T_SUP_GOODS TSG
+		 WHERE TSG.SUP_GOODS_ID IN 
+		 <foreach item="item" collection="goodsIDS" separator="," open="(" close=")" index="index">  
+	      #{item, jdbcType=VARCHAR}  
+	     </foreach>
+     </select>
+     
+     <select id="querySupInfosBySupIDS" parameterType="com.avic.management.models.OffStandardRequire" resultMap="supInfoMap">
+		SELECT TSI.SUP_NAME,
+		       TSI.SUP_ID
+		  FROM T_SUP_INFO TSI
+		 WHERE TSI.IF_VALID = '1'
+		   AND TSI.SUP_ID IN
+		    <foreach item="item" collection="supIDS" separator="," open="(" close=")" index="index">  
+		      #{item, jdbcType=VARCHAR}  
+		    </foreach>
+     </select>
+     
+     
+     <select id="queryFileEx" resultType="java.lang.Integer" parameterType="com.avic.management.models.OffStandardRequire">
+		SELECT COUNT(1)
+		  FROM T_QUOTE_INFO
+		 WHERE QUOTE_ATTACHMENT_PATH LIKE CONCAT('%',CONCAT(#{quotePath,jdbcType=VARCHAR},'%'))
+     </select>
+     
+     <select id="checkGoodsName" resultType="java.lang.Integer" parameterType="java.lang.String">
+		   SELECT Count(1)
+		     FROM T_OFF_STANDARD_REQUIRE
+		    WHERE GOODS_NAME = #{goodsName,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteSpecial"  parameterType="com.avic.management.models.OffStandardRequire">
+		DELETE FROM T_OFF_STANDARD_REQUIRE 
+     		  WHERE ID = #{ID,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="updateSpecial" parameterType="com.avic.management.models.OffStandardRequire">
+		UPDATE T_OFF_STANDARD_REQUIRE
+   		   SET GOODS_DESC_NEW = #{goodsDescNew,jdbcType=VARCHAR},
+		       SUP_ID = #{supID,jdbcType=VARCHAR},
+		       STATUS = #{status,jdbcType=VARCHAR},
+		       USER_ID = #{userID,jdbcType=VARCHAR},
+		       IS_RELEASE = #{isRelease,jdbcType=VARCHAR},
+		       GOODS_NAME = #{goodsName,jdbcType=VARCHAR},
+		       CLOSE_DATE = TO_DATE(#{closeDate,jdbcType=VARCHAR},'yyyy-MM-dd')
+         WHERE ID = #{ID,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="cancleReason" parameterType="com.avic.management.models.OffStandardRequire">
+		UPDATE T_OFF_STANDARD_REQUIRE
+   		   SET CANCEL_REASON = #{cancelReason,jdbcType=VARCHAR},
+   		       STATUS = #{status,jdbcType=VARCHAR}
+         WHERE ID = #{ID,jdbcType=VARCHAR}
+         
+	</update>
+	
+	
+	<select id="getOffStandardRequireByID" resultMap="offStandardRequireMap" parameterType="com.avic.management.models.OffStandardRequire">
+		   SELECT ID,
+		          GOODS_DESC_NEW,
+		          SUP_ID,
+		          STATUS,
+		          USER_ID,
+		          GOODS_NAME,
+		          IS_RELEASE,
+		          TO_CHAR(CLOSE_DATE,'yyyy-MM-dd') AS CLOSE_DATE,
+		          TO_CHAR(CREATE_DATE,'yyyy-MM-dd') AS CREATE_DATE,
+		          CANCEL_REASON
+		     FROM T_OFF_STANDARD_REQUIRE
+		    WHERE ID = #{ID,jdbcType=VARCHAR}
+	</select>
+</mapper>

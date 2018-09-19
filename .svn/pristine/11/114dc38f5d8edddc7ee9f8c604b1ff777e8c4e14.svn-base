@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avic.market.mappers.OrderMapper">
+	<resultMap id="orderResultMap" type="Order">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+		<result column="order_time" property="orderTime" jdbcType="DATE" />
+		<result column="review_time" property="reviewTime" jdbcType="DATE" />
+		<result column="review_remark" property="reviewRemark" jdbcType="VARCHAR" />
+		<result column="pay_time" property="payTime" jdbcType="DATE" />
+		<result column="order_amount" property="orderAmount" jdbcType="DOUBLE" />
+		<result column="order_amount_init" property="orderAmountInit" jdbcType="DOUBLE" />
+		<result column="express_type" property="expressType" jdbcType="INTEGER" />
+		<result column="addr_prov" property="addrProv" jdbcType="INTEGER" />
+		<result column="addr_city" property="addrCity" jdbcType="INTEGER" />
+		<result column="addr_dist" property="addrDist" jdbcType="INTEGER" />
+		<result column="addr_town" property="addrTown" jdbcType="INTEGER" />
+		<result column="addr_detail" property="addrDetail" jdbcType="VARCHAR" />
+		<result column="addr_all" property="addrAll" jdbcType="VARCHAR" />
+		<result column="addr_name" property="addrName" jdbcType="VARCHAR" />
+		<result column="addr_zip" property="addrZip" jdbcType="VARCHAR" />
+		<result column="addr_phone" property="addrPhone" jdbcType="VARCHAR" />
+		<result column="addr_tel" property="addrTel" jdbcType="VARCHAR" />
+		<result column="invoice_type" property="invoiceType" jdbcType="INTEGER" />
+		<result column="invoice_flag" property="invoiceFlag" jdbcType="INTEGER" />
+		<result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+		<result column="invoice_company" property="invoiceCompany" jdbcType="VARCHAR" />
+		<result column="invoice_num" property="invoiceNum" jdbcType="VARCHAR" />
+		<result column="decide_reason" property="decideReason" jdbcType="VARCHAR" />
+		<result column="addr_email" property="addrEmail" jdbcType="VARCHAR" />
+		<result column="sup_order_id" property="supOrderId" jdbcType="VARCHAR" />
+		<result column="buy_type" property="buyType" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="snapshotResultMap" type="OrderSnapshot">
+		<id column="order_id" property="orderId" jdbcType="VARCHAR" /> 
+		<id column="sup_goods_id" property="supGoodsId" jdbcType="VARCHAR" />
+		<id column="sup_id" property="supId" jdbcType="INTEGER" />
+		<result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+		<result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+		<result column="goods_price" property="goodsPrice" jdbcType="DOUBLE" />
+		<result column="goods_price_init" property="goodsPriceInit" jdbcType="DOUBLE" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="refund_status" property="refundStatus" jdbcType="INTEGER" />
+		<result column="sup_type" property="supType" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="queryOrderIndex" resultType="java.lang.String">
+	select to_char(sysdate, 'yyyyMMddHH24miss') || lpad(order_index.nextval, 6, '0') from dual 
+	</select>
+	
+	<insert id="insertOrder" parameterType="Order">
+     
+     	insert into t_order (
+     		order_id,
+     		user_id,
+     		sup_id,
+     		order_status,
+     		order_time,
+     		order_amount,
+     		order_amount_init,
+     		express_type,
+     		addr_prov,
+     		addr_city,
+     		addr_dist,
+     		addr_town,
+     		addr_detail,
+     		addr_all,
+     		addr_name,
+     		addr_zip,
+     		addr_phone,
+     		addr_tel,
+     		invoice_type,
+     		invoice_flag,
+     		invoice_content,
+     		invoice_company,
+     		invoice_num,
+     		decide_reason,
+     		addr_email,
+     		sup_order_id,
+     		companyid,
+     		vat_receive_name,
+     		vat_receive_tel,
+     		vat_receive_detail,
+     		vat_receive_prov,
+     		vat_receive_city,
+     		vat_receive_dist,
+     		buy_type
+     	) values (
+     		#{orderId,jdbcType=VARCHAR},
+     		#{userId,jdbcType=VARCHAR},
+     		#{supId,jdbcType=INTEGER},
+     		#{orderStatus,jdbcType=INTEGER},
+     		sysdate,
+     		#{orderAmount,jdbcType=DOUBLE},
+     		#{orderAmountInit,jdbcType=DOUBLE},
+     		#{expressType,jdbcType=INTEGER},
+     		#{addrProv,jdbcType=INTEGER},
+     		#{addrCity,jdbcType=INTEGER},
+     		#{addrDist,jdbcType=INTEGER},
+     		#{addrTown,jdbcType=INTEGER},
+     		#{addrDetail,jdbcType=VARCHAR},
+     		#{addrAll,jdbcType=VARCHAR},
+     		#{addrName,jdbcType=VARCHAR},
+     		#{addrZip,jdbcType=VARCHAR},
+     		#{addrPhone,jdbcType=VARCHAR},
+     		#{addrTel,jdbcType=VARCHAR},
+     		#{invoiceType,jdbcType=INTEGER},
+     		#{invoiceFlag,jdbcType=INTEGER},
+     		#{invoiceContent,jdbcType=VARCHAR},
+     		#{invoiceCompany,jdbcType=VARCHAR},
+     		#{invoiceNum,jdbcType=VARCHAR},
+     		#{decideReason,jdbcType=VARCHAR},
+     		#{addrEmail,jdbcType=VARCHAR},
+     		#{supOrderId,jdbcType=VARCHAR},
+     		#{companyId,jdbcType=VARCHAR},
+     		#{vatReceiveName,jdbcType=VARCHAR},
+     		#{vatReceiveTel,jdbcType=VARCHAR},
+     		#{vatReceiveDetail,jdbcType=VARCHAR},
+     		#{vatReceiveProv,jdbcType=INTEGER},
+     		#{vatReceiveCity,jdbcType=INTEGER},
+     		#{vatReceiveDist,jdbcType=INTEGER},
+     		#{buyType,jdbcType=INTEGER}
+     	)
+	</insert>
+	
+	<insert id="batchInsertOrderSnapshot">
+		insert into t_order_snapshot (
+			order_id, 
+			sup_id, 
+			sup_goods_id,
+			goods_name,
+			image_path,
+			goods_price,
+			goods_price_init,
+			buy_num,
+			refund_status,
+			exchange_status
+		)
+		 <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all"> 
+			select
+				#{item.orderId,jdbcType=VARCHAR},
+				#{item.supId,jdbcType=INTEGER},
+				#{item.supGoodsId,jdbcType=VARCHAR},
+				#{item.goodsName,jdbcType=VARCHAR},
+				#{item.imagePath,jdbcType=VARCHAR},
+     			#{item.goodsPrice,jdbcType=DOUBLE},
+     			#{item.goodsPriceInit,jdbcType=DOUBLE},
+				#{item.buyNum,jdbcType=INTEGER},
+				0,
+				0
+			from dual 
+		</foreach>
+	</insert>
+	
+	
+	<insert id="insertOrderImage">
+		insert into t_image_info (
+			id, 
+			business_id, 
+			business_type,
+			url
+		) values (
+				to_char(sysdate, 'yyyyMMddHH24miss') || lpad(IMAGE_INDEX.nextval, 6, '0'),
+				#{orderId},
+				0,
+				#{img,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	
+	<select id="queryOrderDetail" resultMap="orderResultMap">
+	select * from t_order where order_id = #{orderId}
+	</select>
+	
+	<select id="queryOrderSnapshot" resultMap="snapshotResultMap">
+	select a.*, b.sup_type from t_order_snapshot a, t_sup_info b where a.sup_id = b.sup_id and order_id = #{orderId}
+	</select>
+	
+	<update id="updateOrderStatus">
+		update t_order set order_status = #{status}
+		
+		<if test="status == 2">
+		, pay_time = sysdate
+		</if>
+		
+		 where order_id = #{orderId}
+	</update>
+	
+	<select id="queryGoodsSum" resultType="java.lang.Integer">
+		select sum(buy_num) from t_order_snapshot where order_id = #{orderId}
+	</select>
+	
+	<select id="queryUserCompanyName" resultType="java.lang.String">
+		select companyname from users where userid = #{userId}
+	</select>
+	
+	<select id="queryUserContactNum" resultType="java.lang.String">
+		select contact_num from users where userid = #{userId}
+	</select>
+	
+	<select id="queryOrderImage" resultType="java.lang.String">
+	select url from t_image_info where business_id = #{orderId} and business_type = 0
+	</select>
+	
+	<update id="updateCompareOrderId">
+		update t_product_compare_info set order_id = #{orderId}
+		 where compare_id in 
+
+		<foreach close=")" collection="list" item="item" index="index" open="(" separator=","> 
+			#{item}
+		 </foreach>
+	</update>
+</mapper>

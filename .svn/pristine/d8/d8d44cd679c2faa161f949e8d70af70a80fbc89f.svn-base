@@ -1,0 +1,81 @@
+#matter_section .search_area dl dt {
+	width: 40px;
+}
+#matter_section .search_area dl dd {
+	width: 243px;
+}
+
+/*审核资质*/
+
+#add_area dl {
+	margin-bottom: 15px;
+}
+#add_area dl.date {
+	float: left;
+}
+#add_area dl dt {
+	width: 100px;
+	float: left;
+	line-height: 26px;
+	text-align: right;
+}
+#add_area dl dd.title_input {
+	width: 524px;
+}
+#add_area dl dd {
+	width: 850px;
+	float: left;
+}
+#add_area dl dd.select_input {
+	width: 150px;
+}
+#add_area dl dd.special {
+	width: 212px;
+}
+#add_area .inner {
+    width: 704px;
+}
+#add_area ul li{
+	float: left;
+	margin-right: 10px;
+}
+#add_area input.form-control {
+    height: 28px;
+}
+#matter_section #add_area textarea.form-control {
+	height: auto;
+}
+#add_area select.form-control {
+	padding: 0;
+}
+#matter_section #add_area .special_input {
+	width: 100%;
+}
+#matter_section #add_area .special {
+	display: table-cell;
+}
+.red {
+	background: #0091dc;
+	color: #fff;
+}
+.gray {
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 12px;
+	background: #666;
+	border: none;
+}
+#add_area .btn_list {
+	text-align: center;
+	margin-top: 20px;
+}
+#add_area .btn {
+	height: 28px;
+	line-height: 28px;
+	padding: 0 20px;
+	border: none;
+}
+#add_area .btn_list ul {
+	display: inline-block;
+}

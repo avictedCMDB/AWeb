@@ -1,0 +1,12 @@
+package com.avic.management.services;
+
+import java.util.List;
+
+import com.avic.management.models.Order;
+
+public interface OrderService {
+	/**
+	 * 查询订单信息
+	 */
+	public List<Order> queryOrders();
+}
